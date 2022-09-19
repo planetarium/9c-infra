@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 9c-network
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/k8s-config.git
+    targetRevision: 9c-sample
+    path: 9c-sample/chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: 9c-sample
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: aws-cluster-autoscaler
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://kubernetes.github.io/autoscaler
+    chart: cluster-autoscaler
+    targetRevision: 9.9.2
+    helm:
+      values: |-
+        autoDiscovery:
+          clusterName: {{ .Values.clusterName }}
+        awsRegion: ap-northeast-2
+        cloudProvider: aws
+        image:
+          tag: v1.20.0
+        extraArgs:
+          balance-similar-node-groups: true
+          logtostderr: true
+          skip-nodes-with-local-storage: false
+          stderrthreshold: info
+          v: 4
+        rbac:
+          serviceAccount:
+            annotations:
+              eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/eks-{{ .Values.clusterName }}-cluster-autoscaler
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

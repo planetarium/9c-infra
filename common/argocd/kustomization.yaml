@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - namespace.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.2.2/manifests/ha/install.yaml
+  - kubernetes-external-secrets.yaml
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: argocd-server
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/command/-
+        value: --insecure
+  - target:
+      version: v1
+      kind: Service
+      name: argocd-server
+    patch: |-
+      - op: add
+        path: /spec/type
+        value: LoadBalancer
