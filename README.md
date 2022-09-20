@@ -119,7 +119,7 @@ argoCD, storageClass 등 클러스터 운영에 필요한 것들을 먼저 설�
 	spec:
 	project: infra
 	source:
-	  repoURL: https://github.com/planetarium/k8s-config
+	  repoURL: https://github.com/planetarium/9c-infra
 	  targetRevision: 9c-sample
 	  path: 9c-sample/common/bootstrap
 	  helm:
@@ -147,7 +147,7 @@ argoCD, storageClass 등 클러스터 운영에 필요한 것들을 먼저 설�
 **external-secrets**는 외부 secret 저장소와 연동하여 원하는 credential을 cluster 내부의 secret resource로 만들고 주기적으로 싱크를 맞춰주는 역할을 담당합니다.
 argoCD는 gitops를 따르기 때문에 secret resource를 직접 git에 올리지 않으면서 gitops로 관리하기 위한 최적의 방안으로 생각하여 채택하게 되었습니다.
 
-이번 제안에서는 argoCD가 github private repository(k8s-config)를 조회하기 위한 github token, seed와 miner 노드가 사용할 private key를 AWS에 저장하여 가져오도록 합니다.
+이번 제안에서는 argoCD가 github private repository(9c-infra)를 조회하기 위한 github token, seed와 miner 노드가 사용할 private key를 AWS에 저장하여 가져오도록 합니다.
 secret resource를 gitops로 관리할 의도가 아니라면 external-secrets를 사용하지 않아도 무방합니다. 
 ```
 $ kustomize build argocd/ --reorder none | kubectl apply -f-

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/planetarium/k8s-config.git
+    repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: 9c-sample
     path: 9c-sample/chart
     helm:
