@@ -5,7 +5,7 @@ metadata:
 spec:
   project: infra
   source:
-    repoURL: https://github.com/planetarium/k8s-config
+    repoURL: https://github.com/planetarium/9c-infra
     targetRevision: 9c-sample
     path: {{ .Values.clusterName }}/argocd
   destination:
