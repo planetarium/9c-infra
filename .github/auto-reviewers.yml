@@ -1,0 +1,10 @@
+addReviewers: true
+addAssignees: author
+
+reviewers:
+  - area363
+  - longfin
+  - sky1045
+  - Atralupus
+
+numberOfReviewers: 0
