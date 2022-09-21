@@ -136,7 +136,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 500Gi
+          storage: {{ $.Values.remoteHeadless.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
   - metadata:
@@ -146,7 +146,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 4Gi
+          storage: {{ $.Values.remoteHeadless.storage.log }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---

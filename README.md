@@ -37,18 +37,14 @@ region = us-east-2
      ````
 3. `terraform/backend.tf`에서 state를 저장할 s3 경로를 지정합니다. 이때 bucket과 key에 해당하는 경로는 미리 존재해야 합니다.
 4. 아래 나열된 파일 내의 `9c-sample` 명칭들을 원하는 클러스터 이름으로 변경해줍니다 (예: `9c-test`)
-  - `application.yaml`
-  - `argocd/bootstrap.yaml`
-  - `argocd/kustomization.yaml`
-  - `chart/Chart.yaml`
-  - `common/bootstrap/values.yaml`
-  - `common/bootstrap/templates/argocd-app.yaml`
-  - `common/bootstrap/templates/namespace.yaml`
-  - `common/bootstrap/templates/service.yaml`
-  - `terraform/backend.tf`
-  - `terraform/terraform.tfvars`
-  - `terraform/variables.tf`
-  - `terraform/.terraform/terraform.tfstate`
+  - `9c-test/application.yaml`
+  - `9c-test/argocd/bootstrap.yaml`
+  - `9c-test/argocd/kustomization.yaml`
+  - `9c-test/chart/Chart.yaml`
+  - `9c-test/terraform/backend.tf`
+  - `9c-test/terraform/terraform.tfvars`
+  - `9c-test/terraform/variables.tf`
+  - `9c-test/terraform/.terraform/terraform.tfstate`
 5. `terraform/variables.tf`에서 cluster와 관련된 리소스들의 이름을 정해줍니다.
     ```
     name = "9c-sample"

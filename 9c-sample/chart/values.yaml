@@ -73,6 +73,9 @@ miner:
    # - "private1"
    # - "private2"
 
+  storage:
+    data: 500Gi
+
   env: []
   
   imagePullSecrets: []
@@ -86,7 +89,6 @@ miner:
   securityContext: {}
   
   # dotnet args
-  privateKey: ""
   workerCount: 1000
   
   resources:
@@ -122,8 +124,11 @@ remoteHeadless:
   securityContext: {}
   
   # dotnet args
-  privateKey: ""
   workerCount: 1000
+
+  storage:
+    data: 500Gi
+    log: 4Gi
   
   resources:
     requests:
