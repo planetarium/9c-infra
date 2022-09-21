@@ -25,8 +25,8 @@ spec:
   project: infra
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: 9c-sample
-    path: 9c-sample/common/bootstrap
+    targetRevision: main
+    path: common/bootstrap
     helm:
       values: |
         clusterName: 9c-sample
