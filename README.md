@@ -82,13 +82,9 @@ region = us-east-2
 
 ## C. 네트워크 및 노드 띄우기 with Helm
 ------
-1. `chart/values.yaml`에서 `useExternalSecret` 값을 `false`로 바꿔주고 `seed` 와 `miner`의 `privateKeys` 값을 `base64`로 encode된 값으로 넣어줍니다.
+1. `chart/values.yaml`에서 `useExternalSecret` 값을 `false`로 바꿔주고 `seed` 와 `miner`의 `privateKeys` 값을 넣어줍니다.
 - ex) `privateKeys: ["XXXXXX"]`
-- Python에서 `base64` encode 방법
-  ```
-  import base64
-  base64.b64encode(bytes("STRING_VALUE","utf-8"))
-  ```
+
 2. `9c-sample` directory 경로에서 아래 커맨드를 실행해줍니다.
   ```
   helm template 9c-sample chart/ --values chart/values.yaml | kubectl apply -f-
