@@ -94,7 +94,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 500Gi
+          storage: {{ $.Values.miner.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp2
       volumeMode: Filesystem
 ---
