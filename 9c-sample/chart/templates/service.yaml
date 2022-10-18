@@ -9,6 +9,12 @@ spec:
   ports:
   - port: 31234
     targetPort: 31234
+    name: swarm
+  {{- if $.Values.pos.enabled }}
+  - port: {{ $.Values.pos.port }}
+    targetPort: {{ $.Values.pos.port }}
+    name: gossip
+  {{- end }}
   selector:
     app: tcp-seed-{{ $index }}
   type: LoadBalancer
@@ -30,6 +36,11 @@ spec:
   - port: 80
     targetPort: 80
     name: gql
+  {{- if $.Values.pos.enabled }}
+  - port: {{ $.Values.pos.port }}
+    targetPort: {{ $.Values.pos.port }}
+    name: gossip
+  {{- end }}
   selector:
     app: miner-{{ $index }}
   type: LoadBalancer

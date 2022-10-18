@@ -47,7 +47,15 @@ spec:
         - --graphql-server
         - --graphql-host=0.0.0.0
         - --graphql-port=80
-        - --network-type=default
+        {{- if $.Values.pos.enabled }}
+        - --consensus-private-key
+        - $(PRIVATE_KEY)
+        - --consensus-port={{ $.Values.pos.port }}
+        {{- range $.Values.pos.consensusSeedPeerStrings }}
+        - --consensus-seed-peer={{ . }}
+        {{- end }}
+        {{- end }}
+        - --network-type={{ $.Values.networkType }}
         command:
           - dotnet
         env:
@@ -69,6 +77,11 @@ spec:
         - containerPort: 80
           name: graphql
           protocol: TCP
+        {{- if $.Values.pos.enabled }}
+        - containerPort: {{ $.Values.pos.port }}
+          name: gossip
+          protocol: TCP
+        {{- end }}
         resources:
           {{- toYaml $.Values.miner.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log

@@ -69,7 +69,7 @@ spec:
         - --rpc-listen-port=31238
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
-        - --network-type=default
+        - --network-type={{ $.Values.networkType }}
         command:
         - dotnet
         image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}

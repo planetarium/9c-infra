@@ -37,6 +37,9 @@ spec:
         - --graphql-host=0.0.0.0
         - --graphql-port=31237
         - --workers={{ $.Values.seed.workerCount }}
+        {{- if $.Values.pos.enabled }}
+        - --gossip-port={{ $.Values.pos.port }}
+        {{- end }}
         command:
         - dotnet
 
@@ -66,6 +69,11 @@ spec:
           - containerPort: 31237
             name: graphql
             protocol: TCP
+          {{- if $.Values.pos.enabled }}
+          - containerPort: {{ $.Values.pos.port }}
+            name: gossip
+            protocol: TCP
+          {{- end }}
         resources:
           {{- toYaml $.Values.seed.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
