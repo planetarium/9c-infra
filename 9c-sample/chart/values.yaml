@@ -9,7 +9,7 @@ genesisBlockPath: "https://9c-test.s3.ap-northeast-2.amazonaws.com/genesis-block
 trustedAppProtocolVersionSigner: "02182d2d97a0cbc56c84b3eff293ca3aadc3baab6e3bc1359c0c93d0ab4eb0d1d9"
 
 peerStrings:
-  - "02bb38425a5bd35a913f4b6176f1e2cbd3339be16721aec911d73c4cae1725a86a,tcp-seed-1,31234"
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
 iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
@@ -35,70 +35,77 @@ seed:
   hosts: []
   #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
 
+  ports:
+    node: 31234
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
   # enter private keys if not using External Secrets
   privateKeys: []
-  # - "private-key"
+  # - "private key"
 
   env: []
-  
+
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-  
   podAnnotations: {}
-  
   podSecurityContext: {}
-  
   securityContext: {}
-  
-  # dotnet args
-  workerCount: 1000
-  
+
   resources:
     requests:
       cpu: 1
-  
+
   nodeSelector: {}
   tolerations: []
   affinity: {}
 
 miner:
-  count: 2
+  count: 1
   useTurnServer: true
 
-  # host domains if not using turn servers
-  hosts: []
-  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-9eaf12f7f5c70880cdb7f825c956b097a1a9c6f1"
 
+  # host domains if not using turn servers
+  hosts: []
+  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
   # private keys if not using External Secrets
   privateKeys: []
-  #  - "private-key"
-  #  - "private-key"
   #  - "private-key"
 
   storage:
     data: 500Gi
 
   env: []
-  
+
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-  
   podAnnotations: {}
-  
   podSecurityContext: {}
-  
   securityContext: {}
-  
-  # dotnet args
-  workerCount: 1000
-  
+
   resources:
     requests:
       cpu: 1
@@ -115,34 +122,40 @@ remoteHeadless:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-9eaf12f7f5c70880cdb7f825c956b097a1a9c6f1"
-
-  useTurnServer: true
-  hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
-  
-  imagePullSecrets: []
-  nameOverride: ""
-  fullnameOverride: ""
-  
-  podAnnotations: {}
-  
-  podSecurityContext: {}
-  
-  securityContext: {}
   
   # dotnet args
   workerCount: 1000
 
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts: []
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+
   storage:
     data: 500Gi
     log: 4Gi
-  
+
   resources:
     requests:
       cpu: 1
       memory: 2Gi
-  
+
   nodeSelector:
     beta.kubernetes.io/os: linux
   tolerations: []

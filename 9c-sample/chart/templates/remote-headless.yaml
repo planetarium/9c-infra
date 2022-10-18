@@ -46,7 +46,7 @@ spec:
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
-        - --port=31234
+        - --port={{ $.Values.remoteHeadless.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
@@ -62,14 +62,17 @@ spec:
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port=80
+        - --graphql-port={{ $.Values.remoteHeadless.ports.graphql }}
         - --rpc-server
         - --rpc-remote-server
         - --rpc-listen-host=0.0.0.0
-        - --rpc-listen-port=31238
+        - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.remoteHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         command:
         - dotnet
         image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
@@ -84,13 +87,13 @@ spec:
           timeoutSeconds: 30
         name: remote-headless-{{ $index }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ $.Values.remoteHeadless.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: 31234
+        - containerPort: {{ $.Values.remoteHeadless.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: 31238
+        - containerPort: {{ $.Values.remoteHeadless.ports.rpc }}
           name: rpc
           protocol: TCP
         readinessProbe:

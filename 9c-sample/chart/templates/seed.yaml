@@ -32,13 +32,16 @@ spec:
         {{- else }}
         - --host={{ index $.Values.seed.hosts $idx }}
         {{- end }}
-        - --port=31234
+        - --port={{ $.Values.seed.ports.node }}
         - --private-key=$(PRIVATE_KEY)
         - --graphql-host=0.0.0.0
-        - --graphql-port=31237
+        - --graphql-port={{ $.Values.seed.ports.graphql }}
         - --workers={{ $.Values.seed.workerCount }}
         {{- if $.Values.pos.enabled }}
         - --gossip-port={{ $.Values.pos.port }}
+        {{- end }}
+        {{- with $.Values.seed.extraArgs }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}
         command:
         - dotnet
@@ -59,14 +62,14 @@ spec:
           periodSeconds: 5
           successThreshold: 1
           tcpSocket:
-            port: 31234
+            port: {{ $.Values.seed.ports.node }}
           timeoutSeconds: 1
         name: tcp-seed-{{ $index }}
         ports:
-          - containerPort: 31234
+          - containerPort: {{ $.Values.seed.ports.node }}
             name: node
             protocol: TCP
-          - containerPort: 31237
+          - containerPort: {{ $.Values.seed.ports.graphql }}
             name: graphql
             protocol: TCP
           {{- if $.Values.pos.enabled }}
