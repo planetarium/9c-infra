@@ -7,9 +7,9 @@ metadata:
   namespace: {{ $.Chart.Name }}
 spec:
   ports:
-  - port: 31234
-    targetPort: 31234
-    name: swarm
+  - port: {{ $.Values.seed.ports.node }}
+    targetPort: {{ $.Values.seed.ports.node }}
+    name: node
   {{- if $.Values.pos.enabled }}
   - port: {{ $.Values.pos.port }}
     targetPort: {{ $.Values.pos.port }}
@@ -30,11 +30,11 @@ metadata:
   namespace: {{ $.Chart.Name }}
 spec:
   ports:
-  - port: 31234
-    targetPort: 31234
+  - port: {{ $.Values.miner.ports.headless }}
+    targetPort: {{ $.Values.miner.ports.headless }}
     name: headless
-  - port: 80
-    targetPort: 80
+  - port: {{ $.Values.miner.ports.graphql }}
+    targetPort: {{ $.Values.miner.ports.graphql }}
     name: gql
   {{- if $.Values.pos.enabled }}
   - port: {{ $.Values.pos.port }}
@@ -59,14 +59,14 @@ metadata:
 spec:
   ports:
   - name: graphql
-    port: 80
-    targetPort: 80
+    port: {{ $.Values.remoteHeadless.ports.graphql }}
+    targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
   - name: rpc
-    port: 31238
-    targetPort: 31238
+    port: {{ $.Values.remoteHeadless.ports.rpc }}
+    targetPort: {{ $.Values.remoteHeadless.ports.rpc }}
   - name: headless
-    port: 31234
-    targetPort: 31234
+    port: {{ $.Values.remoteHeadless.ports.headless }}
+    targetPort: {{ $.Values.remoteHeadless.ports.headless }}
   selector:
     app: remote-headless-{{ $index }}
   type: LoadBalancer

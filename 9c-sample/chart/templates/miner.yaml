@@ -34,7 +34,7 @@ spec:
         {{- else }}
         - --host={{ index $.Values.miner.hosts $idx }}
         {{- end }}
-        - --port=31234
+        - --port={{ $.Values.miner.ports.headless }}
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
@@ -46,7 +46,7 @@ spec:
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port=80
+        - --graphql-port={{ $.Values.miner.ports.graphql }}
         {{- if $.Values.pos.enabled }}
         - --consensus-private-key
         - $(PRIVATE_KEY)
@@ -54,6 +54,9 @@ spec:
         {{- range $.Values.pos.consensusSeedPeerStrings }}
         - --consensus-seed-peer={{ . }}
         {{- end }}
+        {{- end }}
+        {{- with $.Values.miner.extraArgs }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}
         - --network-type={{ $.Values.networkType }}
         command:
@@ -71,10 +74,10 @@ spec:
         imagePullPolicy: IfNotPresent
         name: miner-{{ $index }}
         ports:
-        - containerPort: 31234
+        - containerPort: {{ $.Values.miner.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: 80
+        - containerPort: {{ $.Values.miner.ports.graphql }}
           name: graphql
           protocol: TCP
         {{- if $.Values.pos.enabled }}
