@@ -41,6 +41,7 @@ spec:
         - $(PRIVATE_KEY)
         - --miner-private-key
         - $(PRIVATE_KEY)
+        - --no-miner=false
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
