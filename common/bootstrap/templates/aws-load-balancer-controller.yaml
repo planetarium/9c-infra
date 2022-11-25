@@ -1,0 +1,50 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: aws-load-balancer-controller-crds
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra-cluster
+  source:
+    repoURL: https://github.com/aws/eks-charts.git
+    targetRevision: v0.0.116
+    path: stable/aws-load-balancer-controller/crds
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: aws-load-balancer-controller
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra-cluster
+  source:
+    repoURL: https://aws.github.io/eks-charts
+    chart: aws-load-balancer-controller
+    targetRevision: 2.4.5
+    helm:
+      values: |-
+        clusterName: {{ .Values.clusterName }}
+        region: us-east-2
+        serviceAccount:
+          annotations:
+            eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/{{ .Values.clusterName }}-aws-load-balancer-controller
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+

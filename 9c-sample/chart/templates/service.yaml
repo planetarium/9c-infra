@@ -5,6 +5,9 @@ kind: Service
 metadata:
   name: tcp-seed-{{ $index }}
   namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
 spec:
   ports:
   - port: {{ $.Values.seed.ports.node }}
@@ -28,6 +31,9 @@ kind: Service
 metadata:
   name: miner-{{ $index }}
   namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
 spec:
   ports:
   - port: {{ $.Values.miner.ports.headless }}
@@ -56,6 +62,9 @@ kind: Service
 metadata:
   name: remote-headless-{{ $index }}
   namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
 spec:
   ports:
   - name: graphql
