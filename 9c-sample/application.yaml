@@ -15,7 +15,3 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: 9c-sample
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
