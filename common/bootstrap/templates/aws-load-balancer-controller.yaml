@@ -39,7 +39,7 @@ spec:
         region: us-east-2
         serviceAccount:
           annotations:
-            eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/{{ .Values.clusterName }}-aws-load-balancer-controller
+            eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/eks-{{ .Values.clusterName }}-alb-controller
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
