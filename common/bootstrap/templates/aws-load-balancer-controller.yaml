@@ -7,7 +7,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infra-cluster
+  project: infra
   source:
     repoURL: https://github.com/aws/eks-charts.git
     targetRevision: v0.0.116
@@ -28,7 +28,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infra-cluster
+  project: infra
   source:
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
