@@ -31,12 +31,12 @@ spec:
         image: bash:latest
         name: reset-snapshot
         volumeMounts:
-        - name: script-volume
-          mountPath: /bin/download_snapshot.sh
+        - mountPath: /bin/download_snapshot.sh
+          name: script-volume
           readOnly: true
           subPath: download_snapshot.sh
         - mountPath: /data
-          name: miner-{{ $index }}-data
+          name: miner-data-{{ $index }}
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.resetSnapshot }}"
@@ -120,6 +120,11 @@ spec:
         - mountPath: /data
           name: miner-data-{{ $index }}
       dnsPolicy: ClusterFirst
+      volumes:
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always

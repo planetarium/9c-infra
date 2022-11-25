@@ -38,7 +38,7 @@ spec:
           readOnly: true
           subPath: download_snapshot.sh
         - mountPath: /data
-          name: miner-{{ $index }}-data
+          name: remote-headless-data-{{ $index }}
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.resetSnapshot }}"
@@ -154,6 +154,10 @@ spec:
           defaultMode: 448
           name: {{ $.Chart.Name }}-probe-script
         name: probe-script
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
