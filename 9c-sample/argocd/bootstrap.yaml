@@ -25,7 +25,7 @@ spec:
   project: infra
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: main
+    targetRevision: feature/nlb
     path: common/bootstrap
     helm:
       values: |

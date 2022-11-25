@@ -6,7 +6,7 @@ spec:
   project: infra
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: main
+    targetRevision: feature/nlb
     path: {{ .Values.clusterName }}/argocd
   destination:
     server: https://kubernetes.default.svc
