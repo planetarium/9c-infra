@@ -19,6 +19,32 @@ spec:
         app: miner-{{ $index }}
       name: miner-{{ $index }}
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/miner
+        - $(RESET_SNAPSHOT_OPTION)
+        - miner-{{ $index }}
+        - $(SLACK_TOKEN)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - mountPath: /bin/download_snapshot.sh
+          name: script-volume
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: miner-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-token
+              key: slack-token
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -35,13 +61,13 @@ spec:
         - --host={{ index $.Values.miner.hosts $idx }}
         {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
+        - --no-miner=false
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
         - $(PRIVATE_KEY)
         - --miner-private-key
         - $(PRIVATE_KEY)
-        - --no-miner=false
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
@@ -94,6 +120,11 @@ spec:
         - mountPath: /data
           name: miner-data-{{ $index }}
       dnsPolicy: ClusterFirst
+      volumes:
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always

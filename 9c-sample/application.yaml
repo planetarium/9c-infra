@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: main
+    targetRevision: feature/snapshot
     path: 9c-sample/chart
     helm:
       valueFiles:

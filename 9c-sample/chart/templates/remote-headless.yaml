@@ -22,6 +22,31 @@ spec:
       name: remote-headless-{{ $index }}
     spec:
       initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - miner-{{ $index }}
+        - $(SLACK_TOKEN)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: remote-headless-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-token
+              key: slack-token
       - name: wait
         image: alpine
         imagePullPolicy: Always
@@ -129,6 +154,10 @@ spec:
           defaultMode: 448
           name: {{ $.Chart.Name }}-probe-script
         name: probe-script
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
