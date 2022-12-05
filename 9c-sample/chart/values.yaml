@@ -17,6 +17,7 @@ iceServers:
 networkType: default
 
 useExternalSecret: false
+resetSnapshot: "y"
 
 pos:
   enabled: false
