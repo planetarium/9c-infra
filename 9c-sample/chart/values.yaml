@@ -19,7 +19,7 @@ networkType: default
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: "y"
+resetSnapshot: "n"
 
 pos:
   enabled: false
