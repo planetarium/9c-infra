@@ -14,7 +14,7 @@ data:
     download_option=$3
     service_name=$4
     slack_token=$5
-    if [ $download_option = y ]
+    if $download_option
     then
       echo "Start download snapshot"
       if [ $service_name != "snapshot" ]
