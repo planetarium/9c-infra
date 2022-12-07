@@ -20,6 +20,7 @@ useExternalSecret: true
 slackToken: ""
 
 resetSnapshot: true
+slackChannel: "bot-test"
 
 pos:
   enabled: false

@@ -19,7 +19,7 @@ data:
       echo "Start download snapshot"
       if [ $service_name != "snapshot" ]
       then
-        curl --data "[K8S] Start snapshot download in $service_name. Please wait." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23bot-test"
+        curl --data "[K8S] Start snapshot download in $service_name. Please wait." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23{{ .Values.slackChannel }}"
       fi
       # strip tailing slash
       base_url=${base_url%/}
@@ -117,12 +117,12 @@ data:
       echo "$save_dir"
       if [ $service_name != "snapshot" ]
       then
-        curl --data "[K8S] Snapshot download complete in $service_name. Pod Starting." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23bot-test"
+        curl --data "[K8S] Snapshot download complete in $service_name. Pod Starting." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23{{ .Values.slackChannel }}"
       fi
     else
       echo "Skip download snapshot"
       if [ $service_name != "snapshot" ]
       then
-        curl --data "[K8S] Skip snapshot download in $service_name. Pod Starting." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23bot-test"
+        curl --data "[K8S] Skip snapshot download in $service_name. Pod Starting." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$slack_token&channel=%23{{ .Values.slackChannel }}"
       fi
     fi
