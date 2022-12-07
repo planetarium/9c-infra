@@ -56,6 +56,8 @@ resource "aws_subnet" "public" {
   tags = {
     Name                                = "public${count.index}-${var.vpc_name}"
     Network                             = "Public"
+	"kubernetes.io/role/elb"            = "1"
+	"kubernetes.io/cluster/${var.name}"  = "shared"
   }
 }
 

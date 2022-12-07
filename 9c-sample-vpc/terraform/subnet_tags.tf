@@ -1,5 +1,6 @@
 resource "aws_ec2_tag" "vpc_tag" {
-  resource_id = var.create_vpc ? aws_vpc.default[0].id :  var.vpc_id
+  count       = var.create_vpc ? 1 : 0
+  resource_id =  var.vpc_id
   key         = "kubernetes.io/cluster/${var.name}"
   value       = "shared"
 
@@ -9,8 +10,8 @@ resource "aws_ec2_tag" "vpc_tag" {
 }
 
 resource "aws_ec2_tag" "public_subnet_tag" {
-  for_each    = var.create_vpc ? toset(aws_subnet.public[*].id) : toset(var.public_subnets)
-  resource_id = each.value
+  count       = length(var.public_subnets)
+  resource_id = element(var.public_subnets, count.index)
   key         = "kubernetes.io/role/elb"
   value       = "1"
 
@@ -20,8 +21,8 @@ resource "aws_ec2_tag" "public_subnet_tag" {
 }
 
 resource "aws_ec2_tag" "public_subnet_cluster_tag" {
-  for_each    = var.create_vpc ? toset(aws_subnet.public[*].id) : toset(var.public_subnets)
-  resource_id = each.value
+  count       = length(var.public_subnets)
+  resource_id = element(var.public_subnets, count.index)
   key         = "kubernetes.io/cluster/${var.name}"
   value       = "shared"
 

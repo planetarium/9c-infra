@@ -3,7 +3,7 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids = length(var.public_subnet_cidr_blocks) > 0 ? aws_subnet.public[*].id : var.public_subnets
+    subnet_ids = var.create_vpc ? aws_subnet.public[*].id : var.public_subnets
   }
 
   depends_on = [
