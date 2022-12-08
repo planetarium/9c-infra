@@ -15,7 +15,7 @@ resource "aws_eks_addon" "coredns" {
 
   resolve_conflicts = "OVERWRITE"
   depends_on = [
-    aws_eks_node_group.node_group,
+    aws_eks_node_group.node_groups,
   ]
 }
 
@@ -26,7 +26,7 @@ resource "aws_eks_addon" "kube_proxy" {
 
   resolve_conflicts = "OVERWRITE"
   depends_on = [
-    aws_eks_node_group.node_group,
+    aws_eks_node_group.node_groups,
   ]
 }
 
@@ -39,7 +39,7 @@ resource "aws_eks_addon" "vpc_cni" {
   service_account_role_arn = aws_iam_role.cni_irsa_role.arn
   resolve_conflicts        = "OVERWRITE"
   depends_on = [
-    aws_eks_node_group.node_group,
+    aws_eks_node_group.node_groups,
   ]
 }
 
@@ -82,7 +82,7 @@ resource "aws_eks_addon" "ebs_csi_driver" {
   service_account_role_arn = aws_iam_role.ebs_csi_irsa_role.arn
   resolve_conflicts        = "OVERWRITE"
   depends_on = [
-    aws_eks_node_group.node_group,
+    aws_eks_node_group.node_groups,
   ]
 }
 

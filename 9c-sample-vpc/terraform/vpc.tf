@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "default" {
 }
 
 resource "aws_eip" "nat" {
-  count = var.create_vpc ? length(var.availability_zones) : 0
+  count = var.create_vpc ? length(var.public_subnets) : 0
   vpc   = true
 
   lifecycle {
@@ -29,11 +29,11 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  count = var.create_vpc ? length(var.availability_zones) : 0
+  count = var.create_vpc ? length(var.public_subnets) : 0
 
   allocation_id = element(aws_eip.nat.*.id, count.index)
 
-  subnet_id = element(aws_subnet.public.*.id, count.index)
+  subnet_id = element([for subnet in aws_subnet.public : subnet.id], count.index)
 
   tags = {
     Name = "NAT-GW${count.index}-${var.vpc_name}"
@@ -46,18 +46,22 @@ resource "aws_nat_gateway" "nat" {
 # there should not be any servers in the public subnet.
 
 resource "aws_subnet" "public" {
-  count  = var.create_vpc ? length(var.availability_zones) : 0
+  # count  = var.create_vpc ? length(var.availability_zones) : 0
+  for_each = {
+    for zone, cidr in var.public_subnets : zone => cidr
+    if var.create_vpc
+  }
   vpc_id = aws_vpc.default[0].id
 
-  cidr_block              = element(var.public_subnet_cidr_blocks, count.index)
-  availability_zone       = element(var.availability_zones, count.index)
+  cidr_block              = each.value
+  availability_zone       = each.key
   map_public_ip_on_launch = true
 
   tags = {
-    Name                                = "public${count.index}-${var.vpc_name}"
+    Name                                = "public-${each.key}-${var.vpc_name}"
     Network                             = "Public"
-	"kubernetes.io/role/elb"            = "1"
-	"kubernetes.io/cluster/${var.name}"  = "shared"
+    "kubernetes.io/role/elb"            = "1"
+    "kubernetes.io/cluster/${var.name}" = "shared"
   }
 }
 
@@ -72,8 +76,10 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = var.create_vpc ? length(var.availability_zones) : 0
-  subnet_id      = element(aws_subnet.public.*.id, count.index)
+  count = var.create_vpc ? length(var.public_subnets) : 0
+  subnet_id = element([
+    for subnet in aws_subnet.public : subnet.id
+  ], count.index)
   route_table_id = aws_route_table.public[0].id
 }
 
@@ -84,21 +90,24 @@ resource "aws_route_table_association" "public" {
 # managing them on a per-AZ level using the Network=Private tag.
 
 resource "aws_subnet" "private" {
-  count  = var.create_vpc ? length(var.availability_zones) : 0
+  for_each = {
+    for zone, cidr in var.private_subnets : zone => cidr
+    if var.create_vpc
+  }
   vpc_id = aws_vpc.default[0].id
 
-  cidr_block        = element(var.private_subnet_cidr_blocks, count.index)
-  availability_zone = element(var.availability_zones, count.index)
+  cidr_block        = each.value
+  availability_zone = each.key
 
   tags = {
-    Name                                = "private${count.index}-${var.vpc_name}"
-    immutable_metadata                  = "{ \"purpose\": \"internal_${var.vpc_name}\", \"target\": null }"
-    Network                             = "Private"
+    Name               = "private-${each.key}-${var.vpc_name}"
+    immutable_metadata = "{ \"purpose\": \"internal_${var.vpc_name}\", \"target\": null }"
+    Network            = "Private"
   }
 }
 
 resource "aws_route_table" "private" {
-  count  = var.create_vpc ? length(var.availability_zones) : 0
+  count  = var.create_vpc ? length(var.private_subnets) : 0
   vpc_id = aws_vpc.default[0].id
 
   tags = {
@@ -108,8 +117,8 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  count          = var.create_vpc ? length(var.availability_zones) : 0
-  subnet_id      = element(aws_subnet.private.*.id, count.index)
+  count          = var.create_vpc ? length(var.private_subnets) : 0
+  subnet_id      = element([for subnet in aws_subnet.private : subnet.id], count.index)
   route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
@@ -121,7 +130,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_route" "private_nat" {
-  count                  = var.create_vpc ? length(var.availability_zones) : 0
+  count                  = var.create_vpc ? length(var.private_subnets) : 0
   route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat[count.index].id
