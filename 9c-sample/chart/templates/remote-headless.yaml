@@ -26,7 +26,7 @@ spec:
         - https://snapshots.nine-chronicles.com/internal
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
-        - miner-{{ $index }}
+        - remote-headless-{{ $index }}
         - $(SLACK_TOKEN)
         command:
         - /bin/download_snapshot.sh
