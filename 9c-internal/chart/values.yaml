@@ -1,0 +1,166 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+logLevel: "debug"
+appProtocolVersion: "1134/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIAWf4Cq3OjnVWBXjFK30MuLdUxL8+DnJZ2n5ruhpweSLAiA0yEKd4U46epOOugF+Ovsz9Qtl2H801ShC4ElM92OOGQ==/ZHU4OmxhdW5jaGVydTQyOjEvMGZlMGRkMjcxNTQwZmNkMDhmYTY2ZDQ3NThjMmU1MjI2YzVkMzI1YnU2OnBsYXllcnU0MjoxL2ZhYjhjNjE0NTM4YjAwNTdhNzEyYzdlOTI5ZTFmZDA0NzAyNTVmMDN1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0wNWU="
+genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
+
+peerStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+iceServers:
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+
+networkType: default
+
+useExternalSecret: true
+slackToken: ""
+
+resetSnapshot: true
+slackChannel: "bot-test"
+
+pos:
+  enabled: false
+  port: 31235
+  consensusSeedPeerStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
+
+seed:
+  count: 1
+  useTurnServer: true
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-317f5ec9793de2aed55ddd51fb8107201f29fcf3"
+
+  hosts: []
+  #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
+
+  ports:
+    node: 31234
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # enter private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  env: []
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+miner:
+  count: 1
+  useTurnServer: true
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+
+  # host domains if not using turn servers
+  hosts: []
+  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  storage:
+    data: 500Gi
+
+  env: []
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 2Gi
+  
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+remoteHeadless:
+  count: 2
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+  
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts: []
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+
+  storage:
+    data: 500Gi
+    log: 4Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 2Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
