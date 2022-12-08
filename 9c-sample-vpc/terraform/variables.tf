@@ -17,34 +17,49 @@ variable "vpc_cidr_block" {
   description = "cidr block for new VPC"
 }
 
-variable "public_subnet_cidr_blocks" {
-  type        = list(string)
-  description = "cidr block list for new public subnets"
-}
-
-variable "private_subnet_cidr_blocks" {
-  type        = list(string)
-  description = "cidr block list for new private subnets"
-}
-
-variable "availability_zones" {
-  type        = list(string)
-  description = "availability zones"
-  default     = ["us-east-2a", "us-east-2b", "us-east-2c"]
-}
-
 # variables for using existing VPC
 variable "vpc_id" {
   description = "VPC ID"
   default     = "vpc-0ca5c72f48fdd131b"
 }
 
-variable "public_subnets" {
+variable "public_subnet_ids" {
   description = "public subnet IDs for cluster related resources."
   default     = ["subnet-0ca96dde71e1769ec", "subnet-0cd61e38c9a58210d", "subnet-09af06d47e1c87153"]
 }
 
+variable "public_subnets" {
+  description = "map {AZ = Cidr} for new public subnets"
+  default = {
+    "us-east-2a" = "10.0.0.0/20"
+    "us-east-2b" = "10.0.16.0/20"
+    "us-east-2c" = "10.0.32.0/20"
+  }
+}
+
+variable "private_subnets" {
+  description = "map {AZ = Cidr} for new private subnets"
+  default = {
+    "us-east-2a" = "10.0.128.0/20"
+    "us-east-2b" = "10.0.144.0/20"
+    "us-east-2c" = "10.0.160.0/20"
+  }
+}
+
 # variables for node group
+
+variable "node_groups" {
+  description = "List of node group config"
+  default = {
+    "9c-sample" = {
+      instance_types    = ["c5.large"]
+      availability_zone = "us-east-2a"
+      desired_size      = 10
+      min_size          = 10
+      max_size          = 20
+    }
+  }
+}
 variable "instance_types" {
   description = "node group instance sizes"
   default     = ["t3.large"]
