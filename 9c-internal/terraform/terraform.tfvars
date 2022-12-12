@@ -1,5 +1,5 @@
 # eks cluster
-name = "9c-internal-tmp"
+name = "9c-internal-v2"
 
 create_vpc = true
 
@@ -20,7 +20,7 @@ private_subnets = {
 
 # node group
 node_groups = {
-  "9c-internal-c5.4xl.2c" = {
+  "9c-internal-c5_4xl_2c" = {
     instance_types    = ["c5.4xlarge"]
     availability_zone = "us-east-2c"
     desired_size      = 0
@@ -28,7 +28,7 @@ node_groups = {
     max_size          = 1
   }
 
-  "9c-internal-m5.l.2c" = {
+  "9c-internal-m5_l_2c" = {
     instance_types    = ["m5.large"]
     availability_zone = "us-east-2c"
     desired_size      = 3
@@ -36,7 +36,7 @@ node_groups = {
     max_size          = 3
   }
 
-  "9c-internal-m5.2xl.2c" = {
+  "9c-internal-m5_2xl_2c" = {
     instance_types    = ["m5.2xlarge"]
     availability_zone = "us-east-2c"
     desired_size      = 2
@@ -44,7 +44,7 @@ node_groups = {
     max_size          = 2
   }
 
-  "9c-internal-m5.xl.2c" = {
+  "9c-internal-m5_xl_2c" = {
     instance_types    = ["m5.xlarge"]
     availability_zone = "us-east-2c"
     desired_size      = 5

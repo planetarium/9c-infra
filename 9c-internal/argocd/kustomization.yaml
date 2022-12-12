@@ -25,6 +25,6 @@ patchesJson6902:
           securityContext:
             fsGroup: 65534
           serviceAccount:
-            name: 9c-internal-tmp-external-secrets
+            name: 9c-internal-v2-external-secrets
             annotations:
-              eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-internal-tmp-external-secrets
+              eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-internal-v2-external-secrets

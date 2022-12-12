@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "default" {
 }
 
 resource "aws_eip" "nat" {
-  count = var.create_vpc ? length(var.public_subnets) : 0
+  count = var.create_vpc ? 1 : 0
   vpc   = true
 
   lifecycle {
@@ -29,11 +29,11 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  count = var.create_vpc ? length(var.public_subnets) : 0
+  count = var.create_vpc ? 1 : 0
 
-  allocation_id = element(aws_eip.nat.*.id, count.index)
+  allocation_id = aws_eip.nat[0].id
 
-  subnet_id = element([for subnet in aws_subnet.public : subnet.id], count.index)
+  subnet_id = aws_subnet.public["us-east-2c"].id
 
   tags = {
     Name = "NAT-GW${count.index}-${var.vpc_name}"
@@ -133,6 +133,6 @@ resource "aws_route" "private_nat" {
   count                  = var.create_vpc ? length(var.private_subnets) : 0
   route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat[count.index].id
+  nat_gateway_id         = aws_nat_gateway.nat[0].id
 }
 
