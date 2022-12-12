@@ -1,5 +1,5 @@
 resource "aws_ec2_tag" "vpc_tag" {
-  count       = var.create_vpc ? 1 : 0
+  count       = var.create_vpc ? 0 : 1
   resource_id = var.vpc_id
   key         = "kubernetes.io/cluster/${var.name}"
   value       = "shared"

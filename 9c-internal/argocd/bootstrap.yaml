@@ -29,7 +29,7 @@ spec:
     path: common/bootstrap
     helm:
       values: |
-        clusterName: 9c-internal-tmp
+        clusterName: 9c-internal-v2
         accountId: "319679068466"
   destination:
     server: https://kubernetes.default.svc
