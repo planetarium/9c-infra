@@ -16,7 +16,7 @@ terraform {
 module "common" {
   source = "../../modules/root"
 
-  name = "9c-internal"
+  name = "9c-internal-v2"
 
   create_vpc = true
 
