@@ -1,8 +1,3 @@
-provider "aws" {
-  region  = "us-east-2"
-  profile = "planetarium-dev"
-}
-
 terraform {
   required_providers {
     aws = {
@@ -10,6 +5,12 @@ terraform {
     }
   }
   required_version = ">= 0.13.0"
+
+  backend "s3" {
+    bucket = "terraform-eks-backend"
+    key    = "eks/9c-internal"
+    region = "us-east-2"
+  }
 
   module "common" {
     source = "../../common/terraform"
