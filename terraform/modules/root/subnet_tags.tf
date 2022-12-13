@@ -26,4 +26,3 @@ resource "aws_ec2_tag" "public_subnet_cluster_tag" {
     aws_subnet.public
   ]
 }
-
