@@ -11,13 +11,13 @@ terraform {
     key    = "eks/9c-internal"
     region = "us-east-2"
   }
+}
 
-  module "common" {
-    source = "../../common/terraform"
+module "common" {
+  source = "../../common/terraform"
 
-    # eks cluster
-    name = "9c-internal-v2"
+  # eks cluster
+  name = "9c-internal"
 
-    create_vpc = false
-  }
+  create_vpc = false
 }

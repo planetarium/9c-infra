@@ -1,6 +1,6 @@
 variable "name" {
   description = "general name for cluster related resources."
-  default     = "9c-vpc"
+  default     = "common-9c-infra-name"
 }
 
 variable "create_vpc" {
@@ -11,10 +11,12 @@ variable "create_vpc" {
 # variables for creating new VPC
 variable "vpc_name" {
   description = "new VPC name"
+  default     = "common-terraform-vpc-name"
 }
 
 variable "vpc_cidr_block" {
   description = "cidr block for new VPC"
+  default     = "10.0.0.0/16"
 }
 
 # variables for using existing VPC

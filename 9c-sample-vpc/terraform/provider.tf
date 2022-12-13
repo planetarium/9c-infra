@@ -1,4 +1,4 @@
 provider "aws" {
   region  = "us-east-2"
-  profile = "planetarium"
+  profile = "planetarium-dev"
 }
