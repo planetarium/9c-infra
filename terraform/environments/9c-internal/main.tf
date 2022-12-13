@@ -14,7 +14,7 @@ terraform {
 }
 
 module "common" {
-  source = "../../common/terraform"
+  source = "../../modules/root"
 
   # eks cluster
   name = "9c-internal"

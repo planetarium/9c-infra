@@ -8,13 +8,13 @@ terraform {
 
   backend "s3" {
     bucket = "terraform-eks-backend"
-    key    = "eks/9c-internal-vpc"
+    key    = "eks/9c-vpc"
     region = "us-east-2"
   }
 }
 
 module "common" {
-  source = "../../common/terraform"
+  source = "../../modules/root"
 
   # eks cluster
   name = "9c-internal-v2"
