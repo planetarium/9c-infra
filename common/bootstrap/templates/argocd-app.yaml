@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra
     targetRevision: main
-    path: {{ .Values.clusterName }}/argocd
+    path: {{ .Values.argocdPath }}/argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

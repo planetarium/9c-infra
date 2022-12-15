@@ -30,6 +30,7 @@ spec:
     helm:
       values: |
         clusterName: 9c-internal-v2
+        argocdPath: 9c-internal
         accountId: "319679068466"
   destination:
     server: https://kubernetes.default.svc
