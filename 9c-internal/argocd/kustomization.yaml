@@ -6,6 +6,7 @@ resources:
   - bootstrap.yaml
   - argocd-ingress.yaml
   - argocd-secrets.yaml
+  - argocd-secret-store.yaml
 patchesStrategicMerge:
   - argocd-cm.yaml
 patchesJson6902:
