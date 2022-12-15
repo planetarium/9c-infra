@@ -23,9 +23,8 @@ patchesJson6902:
             AWS_REGION: ''
             AWS_DEFAULT_REGION: ''
             VAULT_ADDR: ''
-          securityContext:
-            fsGroup: 65534
           serviceAccount:
+            create: true
             name: 9c-internal-v2-external-secrets
             annotations:
               eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-internal-v2-external-secrets
