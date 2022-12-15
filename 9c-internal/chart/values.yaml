@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 
+clusterName: "9c-internal-v2"
 logLevel: "debug"
 appProtocolVersion: "1134/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIAWf4Cq3OjnVWBXjFK30MuLdUxL8+DnJZ2n5ruhpweSLAiA0yEKd4U46epOOugF+Ovsz9Qtl2H801ShC4ElM92OOGQ==/ZHU4OmxhdW5jaGVydTQyOjEvMGZlMGRkMjcxNTQwZmNkMDhmYTY2ZDQ3NThjMmU1MjI2YzVkMzI1YnU2OnBsYXllcnU0MjoxL2ZhYjhjNjE0NTM4YjAwNTdhNzEyYzdlOTI5ZTFmZDA0NzAyNTVmMDN1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0wNWU="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
