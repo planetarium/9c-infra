@@ -4,7 +4,6 @@ namespace: argocd
 resources:
   - ../../common/argocd
   - bootstrap.yaml
-  - argocd-ingress.yaml
   - argocd-secrets.yaml
   - argocd-secret-store.yaml
 patchesStrategicMerge:
