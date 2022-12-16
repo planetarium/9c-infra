@@ -7,7 +7,7 @@ terraform {
   required_version = ">= 0.13.0"
 
   backend "s3" {
-    bucket = "terraform-eks-backend"
+    bucket = "9c-tfstates"
     key    = "eks/9c-internal"
     region = "us-east-2"
   }
