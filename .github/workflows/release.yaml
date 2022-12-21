@@ -1,0 +1,69 @@
+name: Release
+on:
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
+
+concurrency:
+  group: release
+
+jobs:
+  extract-network:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    outputs:
+      network: ${{ steps.extract.outputs.network }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: extract
+        id: extract
+        run: |
+          if [[ ${{ github.head_ref }} =~ ^update-internal-manifests ]]; then
+              echo "::set-output name=network::internal"
+          elif [[ ${{ github.head_ref }} =~ ^update-main-manifests ]]; then
+              echo "::set-output name=network::main"
+          else
+            echo "::set-output name=network::null"
+          fi
+
+  release:
+    if: contains(github.head_ref, '-manifests-')
+    runs-on: ubuntu-latest
+    needs: extract-network
+    environment:
+      name: ${{ needs.extract-network.outputs.network }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2.2.2
+      - uses: actions/setup-dotnet@v2
+        with:
+          python-version: 3.9
+          dotnet-version: "6.0.x"
+      - run: dotnet tool install -g Libplanet.Tools
+
+      - name: release
+        if: needs.extract-network.outputs.network != null
+        run: |
+          if [[ ${{ needs.extract-network.outputs.network }} == "internal" ]]; then
+            aws eks update-kubeconfig --name 9c-internal --region us-east-2 --role-arn arn:aws:iam::319679068466:role/EKS
+
+            echo "n" | bash 9c-internal/deploy-internal.sh
+          elif [[ ${{ needs.extract-network.outputs.network }} == "main" ]]; then
+            aws eks update-kubeconfig --name 9c-main --role-arn arn:aws:iam::319679068466:role/EKS --region us-east-2
+            bash 9c-main/deploy-main.sh
+
+            cd py-scripts
+            python -m pip install -r requirements-dev.txt
+            flit install
+            python cli.py update release-infos
+          fi
+        env:
+          ENV: production
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
+          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_ORG_TOKEN: ${{ secrets.SLACK_ORG_TOKEN }}
