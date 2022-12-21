@@ -6,8 +6,8 @@ metadata:
   name: tcp-seed-{{ $index }}
   namespace: {{ $.Chart.Name }}
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
 spec:
   ports:
@@ -33,8 +33,8 @@ metadata:
   name: miner-{{ $index }}
   namespace: {{ $.Chart.Name }}
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
 spec:
   ports:
@@ -65,8 +65,8 @@ metadata:
   name: remote-headless-{{ $index }}
   namespace: {{ $.Chart.Name }}
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
 spec:
   ports:
