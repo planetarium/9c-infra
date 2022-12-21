@@ -35,35 +35,18 @@ jobs:
       name: ${{ needs.extract-network.outputs.network }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v2.2.2
-      - uses: actions/setup-dotnet@v2
-        with:
-          python-version: 3.9
-          dotnet-version: "6.0.x"
-      - run: dotnet tool install -g Libplanet.Tools
-
-      - name: release
+      - name: Release
         if: needs.extract-network.outputs.network != null
-        run: |
-          if [[ ${{ needs.extract-network.outputs.network }} == "internal" ]]; then
-            aws eks update-kubeconfig --name 9c-internal --region us-east-2 --role-arn arn:aws:iam::319679068466:role/EKS
-
-            echo "n" | bash 9c-internal/deploy-internal.sh
-          elif [[ ${{ needs.extract-network.outputs.network }} == "main" ]]; then
-            aws eks update-kubeconfig --name 9c-main --role-arn arn:aws:iam::319679068466:role/EKS --region us-east-2
-            bash 9c-main/deploy-main.sh
-
-            cd py-scripts
-            python -m pip install -r requirements-dev.txt
-            flit install
-            python cli.py update release-infos
-          fi
-        env:
-          ENV: production
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
-          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+        uses: planetarium/9c-toolbelt@init
+        with:
+          COMMAND: Update
+          ENV: test
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_ORG_TOKEN: ${{ secrets.SLACK_ORG_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_CHANNEL }}
+          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
+          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          network: ${{ needs.extract-network.outputs.network }}
