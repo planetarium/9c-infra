@@ -43,7 +43,7 @@ jobs:
           ENV: test
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_TOKEN: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
           KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
           KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
           KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
