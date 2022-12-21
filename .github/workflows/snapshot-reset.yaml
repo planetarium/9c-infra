@@ -1,0 +1,28 @@
+name: Internal Snapshot Reset
+on:
+  workflow_dispatch:
+    inputs:
+      rc:
+        description: 'Rc number (e.g. 100310)'
+
+concurrency:
+  group: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment:
+      name: internal
+    steps:
+      - uses: actions/checkout@v3
+      - name: release main
+        run: |
+          aws eks update-kubeconfig --name 9c-internal --region us-east-2 --role-arn arn:aws:iam::319679068466:role/EKS
+
+          echo "y" | bash 9c-internal/deploy-internal.sh
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_ORG_TOKEN: ${{ secrets.SLACK_ORG_TOKEN }}

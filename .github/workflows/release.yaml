@@ -1,0 +1,52 @@
+name: Release
+on:
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
+
+concurrency:
+  group: release
+
+jobs:
+  extract-network:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    outputs:
+      network: ${{ steps.extract.outputs.network }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: extract
+        id: extract
+        run: |
+          if [[ ${{ github.head_ref }} =~ ^update-internal-manifests ]]; then
+              echo "::set-output name=network::internal"
+          elif [[ ${{ github.head_ref }} =~ ^update-main-manifests ]]; then
+              echo "::set-output name=network::main"
+          else
+            echo "::set-output name=network::null"
+          fi
+
+  release:
+    if: contains(github.head_ref, '-manifests-')
+    runs-on: ubuntu-latest
+    needs: extract-network
+    environment:
+      name: ${{ needs.extract-network.outputs.network }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Release
+        if: needs.extract-network.outputs.network != null
+        uses: planetarium/9c-toolbelt@init
+        with:
+          COMMAND: Update
+          ENV: test
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_CHANNEL }}
+          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
+          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          network: ${{ needs.extract-network.outputs.network }}
