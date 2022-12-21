@@ -39,7 +39,7 @@ jobs:
         if: needs.extract-network.outputs.network != null
         uses: planetarium/9c-toolbelt@init
         with:
-          COMMAND: Update
+          COMMAND: update
           ENV: test
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
