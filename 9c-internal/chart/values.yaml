@@ -5,7 +5,7 @@
 
 clusterName: "9c-internal-v2"
 logLevel: "debug"
-appProtocolVersion: "1134/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIAWf4Cq3OjnVWBXjFK30MuLdUxL8+DnJZ2n5ruhpweSLAiA0yEKd4U46epOOugF+Ovsz9Qtl2H801ShC4ElM92OOGQ==/ZHU4OmxhdW5jaGVydTQyOjEvMGZlMGRkMjcxNTQwZmNkMDhmYTY2ZDQ3NThjMmU1MjI2YzVkMzI1YnU2OnBsYXllcnU0MjoxL2ZhYjhjNjE0NTM4YjAwNTdhNzEyYzdlOTI5ZTFmZDA0NzAyNTVmMDN1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0wNWU="
+appProtocolVersion: "1150/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIHg60az2+sb2EmDPifYBinTL75mOqaO.ZaziAJbzR30kAiBNoqrl0ynmh8LeTR14DJGGnFb+6MyC5Zm4io7f7n77kA==/ZHU4OmxhdW5jaGVydTQyOjEvYzExOGQ2Njg1MWQyYzI2MWY0YjNkMmIzMzMxODE0ODFkMGZmOWVkOHU2OnBsYXllcnU0MjoxLzBkYTQ0NjY3ZTQxNGMxZDVmZDFjZGY4MDZhMGQ5NTYyMDc5ZWVmZjV1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0yN2U="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
@@ -20,7 +20,7 @@ networkType: default
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: true
+resetSnapshot: false
 slackChannel: "bot-test"
 
 pos:
@@ -79,7 +79,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+    tag: "git-8f369826b6fae60cd0e13d83be0f22c999a47941"
 
   # host domains if not using turn servers
   hosts: []
@@ -126,7 +126,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+    tag: "git-8f369826b6fae60cd0e13d83be0f22c999a47941"
   
   # dotnet args
   workerCount: 1000
