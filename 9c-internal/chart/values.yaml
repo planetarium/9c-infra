@@ -20,7 +20,7 @@ networkType: default
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: false
+resetSnapshot: true
 slackChannel: "bot-test"
 
 pos:
@@ -79,7 +79,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-8f369826b6fae60cd0e13d83be0f22c999a47941"
+    tag: "git-b076192e2be4625a043bd5e324b0c215e726dd27"
 
   # host domains if not using turn servers
   hosts: []
@@ -126,7 +126,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-8f369826b6fae60cd0e13d83be0f22c999a47941"
+    tag: "git-b076192e2be4625a043bd5e324b0c215e726dd27"
   
   # dotnet args
   workerCount: 1000
