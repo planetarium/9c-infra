@@ -25,7 +25,7 @@ spec:
         
         persistence:
           enabled: true
-          storageClassName: gp3
+          storageClassName: gp2
         
         initChownData:
           enabled: false
