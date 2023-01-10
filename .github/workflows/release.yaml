@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Release
         if: github.event.inputs.network != null
-        uses: planetarium/9c-toolbelt@init
+        uses: planetarium/9c-toolbelt@main
         with:
           COMMAND: update
           ENV: test
