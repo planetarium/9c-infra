@@ -6,5 +6,5 @@ parameters:
   fsType: ext4
   type: gp2
 provisioner: kubernetes.io/aws-ebs
-reclaimPolicy: Retain
+reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 allowVolumeExpansion: true

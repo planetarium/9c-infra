@@ -23,6 +23,9 @@ slackToken: ""
 resetSnapshot: true
 slackChannel: "bot-test"
 
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
 pos:
   enabled: false
   port: 31235

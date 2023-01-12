@@ -5,6 +5,7 @@ resource "aws_eks_node_group" "node_groups" {
   node_role_arn   = aws_iam_role.node_group.arn
   subnet_ids      = var.create_vpc ? [aws_subnet.public[each.value["availability_zone"]].id] : var.public_subnet_ids
   instance_types  = each.value["instance_types"]
+  capacity_type   = try(each.value["capacity_type"], "ON_DEMAND")
 
   scaling_config {
     desired_size = each.value["desired_size"]
