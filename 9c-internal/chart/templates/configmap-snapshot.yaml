@@ -8,7 +8,7 @@ data:
     #!/usr/bin/env bash
     cd /data
     apk update
-    apk add curl jq wget sudo zip
+    apk add curl jq wget aria2 sudo zip
     base_url=${1:-https://snapshots.nine-chronicles.com/internal}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
@@ -60,12 +60,12 @@ data:
             rm "$snapshot_zip_filename" 2>/dev/null
             snapshot_zip_url="$base_url/$snapshot_zip_filename"
             echo "$snapshot_zip_url"
-            wget -q "$snapshot_zip_url"
+            aria2c "$snapshot_zip_url" -j10 -x10
             echo "Unzipping $snapshot_zip_filename"
             unzip -o "$snapshot_zip_filename" -d "$save_dir"
             rm "$snapshot_zip_filename"
         done
-        wget -q "$base_url/$mainnet_snapshot_json_filename" -O "$save_dir/$mainnet_snapshot_json_filename"
+        aria2c "$base_url/$mainnet_snapshot_json_filename" -o "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10
       }
       function download_unzip_full_snapshot() {
           snapshot_json_filename="latest.json"
@@ -99,12 +99,12 @@ data:
               rm "$snapshot_zip_filename" 2>/dev/null
               snapshot_zip_url="$base_url/$snapshot_zip_filename"
               echo "$snapshot_zip_url"
-              wget -q "$snapshot_zip_url"
+              aria2c "$snapshot_zip_url" -j10 -x10
               echo "Unzipping $snapshot_zip_filename"
               unzip -o "$snapshot_zip_filename" -d "$save_dir"
               rm "$snapshot_zip_filename"
           done
-          wget -q "$base_url/$mainnet_snapshot_json_filename" -O "$save_dir/$mainnet_snapshot_json_filename"
+          aria2c "$base_url/$mainnet_snapshot_json_filename" -o "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10
       }
       if [ -f $save_dir/mainnet_latest.json ]
       then

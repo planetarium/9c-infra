@@ -116,8 +116,8 @@ miner:
 
   resources:
     requests:
-      cpu: 1
-      memory: 2Gi
+      cpu: 4
+      memory: 8Gi
   
   nodeSelector: {}
   tolerations: []
@@ -161,8 +161,8 @@ remoteHeadless:
 
   resources:
     requests:
-      cpu: 1
-      memory: 2Gi
+      cpu: 4
+      memory: 8Gi
 
   nodeSelector:
     beta.kubernetes.io/os: linux
