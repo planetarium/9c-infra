@@ -116,7 +116,7 @@ miner:
 
   resources:
     requests:
-      cpu: 4
+      cpu: 2
       memory: 8Gi
   
   nodeSelector: {}
@@ -161,7 +161,7 @@ remoteHeadless:
 
   resources:
     requests:
-      cpu: 4
+      cpu: 2
       memory: 8Gi
 
   nodeSelector:
