@@ -6,5 +6,5 @@ parameters:
   fsType: ext4
   type: gp3
 provisioner: ebs.csi.aws.com
-reclaimPolicy: Retain
+reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 allowVolumeExpansion: true
