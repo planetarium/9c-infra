@@ -35,7 +35,7 @@ spec:
           value: '0'
         {{ range $index := $.Values.peerStrings }}
         - name: NC_PeerString_{{ $index }}
-          value: {{ index $.Values.miner.hosts $idx }}
+          value: {{ index $.Values.miner.hosts $index }}
         {{ end }}
         - name: NC_Preload
           value: 'false'
