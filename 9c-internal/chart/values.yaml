@@ -183,4 +183,11 @@ dataProvider:
     tag: "git-609a7b1e07f7a5dfea2af25aea7a9682dc5292ac"
 
   db:
-    username: temp
+    database: data_provider
+    readHost: ""
+    readValue: ""
+    writeHost: ""
+    writeValue: ""
+    port: 3306
+    user: user
+    token: ""
