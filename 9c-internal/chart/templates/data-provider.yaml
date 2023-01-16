@@ -1,0 +1,112 @@
+{{ if .Values.dataProvider.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-data-provider
+  name: {{ .Chart.Name }}-data-provider
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: {{ $.Chart.Name }}-data-provider
+  serviceName: {{ $.Chart.Name }}-data-provider
+  template:
+    metadata:
+      labels:
+        app: {{ $.Chart.Name }}-data-provider
+    spec:
+      containers:
+      - args:
+        - NineChronicles.DataProvider.Executable.dll
+        command:
+        - dotnet
+        env:
+        - name: NC_StorePath
+          value: /data/data-provider
+        - name: NC_AppProtocolVersionToken
+          value: {{ $.Values.appProtocolVersion }}
+        - name: NC_Confirmations
+          value: '0'
+        {{ range $idx := $.Values.peerStrings }}
+        - name: NC_PeerString_{{ $index }}
+          value: {{ index $.Values.miner.hosts $idx }}
+        {{ end }}
+        - name: NC_Preload
+          value: 'true'
+        - name: NC_NoMiner
+          value: 'true'
+        - name: NC_Render
+          value: 'false'
+        - name: NC_TrustedAppProtocolVersionSigners__0
+          value: {{ $.Values.trustedAppProtocolVersionSigner }}
+        - name: NC_GenesisBlockPath
+          value: {{ $.Values.genesisBlockPath }}
+        - name: NC_MySqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              key: read-value
+              name: connectionString
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
+              }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
+              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 300 ]]\n"
+          failureThreshold: 5
+          initialDelaySeconds: 600
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\npreloaded=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{nodeStatus{preloadEnded}}\"}' \\\
+              \n    http://localhost:80/graphql_headless \\\n  | jq .data.nodeStatus.preloadEnded\n\
+              )\"\n[[ \"$preloaded\" = \"true\" ]]\n"
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        name: {{ $.Chart.Name }}-data-provider
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 1300m
+            memory: 7Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: {{ $.Chart.Name }}-data-provider-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ $.Chart.Name }}-data-provider-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1000Gi
+      storageClassName: gp2-extensible-us-east-2b
+      volumeMode: Filesystem
+{{ end }}

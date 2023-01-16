@@ -168,3 +168,26 @@ remoteHeadless:
     beta.kubernetes.io/os: linux
   tolerations: []
   affinity: {}
+
+dataProvider:
+  enabled: true
+
+  storage:
+    data: 1000Gi
+    log: 4Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-609a7b1e07f7a5dfea2af25aea7a9682dc5292ac"
+
+  db:
+    database: data_provider
+    readHost: ""
+    readValue: ""
+    writeHost: ""
+    writeValue: ""
+    port: 3306
+    user: user
+    token: ""
