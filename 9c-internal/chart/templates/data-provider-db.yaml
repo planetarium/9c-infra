@@ -33,7 +33,7 @@ spec:
           value: {{ $.Values.appProtocolVersion }}
         - name: NC_Confirmations
           value: '0'
-        {{ range $idx := $.Values.peerStrings }}
+        {{ range $index := $.Values.peerStrings }}
         - name: NC_PeerString_{{ $index }}
           value: {{ index $.Values.miner.hosts $idx }}
         {{ end }}
