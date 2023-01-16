@@ -93,9 +93,6 @@ spec:
         - mountPath: /data
           name: {{ $.Chart.Name }}-data-provider-data
       dnsPolicy: ClusterFirst
-      nodeSelector:
-        alpha.eksctl.io/nodegroup-name: 9c-main-m6g-2xl
-        beta.kubernetes.io/os: linux
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
