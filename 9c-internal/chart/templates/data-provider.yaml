@@ -31,12 +31,10 @@ spec:
           value: {{ $.Values.appProtocolVersion }}
         - name: NC_Confirmations
           value: '0'
-        - name: NC_PeerStrings__0
-          value: 027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234
-        - name: NC_PeerStrings__1
-          value: 02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234
-        - name: NC_PeerStrings__2
-          value: 0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234
+        {{ range $idx := $.Values.peerStrings }}
+        - name: NC_PeerString_{{ $index }}
+          value: {{ index $.Values.miner.hosts $idx }}
+        {{ end }}
         - name: NC_Preload
           value: 'true'
         - name: NC_NoMiner
