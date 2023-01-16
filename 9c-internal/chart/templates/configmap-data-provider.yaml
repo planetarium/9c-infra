@@ -1,3 +1,4 @@
+{{ if .Values.dataProvider.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -38,3 +39,4 @@ data:
     else
       echo No need to truncate chain tip.
     fi
+{{ end }}

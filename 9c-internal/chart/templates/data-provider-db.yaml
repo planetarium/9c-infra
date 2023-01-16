@@ -1,3 +1,4 @@
+{{ if .Values.dataProvider.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -140,3 +141,4 @@ spec:
           storage: {{ $.Values.dataProvider.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
+{{ end }}

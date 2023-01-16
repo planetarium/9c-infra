@@ -1,3 +1,4 @@
+{{ if .Values.dataProvider.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -113,3 +114,4 @@ spec:
           storage: 1000Gi
       storageClassName: gp2-extensible-us-east-2b
       volumeMode: Filesystem
+{{ end }}
