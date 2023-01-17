@@ -8,7 +8,7 @@ metadata:
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -19,9 +19,40 @@ spec:
       labels:
         app: {{ $.Chart.Name }}-data-provider
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_TOKEN)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-token
+              key: slack-token
       containers:
       - args:
-        - NineChronicles.DataProvider.Executable.dll
+        - /bin/setup_internal_db.sh $(NC_MySqlConnectionString) $(RESET_SNAPSHOT_OPTION)
+          && /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
+          && /app/NineChronicles.DataProvider.Executable
+        command:
+        - /bin/sh
+        - -c
         command:
         - dotnet
         env:
@@ -48,8 +79,27 @@ spec:
         - name: NC_MySqlConnectionString
           valueFrom:
             secretKeyRef:
-              key: read-value
-              name: connectionString
+              key: connectionString
+              name: data-provider
+        - name: DP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: host
+              name: data-provider
+        - name: DP_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: data-provider
+        - name: DP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: data-provider
+        - name: DP_PORT
+          value: "3306"
+        - name: DP_DATABASE
+          value: dataprovider
         image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
         livenessProbe:
@@ -78,7 +128,7 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 10
           timeoutSeconds: 10
-        name: {{ $.Chart.Name }}-data-provider
+        name: data-provider
         ports:
         - containerPort: 80
           name: graphql
@@ -91,7 +141,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: {{ $.Chart.Name }}-data-provider-data
+          name: data-provider-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
