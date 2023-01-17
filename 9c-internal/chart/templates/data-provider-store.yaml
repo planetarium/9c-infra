@@ -3,8 +3,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ .Chart.Name }}-data-provider-db
-  name: {{ .Chart.Name }}-data-provider-db
+    app: {{ .Chart.Name }}-data-provider-store
+  name: {{ .Chart.Name }}-data-provider-store
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -12,12 +12,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ $.Chart.Name }}-data-provider-db
-  serviceName: {{ $.Chart.Name }}-data-provider-db
+      app: {{ $.Chart.Name }}-data-provider-store
+  serviceName: {{ $.Chart.Name }}-data-provider-store
   template:
     metadata:
       labels:
-        app: {{ $.Chart.Name }}-data-provider-db
+        app: {{ $.Chart.Name }}-data-provider-store
     spec:
       containers:
       - args:
@@ -33,9 +33,9 @@ spec:
           value: {{ $.Values.appProtocolVersion }}
         - name: NC_Confirmations
           value: '0'
-        {{ range $idx := $.Values.peerStrings }}
+        {{ range $index := $.Values.peerStrings }}
         - name: NC_PeerString_{{ $index }}
-          value: {{ index $.Values.miner.hosts $idx }}
+          value: {{ index $.Values.miner.hosts $index }}
         {{ end }}
         - name: NC_Preload
           value: 'false'
@@ -97,7 +97,7 @@ spec:
           initialDelaySeconds: 1800
           periodSeconds: 30
           timeoutSeconds: 30
-        name: {{ $.Chart.Name }}-data-provider-db
+        name: {{ $.Chart.Name }}-data-provider-store
         ports:
         - containerPort: 80
           name: graphql
@@ -114,7 +114,7 @@ spec:
           readOnly: true
           subPath: check_chain_tip.sh
         - mountPath: /data
-          name: {{ $.Chart.Name }}-data-provider-db-data
+          name: {{ $.Chart.Name }}-data-provider-store-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -132,7 +132,7 @@ spec:
     type: OnDelete
   volumeClaimTemplates:
   - metadata:
-      name: {{ $.Chart.Name }}-data-provider-db-data
+      name: {{ $.Chart.Name }}-data-provider-store-data
     spec:
       accessModes:
       - ReadWriteOnce
