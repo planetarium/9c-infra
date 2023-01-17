@@ -85,3 +85,21 @@ spec:
 
 ---
 {{ end }}
+
+{{ if .Values.dataProvider.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-data-provider
+spec:
+  ports:
+  - name: graphql
+    port: 80
+    targetPort: 80
+  selector:
+    app: main-data-provider
+  type: LoadBalancer
+
+---
+{{ end }}
