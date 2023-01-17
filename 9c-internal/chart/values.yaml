@@ -183,6 +183,9 @@ dataProvider:
     tag: "git-609a7b1e07f7a5dfea2af25aea7a9682dc5292ac"
 
   db:
+    create: true
+    storage: 1000Gi
+
     database: data_provider
     readHost: ""
     readValue: ""
