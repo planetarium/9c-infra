@@ -19,9 +19,15 @@ spec:
       containers:
         - env:
             - name: MYSQL_DATABASE
-              value: dp
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
             - name: MYSQL_ROOT_PASSWORD
-              value: dp-pw
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: data-provider
           image: mysql:8.0.30
           name: data-provider-db
           ports:
