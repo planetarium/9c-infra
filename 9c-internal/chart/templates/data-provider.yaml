@@ -45,6 +45,22 @@ spec:
             secretKeyRef:
               name: slack-token
               key: slack-token
+      - name: wait
+        image: alpine
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          apk --no-cache add curl
+          # Endpoint to check
+          ENDPOINT="http://miner-1.{{ $.Chart.Name }}.svc.cluster.local/ui/playground"
+          echo Checking: ${ENDPOINT}
+          while [[ $(curl --silent --output /dev/null --request GET --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
+            echo "Not ready"
+            sleep 5s
+          done
+          echo Ready
       containers:
       - args:
         - /bin/setup_internal_db.sh $(NC_MySqlConnectionString) $(RESET_SNAPSHOT_OPTION)
@@ -146,6 +162,14 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
+        - mountPath: /bin/check_chain_tip.sh
+          name: data-provider-script
+          readOnly: true
+          subPath: check_chain_tip.sh
+        - mountPath: /bin/setup_internal_db.sh
+          name: data-provider-script
+          readOnly: true
+          subPath: setup_internal_db.sh
         - mountPath: /data
           name: data-provider-data
       dnsPolicy: ClusterFirst
