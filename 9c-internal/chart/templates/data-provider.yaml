@@ -157,6 +157,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-snapshot-script
+      - name: data-provider-script
+        configMap:
+          defaultMode: 488
+          name: {{ $.Chart.Name }}-data-provider-script
   updateStrategy:
     type: OnDelete
   volumeClaimTemplates:
