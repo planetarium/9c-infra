@@ -152,6 +152,11 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+      volumes:
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
   updateStrategy:
     type: OnDelete
   volumeClaimTemplates:
