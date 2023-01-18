@@ -60,12 +60,12 @@ data:
             rm "$snapshot_zip_filename" 2>/dev/null
             snapshot_zip_url="$base_url/$snapshot_zip_filename"
             echo "$snapshot_zip_url"
-            aria2c "$snapshot_zip_url" -j10 -x10
+            aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
             echo "Unzipping $snapshot_zip_filename"
             unzip -o "$snapshot_zip_filename" -d "$save_dir"
             rm "$snapshot_zip_filename"
         done
-        aria2c "$base_url/$mainnet_snapshot_json_filename" -o "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10
+        aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
       function download_unzip_full_snapshot() {
           snapshot_json_filename="latest.json"
@@ -99,12 +99,12 @@ data:
               rm "$snapshot_zip_filename" 2>/dev/null
               snapshot_zip_url="$base_url/$snapshot_zip_filename"
               echo "$snapshot_zip_url"
-              aria2c "$snapshot_zip_url" -j10 -x10
+              aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
               echo "Unzipping $snapshot_zip_filename"
               unzip -o "$snapshot_zip_filename" -d "$save_dir"
               rm "$snapshot_zip_filename"
           done
-          aria2c "$base_url/$mainnet_snapshot_json_filename" -o "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10
+          aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir/$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
       if [ -f $save_dir/mainnet_latest.json ]
       then
