@@ -3,8 +3,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ .Chart.Name }}-data-provider
-  name: {{ .Chart.Name }}-data-provider
+    app: data-provider
+  name: data-provider
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -12,12 +12,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ $.Chart.Name }}-data-provider
-  serviceName: {{ $.Chart.Name }}-data-provider
+      app: data-provider
+  serviceName: data-provider
   template:
     metadata:
       labels:
-        app: {{ $.Chart.Name }}-data-provider
+        app: data-provider
     spec:
       initContainers:
       - args:

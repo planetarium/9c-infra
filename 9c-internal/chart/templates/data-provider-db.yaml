@@ -3,18 +3,18 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ .Chart.Name }}-data-provider-db
-  name: {{ .Chart.Name }}-data-provider-db
+    app: data-provider-db
+  name: data-provider-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-data-provider-db
-  serviceName: {{ .Chart.Name }}-data-provider-db
+      app: data-provider-db
+  serviceName: data-provider-db
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-data-provider-db
+        app: data-provider-db
     spec:
       containers:
         - env:
@@ -23,18 +23,18 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: dp-pw
           image: mysql:8.0.30
-          name: {{ .Chart.Name }}-data-provider-db
+          name: data-provider-db
           ports:
             - containerPort: 3306
           resources: {}
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: {{ .Chart.Name }}-data-provider-db-data
+              name: data-provider-db-data
       restartPolicy: Always
   volumeClaimTemplates:
     - metadata:
         creationTimestamp: null
-        name: {{ .Chart.Name }}-data-provider-db-data
+        name: {data-provider-db-data
       spec:
         accessModes:
           - ReadWriteOnce
