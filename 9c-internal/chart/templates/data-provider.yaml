@@ -3,8 +3,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ .Chart.Name }}-data-provider
-  name: {{ .Chart.Name }}-data-provider
+    app: data-provider
+  name: data-provider
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -12,12 +12,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ $.Chart.Name }}-data-provider
-  serviceName: {{ $.Chart.Name }}-data-provider
+      app: data-provider
+  serviceName: data-provider
   template:
     metadata:
       labels:
-        app: {{ $.Chart.Name }}-data-provider
+        app: data-provider
     spec:
       initContainers:
       - args:
@@ -94,12 +94,18 @@ spec:
         - name: DP_TOKEN
           valueFrom:
             secretKeyRef:
-              key: token
+              key: password
               name: data-provider
         - name: DP_PORT
-          value: "3306"
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: data-provider
         - name: DP_DATABASE
-          value: dataprovider
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: data-provider
         image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
         livenessProbe:
@@ -150,7 +156,7 @@ spec:
     type: OnDelete
   volumeClaimTemplates:
   - metadata:
-      name: {{ $.Chart.Name }}-data-provider-data
+      name: data-provider-data
     spec:
       accessModes:
       - ReadWriteOnce

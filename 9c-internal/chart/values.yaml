@@ -185,8 +185,9 @@ dataProvider:
   db:
     storage: 1000Gi
 
+    database: ""
     connectionString: ""
     host: ""
     port: 3306
     user: user
-    token: ""
+    password: ""

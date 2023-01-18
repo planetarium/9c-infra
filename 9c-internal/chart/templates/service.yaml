@@ -91,14 +91,35 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: main-data-provider
+  name: data-provider
 spec:
   ports:
   - name: graphql
     port: 80
     targetPort: 80
   selector:
-    app: main-data-provider
+    app: data-provider
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: data-provider-db
+  name: data-provider-db
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: data-provider-db
   type: LoadBalancer
 
 ---
