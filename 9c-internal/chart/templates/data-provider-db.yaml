@@ -1,4 +1,4 @@
-{{ if .Values.dataProvider.db.create }}
+{{ if .Values.dataProvider.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -40,7 +40,7 @@ spec:
   volumeClaimTemplates:
     - metadata:
         creationTimestamp: null
-        name: {data-provider-db-data
+        name: data-provider-db-data
       spec:
         accessModes:
           - ReadWriteOnce
