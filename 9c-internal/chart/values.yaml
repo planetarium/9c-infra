@@ -5,7 +5,7 @@
 
 clusterName: "9c-internal-v2"
 logLevel: "debug"
-appProtocolVersion: "1150/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIHg60az2+sb2EmDPifYBinTL75mOqaO.ZaziAJbzR30kAiBNoqrl0ynmh8LeTR14DJGGnFb+6MyC5Zm4io7f7n77kA==/ZHU4OmxhdW5jaGVydTQyOjEvYzExOGQ2Njg1MWQyYzI2MWY0YjNkMmIzMzMxODE0ODFkMGZmOWVkOHU2OnBsYXllcnU0MjoxLzBkYTQ0NjY3ZTQxNGMxZDVmZDFjZGY4MDZhMGQ5NTYyMDc5ZWVmZjV1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0yN2U="
+appProtocolVersion: "1160/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIGUco52X4nzEbZ8Qmb4AiR1cJLK5VBZJp7ZiSFbbApXXAiBCADZdC7lATE1uRCyftylTB7Opn3IfSrHKXM0115OePQ==/ZHU4OmxhdW5jaGVydTQyOjEvMzMwMWI0MzhjMjNiZDYwNjg0NGRiYmNkODM5NmIzMjAxYzU0ODY4ZHU2OnBsYXllcnU0MjoxLzFlNTMxMDkwOTY2YWMyYTE5NWI4MzkxODE0MDk4MjY1ODE4ZDNmZTl1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMS0zMWU="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
@@ -38,7 +38,7 @@ seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-317f5ec9793de2aed55ddd51fb8107201f29fcf3"
+    tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
 
   hosts: []
   #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
@@ -82,7 +82,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b076192e2be4625a043bd5e324b0c215e726dd27"
+    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
 
   # host domains if not using turn servers
   hosts: []
@@ -129,7 +129,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b076192e2be4625a043bd5e324b0c215e726dd27"
+    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
   
   # dotnet args
   workerCount: 1000
