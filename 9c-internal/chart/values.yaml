@@ -20,7 +20,7 @@ networkType: default
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: true
+resetSnapshot: false
 slackChannel: "bot-test"
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
