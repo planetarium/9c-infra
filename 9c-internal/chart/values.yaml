@@ -20,7 +20,7 @@ networkType: default
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: true
+resetSnapshot: false
 slackChannel: "bot-test"
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
@@ -93,7 +93,6 @@ miner:
     graphql: 80
 
   # dotnet args
-  workerCount: 1000
 
   extraArgs: []
   # - --key=val
@@ -132,7 +131,6 @@ remoteHeadless:
     tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
   
   # dotnet args
-  workerCount: 1000
 
   extraArgs: []
   # - --key=val
