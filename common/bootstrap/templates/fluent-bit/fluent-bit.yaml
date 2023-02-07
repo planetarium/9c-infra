@@ -22,7 +22,7 @@ spec:
         - name: AWS_REGION
           value: "us-east-2"
         - name: CLUSTER_NAME
-          value: {{ .Values.clusterName }}
+          value: "9c-internal-v2"
         - name: HOST_NAME
           valueFrom:
             fieldRef:
@@ -32,9 +32,7 @@ spec:
         - name: READ_FROM_TAIL
           value: "On"
         flush: 5
-
         existingConfigMap: "fluent-bit-config"
-
         volumeMounts:
           - name: config
             mountPath: /fluent-bit/etc/fluent-bit.conf
