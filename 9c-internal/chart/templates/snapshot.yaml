@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: snapshot
-  namespace: default
+  namespace: {{ $.Chart.Name }}
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -29,10 +29,7 @@ spec:
               name: snapshot-volume
             env:
             - name: RESET_SNAPSHOT_OPTION
-              valueFrom:
-                configMapKeyRef:
-                  name: reset-snapshot-option
-                  key: RESET_SNAPSHOT_OPTION
+              value: "{{ $.Values.resetSnapshot }}"
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
@@ -48,7 +45,7 @@ spec:
             - /bin/preload_headless.sh
             env:
             - name: APP_PROTOCOL_VERSION_KEY
-              value: {{ $.Values.AppProtocolVersion }}
+              value: {{ $.Values.appProtocolVersion }}
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
@@ -63,7 +60,7 @@ spec:
               mountPath: /data
           containers:
           - name: upload-snapshot
-            image: ${{ $.Values.snapshotImage }}
+            image: {{ $.Values.snapshot.image }}
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
@@ -73,7 +70,7 @@ spec:
             - /bin/upload_snapshot.sh
             env:
             - name: APP_PROTOCOL_VERSION_KEY
-              value: ${{ $.Values.AppProtocolVersion }}
+              value: {{ $.Values.appProtocolVersion }}
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
@@ -104,7 +101,7 @@ spec:
           - name: script-volume
             configMap:
               defaultMode: 0700
-              name: snapshot-script
+              name: {{ .Chart.Name }}-snapshot-script
           - name: snapshot-volume
             persistentVolumeClaim:
               claimName: snapshot-volume
