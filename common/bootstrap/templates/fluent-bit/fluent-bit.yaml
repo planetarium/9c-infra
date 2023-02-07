@@ -22,7 +22,7 @@ spec:
         - name: AWS_REGION
           value: "us-east-2"
         - name: CLUSTER_NAME
-          value: "9c-internal-v2"
+          value: {{ .Values.clusterName }}
         - name: HOST_NAME
           valueFrom:
             fieldRef:
