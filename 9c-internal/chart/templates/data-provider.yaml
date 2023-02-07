@@ -43,7 +43,7 @@ spec:
         - name: SLACK_TOKEN
           valueFrom:
             secretKeyRef:
-              name: slack-token
+              name: slack
               key: slack-token
       - name: wait
         image: alpine

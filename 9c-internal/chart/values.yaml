@@ -19,9 +19,19 @@ networkType: default
 
 useExternalSecret: true
 slackToken: ""
+slackWebHookUrl: ""
 
-resetSnapshot: false
-slackChannel: "bot-test"
+snapshot:
+  resetSnapshot: false
+  slackChannel: "bot-test"
+  image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
+
+  # aws information for uploading snapshot
+  # Do not upload values below filled
+  # recommended to obtain from ExternalSecret
+  cfDistributionId: ""
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -58,13 +68,6 @@ seed:
   # - "private key"
 
   env: []
-
-  imagePullSecrets: []
-  nameOverride: ""
-  fullnameOverride: ""
-  podAnnotations: {}
-  podSecurityContext: {}
-  securityContext: {}
 
   resources:
     requests:
@@ -106,13 +109,6 @@ miner:
 
   env: []
 
-  imagePullSecrets: []
-  nameOverride: ""
-  fullnameOverride: ""
-  podAnnotations: {}
-  podSecurityContext: {}
-  securityContext: {}
-
   resources:
     requests:
       cpu: 2
@@ -145,13 +141,6 @@ remoteHeadless:
     headless: 31234
     graphql: 80
     rpc: 31238
-
-  imagePullSecrets: []
-  nameOverride: ""
-  fullnameOverride: ""
-  podAnnotations: {}
-  podSecurityContext: {}
-  securityContext: {}
 
   storage:
     data: 500Gi
