@@ -34,7 +34,7 @@ resource "aws_iam_policy" "fluent_bit" {
                 "logs:CreateLogStream",
                 "logs:CreateLogGroup",
                 "logs:PutLogEvents",
-                "logs:PutRetentionPolicy",
+                "logs:PutRetentionPolicy"
             ],
             "Resource": "*"
         },
