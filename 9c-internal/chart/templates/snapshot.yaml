@@ -99,7 +99,6 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
-            beta.kubernetes.io/os: linux
           restartPolicy: OnFailure
           volumes:
           - name: script-volume
