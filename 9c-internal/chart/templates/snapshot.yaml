@@ -97,6 +97,8 @@ spec:
               mountPath: /secret
               readOnly: true
           restartPolicy: OnFailure
+          nodeSelector:
+            eks.amazonaws.com/capacityType: ON_DEMAND
           volumes:
           - name: script-volume
             configMap:
