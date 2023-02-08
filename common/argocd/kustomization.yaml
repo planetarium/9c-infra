@@ -15,17 +15,3 @@ patchesJson6902:
       - op: add
         path: /spec/template/spec/containers/0/command/-
         value: --insecure
-  - target:
-      version: v1
-      kind: Service
-      name: argocd-server
-    patch: |-
-      - op: add
-        path: /spec/type
-        value: LoadBalancer
-      - op: add
-        path: /metadata/annotations
-        value:
-          service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-          service.beta.kubernetes.io/aws-load-balancer-type: "external"
-          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"

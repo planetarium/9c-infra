@@ -7,5 +7,16 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
+  url: https://argocd-internal.planetarium.network
   statusbadge.enabled: 'true'
   admin.enabled: 'true'
+  dex.config: |-
+    connectors:
+      - type: github
+        id: github
+        name: GitHub
+        config:
+          clientID: "$github-ssh-client:dex.github.clientId"
+          clientSecret: "$github-ssh-client:dex.github.clientSecret"
+          orgs:
+            - name: planetarium
