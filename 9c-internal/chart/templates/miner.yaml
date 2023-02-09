@@ -9,6 +9,7 @@ metadata:
   namespace: {{ $.Chart.Name }}
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: miner-{{ $index }}
@@ -130,7 +131,6 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      revisionHistoryLimit: 3
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

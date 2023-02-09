@@ -9,7 +9,7 @@ metadata:
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: data-provider
@@ -167,7 +167,6 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
-      revisionHistoryLimit: 3
       volumes:
       - name: reset-snapshot-script
         configMap:
