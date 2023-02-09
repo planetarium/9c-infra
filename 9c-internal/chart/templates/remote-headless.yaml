@@ -147,6 +147,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
+      revisionHistoryLimit: 3
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
