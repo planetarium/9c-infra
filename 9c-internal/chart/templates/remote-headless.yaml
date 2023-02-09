@@ -41,7 +41,7 @@ spec:
           name: remote-headless-data-{{ $index }}
         env:
         - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.resetSnapshot }}"
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
         - name: SLACK_WEBHOOK_URL
           valueFrom:
             secretKeyRef:
