@@ -29,7 +29,7 @@ spec:
               name: snapshot-volume
             env:
             - name: RESET_SNAPSHOT_OPTION
-              value: "{{ $.Values.resetSnapshot }}"
+              value: "{{ $.Values.snapshot.resetSnapshot }}"
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
