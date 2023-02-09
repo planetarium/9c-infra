@@ -124,3 +124,27 @@ spec:
 
 ---
 {{ end }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: explorer
+  namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+spec:
+  ports:
+  - name: graphql
+    port: {{ $.Values.explorer.ports.graphql }}
+    targetPort: {{ $.Values.explorer.ports.graphql }}
+  - name: headless
+    port: {{ $.Values.explorer.ports.headless }}
+    targetPort: {{ $.Values.explorer.ports.headless }}
+  selector:
+    app: explorer
+  type: LoadBalancer
+
+---
+{{ end }}
