@@ -10,7 +10,7 @@ metadata:
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: remote-headless-{{ $index }}
