@@ -85,6 +85,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+      revisionHistoryLimit: 3
       securityContext:
         {{- toYaml $.Values.seed.podSecurityContext | nindent 8 }}
       {{- with $.Values.seed.nodeSelector }}

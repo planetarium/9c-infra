@@ -167,6 +167,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+      revisionHistoryLimit: 3
       volumes:
       - name: reset-snapshot-script
         configMap:

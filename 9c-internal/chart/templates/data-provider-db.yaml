@@ -37,6 +37,7 @@ spec:
             - mountPath: /var/lib/mysql
               name: data-provider-db-data
       restartPolicy: Always
+      revisionHistoryLimit: 3
   volumeClaimTemplates:
     - metadata:
         creationTimestamp: null
