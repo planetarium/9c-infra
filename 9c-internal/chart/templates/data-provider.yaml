@@ -77,7 +77,7 @@ spec:
         - name: NC_Confirmations
           value: '0'
         {{ range $idx, $peer := $.Values.peerStrings }}
-        - name: NC_PeerString_{{ $idx }}
+        - name: NC_PeerStrings__{{ $idx }}
           value: {{ $peer}}
         {{ end }}
         - name: NC_Preload
@@ -86,6 +86,8 @@ spec:
           value: 'true'
         - name: NC_Render
           value: 'false'
+        - name: NC_NetworkType
+          value: Default
         - name: NC_TrustedAppProtocolVersionSigners__0
           value: {{ $.Values.trustedAppProtocolVersionSigner }}
         - name: NC_GenesisBlockPath
@@ -181,7 +183,7 @@ spec:
           defaultMode: 488
           name: {{ $.Chart.Name }}-data-provider-script
   updateStrategy:
-    type: OnDelete
+    type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
       name: data-provider-data

@@ -147,4 +147,3 @@ spec:
   type: LoadBalancer
 
 ---
-{{ end }}
