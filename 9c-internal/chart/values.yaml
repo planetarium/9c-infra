@@ -167,7 +167,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "test-v100361-log"
+    tag: "git-72bab11ed7038d3e1d127237fa708ba302e8c9f5"
 
   db:
     storage: 1000Gi
