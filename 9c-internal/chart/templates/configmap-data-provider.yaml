@@ -21,7 +21,7 @@ data:
     DP_DATABASE=$5
     RESET_SNAPSHOT_OPTION=$6
 
-    if [ $RESET_SNAPSHOT_OPTION = false ]
+    if ! $RESET_SNAPSHOT_OPTION
     then
       FILE="/data/blockIndex.txt"
       CHAIN_TIP_INDEX="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "/data/data-provider") | jq -r '.Index')"
@@ -57,10 +57,9 @@ data:
     NC_MySqlConnectionString=$1
     RESET_SNAPSHOT_OPTION=$2
 
-    if [ $RESET_SNAPSHOT_OPTION = true ]
+    if $RESET_SNAPSHOT_OPTION
     then
       cd /app/NineChronicles.DataProvider/NineChronicles.DataProvider.Executable
       dotnet ef database update -- $NC_MySqlConnectionString
-      fi
     fi
 {{ end }}
