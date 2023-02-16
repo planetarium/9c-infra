@@ -22,7 +22,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: true
+  resetSnapshot: false
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
@@ -124,7 +124,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
+    tag: "test-v100361-log"
   
   # dotnet args
 
@@ -167,7 +167,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-72bab11ed7038d3e1d127237fa708ba302e8c9f5"
+    tag: "test-v100361-log"
 
   db:
     storage: 1000Gi
