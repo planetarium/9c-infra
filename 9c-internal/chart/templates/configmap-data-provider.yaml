@@ -60,6 +60,6 @@ data:
     if $RESET_SNAPSHOT_OPTION
     then
       cd /app/NineChronicles.DataProvider/NineChronicles.DataProvider.Executable
-      dotnet ef database update -- $NC_MySqlConnectionString
+      dotnet ef database update -- "$NC_MySqlConnectionString"
     fi
 {{ end }}
