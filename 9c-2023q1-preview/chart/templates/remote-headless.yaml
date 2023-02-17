@@ -1,0 +1,185 @@
+{{ range $idx := until (int .Values.remoteHeadless.count) }}
+{{ $index := add $idx 1 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: remote-headless-{{ $index }}
+  name: remote-headless-{{ $index }}
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: remote-headless-{{ $index }}
+  serviceName: remote-headless-{{ $index }}
+  template:
+    metadata:
+      labels:
+        app: remote-headless-{{ $index }}
+      name: remote-headless-{{ $index }}
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - remote-headless-{{ $index }}
+        - $(SLACK_TOKEN)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: remote-headless-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-token
+              key: slack-token
+      - name: wait
+        image: alpine
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          apk --no-cache add curl
+          # Endpoint to check
+          ENDPOINT="http://miner-1.{{ $.Chart.Name }}.svc.cluster.local/ui/playground"
+          echo Checking: ${ENDPOINT}
+          while [[ $(curl --silent --output /dev/null --request GET --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
+            echo "Not ready"
+            sleep 5s
+          done
+          echo Ready
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --workers={{ $.Values.remoteHeadless.workerCount }}
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.remoteHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- if $.Values.remoteHeadless.useTurnServer }}
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- else }}
+        - --host={{ index $.Values.remoteHeadless.hosts $idx }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.remoteHeadless.ports.graphql }}
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.remoteHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        name: remote-headless-{{ $index }}
+        ports:
+        - containerPort: {{ $.Values.remoteHeadless.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.remoteHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        - containerPort: {{ $.Values.remoteHeadless.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.miner.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: remote-headless-data-{{ $index }}
+        - mountPath: /app/logs
+          name: remote-headless-logs-{{ $index }}
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: script-volume
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: remote-headless-data-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.remoteHeadless.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+  - metadata:
+      name: remote-headless-logs-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.remoteHeadless.storage.log }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---
+{{ end }}
