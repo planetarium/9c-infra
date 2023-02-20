@@ -85,7 +85,7 @@ spec:
         - name: NC_NoMiner
           value: 'true'
         - name: NC_Render
-          value: 'false'
+          value: "{{ $.Values.dataProvider.render }}"
         - name: NC_NetworkType
           value: Default
         - name: NC_TrustedAppProtocolVersionSigners__0
