@@ -44,7 +44,7 @@ jobs:
         uses: planetarium/9c-toolbelt@main
         with:
           COMMAND: prepare
-          ENV: test
+          ENV: production
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
