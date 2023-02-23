@@ -87,7 +87,7 @@ spec:
         - name: NC_Render
           value: "{{ $.Values.dataProvider.render }}"
         - name: NC_NetworkType
-          value: Default
+          value: "{{ $.Values.networkType }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
           value: {{ $.Values.trustedAppProtocolVersionSigner }}
         - name: NC_GenesisBlockPath
