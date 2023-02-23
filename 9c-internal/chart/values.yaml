@@ -5,7 +5,7 @@
 
 clusterName: "9c-internal-v2"
 logLevel: "debug"
-appProtocolVersion: "1160/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIGUco52X4nzEbZ8Qmb4AiR1cJLK5VBZJp7ZiSFbbApXXAiBCADZdC7lATE1uRCyftylTB7Opn3IfSrHKXM0115OePQ==/ZHU4OmxhdW5jaGVydTQyOjEvMzMwMWI0MzhjMjNiZDYwNjg0NGRiYmNkODM5NmIzMjAxYzU0ODY4ZHU2OnBsYXllcnU0MjoxLzFlNTMxMDkwOTY2YWMyYTE5NWI4MzkxODE0MDk4MjY1ODE4ZDNmZTl1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMS0zMWU="
+appProtocolVersion: "1162/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIDw5Ql1NCIyMUzEi8OZyuZaju3T6w9QuMpEtKuRdQBFGAiBRNv6eZsubNq3CJ2kuoSnqWyIqFzJuF.Wp600xr5nSGQ==/ZHU4OmxhdW5jaGVydTQyOjEvM2U2MzEzYTExOWYwNjc1ZTcwYmJhNmNkMWRiODJhZTE0ZWE4OGNiMnU2OnBsYXllcnU0MjoxL2FkMjllYzVhNjhiZDEzOTc3YTVhN2ViNTFiZDlhNDQ2ZDQ5MGNiODl1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMi0yM2U="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
@@ -22,7 +22,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: false
+  resetSnapshot: true
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
@@ -85,7 +85,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
+    tag: "git-0cf41524cf2615b9d2ce19c81e1b962e056daadd"
 
   # host domains if not using turn servers
   hosts: []
@@ -124,7 +124,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
+    tag: "git-0cf41524cf2615b9d2ce19c81e1b962e056daadd"
   
   # dotnet args
 
@@ -168,7 +168,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-72bab11ed7038d3e1d127237fa708ba302e8c9f5"
+    tag: "git-a829ac310b8a58466525e135d9ee4829527a33cc"
 
   db:
     storage: 1000Gi
@@ -185,7 +185,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d7f8c388ace574e4f38dc85a9c20aa34fe1a75fd"
+    tag: "git-0cf41524cf2615b9d2ce19c81e1b962e056daadd"
   
   # dotnet args
 
