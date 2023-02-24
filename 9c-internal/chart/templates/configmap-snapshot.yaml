@@ -41,11 +41,18 @@ data:
         mainnet_snapshot_json_filename="mainnet_latest.json"
         snapshot_zip_filename="state_latest.zip"
         snapshot_zip_filename_array=("$snapshot_zip_filename")
+        mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
+        mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
+
+        if [ "$mainnet_snapshot_blockIndex" -eq $2 ]
+        then
+            echo "Skip snapshot download because the local snapshot matches the latest snapshot."
+            return
+        fi
 
         while :
         do
             snapshot_json_url="$base_url/$snapshot_json_filename"
-
             BlockEpoch=$(get_snapshot_value "$snapshot_json_url" "BlockEpoch")
             TxEpoch=$(get_snapshot_value "$snapshot_json_url" "TxEpoch")
             PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
@@ -54,7 +61,7 @@ data:
             snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
             snapshot_zip_filename_array+=("$snapshot_zip_filename")
 
-            if [ "$PreviousBlockEpoch" -lt $1 ]
+            if [ $(("$PreviousBlockEpoch"+1)) -lt $1 ]
             then
                 break
             fi
@@ -138,7 +145,8 @@ data:
       if [ -f $save_dir/mainnet_latest.json ]
       then
         local_previous_mainnet_blockEpoch=$(cat "$save_dir/mainnet_latest.json" | jq ".BlockEpoch")
-        download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch
+        local_previous_mainnet_blockIndex=$(cat "$save_dir/mainnet_latest.json" | jq ".Index")
+        download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_previous_mainnet_blockIndex
       else
         download_unzip_full_snapshot
       fi
