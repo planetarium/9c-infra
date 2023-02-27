@@ -64,11 +64,10 @@ data:
         Name                         cloudwatch_logs
         Match                        cwl.*
         region                       ${AWS_REGION}
-        log_retention_days           30
+        log_retention_days           14
         log_group_name               fallback-group
         log_group_template           /aws/containerinsights/${CLUSTER_NAME}/$kubernetes['namespace_name'].$kubernetes['pod_name']
         log_stream_prefix            ${HOST_NAME}-
-        # log_stream_template          $kubernetes['pod_name'].$kubernetes['container_name'].$kubernetes['host'].$kubernetes['docker_id'].log
         auto_create_group            true
         extra_user_agent             container-insights
     [OUTPUT]
@@ -76,8 +75,8 @@ data:
         Match                        application.*
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
-        Total_file_size              250M
-        S3_key_format                /${CLUSTER_NAME}/$TAG/%Y/%m/%d/${HOST_NAME}-$UUID.gz
+        Total_file_size              100M
+        S3_key_format                /${CLUSTER_NAME}/$TAG/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .-
   parsers.conf: |
     [PARSER]
