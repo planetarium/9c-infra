@@ -305,7 +305,7 @@ data:
       STATE_DIR="/data/snapshots/state"
       METADATA_DIR="/data/snapshots/metadata"
       FULL_DIR="/data/snapshots/full"
-      URL="https://snapshots.nine-chronicles.com/internal/test/latest.json"
+      URL="https://snapshots.nine-chronicles.com/internal/latest.json"
 
       mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
       if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -335,8 +335,8 @@ data:
       STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
       S3_BUCKET_NAME="9c-snapshots"
-      S3_LATEST_SNAPSHOT_PATH="internal/test/$UPLOAD_SNAPSHOT_FILENAME"
-      S3_LATEST_METADATA_PATH="internal/test/$UPLOAD_METADATA_FILENAME"
+      S3_LATEST_SNAPSHOT_PATH="internal/$UPLOAD_SNAPSHOT_FILENAME"
+      S3_LATEST_METADATA_PATH="internal/$UPLOAD_METADATA_FILENAME"
 
       AWS="/usr/local/bin/aws"
       AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
@@ -346,15 +346,15 @@ data:
       "$AWS" configure set default.region us-east-2
       "$AWS" configure set default.output json
 
-      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/internal/test/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/internal/test/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/internal/test/$LATEST_STATE_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/test/$SNAPSHOT_FILENAME.*"
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/test/$UPLOAD_FILENAME.*"
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/test/$STATE_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/$SNAPSHOT_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/$UPLOAD_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/$STATE_FILENAME.*"
 
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
