@@ -239,7 +239,7 @@ data:
         exit 1
       fi
 
-      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync finished;"; then
+      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
         sleep 30
       else
         senderr "grep failed. Failed to preload." $1
