@@ -71,8 +71,8 @@ spec:
     targetPort: {{ $.Values.validator.ports.graphql }}
     name: gql
   {{- if eq $.Values.consensusType "pbft" }}
-  - port: {{ $.Values.validator.port }}
-    targetPort: {{ $.Values.validator.port }}
+  - port: {{ $.Values.validator.ports.gossip }}
+    targetPort: {{ $.Values.validator.ports.gossip }}
     name: gossip
   {{- end }}
   selector:
