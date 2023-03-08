@@ -23,7 +23,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: false
+  resetSnapshot: true
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
