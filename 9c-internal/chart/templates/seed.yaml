@@ -38,8 +38,8 @@ spec:
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.seed.ports.graphql }}
         - --workers={{ $.Values.seed.workerCount }}
-        {{- if $.Values.pos.enabled }}
-        - --gossip-port={{ $.Values.pos.port }}
+        {{- if eq $.Values.consensusType "pbft" }}
+        - --gossip-port={{ $.Values.seed.ports.gossip }}
         {{- end }}
         {{- with $.Values.seed.extraArgs }}
           {{- toYaml . | nindent 8 }}
@@ -73,8 +73,8 @@ spec:
           - containerPort: {{ $.Values.seed.ports.graphql }}
             name: graphql
             protocol: TCP
-          {{- if $.Values.pos.enabled }}
-          - containerPort: {{ $.Values.pos.port }}
+          {{- if eq $.Values.consensusType "pbft" }}
+          - containerPort: {{ $.Values.seed.ports.gossip }}
             name: gossip
             protocol: TCP
           {{- end }}
