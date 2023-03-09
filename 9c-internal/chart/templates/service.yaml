@@ -50,6 +50,9 @@ spec:
   - port: {{ $.Values.miner.ports.graphql }}
     targetPort: {{ $.Values.miner.ports.graphql }}
     name: gql
+  - port: 443
+    targetPort: {{ $.Values.miner.ports.graphql }}
+    name: https
   selector:
     app: miner-{{ $index }}
   type: LoadBalancer
@@ -114,6 +117,9 @@ spec:
   - name: headless
     port: {{ $.Values.remoteHeadless.ports.headless }}
     targetPort: {{ $.Values.remoteHeadless.ports.headless }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
   selector:
     app: remote-headless-{{ $index }}
   type: LoadBalancer
