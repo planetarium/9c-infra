@@ -1,0 +1,118 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: snapshot-full
+  namespace: {{ $.Chart.Name }}
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - args:
+            - https://snapshots.nine-chronicles.com/main/partition
+            - /data/headless
+            - $(RESET_SNAPSHOT_OPTION)
+            - snapshot
+            - $(SLACK_WEBHOOK_URL)
+            command:
+            - /bin/download_snapshot.sh
+            image: bash:latest
+            name: reset-snapshot
+            volumeMounts:
+            - name: download-snapshot-script
+              mountPath: /bin/download_snapshot.sh
+              readOnly: true
+              subPath: download_snapshot.sh
+            - mountPath: /data
+              name: snapshot-volume-full
+          - name: preload-headless
+            image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            command:
+            - /bin/preload_headless.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/preload_headless.sh
+              readOnly: true
+              subPath: preload_headless.sh
+            - name: snapshot-volume-full
+              mountPath: /data
+          containers:
+          - name: upload-snapshot
+            image: {{ $.Values.snapshot.image }}
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            - $(CF_DISTRIBUTION_ID)
+            - $(SLACK_TOKEN)
+            command:
+            - /bin/upload_snapshot.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: CF_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-keys
+                  key: cf_distribution_id
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-token
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/upload_snapshot.sh
+              readOnly: true
+              subPath: upload_snapshot.sh
+            - name: snapshot-volume-full
+              mountPath: /data
+            - name: aws-keys
+              mountPath: /secret
+              readOnly: true
+          restartPolicy: OnFailure
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5.xlarge
+          volumes:
+          - name: script-volume
+            configMap:
+              defaultMode: 0700
+              name: {{ .Chart.Name }}-snapshot-script-full
+          - name: download-snapshot-script
+            configMap:
+              defaultMode: 0700
+              name: {{ $.Chart.Name }}-download-snapshot-script
+          - name: snapshot-volume-full
+            persistentVolumeClaim:
+              claimName: snapshot-volume-full
+          - name: aws-keys
+            secret:
+              secretName: aws-keys
+  schedule: 30 0 * * *
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

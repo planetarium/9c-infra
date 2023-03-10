@@ -1,0 +1,244 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-main-v2"
+logLevel: "debug"
+appProtocolVersion: "100371/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCj.oaRE08Sxd7krc0MrxRu5braj2ECLN0wHMW6hEl7NgIgRF9uMu1+cQV49.PPNYuimZNTiB2lrh5iJKtD.UY9qgA=/ZHU4OmxhdW5jaGVydTQyOjEvNTk1OTY0OWE3NTE5NWE3YTUzYzU2Nzk0NmU3ZTVhZWRiMjFhYTU3ZXU2OnBsYXllcnU0MjoxL2E2ZGY4MmM5ZTBjZjQ0OGQ4M2RjNDU5ZDljMDk1OTIwMjU1MTcyZDJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0wMmU="
+genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+peerStrings:
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+
+iceServers:
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+
+networkType: Main
+consensusType: pow
+
+useExternalSecret: true
+slackToken: ""
+slackWebHookUrl: ""
+
+snapshot:
+  resetSnapshot: false
+  slackChannel: "9c-mainnet"
+  image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
+
+  # aws information for uploading snapshot
+  # Do not upload values below filled
+  # recommended to obtain from ExternalSecret
+  cfDistributionId: ""
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+seed:
+  count: 3
+  useTurnServer: true
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
+
+  hosts: []
+  #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
+
+  ports:
+    node: 31234
+    gossip: 31235
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # enter private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+miner:
+  count: 1
+  useTurnServer: true
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v100371-1"
+
+  # host domains if not using turn servers
+  hosts: []
+  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  # private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  storage:
+    data: 1000Gi
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+  
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+remoteHeadless:
+  count: 5
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v100371-1"
+  
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts: []
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+dataProvider:
+  enabled: true
+  render: true
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-8113e13db8ae1934b1dc6768e3bba3786bea4f11"
+
+explorer:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v100371-1"
+  
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts: []
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 6Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+fullState:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v100371-1"
+  
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts: []
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
