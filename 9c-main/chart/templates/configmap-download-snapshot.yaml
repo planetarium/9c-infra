@@ -12,7 +12,7 @@ data:
     apk update
     apk add curl jq wget aria2 sudo zip
 
-    base_url=${1:-https://snapshots.nine-chronicles.com/internal}
+    base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
     service_name=$4
@@ -38,15 +38,15 @@ data:
 
       function download_unzip_partial_snapshot() {
         snapshot_json_filename="latest.json"
-        mainnet_snapshot_json_filename="mainnet_latest.json"
+        mainnet_snapshot_json_filename="latest.json"
         snapshot_zip_filename="state_latest.zip"
         snapshot_zip_filename_array=("$snapshot_zip_filename")
         mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
         mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
 
-        if [ "$mainnet_snapshot_blockIndex" -eq $2 ]
+        if [ "$mainnet_snapshot_blockIndex" -lt $2 ]
         then
-            echo "Skip snapshot download because the local snapshot matches the latest snapshot."
+            echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
             return
         fi
 
@@ -94,7 +94,7 @@ data:
 
       function download_unzip_full_snapshot() {
           snapshot_json_filename="latest.json"
-          mainnet_snapshot_json_filename="mainnet_latest.json"
+          mainnet_snapshot_json_filename="latest.json"
           snapshot_zip_filename="state_latest.zip"
           snapshot_zip_filename_array=("$snapshot_zip_filename")
 
@@ -142,11 +142,18 @@ data:
           aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
 
-      if [ -f $save_dir/mainnet_latest.json ]
+      if [[ -d "$save_dir" ]]
       then
-        local_previous_mainnet_blockEpoch=$(cat "$save_dir/mainnet_latest.json" | jq ".BlockEpoch")
-        local_previous_mainnet_blockIndex=$(cat "$save_dir/mainnet_latest.json" | jq ".Index")
-        download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_previous_mainnet_blockIndex
+        local_chain_tip_index="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+        if [ -f $save_dir/latest.json ]
+          local_previous_mainnet_blockEpoch=$(cat "$save_dir/latest.json" | jq ".BlockEpoch")
+          download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
+        else
+          local_chain_tip_timestamp="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+          epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
+          local_chain_tip_blockEpoch = $(($epoch_seconds / 86400))
+          download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+
       else
         download_unzip_full_snapshot
       fi
