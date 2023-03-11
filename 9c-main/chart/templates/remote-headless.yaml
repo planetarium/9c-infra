@@ -26,7 +26,7 @@ spec:
         - https://snapshots.nine-chronicles.com/main/partition
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
-        - main-miner-{{ $index }}
+        - remote-headless-{{ $index }}
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
@@ -39,6 +39,14 @@ spec:
           subPath: download_snapshot.sh
         - mountPath: /data
           name: remote-headless-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll

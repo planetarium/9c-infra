@@ -36,6 +36,14 @@ spec:
           subPath: download_snapshot.sh
         - mountPath: /data
           name: main-miner-3-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
