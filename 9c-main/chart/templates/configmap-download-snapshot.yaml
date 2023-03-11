@@ -18,7 +18,7 @@ data:
     service_name=$4
     SLACK_WEBHOOK=$5
 
-    if $download_option
+    if [ $download_option = y ]
     then
       echo "Start download snapshot"
       if [ $service_name != "snapshot" ]
@@ -146,6 +146,7 @@ data:
       then
         local_chain_tip_index="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
         if [ -f $save_dir/latest.json ]
+        then
           local_previous_mainnet_blockEpoch=$(cat "$save_dir/latest.json" | jq ".BlockEpoch")
           download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
         else
@@ -153,6 +154,7 @@ data:
           epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
           local_chain_tip_blockEpoch = $(($epoch_seconds / 86400))
           download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+        fi
 
       else
         download_unzip_full_snapshot
