@@ -9,8 +9,8 @@ data:
 
     cd /data
 
-    apk update
-    apk add curl jq wget aria2 sudo zip
+    apt-get -y update
+    apt-get -y install jq wget aria2 sudo zip
 
     base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
@@ -144,13 +144,13 @@ data:
 
       if [[ -d "$save_dir" ]]
       then
-        local_chain_tip_index="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+        local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
         if [ -f $save_dir/latest.json ]
         then
           local_previous_mainnet_blockEpoch=$(cat "$save_dir/latest.json" | jq ".BlockEpoch")
           download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
         else
-          local_chain_tip_timestamp="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+          local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
           epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
           local_chain_tip_blockEpoch = $(($epoch_seconds / 86400))
           download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
