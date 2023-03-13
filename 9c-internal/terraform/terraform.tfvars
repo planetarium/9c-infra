@@ -34,7 +34,7 @@ node_groups = {
     capacity_type     = "SPOT"
     desired_size      = 4
     min_size          = 0
-    max_size          = 4
+    max_size          = 10
   }
 
   "9c-internal-m5d_2xl_2c" = {
@@ -43,7 +43,7 @@ node_groups = {
     capacity_type     = "SPOT"
     desired_size      = 2
     min_size          = 0
-    max_size          = 2
+    max_size          = 5
   }
 
   "9c-internal-m5d_xl_2c" = {
@@ -52,6 +52,6 @@ node_groups = {
     capacity_type     = "SPOT"
     desired_size      = 5
     min_size          = 0
-    max_size          = 5
+    max_size          = 15
   }
 }
