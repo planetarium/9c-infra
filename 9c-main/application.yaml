@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: main
-    path: 9c-internal/chart
+    path: 9c-main/chart
     helm:
       valueFiles:
         - values.yaml
