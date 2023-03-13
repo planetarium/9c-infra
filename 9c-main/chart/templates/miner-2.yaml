@@ -59,7 +59,7 @@ spec:
         - --host={{ index $.Values.miner.hosts $idx }}
         {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
-        - --no-miner=false
+        - --no-miner=true
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
