@@ -47,7 +47,7 @@ node_groups = {
   }
 
   "9c-main-r6g_2xl_2c" = {
-    instance_types    = ["r6g.2xlarge"]
+    instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
     desired_size      = 5
@@ -59,8 +59,8 @@ node_groups = {
     instance_types    = ["m5.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
-    desired_size      = 2
+    desired_size      = 1
     min_size          = 0
-    max_size          = 2
+    max_size          = 1
   }
 }
