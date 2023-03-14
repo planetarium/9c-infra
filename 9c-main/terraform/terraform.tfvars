@@ -58,8 +58,8 @@ node_groups = {
     ami_type          = "AL2_ARM_64"
   }
 
-  "9c-main-m5_xl_2c" = {
-    instance_types    = ["m5.xlarge"]
+  "9c-main-m5_2xl_2c" = {
+    instance_types    = ["m5.2xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
     desired_size      = 1
