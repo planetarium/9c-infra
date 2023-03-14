@@ -116,7 +116,7 @@ spec:
         - mountPath: /data
           name: main-miner-3-data
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.4xlarge
+        node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: acr-regcred
