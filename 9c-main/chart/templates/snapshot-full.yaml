@@ -105,7 +105,7 @@ spec:
               readOnly: true
           restartPolicy: OnFailure
           nodeSelector:
-            node.kubernetes.io/instance-type: m5.xlarge
+            node.kubernetes.io/instance-type: m5.2xlarge
           volumes:
           - name: script-volume
             configMap:
