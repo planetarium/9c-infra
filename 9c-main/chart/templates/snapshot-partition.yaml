@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: snapshot-partition
@@ -99,9 +99,9 @@ spec:
               readOnly: true
               subPath: upload_snapshot.sh
             - name: download-snapshot-script
-              configMap:
-                defaultMode: 0700
-                name: {{ $.Chart.Name }}-download-snapshot-script
+              mountPath: /bin/download_snapshot.sh
+              readOnly: true
+              subPath: download_snapshot.sh
             - name: snapshot-volume-partition
               mountPath: /data
             - name: aws-keys
@@ -115,6 +115,10 @@ spec:
             configMap:
               defaultMode: 0700
               name: {{ .Chart.Name }}-snapshot-script-partition
+          - name: download-snapshot-script
+            configMap:
+              defaultMode: 0700
+              name: {{ $.Chart.Name }}-download-snapshot-script
           - name: snapshot-volume-partition
             persistentVolumeClaim:
               claimName: snapshot-volume-partition

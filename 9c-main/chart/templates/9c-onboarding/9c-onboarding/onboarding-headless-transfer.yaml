@@ -2,32 +2,33 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: main-miner-3
-  name: main-miner-3
-  namespace: {{ $.Chart.Name }}
+    app: onboarding-headless-transfer
+  name: onboarding-headless-transfer
+  namespace: 9c-onboarding
 spec:
+  podManagementPolicy: OrderedReady
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: main-miner-3
-  serviceName: main-miner-3
+      app: onboarding-headless-transfer
+  serviceName: onboarding-headless-transfer
   template:
     metadata:
       labels:
-        app: main-miner-3
-      name: main-miner-3
+        app: onboarding-headless-transfer
+      name: onboarding-headless-transfer
     spec:
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/main/partition
-        - /data/miner
+        - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
-        - main-miner-3
+        - onboarding-headless-transfer
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
-        image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
         name: reset-snapshot
         volumeMounts:
         - name: download-snapshot-script
@@ -35,7 +36,7 @@ spec:
           readOnly: true
           subPath: download_snapshot.sh
         - mountPath: /data
-          name: main-miner-3-data
+          name: onboarding-headless-transfer-data
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.snapshot.resetSnapshot }}"
@@ -51,78 +52,73 @@ spec:
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
-        {{- if $.Values.miner.useTurnServer }}
+        - --port={{ $.Values.onboardingHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- if $.Values.onboardingHeadless.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
-        - --port={{ $.Values.miner.ports.headless }}
-        - --no-miner=trues
-        - --store-path=/data/miner
-        - --store-type=rocksdb
-        - --swarm-private-key
-        - $(PRIVATE_KEY)
-        - --miner-private-key
-        - $(PRIVATE_KEY)
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port={{ $.Values.miner.ports.graphql }}
-        {{- with $.Values.miner.extraArgs }}
+        - --graphql-port={{ $.Values.onboardingHeadless.ports.graphql }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.onboardingHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        - --network-type={{ $.Values.networkType }}
         command:
-          - dotnet
-        env:
-          - name: PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                key: miner-private-key-3
-                name: private-keys
-          {{- with $.Values.miner.env }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
+        - dotnet
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
-            - /bin/bash
-            - -c
-            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
-              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
-              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
-              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 100 ]]\n"
+            - /bin/liveness_probe.sh
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 30
           timeoutSeconds: 30
-        name: main-miner-3
+        name: onboarding-headless-transfer
         ports:
-        - containerPort: {{ $.Values.miner.ports.headless }}
-          name: headless
-          protocol: TCP
-        - containerPort: {{ $.Values.miner.ports.graphql }}
+        - containerPort: {{ $.Values.onboardingHeadless.ports.graphql }}
           name: graphql
           protocol: TCP
+        - containerPort: {{ $.Values.onboardingHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
         resources:
-          {{- toYaml $.Values.miner.resources | nindent 10 }}
+          {{- toYaml $.Values.onboardingHeadless.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: main-miner-3-data
+          name: onboarding-headless-transfer-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.4xlarge
+        node.kubernetes.io/instance-type: m5g.large
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-      - name: acr-regcred
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
@@ -137,14 +133,13 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      creationTimestamp: null
-      name: main-miner-3-data
+      name: onboarding-headless-transfer-data
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.miner.storage.data }}
+          storage: {{ $.Values.onboardingHeadless.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---

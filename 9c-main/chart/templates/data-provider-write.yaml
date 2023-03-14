@@ -174,4 +174,3 @@ spec:
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---
-{{ end }}

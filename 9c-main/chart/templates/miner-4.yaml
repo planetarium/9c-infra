@@ -55,9 +55,6 @@ spec:
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
-        {{- else }}
-        - --host={{ index $.Values.miner.hosts $idx }}
-        {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
         - --no-miner=trues
         - --store-path=/data/miner
