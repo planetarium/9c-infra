@@ -6,6 +6,7 @@ resource "aws_eks_node_group" "node_groups" {
   subnet_ids      = var.create_vpc ? [aws_subnet.public[each.value["availability_zone"]].id] : var.public_subnet_ids
   instance_types  = each.value["instance_types"]
   capacity_type   = try(each.value["capacity_type"], "ON_DEMAND")
+  ami_type        = try(each.value["ami_type"], "AL2_x86_64")
 
   scaling_config {
     desired_size = each.value["desired_size"]

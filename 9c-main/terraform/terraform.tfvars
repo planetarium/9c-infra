@@ -35,6 +35,7 @@ node_groups = {
     desired_size      = 1
     min_size          = 0
     max_size          = 1
+    ami_type          = "AL2_ARM_64"
   }
 
   "9c-main-c7g_4xl_2c" = {
@@ -44,6 +45,7 @@ node_groups = {
     desired_size      = 6
     min_size          = 0
     max_size          = 6
+    ami_type          = "AL2_ARM_64"
   }
 
   "9c-main-r6g_2xl_2c" = {
@@ -53,6 +55,7 @@ node_groups = {
     desired_size      = 6
     min_size          = 0
     max_size          = 6
+    ami_type          = "AL2_ARM_64"
   }
 
   "9c-main-m5_xl_2c" = {
