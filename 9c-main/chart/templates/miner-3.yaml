@@ -56,7 +56,7 @@ spec:
         - --ice-server={{ . }}
         {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
-        - --no-miner=trues
+        - --no-miner=true
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
@@ -86,20 +86,6 @@ spec:
           {{- end }}
         image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
-              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
-              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
-              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 100 ]]\n"
-          failureThreshold: 3
-          initialDelaySeconds: 1800
-          periodSeconds: 30
-          timeoutSeconds: 30
         name: main-miner-3
         ports:
         - containerPort: {{ $.Values.miner.ports.headless }}
@@ -109,7 +95,9 @@ spec:
           name: graphql
           protocol: TCP
         resources:
-          {{- toYaml $.Values.miner.resources | nindent 10 }}
+          requests:
+            cpu: 1
+            memory: 6Gi
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:

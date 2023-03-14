@@ -9,8 +9,8 @@ data:
 
     cd /data
 
-    apt-get -y update
-    apt-get -y install jq wget aria2 sudo zip
+    apt -y update
+    apt -y install jq wget aria2 sudo zip
 
     base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
@@ -18,13 +18,9 @@ data:
     service_name=$4
     SLACK_WEBHOOK=$5
 
-    if [ $download_option = y ]
+    if [ $download_option = "true" ]
     then
       echo "Start download snapshot"
-      if [ $service_name != "snapshot" ]
-      then
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Start snapshot download in '$service_name'. Please wait."}' $SLACK_WEBHOOK
-      fi
       # strip tailing slash
       base_url=${base_url%/}
 
@@ -162,15 +158,7 @@ data:
 
       # The return value for the program that calls this script
       echo "$save_dir"
-      if [ $service_name != "snapshot" ]
-      then
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Snapshot download complete in '$service_name'. Pod Starting."}' $SLACK_WEBHOOK
-      fi
     else
       echo "Skip download snapshot"
-      if [ $service_name != "snapshot" ]
-      then
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Skip snapshot download in '$service_name'. Pod Starting."}' $SLACK_WEBHOOK
-      fi
     fi
  

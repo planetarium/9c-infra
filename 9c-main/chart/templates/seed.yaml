@@ -26,13 +26,7 @@ spec:
         - run
         - --log-level={{ $.Values.logLevel }}
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
-        {{- if $.Values.seed.useTurnServer }}
-        {{- range $.Values.iceServers }}
-        - --ice-server={{ . }}
-        {{- end }}
-        {{- else }}
-        - --host={{ index $.Values.seed.hosts $idx }}
-        {{- end }}
+        - --ice-server=turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478
         - --port={{ $.Values.seed.ports.node }}
         - --private-key=$(PRIVATE_KEY)
         - --graphql-host=0.0.0.0
