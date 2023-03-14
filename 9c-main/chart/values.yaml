@@ -208,7 +208,7 @@ explorer:
 
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 6Gi
 
   nodeSelector:

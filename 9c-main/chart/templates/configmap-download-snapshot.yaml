@@ -9,8 +9,15 @@ data:
 
     cd /data
 
-    apt -y update
-    apt -y install jq wget aria2 sudo zip
+    until apt-get -y update
+    do
+      echo "Try again"
+    done
+
+    until apt-get -y install jq wget aria2 sudo zip
+    do
+      echo "Try again"
+    done
 
     base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
@@ -21,6 +28,11 @@ data:
     if [ $download_option = "true" ]
     then
       echo "Start download snapshot"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
+
       # strip tailing slash
       base_url=${base_url%/}
 
@@ -148,7 +160,9 @@ data:
         else
           local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
           epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
-          local_chain_tip_blockEpoch = $(($epoch_seconds / 86400))
+          echo $epoch_seconds
+          local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
+          echo $local_chain_tip_blockEpoch
           download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
         fi
 
@@ -158,7 +172,14 @@ data:
 
       # The return value for the program that calls this script
       echo "$save_dir"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
     else
       echo "Skip download snapshot"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
     fi
- 

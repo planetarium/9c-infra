@@ -98,8 +98,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: explorer-data
-        - mountPath: /app/logs
-          name: explorer-logs
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
