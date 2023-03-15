@@ -47,6 +47,10 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+        - name: IpRateLimiting__EnableRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "15"
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
