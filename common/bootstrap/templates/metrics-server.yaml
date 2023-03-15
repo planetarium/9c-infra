@@ -10,11 +10,13 @@ spec:
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: metrics-server
-    targetRevision: 5.11.1
+    targetRevision: 6.2.12
     helm:
       values: |-
         apiService:
           create: true
+        extraArgs:
+          - --v=2
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

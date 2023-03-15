@@ -25,6 +25,13 @@ module "common" {
     "9c-sample-c5_l_2c" = {
       instance_types    = ["c5.large"]
       availability_zone = "us-east-2c"
+      desired_size      = 5
+      min_size          = 0
+      max_size          = 5
+    }
+    "9c-sample-m5_l_2c" = {
+      instance_types    = ["m5.large"]
+      availability_zone = "us-east-2c"
       desired_size      = 10
       min_size          = 0
       max_size          = 10
