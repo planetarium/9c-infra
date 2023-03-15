@@ -160,7 +160,7 @@ remoteHeadless:
 
 dataProvider:
   enabled: true
-  render: false
+  render: true
 
   storage:
     data: 1000Gi
