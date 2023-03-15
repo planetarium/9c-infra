@@ -183,8 +183,8 @@ data:
       S3_LATEST_METADATA_PATH="main/$1/partition/$UPLOAD_METADATA_FILENAME"
 
       AWS="/usr/local/bin/aws"
-      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id" | base64)"
-      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key" | base64)"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
       "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
       "$AWS" configure set default.region us-east-2
@@ -223,8 +223,8 @@ data:
     sudo ./aws/install
 
     AWS="/usr/local/bin/aws"
-    AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id" | base64)"
-    AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key" | base64)"
+    AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+    AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
     "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     "$AWS" configure set default.region us-east-2
