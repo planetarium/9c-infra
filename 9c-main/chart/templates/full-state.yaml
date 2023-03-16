@@ -40,6 +40,7 @@ spec:
         - --graphql-server
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.fullState.ports.graphql }}
+        - --tx-life-time=10
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}

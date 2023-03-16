@@ -69,6 +69,7 @@ spec:
         - --graphql-server
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.miner.ports.graphql }}
+        - --tx-life-time=10
         {{- with $.Values.miner.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
