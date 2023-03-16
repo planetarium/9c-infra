@@ -198,6 +198,10 @@ kind: Service
 metadata:
   name: market-service
   namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
     - name: http
@@ -214,6 +218,10 @@ kind: Service
 metadata:
   name: market-db
   namespace: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
     - name: "5432"
