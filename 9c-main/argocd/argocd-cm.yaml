@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  url: https://argocd-internal.planetarium.network
+  url: https://argocd.planetarium.network
   statusbadge.enabled: 'true'
   admin.enabled: 'true'
   dex.config: |-

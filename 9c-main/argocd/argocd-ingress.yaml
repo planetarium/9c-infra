@@ -14,7 +14,7 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:319679068466:certificate/bdddee1c-76b1-49f0-bb85-37952d9944cc
 spec:
   rules:
-    - host: argocd-internal.planetarium.network
+    - host: argocd.planetarium.network
       http:
         paths:
           - path: /
