@@ -58,6 +58,14 @@ spec:
         - containerPort: {{ $.Values.fullState.ports.headless }}
           name: headless
           protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
         readinessProbe:
           exec:
             command:
