@@ -135,7 +135,7 @@ remoteHeadless:
   extraArgs: []
   # - --key=val
 
-  useTurnServer: true
+  useTurnServer: false
 
   hosts:
    - "9c-main-rpc-1.nine-chronicles.com"
