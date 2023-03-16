@@ -45,14 +45,16 @@ volumeReclaimPolicy: "Delete"
 
 seed:
   count: 3
-  useTurnServer: true
+  useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
     tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
 
-  hosts: []
-  #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
+  hosts:
+     - "9c-main-tcp-seed-1.planetarium.dev"
+     - "9c-main-tcp-seed-2.planetarium.dev"
+     - "9c-main-tcp-seed-3.planetarium.dev"
 
   ports:
     node: 31234
