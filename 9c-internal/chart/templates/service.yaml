@@ -191,3 +191,35 @@ spec:
   type: LoadBalancer
 
 ---
+
+{{ if .Values.marketService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-service
+  namespace: {{ $.Chart.Name }}
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: market-service
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-db
+  namespace: {{ $.Chart.Name }}
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: market-db
+  type: LoadBalancer
+{{ end }}
