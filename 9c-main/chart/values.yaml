@@ -135,9 +135,12 @@ remoteHeadless:
 
   useTurnServer: true
 
-  hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+  hosts:
+   - "9c-main-rpc-1.nine-chronicles.com"
+   - "9c-main-rpc-2.nine-chronicles.com"
+   - "9c-main-rpc-3.nine-chronicles.com"
+   - "9c-main-rpc-4.nine-chronicles.com"
+   - "9c-main-rpc-5.nine-chronicles.com"
 
   ports:
     headless: 31234
