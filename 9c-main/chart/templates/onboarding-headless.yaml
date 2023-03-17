@@ -1,0 +1,277 @@
+{{ if .Values.onboardingHeadless.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: onboarding-headless-query
+  name: onboarding-headless-query
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: onboarding-headless-query
+  serviceName: onboarding-headless-query
+  template:
+    metadata:
+      labels:
+        app: onboarding-headless-query
+      name: onboarding-headless-query
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - onboarding-headless-query
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: onboarding-headless-query-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.onboardingHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.onboardingHeadless.ports.graphql }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --tx-life-time=10
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.onboardingHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
+        imagePullPolicy: IfNotPresent
+        name: onboarding-headless-query
+        ports:
+        - containerPort: {{ $.Values.onboardingHeadless.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.onboardingHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.onboardingHeadless.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: onboarding-headless-query-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: r6g.xlarge
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: onboarding-headless-query-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.onboardingHeadless.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: onboarding-headless-transfer
+  name: onboarding-headless-transfer
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: onboarding-headless-transfer
+  serviceName: onboarding-headless-transfer
+  template:
+    metadata:
+      labels:
+        app: onboarding-headless-transfer
+      name: onboarding-headless-transfer
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - onboarding-headless-transfer
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: onboarding-headless-transfer-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.onboardingHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.onboardingHeadless.ports.graphql }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --tx-life-time=10
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.onboardingHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
+        imagePullPolicy: IfNotPresent
+        name: onboarding-headless-transfer
+        ports:
+        - containerPort: {{ $.Values.onboardingHeadless.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.onboardingHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.onboardingHeadless.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: onboarding-headless-transfer-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5.large
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: onboarding-headless-transfer-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.onboardingHeadless.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---
+{{ end }}
