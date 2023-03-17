@@ -5,7 +5,7 @@
 
 clusterName: "9c-internal-v2"
 logLevel: "debug"
-appProtocolVersion: "1166/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCICdqE4IJiwoHDhDN.FyYLHdOYGBK3UXLweg0lVJUguzUAiBw99yAH0F18rR.wItcp.7U95+Nh2PM5e.h.Xv.ieVXWQ==/ZHU4OmxhdW5jaGVydTQyOjEvNTk1OTY0OWE3NTE5NWE3YTUzYzU2Nzk0NmU3ZTVhZWRiMjFhYTU3ZXU2OnBsYXllcnU0MjoxL2E2ZGY4MmM5ZTBjZjQ0OGQ4M2RjNDU5ZDljMDk1OTIwMjU1MTcyZDJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0wOWU="
+appProtocolVersion: "1167/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIEvgSYKx8DNZ649QjJESIM2cKCSEK5jQOk5EqPccexzXAiA4gwme70CTjjnHHXDZ4ZIgwSMTULWy5ewiSsuGGhyfug==/ZHU4OmxhdW5jaGVydTQyOjEvMjQ0MzU0NTYxMTVlZDdhNTI1MDEwNjk2ZTAzNGE0Y2VlMTc3N2Y5MXU2OnBsYXllcnU0MjoxL2M1NDdmYjRlNjg2YjZkYjYzNjE1N2QzYzZiYWUzODU4YWY2MTJiY2N1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0xN2U="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
@@ -23,7 +23,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: false
+  resetSnapshot: true
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
@@ -43,7 +43,7 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-556acc7b0eeadd6643762ed2ccc0f18708325383"
 
   consensusSeedStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
@@ -128,7 +128,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-556acc7b0eeadd6643762ed2ccc0f18708325383"
 
   # host domains if not using turn servers
   hosts: []
@@ -167,7 +167,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-556acc7b0eeadd6643762ed2ccc0f18708325383"
   
   # dotnet args
 
@@ -211,7 +211,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-8113e13db8ae1934b1dc6768e3bba3786bea4f11"
+    tag: "git-4d681333c35b87b9cca6e682e5f28c8527b35f54"
 
   db:
     storage: 1000Gi
@@ -228,7 +228,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-556acc7b0eeadd6643762ed2ccc0f18708325383"
   
   # dotnet args
 
@@ -264,11 +264,10 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-03d909bc7d0228eb8f070b9ef897c6cb484657d0
+    tag: git-58e5b74b4d9b9279c9a806d6cfa96c9e73c73f3d
   db:
     size: 1Gi
     # if not using external-secrets, uncomment and fill the fields below
     # database: ""
     # user: ""
     # connection-string: ""
-
