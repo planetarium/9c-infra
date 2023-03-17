@@ -38,7 +38,7 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 validator:
-  count: 4
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
