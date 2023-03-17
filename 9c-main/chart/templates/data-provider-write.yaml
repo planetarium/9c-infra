@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: data-provider-write
+  name: data-provider-write
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: data-provider-write
+  serviceName: data-provider-write
+  template:
+    metadata:
+      labels:
+        app: data-provider-write
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider-write
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-write-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
+          && /app/NineChronicles.DataProvider.Executable
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: NC_StorePath
+          value: /data/data-provider
+        - name: NC_AppProtocolVersionToken
+          value: {{ $.Values.appProtocolVersion }}
+        - name: NC_Confirmations
+          value: '0'
+        {{ range $idx, $peer := $.Values.peerStrings }}
+        - name: NC_PeerStrings__{{ $idx }}
+          value: {{ $peer}}
+        {{ end }}
+        - name: NC_Preload
+          value: 'false'
+        - name: NC_NoMiner
+          value: 'true'
+        - name: NC_Render
+          value: "{{ $.Values.dataProvider.render }}"
+        - name: NC_NetworkType
+          value: "{{ $.Values.networkType }}"
+        - name: NC_TrustedAppProtocolVersionSigners__0
+          value: {{ $.Values.trustedAppProtocolVersionSigner }}
+        - name: NC_GenesisBlockPath
+          value: {{ $.Values.genesisBlockPath }}
+        - name: NC_BlockInsertInterval
+          value: '10'
+        - name: NC_TxLifeTime
+          value: '10'
+        - name: NC_MySqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              key: write-value
+              name: data-provider
+        - name: DP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: write-host
+              name: data-provider
+        - name: DP_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: data-provider
+        - name: DP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: data-provider
+        - name: DP_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: data-provider
+        - name: DP_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: data-provider
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\ntest=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{test}\"\
+              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.test'\n\
+              )\"\nif [[ -n $test ]]; then\n  echo \"DataProvider query successful!\"\
+              \nelse\n  echo \"DataProvider query unsuccessful!\"\nfi\n[[ -n $test\
+              \ ]]\n"
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          timeoutSeconds: 60
+        name: data-provider-write
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 10Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bin/check_chain_tip.sh
+          name: data-provider-script-volume
+          readOnly: true
+          subPath: check_chain_tip.sh
+        - mountPath: /data
+          name: data-provider-write-data
+      nodeSelector:
+        node.kubernetes.io/instance-type: c7g.2xlarge
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-provider-script-volume
+        configMap:
+          defaultMode: 488
+          name: {{ $.Chart.Name }}-data-provider-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: data-provider-write-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.dataProvider.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---

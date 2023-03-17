@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: argocd
 resources:
   - namespace.yaml
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.2.2/manifests/ha/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.6.4/manifests/ha/install.yaml
   - kubernetes-external-secrets.yaml
 patchesJson6902:
   - target:
