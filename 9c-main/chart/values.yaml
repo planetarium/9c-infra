@@ -41,7 +41,7 @@ snapshot:
   aws_secret_access_key: ""
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
-volumeReclaimPolicy: "Delete"
+volumeReclaimPolicy: "Retain"
 
 seed:
   count: 3
