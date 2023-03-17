@@ -52,9 +52,9 @@ node_groups = {
     instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 6
+    desired_size      = 7
     min_size          = 0
-    max_size          = 6
+    max_size          = 7
     ami_type          = "AL2_ARM_64"
   }
 
