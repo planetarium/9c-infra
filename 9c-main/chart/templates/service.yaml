@@ -18,6 +18,9 @@ spec:
   - port: {{ $.Values.seed.ports.node }}
     targetPort: {{ $.Values.seed.ports.node }}
     name: node
+  - port: {{ $.Values.seed.ports.graphql }}
+    targetPort: {{ $.Values.seed.ports.graphql }}
+    name: graphql
   selector:
     app: tcp-seed-{{ $index }}
   type: LoadBalancer
