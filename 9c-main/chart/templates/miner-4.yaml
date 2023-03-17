@@ -55,6 +55,9 @@ spec:
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
+        {{- else }}
+        - --host=9c-main-miner-4.nine-chronicles.com
+        {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
         - --no-miner=true
         - --store-path=/data/miner
@@ -134,5 +137,3 @@ spec:
           storage: {{ $.Values.miner.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
----
-{{ end }}

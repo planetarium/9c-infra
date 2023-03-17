@@ -83,7 +83,7 @@ seed:
 
 miner:
   count: 1
-  useTurnServer: true
+  useTurnServer: false
 
   image:
     repository: planetariumhq/ninechronicles-headless

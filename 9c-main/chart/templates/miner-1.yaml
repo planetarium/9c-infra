@@ -55,8 +55,11 @@ spec:
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
+        {{- else }}
+        - --host=9c-main-miner-1.nine-chronicles.com
+        {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
-        - --no-miner=false
+        - --no-miner=true
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
@@ -130,5 +133,3 @@ spec:
           storage: {{ $.Values.miner.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
----
-{{ end }}

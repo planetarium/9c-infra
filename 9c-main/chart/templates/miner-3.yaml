@@ -55,6 +55,9 @@ spec:
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
+        {{- else }}
+        - --host=9c-main-miner-3.nine-chronicles.com
+        {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
         - --no-miner=true
         - --store-path=/data/miner
@@ -87,6 +90,14 @@ spec:
           {{- end }}
         image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
         name: main-miner-3
         ports:
         - containerPort: {{ $.Values.miner.ports.headless }}
@@ -104,6 +115,10 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: main-miner-3-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
       nodeSelector:
         node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
@@ -136,5 +151,3 @@ spec:
           storage: {{ $.Values.miner.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
----
-{{ end }}
