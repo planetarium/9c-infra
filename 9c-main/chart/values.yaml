@@ -257,6 +257,7 @@ fullState:
   affinity: {}
 
 onboardingHeadless:
+  enabled: true
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
@@ -268,12 +269,6 @@ onboardingHeadless:
   extraArgs: []
   # - --key=val
 
-  useTurnServer: true
-
-  hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
-
   ports:
     headless: 31234
     graphql: 80
@@ -283,7 +278,7 @@ onboardingHeadless:
 
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 6Gi
 
   nodeSelector:
