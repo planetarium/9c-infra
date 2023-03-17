@@ -66,6 +66,10 @@ spec:
             - $(SLACK_WEBHOOK_URL)
             - $(CF_DISTRIBUTION_ID)
             - $(SLACK_TOKEN)
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
             command:
             - /bin/upload_snapshot.sh
             env:
