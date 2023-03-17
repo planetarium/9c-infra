@@ -5,7 +5,7 @@
 
 clusterName: "9c-internal-v2"
 logLevel: "debug"
-appProtocolVersion: "1167/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIEvgSYKx8DNZ649QjJESIM2cKCSEK5jQOk5EqPccexzXAiA4gwme70CTjjnHHXDZ4ZIgwSMTULWy5ewiSsuGGhyfug==/ZHU4OmxhdW5jaGVydTQyOjEvMjQ0MzU0NTYxMTVlZDdhNTI1MDEwNjk2ZTAzNGE0Y2VlMTc3N2Y5MXU2OnBsYXllcnU0MjoxL2M1NDdmYjRlNjg2YjZkYjYzNjE1N2QzYzZiYWUzODU4YWY2MTJiY2N1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0xN2U="
+appProtocolVersion: "1167/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQD3HYQ4EAqUzuNInocpi2FRpkLNtXBk3hN6ovDowynwwAIgMgj8ibbisozq1oKJHyu34Zl3.1Ucs6CVRsIstTuMbZc=/ZHU4OmxhdW5jaGVydTQyOjEvODU2ZGVmMTAxMDI5MTFjNmVmNTkxY2RjOTdmMjUzYjg1MGY3MzJkOHU2OnBsYXllcnU0MjoxL2M1NDdmYjRlNjg2YjZkYjYzNjE1N2QzYzZiYWUzODU4YWY2MTJiY2N1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0xN2U="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
@@ -23,7 +23,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: true
+  resetSnapshot: false
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
