@@ -31,7 +31,7 @@ spec:
             - name: DOTNET_gcServer
               value: "1"
             - name: RpcConfig__Host
-              value: 9c-main-rpc-31.nine-chronicles.com
+              value: 9c-internal-rpc-1.nine-chronicles.com
             - name: RpcConfig__Port
               value: "31238"
             - name: WorkerConfig__SyncShop
