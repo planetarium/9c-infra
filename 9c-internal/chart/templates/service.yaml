@@ -11,7 +11,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
   - port: {{ $.Values.seed.ports.node }}
@@ -41,7 +40,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
   - port: {{ $.Values.miner.ports.headless }}
@@ -71,7 +69,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
   - port: {{ $.Values.validator.ports.headless }}
@@ -134,6 +131,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
 spec:
   ports:
   - name: graphql
@@ -151,7 +152,9 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.26.1 (HEAD)
-  creationTimestamp: null
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
   labels:
     io.kompose.service: data-provider-db
   name: data-provider-db
@@ -178,7 +181,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
   - name: graphql
@@ -203,7 +205,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
     - name: http
@@ -224,7 +225,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
 spec:
   ports:
     - name: "5432"
