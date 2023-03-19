@@ -43,7 +43,7 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-fa8ac38baff25330dbe63e19c7e3fd05e7c88b24"
 
   consensusSeedStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
@@ -128,7 +128,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-fa8ac38baff25330dbe63e19c7e3fd05e7c88b24"
 
   # host domains if not using turn servers
   hosts: []
@@ -167,7 +167,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-fa8ac38baff25330dbe63e19c7e3fd05e7c88b24"
   
   # dotnet args
 
@@ -228,7 +228,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-64831670bf0c6e1ae386f6ad4d09b441d1d6ed14"
+    tag: "git-fa8ac38baff25330dbe63e19c7e3fd05e7c88b24"
   
   # dotnet args
 
