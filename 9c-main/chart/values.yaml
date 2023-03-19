@@ -325,3 +325,41 @@ bridge:
     slackBridgeObserverToken: ""
     slackWebToken: ""
     etherscanToken: ""
+
+testHeadless:
+  enabled: true
+  count: 1
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v100371-1"
+  
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  hosts:
+   - "9c-main-test-1.nine-chronicles.com"
+   - "9c-main-test-2.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}

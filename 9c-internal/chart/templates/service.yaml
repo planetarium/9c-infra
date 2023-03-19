@@ -131,6 +131,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider
+  namespace: {{ $.Chart.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -158,6 +159,7 @@ metadata:
   labels:
     io.kompose.service: data-provider-db
   name: data-provider-db
+  namespace: {{ $.Chart.Name }}
 spec:
   ports:
     - name: "3306"

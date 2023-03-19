@@ -1,0 +1,159 @@
+{{ range $idx := until (int .Values.testHeadless.count) }}
+{{ $index := add $idx 1 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: test-headless-{{ $index }}
+  name: test-headless-{{ $index }}
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: test-headless-{{ $index }}
+  serviceName: test-headless-{{ $index }}
+  template:
+    metadata:
+      labels:
+        app: test-headless-{{ $index }}
+      name: test-headless-{{ $index }}
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - test-headless-{{ $index }}
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.testHeadless.image.repository }}:{{ $.Values.testHeadless.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: test-headless-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.testHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- if $.Values.testHeadless.useTurnServer }}
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- else }}
+        - --host={{ index $.Values.testHeadless.hosts $idx }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.testHeadless.ports.graphql }}
+        - --rpc-server
+        - --rpc-test-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.testHeadless.ports.rpc }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
+        - --sentry-trace-sample-rate=0.5
+        - --tx-life-time=10
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.testHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.testHeadless.image.repository }}:{{ $.Values.testHeadless.image.tag }}
+        imagePullPolicy: IfNotPresent
+        name: test-headless-{{ $index }}
+        ports:
+        - containerPort: {{ $.Values.testHeadless.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.testHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        - containerPort: {{ $.Values.testHeadless.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.testHeadless.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: test-headless-data-{{ $index }}
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        env:
+        - name: IpRateLimiting__EnableRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "15"
+      nodeSelector:
+        node.kubernetes.io/instance-type: r6g.xlarge
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: test-headless-data-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.testHeadless.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+
+---
+{{ end }}

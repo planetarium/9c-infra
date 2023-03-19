@@ -86,6 +86,6 @@ spec:
           nodeSelector:
             node.kubernetes.io/instance-type: m5.large
           restartPolicy: OnFailure
-  schedule: 0 * * * *
+  schedule: 30 * * * *
   successfulJobsHistoryLimit: 1
 {{ end }}
