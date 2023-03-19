@@ -216,7 +216,7 @@ data:
           --app-protocol-version="$APP_PROTOCOL_VERSION" \
           --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
           --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
+          --peer="$SEED1" \
           --network-type=Default \
           > "$HEADLESS_LOG" 2>&1 &
 

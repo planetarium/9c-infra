@@ -11,7 +11,7 @@ spec:
         spec:
           initContainers:
           - args:
-            - https://snapshots.nine-chronicles.com/internal
+            - https://snapshots.nine-chronicles.com/internal-v2-pbft
             - /data/headless
             - $(RESET_SNAPSHOT_OPTION)
             - snapshot

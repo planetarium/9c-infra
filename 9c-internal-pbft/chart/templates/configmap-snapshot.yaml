@@ -216,7 +216,7 @@ data:
           --app-protocol-version="$APP_PROTOCOL_VERSION" \
           --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
           --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
+          --peer="$SEED1" \
           --network-type=Default \
           > "$HEADLESS_LOG" 2>&1 &
 
@@ -239,7 +239,7 @@ data:
         exit 1
       fi
 
-      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
+      if timeout 180000000 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
         sleep 30
       else
         senderr "grep failed. Failed to preload." $1
@@ -349,8 +349,8 @@ data:
       "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_STATE_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal-v2-pbft/$SNAPSHOT_FILENAME.*"
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal-v2-pbft/$UPLOAD_FILENAME.*"
