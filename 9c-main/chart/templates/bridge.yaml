@@ -1,0 +1,91 @@
+{{ if .Values.bridge.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bridge-status-bot
+  namespace: {{ $.Chart.Name }}
+spec:
+  schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: bridge-status-bot
+            image: {{ $.Values.bridge.bridgeStatusBotImage.repository }}:{{ $.Values.bridge.bridgeStatusBotImage.tag }}
+            command:
+            - /scripts/bot.sh
+            args:
+            - $(ETHERSCAN_TOKEN)
+            - $(SLACK_TOKEN)
+            env:
+            - name: ETHERSCAN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bridge
+                  key: etherscan-token
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bridge
+                  key: slack-web-token
+            volumeMounts:
+            - name: bridge-status-bot-scripts
+              mountPath: /scripts/bot.sh
+              subPath: bot.sh
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5.large
+          volumes:
+          - name: bridge-status-bot-scripts
+            configMap:
+              defaultMode: 0700
+              name: bridge-status-bot-scripts
+          restartPolicy: OnFailure
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bridge-status-bot-scripts
+  namespace: {{ $.Chart.Name }}
+data:
+  bot.sh: |-
+    #!/bin/bash
+
+    curl https://raw.githubusercontent.com/planetarium/NineChronicles.EthBridge/main/bridge-status-bot/app.sh -o app.sh
+    chmod +x app.sh
+    ./app.sh "$1" "$2" "#nine-chronicles-bridge-bot-status"
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bridge-observer
+  namespace: {{ $.Chart.Name }}
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: observer
+            image: {{ $.Values.bridge.bridgeObserverImage.repository }}:{{ $.Values.bridge.bridgeObserverImage.tag }}
+            args:
+            - $(SLACK_TOKEN)
+            - nine-chronicles-bridge-bot
+            env:
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bridge
+                  key: slack-bridge-observer-token
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5.large
+          restartPolicy: OnFailure
+  schedule: 0 * * * *
+  successfulJobsHistoryLimit: 1
+{{ end }}
