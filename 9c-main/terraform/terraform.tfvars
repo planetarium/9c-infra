@@ -34,7 +34,7 @@ node_groups = {
     capacity_type     = "ON_DEMAND"
     desired_size      = 1
     min_size          = 0
-    max_size          = 1
+    max_size          = 2
     ami_type          = "AL2_ARM_64"
   }
 
@@ -54,7 +54,7 @@ node_groups = {
     capacity_type     = "ON_DEMAND"
     desired_size      = 7
     min_size          = 0
-    max_size          = 7
+    max_size          = 9
     ami_type          = "AL2_ARM_64"
   }
 
