@@ -287,14 +287,15 @@ onboardingHeadless:
   affinity: {}
 
 worldBoss:
+  enabled: true
   ports:
-    containerPort: 5000
+    targetPort: 5000
 
   image:
     repository: planetariumhq/world-boss-service
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-e6f45eaaeec08a66a0a5b3b6a0123aca4fd8570a"
+    tag: "git-dcd45759354524135d6ef2029cee451be2081474"
 
   worldBossEnv:
     databaseUrl: ""
