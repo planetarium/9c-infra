@@ -179,7 +179,7 @@ data:
     GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
     STORE_PATH="/data/headless"
     TRUSTED_APP_PROTOCOL_VERSION_SIGNER="02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
-    SEED1="033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
+    SEED1="033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
     HEADLESS="$HOME/NineChronicles.Headless.Executable"
@@ -239,7 +239,7 @@ data:
         exit 1
       fi
 
-      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
+      if timeout 180000000 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
         sleep 30
       else
         senderr "grep failed. Failed to preload." $1
