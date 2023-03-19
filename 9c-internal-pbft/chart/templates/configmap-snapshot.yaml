@@ -179,7 +179,7 @@ data:
     GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
     STORE_PATH="/data/headless"
     TRUSTED_APP_PROTOCOL_VERSION_SIGNER="02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
-    SEED1="033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+    SEED1="033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
     HEADLESS="$HOME/NineChronicles.Headless.Executable"
@@ -216,7 +216,7 @@ data:
           --app-protocol-version="$APP_PROTOCOL_VERSION" \
           --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
           --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
+          --peer="$SEED1" \
           --network-type=Default \
           > "$HEADLESS_LOG" 2>&1 &
 
@@ -349,8 +349,8 @@ data:
       "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_STATE_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal-v2-pbft/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal-v2-pbft/$SNAPSHOT_FILENAME.*"
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal-v2-pbft/$UPLOAD_FILENAME.*"
