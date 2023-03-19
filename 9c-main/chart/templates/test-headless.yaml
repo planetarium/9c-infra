@@ -72,7 +72,7 @@ spec:
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.testHeadless.ports.graphql }}
         - --rpc-server
-        - --rpc-test-server
+        - --rpc-remote-server
         - --rpc-listen-host=0.0.0.0
         - --rpc-listen-port={{ $.Values.testHeadless.ports.rpc }}
         - --no-cors
