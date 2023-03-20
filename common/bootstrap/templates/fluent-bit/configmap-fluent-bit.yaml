@@ -25,7 +25,8 @@ data:
     [INPUT]
         Name                         tail
         Tag                          application.*
-        Path                         /var/log/containers/remote-headless*, /var/log/containers/data-provider*, /var/log/containers/miner-*, /var/log/containers/tcp-seed*
+        Exclude_Path                 /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+        Path                         /var/log/containers/*.log
         Docker_Mode                  On
         Docker_Mode_Flush            5
         Docker_Mode_Parser           container_firstline
@@ -58,6 +59,11 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
+        Rule                         $kubernetes['namespace_name'] default default_application.$TAG true
+        Emitter_Name                 filter_default_namespace
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        application.*
         Rule                         $log_level ^(?!DBG)\w+$ cwl.$TAG true
         Emitter_Name                 for_cloudwatch
     [OUTPUT]
@@ -76,8 +82,103 @@ data:
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
         Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/$TAG/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format                /${CLUSTER_NAME}/$TAG[8]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .-
+
+    [INPUT]
+        Name                systemd
+        Tag                 dataplane.systemd.*
+        Systemd_Filter      _SYSTEMD_UNIT=docker.service
+        DB                  /var/fluent-bit/state/systemd.db
+        Path                /var/log/journal
+        Read_From_Tail      ${READ_FROM_TAIL}
+
+    [INPUT]
+        Name                tail
+        Tag                 dataplane.tail.*
+        Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+        Docker_Mode         On
+        Docker_Mode_Flush   5
+        Docker_Mode_Parser  container_firstline
+        Parser              docker
+        DB                  /var/fluent-bit/state/flb_dataplane_tail.db
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Rotate_Wait         30
+        storage.type        filesystem
+        Read_from_Head      ${READ_FROM_HEAD}
+
+    [FILTER]
+        Name                modify
+        Match               dataplane.systemd.*
+        Rename              _HOSTNAME                   hostname
+        Rename              _SYSTEMD_UNIT               systemd_unit
+        Rename              MESSAGE                     message
+        Remove_regex        ^((?!hostname|systemd_unit|message).)*$
+
+    [FILTER]
+        Name                aws
+        Match               dataplane.*
+        imds_version        v1
+
+    [OUTPUT]
+        Name                         s3
+        Match                        dataplane.*
+        region                       ${AWS_REGION}
+        Bucket                       fluent-bit.planetariumhq.com
+        Total_file_size              100M
+        compression                  gzip
+        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters .
+
+    [INPUT]
+        Name                tail
+        Tag                 host.dmesg
+        Path                /var/log/dmesg
+        Parser              syslog
+        DB                  /var/fluent-bit/state/flb_dmesg.db
+        Mem_Buf_Limit       5MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Read_from_Head      ${READ_FROM_HEAD}
+
+    [INPUT]
+        Name                tail
+        Tag                 host.messages
+        Path                /var/log/messages
+        Parser              syslog
+        DB                  /var/fluent-bit/state/flb_messages.db
+        Mem_Buf_Limit       5MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Read_from_Head      ${READ_FROM_HEAD}
+
+    [INPUT]
+        Name                tail
+        Tag                 host.secure
+        Path                /var/log/secure
+        Parser              syslog
+        DB                  /var/fluent-bit/state/flb_secure.db
+        Mem_Buf_Limit       5MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Read_from_Head      ${READ_FROM_HEAD}
+
+    [FILTER]
+        Name                aws
+        Match               host.*
+        imds_version        v1
+
+    [OUTPUT]
+        Name                         s3
+        Match                        host.*
+        region                       ${AWS_REGION}
+        Bucket                       fluent-bit.planetariumhq.com
+        Total_file_size              100M
+        compression                  gzip
+        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters .
   parsers.conf: |
     [PARSER]
         Name                docker
