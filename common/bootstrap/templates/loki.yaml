@@ -1,0 +1,145 @@
+{{ if .Values.loki.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: loki
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    targetRevision: 4.8.0
+    helm:
+      values: |-
+      loki:
+        auth_enabled: false
+        commonConfig:
+          path_prefix: /var/loki
+          replication_factor: 2
+        storage:
+          bucketNames:
+            admin: admin
+            chunks: {{ $.Values.loki.bucketName }}
+            ruler: ruler
+          type: s3
+        schema_config:
+          configs:
+          - from: "2022-01-11"
+            index:
+              period: 24h
+              prefix: loki_index_
+            store: boltdb-shipper
+            object_store: s3
+            schema: v12
+      
+        querier:
+          max_concurrent: 16
+      
+        query_range:
+          parallelise_shardable_queries: true
+          align_queries_with_step: true
+          cache_config:
+            embedded_cache:
+              enabled: true
+              max_size_mb: 1024
+              ttl: 1hr
+      
+      
+        query_scheduler:
+          max_outstanding_requests_per_tenant: 8192
+      
+        limits_config:
+          enforce_metric_name: false
+          max_query_parallelism: 32
+          max_query_series: 1000000
+          max_entries_limit_per_query: 100000
+          reject_old_samples: true
+          reject_old_samples_max_age: 168h
+          retention_period: 360h
+          split_queries_by_interval: 30m
+          query_timeout: 600s
+          ingestion_rate_mb: 1024
+          ingestion_burst_size_mb: 2048
+      
+        ingester:
+          concurrent_flushes: 32
+          chunk_block_size: 1310720
+          chunk_target_size: 15728640
+          index_shards: 32
+      
+        server:
+          grpc_listen_port: 9095
+          grpc_server_max_recv_msg_size: 160388078
+          grpc_server_max_send_msg_size: 160388078
+          grpc_server_max_concurrent_streams: 0
+          http_listen_port: 3100
+          http_server_read_timeout: 600s
+          http_server_write_timeout: 600s
+      
+        frontend:
+          max_outstanding_per_tenant: 8192
+      
+        frontend_worker:
+          parallelism: 16
+      
+        storage_config:
+          aws:
+            insecure: false
+            s3: s3://us-east-2/{{ $.Values.bucketName }}
+            s3forcepathstyle: true
+          boltdb_shipper:
+            active_index_directory: /var/loki/index
+            shared_store: s3
+
+      serviceAccount:
+        create: true
+        annotations:
+          eks.amazonaws.com/role-arn: "arn:aws:iam::838612679705:role/eks-{{ $.Values.clusterName }}-loki"
+      
+      write:
+        replicas: 4
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: {{ $.Values.loki.nodeGroup }}
+          
+      read:
+        replicas: 6
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: {{ $.Values.loki.nodeGroup }}
+      
+      test:
+        enabled: false
+      monitoring:
+        lokiCanary:
+          enabled: false
+        dashboards:
+          enabled: false
+        rules:
+          enabled: false
+        alerts:
+          enabled: false
+        serviceMonitor:
+          enabled: false
+        selfMonitoring:
+          enabled: false
+          lokiCanary:
+            enabled: false
+          grafanaAgent:
+            installOperator: false
+              persistence:
+                enabled: true
+                storageClassName: gp2
+              initChownData:
+                enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+---
+{{ end }}
