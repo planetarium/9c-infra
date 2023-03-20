@@ -82,8 +82,8 @@ data:
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
         Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/$TAG[8]/%Y/%m/%d/%H/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters .-
+        S3_key_format                /${CLUSTER_NAME}/$TAG[4]/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters .
 
     [INPUT]
         Name                systemd
