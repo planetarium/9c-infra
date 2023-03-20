@@ -27,7 +27,7 @@ spec:
               type: loki
               url: http://loki-gateway.monitoring.svc.cluster.local
               access: proxy
-              timeout: 600s
+              timeout: 600
             {{ end }}
         
         persistence:
