@@ -32,6 +32,11 @@ spec:
         clusterName: 9c-main-v2
         argocdPath: 9c-main
         accountId: "319679068466"
+        loki:
+          enabled: true
+          bucketName: loki.planetariumhq.com
+          nodeGroup: 9c-main-r6g_2xl_2c
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

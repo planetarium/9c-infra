@@ -4,3 +4,5 @@ argocdPath: ""
 # AWS account id
 accountId: ""
 
+loki:
+  enabled: false

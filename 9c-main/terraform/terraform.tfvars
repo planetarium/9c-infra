@@ -48,13 +48,14 @@ node_groups = {
     ami_type          = "AL2_ARM_64"
   }
 
+  # TODO: resolve node name and size mismatch
   "9c-main-r6g_2xl_2c" = {
     instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 7
+    desired_size      = 17
     min_size          = 0
-    max_size          = 9
+    max_size          = 20
     ami_type          = "AL2_ARM_64"
   }
 
