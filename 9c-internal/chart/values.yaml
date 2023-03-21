@@ -23,7 +23,7 @@ slackToken: ""
 slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: true
+  resetSnapshot: false
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
 
@@ -264,7 +264,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-8804a7c21c6ff09ba9f170a9c93c5c522ef5d933
+    tag: git-01ec8bb02d3b28f5a0c5b585cb47ec86cf8a5b65
   db:
     size: 1Gi
     # if not using external-secrets, uncomment and fill the fields below
