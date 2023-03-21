@@ -10,12 +10,12 @@ spec:
   source:
     repoURL: https://kubernetes.github.io/autoscaler
     chart: cluster-autoscaler
-    targetRevision: 9.9.2
+    targetRevision: 9.26.0
     helm:
       values: |-
         autoDiscovery:
           clusterName: {{ .Values.clusterName }}
-        awsRegion: ap-northeast-2
+        awsRegion: us-east-2
         cloudProvider: aws
         image:
           tag: v1.20.0
