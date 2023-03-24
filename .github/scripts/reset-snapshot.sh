@@ -6,7 +6,7 @@ echo "$BASEDIR"
 
 # AWS configuration must be already set on your environment
 reset_snapshot() {
-  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/internal/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
+  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/internal-v2-pbft/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
     base_url="snapshots.nine-chronicles.com/main/partition/internal"
 
     get_snapshot_value() {
@@ -58,10 +58,10 @@ reset_snapshot() {
         done
     }
 
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal."}' $3
+    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal-pbft."}' $3
     copy_snapshot $1 $2
   else
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal."}' $3
+    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal-pbft."}' $3
     ARCHIVE="archive_"$(date '+%Y%m%d%H')
     INTERNAL_PREFIX=$(echo $1/ | awk '{gsub(/\//,"\\/");print}')
     ARCHIVE_PATH=$1/$ARCHIVE/
