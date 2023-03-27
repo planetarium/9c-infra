@@ -364,3 +364,10 @@ testHeadless:
     beta.kubernetes.io/os: linux
   tolerations: []
   affinity: {}
+
+marketService:
+  enabled: true
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-03d909bc7d0228eb8f070b9ef897c6cb484657d0
