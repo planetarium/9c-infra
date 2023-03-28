@@ -5,7 +5,7 @@
 
 clusterName: "9c-main-v2"
 logLevel: "debug"
-appProtocolVersion: "100380/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIBvIzOzDSLm+J1t2Zrku3knsADCeeKiAVeVkZPgVp5kwAiAG3sIreQ8y+Z4+81ShN.ByFEkrpLa7H9k0isODM9FGtg==/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzY1OGRjZjUzMzFmZTNhOWMzNzM4MTQyZTI0Zjg0MTc0MjRjOWJhYjZ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0yN2U="
+appProtocolVersion: "100380/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDgGdpVtuL1kSfinmtfaKHRxq+lY0BqiD8mE.kbQlhaEQIgUTtDU6lzaXmT2gnupzlOW7pKINiEDRsazpQQMUe.Bes=/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoyLzEyYmM0Y2U1M2I4OTJiZjdlOTVhMGYwODVmMjc3NGZlODA4MGVlNTR1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0yOGU="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -89,7 +89,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
 
   # host domains if not using turn servers
   hosts: []
@@ -128,7 +128,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
   
   # dotnet args
 
@@ -175,7 +175,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-a109c4ec1d46f263687f77404ab30f8af7ffc58c"
+    tag: "git-afaf5cd2aab90c292ce4ff091533f4e88fb2c79c"
   
   db:
     database: ""
@@ -190,7 +190,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
   
   # dotnet args
 
@@ -226,7 +226,7 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
   
   # dotnet args
 
@@ -262,7 +262,7 @@ onboardingHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
   
   # dotnet args
 
@@ -295,7 +295,7 @@ worldBoss:
     repository: planetariumhq/world-boss-service
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-dcd45759354524135d6ef2029cee451be2081474"
+    tag: "git-ea0dad02c6dbbaf087eb531fa6e0ad64b09dd43c"
 
   worldBossEnv:
     databaseUrl: ""
@@ -334,7 +334,7 @@ testHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100380-1"
+    tag: "v100380-2"
   
   # dotnet args
 
@@ -370,4 +370,4 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-71e64b9af6218dbda83ad564f34e03448673af6f
+    tag: git-a78a869c08424ba5da8c8bc7226587d3f4356722
