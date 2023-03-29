@@ -295,7 +295,7 @@ worldBoss:
     repository: planetariumhq/world-boss-service
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-ea0dad02c6dbbaf087eb531fa6e0ad64b09dd43c"
+    tag: "git-6ce893ea4fc0e90feac3cf840a4d9c3f87985405"
 
   worldBossEnv:
     databaseUrl: ""
