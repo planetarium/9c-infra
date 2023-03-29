@@ -36,7 +36,7 @@ spec:
           enabled: true
           bucketName: loki.planetariumhq.com
           write:
-            count: 3
+            count: 4
             nodeGroup: 9c-main-r6g_2xl_2c
           read:
             count: 6
