@@ -54,4 +54,13 @@ node_groups = {
     min_size          = 0
     max_size          = 15
   }
+
+  "9c-internal-r6g_xl_2c" = {
+    instance_types    = ["r6g.xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "SPOT"
+    desired_size      = 4
+    min_size          = 0
+    max_size          = 15
+  }
 }

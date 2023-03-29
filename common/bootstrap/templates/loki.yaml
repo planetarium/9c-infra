@@ -101,14 +101,14 @@ spec:
           eks.amazonaws.com/role-arn: "arn:aws:iam::838612679705:role/eks-{{ $.Values.clusterName }}-loki"
       
       write:
-        replicas: 4
+        replicas: {{ $.Values.loki.write.count }}
         nodeSelector:
-          eks.amazonaws.com/nodegroup: {{ $.Values.loki.nodeGroup }}
+          eks.amazonaws.com/nodegroup: {{ $.Values.loki.write.nodeGroup }}
           
       read:
-        replicas: 6
+        replicas: {{ $.Values.loki.read.count }}
         nodeSelector:
-          eks.amazonaws.com/nodegroup: {{ $.Values.loki.nodeGroup }}
+          eks.amazonaws.com/nodegroup: {{ $.Values.loki.read.nodeGroup }}
       
       test:
         enabled: false
@@ -129,11 +129,6 @@ spec:
             enabled: false
           grafanaAgent:
             installOperator: false
-              persistence:
-                enabled: true
-                storageClassName: gp2
-              initChownData:
-                enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
