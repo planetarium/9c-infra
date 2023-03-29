@@ -62,5 +62,6 @@ node_groups = {
     desired_size      = 4
     min_size          = 0
     max_size          = 15
+    ami_type          = "AL2_ARM_64"
   }
 }
