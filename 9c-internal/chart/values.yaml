@@ -25,7 +25,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v100380-1
+    tag: v100381-1
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts: []
@@ -73,7 +73,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v100380-1
+    tag: v100381-1
   hosts: []
   ports:
     headless: 31234
@@ -95,7 +95,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v100380-1
+    tag: v100381-1
   extraArgs: []
   useTurnServer: true
   hosts: []
@@ -123,7 +123,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
-    tag: v100380-1
+    tag: v100381-1
   db:
     storage: 1000Gi
     database: ''
@@ -136,7 +136,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v100380-1
+    tag: v100381-1
   extraArgs: []
   useTurnServer: true
   hosts: []
