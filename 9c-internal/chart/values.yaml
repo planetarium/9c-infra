@@ -21,7 +21,7 @@ snapshot:
   aws_secret_access_key: ''
 volumeReclaimPolicy: Retain
 validator:
-  count: 1
+  count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
