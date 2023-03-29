@@ -35,7 +35,12 @@ spec:
         loki:
           enabled: true
           bucketName: loki.planetariumhq.com
-          nodeGroup: 9c-main-r6g_2xl_2c
+          write:
+            count: 3
+            nodeGroup: 9c-main-r6g_2xl_2c
+          read:
+            count: 6
+            nodeGroup: 9c-main-r6g_2xl_2c
 
   destination:
     server: https://kubernetes.default.svc
