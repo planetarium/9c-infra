@@ -1,264 +1,159 @@
-# Default values for libplanet-seed.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-
-clusterName: "9c-internal-v2"
-logLevel: "debug"
-appProtocolVersion: "1172/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCHcsITL9oRSToFiQtiA1SXtg75RLHOyiKW.2UcTsfjGgIgNK1mbineLJhmdhJMG.k9es+WC+MGPPhjGXNCskcuAa4=/ZHU4OmxhdW5jaGVydTQyOjEvMDE5NWIwODJjZjFiYTI5NDVkYjA4ZTI3MTBkMzQ5NGZjYjkxNWFiMXU2OnBsYXllcnU0MjoxLzRkZmQ0NTlmNDA5YWNkZTI2NzAxNTVmMjdlMjdhMTIxNzIwOTNmYTR1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0yNGU="
-genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
-trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
-
+clusterName: 9c-internal-v2
+logLevel: debug
+appProtocolVersion: 1172/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCHcsITL9oRSToFiQtiA1SXtg75RLHOyiKW.2UcTsfjGgIgNK1mbineLJhmdhJMG.k9es+WC+MGPPhjGXNCskcuAa4=/ZHU4OmxhdW5jaGVydTQyOjEvMDE5NWIwODJjZjFiYTI5NDVkYjA4ZTI3MTBkMzQ5NGZjYjkxNWFiMXU2OnBsYXllcnU0MjoxLzRkZmQ0NTlmNDA5YWNkZTI2NzAxNTVmMjdlMjdhMTIxNzIwOTNmYTR1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0yNGU=
+genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
+trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
-
+- 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234
 iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-
+- turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478
 networkType: Internal
 consensusType: pow
-
 useExternalSecret: true
-slackToken: ""
-slackWebHookUrl: ""
-
+slackToken: ''
+slackWebHookUrl: ''
 snapshot:
   resetSnapshot: false
-  slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
-
-  # aws information for uploading snapshot
-  # Do not upload values below filled
-  # recommended to obtain from ExternalSecret
-  cfDistributionId: ""
-  aws_access_key_id: ""
-  aws_secret_access_key: ""
-
-# if you want to delete PVC with the volume provisioned together, set this value "Delete"
-volumeReclaimPolicy: "Retain"
-
+  slackChannel: 9c-internal
+  image: planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7
+  cfDistributionId: ''
+  aws_access_key_id: ''
+  aws_secret_access_key: ''
+volumeReclaimPolicy: Retain
 validator:
   count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d303340ff7c0567ef02955501c7c350c0665ae0b"
-
+    tag: v100370-1
   consensusSeedStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
-  
-  # if $.Values.consensusType is "pbft", fill this value correctly.
-  # same count with $.Values.validator.count.
+  - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts: []
-  # - "<validator-1 hostname>"
-  # - "<validator-2 hostname>"
-  # - "<validator-3 hostname>"
-  # - "<validator-4 hostname>"
-
   ports:
     headless: 31234
     graphql: 80
     gossip: 6000
-
-  # dotnet args
-
   extraArgs: []
-  # - --key=val
-
-  # private keys if not using External Secrets
   privateKeys: []
-  # - "<private key>"
-
   storage:
     data: 500Gi
-
   env: []
-
   resources:
     requests:
       cpu: 2
       memory: 8Gi
-  
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
 seed:
   count: 1
   useTurnServer: true
   image:
     repository: planetariumhq/libplanet-seed
-    pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
-
+    pullPolicy: IfNotPresent
+    tag: git-299318d9a031a6d38cfbad252e04730990a6af47
   hosts: []
-  #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
-
   ports:
     node: 31234
     gossip: 31235
     graphql: 31237
-
-  # dotnet args
   workerCount: 1000
-
   extraArgs: []
-  # - --key=val
-
-  # enter private keys if not using External Secrets
   privateKeys: []
-  # - "private key"
-
   env: []
-
   resources:
     requests:
       cpu: 1
-
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
 miner:
   count: 1
   useTurnServer: true
-
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d303340ff7c0567ef02955501c7c350c0665ae0b"
-
-  # host domains if not using turn servers
+    tag: v100370-1
   hosts: []
-  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
-
   ports:
     headless: 31234
     graphql: 80
-
-  # dotnet args
-
   extraArgs: []
-  # - --key=val
-
-  # private keys if not using External Secrets
   privateKeys: []
-  # - "private key"
-
   storage:
     data: 500Gi
-
   env: []
-
   resources:
     requests:
       cpu: 2
       memory: 8Gi
-  
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
 remoteHeadless:
   count: 2
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d303340ff7c0567ef02955501c7c350c0665ae0b"
-  
-  # dotnet args
-
+    tag: v100370-1
   extraArgs: []
-  # - --key=val
-
   useTurnServer: true
-
   hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
-
   ports:
     headless: 31234
     graphql: 80
     rpc: 31238
-
   storage:
     data: 500Gi
     log: 4Gi
-
   resources:
     requests:
       cpu: 2
       memory: 8Gi
-
   nodeSelector:
     beta.kubernetes.io/os: linux
   tolerations: []
   affinity: {}
-
 dataProvider:
   enabled: true
   render: true
-
   storage:
     data: 1000Gi
     log: 4Gi
-
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-54ad793b38d8aa33619cc6ab0a24df40b9ca3e29"
-
+    tag: git-afaf5cd2aab90c292ce4ff091533f4e88fb2c79c
   db:
     storage: 1000Gi
-
-    database: ""
-    connectionString: ""
-    host: ""
+    database: ''
+    connectionString: ''
+    host: ''
     port: 3306
     user: user
-    password: ""
-
+    password: ''
 explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-d303340ff7c0567ef02955501c7c350c0665ae0b"
-  
-  # dotnet args
-
+    tag: v100370-1
   extraArgs: []
-  # - --key=val
-
   useTurnServer: true
-
   hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
-
   ports:
     headless: 31234
     graphql: 80
-
   storage:
     data: 500Gi
     log: 4Gi
-
   resources:
     requests:
       cpu: 2
       memory: 8Gi
-
   nodeSelector:
     beta.kubernetes.io/os: linux
   tolerations: []
   affinity: {}
-
 marketService:
   enabled: true
   image:
@@ -267,7 +162,3 @@ marketService:
     tag: git-eac09e9bc8ec5d29a5aaeb74dd6425da00e55078
   db:
     size: 1Gi
-    # if not using external-secrets, uncomment and fill the fields below
-    # database: ""
-    # user: ""
-    # connection-string: ""
