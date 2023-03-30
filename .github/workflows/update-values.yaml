@@ -32,7 +32,7 @@ jobs:
           bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-cmd }}"
 
       - name: Update values
-        uses: planetarium/9c-toolbelt@main
+        uses: planetarium/9c-toolbelt@ci-test
         with:
           COMMAND_LIST: "k8s update-values ${{ steps.make-args.outputs.K8S_CMD_ARGS }}"
           ENV: production
