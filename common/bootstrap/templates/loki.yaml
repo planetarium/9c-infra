@@ -107,14 +107,14 @@ spec:
         nodeSelector:
           eks.amazonaws.com/nodegroup: {{ $.Values.loki.write.nodeGroup }}
         resources:
-          {{- toYaml $.Values.write.resources | nindent 10 }}
+          {{- toYaml $.Values.loki.write.resources | nindent 10 }}
           
       read:
         replicas: {{ $.Values.loki.read.count }}
         nodeSelector:
           eks.amazonaws.com/nodegroup: {{ $.Values.loki.read.nodeGroup }}
         resources:
-          {{- toYaml $.Values.read.resources | nindent 10 }}
+          {{- toYaml $.Values.loki.read.resources | nindent 10 }}
       
       test:
         enabled: false
