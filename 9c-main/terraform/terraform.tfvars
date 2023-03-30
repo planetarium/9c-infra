@@ -23,7 +23,7 @@ node_groups = {
     instance_types    = ["m5.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 6
+    desired_size      = 11
     min_size          = 0
     max_size          = 12
   }
