@@ -17,8 +17,8 @@ on:
         description: 'Dataprovider tag to change'
       seed-branch:
         description: 'Seed branch to change'
-      manual-cmd:
-        description: 'Manual command e.g. ninechronicles-dataprovider/from tag 1'
+      manual-args:
+        description: 'Manual command e.g. "ninechronicles-dataprovider/from tag 1"'
 
 jobs:
   update-values-file:
@@ -26,21 +26,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: make-cmd
-        id: extract
+      - name: make-args
+        id: make-args
         run: |
-          sh ./scripts/make-k8s-cmd.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-cmd }}"
+          sh ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-cmd }}"
 
       - name: Update values
         uses: planetarium/9c-toolbelt@main
         with:
-          COMMAND_LIST: "k8s update-values ${{ steps.make-cmd.outputs.K8S_CMD }}"
+          COMMAND_LIST: "k8s update-values ${{ steps.make-args.outputs.K8S_CMD }}"
           ENV: production
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
-          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
-          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
