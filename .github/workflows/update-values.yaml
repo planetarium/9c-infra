@@ -14,11 +14,11 @@ on:
       headless-tag:
         description: 'Headless tag to change'
       dataprovider-tag:
-        description: 'Headless tag to change'
+        description: 'Dataprovider tag to change'
       seed-branch:
         description: 'Seed branch to change'
       manual-cmd:
-        description: 'ninechronicles-dataprovider/from tag v100381-1,ninechronicles-headless/from tag v100381-1'
+        description: 'Manual command e.g. ninechronicles-dataprovider/from tag 1'
 
 jobs:
   update-values-file:

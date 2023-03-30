@@ -27,4 +27,4 @@ else
 fi
 
 echo $file_path $sources
-echo "K8S_CMD=$sources" >> $GITHUB_OUTPUT
+echo "K8S_CMD=$file_path $sources" >> $GITHUB_OUTPUT
