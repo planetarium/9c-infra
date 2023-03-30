@@ -1,11 +1,11 @@
 #!/bin/bash
 set -ex
 
-NETWORK=$1
-HEADLESS_TAG=$2
-DATAPROVIDER_TAG=$3
-SEED_BRANCH=$4
-MANUAL_CMD=$5
+NETWORK="$1"
+HEADLESS_TAG="$2"
+DATAPROVIDER_TAG="$3"
+SEED_BRANCH="$4"
+MANUAL_CMD="$5"
 
 file_path="'9c-infra/$NETWORK/chart/values.yaml'"
 sources=""
@@ -26,5 +26,5 @@ else
     fi
 fi
 
-echo $file_path $sources
-echo "K8S_CMD=$file_path $sources" >> $GITHUB_OUTPUT
+K8S_CMD="$file_path $sources"
+echo "K8S_CMD=$K8S_CMD" >> $GITHUB_OUTPUT
