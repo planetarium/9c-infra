@@ -1,0 +1,177 @@
+{{ range $idx := until (int .Values.validator.count) }}
+{{ $index := add $idx 1 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: validator-{{ $index }}
+  name: validator-{{ $index }}
+  namespace: {{ $.Chart.Name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: validator-{{ $index }}
+  serviceName: validator-{{ $index }}
+  template:
+    metadata:
+      labels:
+        app: validator-{{ $index }}
+      name: validator-{{ $index }}
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/validator
+        - $(RESET_SNAPSHOT_OPTION)
+        - validator-{{ $index }}
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.validator.image.repository }}:{{ $.Values.validator.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: validator-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.snapshot.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        {{- if eq $.Values.consensusType "pbft" }}
+        - --host={{ index $.Values.validator.hosts $idx }}
+        {{- else }}
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- end }}
+        - --port={{ $.Values.validator.ports.headless }}
+        - --store-path=/data/validator
+        - --store-type=rocksdb
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.validator.ports.graphql }}
+        {{- if eq $.Values.consensusType "pbft" }}
+        - --swarm-private-key
+        - $(PRIVATE_KEY)
+        - --miner-private-key
+        - $(PRIVATE_KEY)
+        - --consensus-private-key
+        - $(PRIVATE_KEY)
+        - --consensus-port={{ $.Values.validator.ports.gossip }}
+        {{- range $.Values.validator.consensusSeedStrings }}
+        - --consensus-seed={{ . }}
+        {{- end }}
+        {{- end }}
+        {{- with $.Values.validator.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        - --network-type={{ $.Values.networkType }}
+        command:
+          - dotnet
+        env:
+          - name: PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: validator-private-key-{{ $index }}
+                name: private-keys
+          {{- with $.Values.validator.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        image: {{ $.Values.validator.image.repository }}:{{ $.Values.validator.image.tag }}
+        imagePullPolicy: IfNotPresent
+        name: validator-{{ $index }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        ports:
+        - containerPort: {{ $.Values.validator.ports.headless }}
+          name: headless
+          protocol: TCP
+        - containerPort: {{ $.Values.validator.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        {{- if eq $.Values.consensusType "pbft" }}
+        - containerPort: {{ $.Values.validator.ports.gossip }}
+          name: gossip
+          protocol: TCP
+        {{- end }}
+        resources:
+          {{- toYaml $.Values.validator.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: validator-data-{{ $index }}
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5.large
+      dnsPolicy: ClusterFirst
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+      imagePullSecrets:
+      - name: acr-regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: validator-data-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.validator.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---
+{{ end }}
