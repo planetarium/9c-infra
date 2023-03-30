@@ -6,3 +6,17 @@ accountId: ""
 
 loki:
   enabled: false
+  write:
+    resources:
+      requests:
+        cpu: 1500m
+        memory: 6Gi
+  read:
+    resources:
+      requests:
+        cpu: 1500m
+        memory: 8Gi
+      limits:
+        cpu: 1500m
+        memory: 8Gi
+      

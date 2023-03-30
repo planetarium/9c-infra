@@ -62,8 +62,8 @@ spec:
           retention_period: 360h
           split_queries_by_interval: 30m
           query_timeout: 600s
-          ingestion_rate_mb: 1024
-          ingestion_burst_size_mb: 2048
+          ingestion_rate_mb: 128
+          ingestion_burst_size_mb: 140
       
         ingester:
           concurrent_flushes: 32
@@ -82,9 +82,11 @@ spec:
       
         frontend:
           max_outstanding_per_tenant: 8192
+          scheduler_worker_concurrency: 32
       
         frontend_worker:
           parallelism: 16
+          match_max_concurrent: false
       
         storage_config:
           aws:
@@ -104,11 +106,15 @@ spec:
         replicas: {{ $.Values.loki.write.count }}
         nodeSelector:
           eks.amazonaws.com/nodegroup: {{ $.Values.loki.write.nodeGroup }}
+        resources:
+          {{- toYaml $.Values.write.resources | nindent 10 }}
           
       read:
         replicas: {{ $.Values.loki.read.count }}
         nodeSelector:
           eks.amazonaws.com/nodegroup: {{ $.Values.loki.read.nodeGroup }}
+        resources:
+          {{- toYaml $.Values.read.resources | nindent 10 }}
       
       test:
         enabled: false
