@@ -32,6 +32,15 @@ spec:
         clusterName: 9c-internal-v2
         argocdPath: 9c-internal
         accountId: "319679068466"
+        loki:
+          enabled: true
+          bucketName: loki-dev.planetariumhq.com
+          write:
+            count: 2
+            nodeGroup: 9c-internal-r6g_xl_2c
+          read:
+            count: 3
+            nodeGroup: 9c-internal-r6g_xl_2c
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

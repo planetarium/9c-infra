@@ -37,10 +37,10 @@ spec:
           bucketName: loki.planetariumhq.com
           write:
             count: 4
-            nodeGroup: 9c-main-r6g_2xl_2c
+            nodeGroup: 9c-main-r6g_xl_2c
           read:
             count: 6
-            nodeGroup: 9c-main-r6g_2xl_2c
+            nodeGroup: 9c-main-r6g_xl_2c
 
   destination:
     server: https://kubernetes.default.svc
