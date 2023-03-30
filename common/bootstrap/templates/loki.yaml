@@ -98,7 +98,7 @@ spec:
       serviceAccount:
         create: true
         annotations:
-          eks.amazonaws.com/role-arn: "arn:aws:iam::838612679705:role/eks-{{ $.Values.clusterName }}-loki"
+          eks.amazonaws.com/role-arn: "arn:aws:iam::{{ $.Values.accountId }}:role/eks-{{ $.Values.clusterName }}-loki"
       
       write:
         replicas: {{ $.Values.loki.write.count }}
