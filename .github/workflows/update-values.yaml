@@ -1,0 +1,46 @@
+name: Update values
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        required: true
+        description: 'Release network'
+        default: '9c-internal'
+        type: choice
+        options:
+        - 9c-main
+        - 9c-internal
+        - 9c-sample
+      headless-tag:
+        description: 'Headless tag to change'
+      dataprovider-tag:
+        description: 'Headless tag to change'
+      seed-branch:
+        description: 'Seed branch to change'
+      manual-cmd:
+        description: 'ninechronicles-dataprovider/from tag v100381-1,ninechronicles-headless/from tag v100381-1'
+
+jobs:
+  update-values-file:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: make-cmd
+        id: extract
+        run: |
+          sh ./scripts/make-k8s-cmd.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-cmd }}"
+
+      - name: Update values
+        uses: planetarium/9c-toolbelt@main
+        with:
+          COMMAND_LIST: "k8s update-values ${{ steps.make-cmd.outputs.K8S_CMD }}"
+          ENV: production
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
+          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
