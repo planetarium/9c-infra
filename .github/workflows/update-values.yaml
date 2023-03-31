@@ -2,9 +2,9 @@ name: Update values
 on:
   workflow_dispatch:
     inputs:
-      network:
+      dir:
         required: true
-        description: 'Release network'
+        description: 'Dir'
         default: '9c-internal'
         type: choice
         options:
@@ -17,6 +17,11 @@ on:
         description: 'Dataprovider tag to change'
       seed-branch:
         description: 'Seed branch to change'
+      bump-apv:
+        required: true
+        description: 'Bump APV'
+        default: true
+        type: boolean
       manual-args:
         description: 'Manual arguments e.g. "ninechronicles-dataprovider/from tag 1", delimiter is "|"'
 
@@ -29,7 +34,7 @@ jobs:
       - name: make-args
         id: make-args
         run: |
-          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-args }}"
+          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.bump-apv }}" "${{ github.event.inputs.dir }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-args }}"
 
       - name: Update values
         uses: planetarium/9c-toolbelt@main
