@@ -18,7 +18,7 @@ on:
       seed-branch:
         description: 'Seed branch to change'
       manual-args:
-        description: 'Manual command e.g. "ninechronicles-dataprovider/from tag 1"'
+        description: 'Manual arguments e.g. "ninechronicles-dataprovider/from tag 1", delimiter is "|"'
 
 jobs:
   update-values-file:
@@ -32,7 +32,7 @@ jobs:
           bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-args }}"
 
       - name: Update values
-        uses: planetarium/9c-toolbelt@ci-test
+        uses: planetarium/9c-toolbelt@main
         with:
           COMMAND_LIST: "k8s|update-values|${{ steps.make-args.outputs.K8S_CMD_ARGS }}"
           ENV: production
