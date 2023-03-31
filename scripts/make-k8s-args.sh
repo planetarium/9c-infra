@@ -22,7 +22,7 @@ else
     fi
 
     if [ "$SEED_BRANCH" ]; then
-        sources="libplanet-seed/from tag $SEED_BRANCH|$sources"
+        sources="libplanet-seed/from branch $SEED_BRANCH|$sources"
     fi
 fi
 

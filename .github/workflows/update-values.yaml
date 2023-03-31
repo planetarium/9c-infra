@@ -29,7 +29,7 @@ jobs:
       - name: make-args
         id: make-args
         run: |
-          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-cmd }}"
+          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.network }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-args }}"
 
       - name: Update values
         uses: planetarium/9c-toolbelt@ci-test
