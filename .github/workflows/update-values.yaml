@@ -34,7 +34,7 @@ jobs:
       - name: Update values
         uses: planetarium/9c-toolbelt@ci-test
         with:
-          COMMAND_LIST: "k8s update-values ${{ steps.make-args.outputs.K8S_CMD_ARGS }}"
+          COMMAND_LIST: "k8s|update-values|${{ steps.make-args.outputs.K8S_CMD_ARGS }}"
           ENV: production
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
