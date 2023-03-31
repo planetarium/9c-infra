@@ -83,9 +83,10 @@ data:
         Bucket                       fluent-bit.planetariumhq.com
         compression                  gzip
         Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/$TAG[6]/%Y/%m/%d/%H/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters ._
-
+        path                         /${CLUSTER_NAME}/${kubernetes['container_name']}/
+        S3_key_format                %Y/%m/%d/%H
+        S3_key_format_tag_delimiters .-
+        use_put_object               On
     [INPUT]
         Name                systemd
         Tag                 dataplane.systemd.*
