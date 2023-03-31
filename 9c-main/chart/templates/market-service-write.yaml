@@ -3,19 +3,19 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: market-service
-  name: market-service
+    app: market-service-write
+  name: market-service-write
   namespace: {{ $.Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: market-service
-  serviceName: market-service
+      app: market-service-write
+  serviceName: market-service-write
   template:
     metadata:
       labels:
-        app: market-service
+        app: market-service-write
     spec:
       containers:
         - args:
@@ -35,11 +35,11 @@ spec:
             - name: RpcConfig__Port
               value: "31238"
             - name: WorkerConfig__SyncShop
-              value: "false"
+              value: "true"
             - name: WorkerConfig__SyncProduct
-              value: "false"
+              value: "true"
           image: {{ $.Values.marketService.image.repository }}:{{ $.Values.marketService.image.tag }}
-          name: market-service
+          name: market-service-write
           ports:
             - containerPort: 80
       restartPolicy: Always
