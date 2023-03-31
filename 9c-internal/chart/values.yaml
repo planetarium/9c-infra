@@ -1,6 +1,6 @@
 clusterName: 9c-internal-v2
 logLevel: debug
-appProtocolVersion: 1172/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCHcsITL9oRSToFiQtiA1SXtg75RLHOyiKW.2UcTsfjGgIgNK1mbineLJhmdhJMG.k9es+WC+MGPPhjGXNCskcuAa4=/ZHU4OmxhdW5jaGVydTQyOjEvMDE5NWIwODJjZjFiYTI5NDVkYjA4ZTI3MTBkMzQ5NGZjYjkxNWFiMXU2OnBsYXllcnU0MjoxLzRkZmQ0NTlmNDA5YWNkZTI2NzAxNTVmMjdlMjdhMTIxNzIwOTNmYTR1OTp0aW1lc3RhbXB1MTA6MjAyMy0wMy0yNGU=
+appProtocolVersion: 2/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIGoUzOZ7tiFYt1o+6GOREG2iU+DdYyvS.EXt1uYiKcvAAiAHwj17xUC5L0xphYqIWVHpeiUIKP5oqXkL5q8a9X2gpA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTAzLTMxZQ==
 genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
 trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
@@ -25,7 +25,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100380-1
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -77,7 +77,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100380-1
   hosts: []
   ports:
     headless: 31234
@@ -99,7 +99,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100380-1
   extraArgs: []
   useTurnServer: true
   hosts: []
@@ -140,7 +140,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100380-1
   extraArgs: []
   useTurnServer: true
   hosts: []
