@@ -89,7 +89,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
 
   # host domains if not using turn servers
   hosts: []
@@ -128,7 +128,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
   
   # dotnet args
 
@@ -190,7 +190,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
   
   # dotnet args
 
@@ -226,7 +226,7 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
   
   # dotnet args
 
@@ -262,7 +262,7 @@ onboardingHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
   
   # dotnet args
 
@@ -334,7 +334,7 @@ testHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
   
   # dotnet args
 
@@ -378,7 +378,7 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100381-1"
+    tag: "git-c5248687a7cd03d963b7eef5a441c882ed0397da"
 
   consensusSeedStrings:
     - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"

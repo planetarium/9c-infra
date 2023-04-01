@@ -59,7 +59,11 @@ spec:
         - --host=9c-main-miner-2.nine-chronicles.com
         {{- end }}
         - --port={{ $.Values.miner.ports.headless }}
+        {{- if eq $.Values.consensusType "pow" }}
         - --no-miner=false
+        {{- else }}
+        - --no-miner=true
+        {{- end }}
         - --store-path=/data/miner
         - --store-type=rocksdb
         - --swarm-private-key
