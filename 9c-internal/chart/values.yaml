@@ -8,12 +8,12 @@ peerStrings:
 iceServers:
 - turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478
 networkType: Internal
-consensusType: pbft
+consensusType: pow
 useExternalSecret: true
 slackToken: ''
 slackWebHookUrl: ''
 snapshot:
-  resetSnapshot: false
+  resetSnapshot: true
   slackChannel: 9c-internal
   image: planetariumhq/ninechronicles-snapshot:git-f95397d980d5e761c259af5d2bc49d40805b4bc7
   cfDistributionId: ''
@@ -25,7 +25,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100381-1
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -77,7 +77,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100381-1
   hosts: []
   ports:
     headless: 31234
@@ -99,7 +99,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100381-1
   extraArgs: []
   useTurnServer: true
   hosts: []
@@ -127,7 +127,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: IfNotPresent
-    tag: git-276adca2b8dd636bcff2f820a22bfa14b827387c
+    tag: v100381-1
   db:
     storage: 1000Gi
     database: ''
@@ -140,7 +140,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
-    tag: v200000-1
+    tag: v100381-1
   extraArgs: []
   useTurnServer: true
   hosts: []
