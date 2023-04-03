@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: explorer
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: explorer
   namespace: {{ $.Chart.Name }}
 spec:

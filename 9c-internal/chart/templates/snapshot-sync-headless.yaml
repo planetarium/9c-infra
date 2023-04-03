@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: snapshot-sync-headless
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: snapshot-sync-headless
   namespace: {{ $.Chart.Name }}
 spec:

@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-snapshot-script
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:
   download_snapshot.sh: |-
     #!/usr/bin/env bash

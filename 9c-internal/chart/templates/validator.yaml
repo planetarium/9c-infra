@@ -5,6 +5,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: validator-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: validator-{{ $index }}
   namespace: {{ $.Chart.Name }}
 spec:

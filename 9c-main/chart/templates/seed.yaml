@@ -5,6 +5,7 @@ kind: Deployment
 metadata:
   labels:
     app: tcp-seed-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: tcp-seed-{{ $index }}
   namespace: {{ $.Chart.Name }}
 spec:

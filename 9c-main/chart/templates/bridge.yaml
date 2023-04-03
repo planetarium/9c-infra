@@ -4,6 +4,8 @@ kind: CronJob
 metadata:
   name: bridge-status-bot
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
   schedule: "0 * * * *"
   successfulJobsHistoryLimit: 1
@@ -51,6 +53,8 @@ kind: ConfigMap
 metadata:
   name: bridge-status-bot-scripts
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:
   bot.sh: |-
     #!/bin/bash
@@ -65,6 +69,8 @@ kind: CronJob
 metadata:
   name: bridge-observer
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
