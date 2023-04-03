@@ -77,7 +77,7 @@ data:
         region                       ${AWS_REGION}
         log_retention_days           14
         log_group_name               fallback-group
-        log_group_template           /aws/containerinsights/${CLUSTER_NAME}/$kubernetes['namespace_name'].$kubernetes['pod_name']
+        log_group_template           /aws/containerinsights/${CLUSTER_NAME}/$kubernetes['namespace_name'].$kubernetes['container_name']
         log_stream_prefix            ${HOST_NAME}-
         auto_create_group            true
         extra_user_agent             container-insights
