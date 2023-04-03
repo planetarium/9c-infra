@@ -1,0 +1,44 @@
+name: Update values
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        required: true
+        description: 'Network environment'
+        default: 'internal'
+        type: choice
+        options:
+        - main
+        - internal
+      number:
+        required: true
+        description: 'Apv number (e.g. 100310)'
+      mode:
+        required: true
+        description: 'Mode'
+        default: 'append-apv'
+        type: choice
+        options:
+        - append-apv
+        - remove-apv
+      
+
+jobs:
+  apv:
+    runs-on: ubuntu-20.04
+    environment:
+      name: ${{ github.event.inputs.network }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Apv
+        uses: planetarium/9c-toolbelt@main
+        with:
+          COMMAND_LIST: "update|${{ github.event.inputs.mode }}|${{ github.event.inputs.number }}|${{ github.event.inputs.network }}"
+          ENV: production
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
+          KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
+          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}
