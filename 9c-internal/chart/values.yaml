@@ -163,6 +163,6 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-eac09e9bc8ec5d29a5aaeb74dd6425da00e55078
+    tag: git-09b4f6633432f8f5d63721861ada0a19e7fd3fbc
   db:
     size: 1Gi
