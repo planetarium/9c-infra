@@ -132,6 +132,8 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        - mountPath: /app/logs
+          name: json-log
         env:
         - name: IpRateLimiting__EnableRateLimiting
           value: "true"
@@ -143,6 +145,16 @@ spec:
           value: "1h"
         - name: IpRateLimiting__GeneralRules__1__Limit
           value: "3600"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
       nodeSelector:
         node.kubernetes.io/instance-type: c7g.4xlarge
       dnsPolicy: ClusterFirst
@@ -158,6 +170,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-download-snapshot-script
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

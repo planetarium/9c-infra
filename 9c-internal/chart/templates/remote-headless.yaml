@@ -48,6 +48,16 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
       - name: wait
         image: alpine
         imagePullPolicy: Always
@@ -149,6 +159,8 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        - mountPath: /app/logs
+          name: json-log
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -162,6 +174,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-snapshot-script
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
