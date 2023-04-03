@@ -1,4 +1,4 @@
-name: Update values
+name: Manage Apv
 on:
   workflow_dispatch:
     inputs:
@@ -24,7 +24,7 @@ on:
       
 
 jobs:
-  apv:
+  manage-apv:
     runs-on: ubuntu-20.04
     environment:
       name: ${{ github.event.inputs.network }}
