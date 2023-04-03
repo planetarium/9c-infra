@@ -6,6 +6,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: miner-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: miner-{{ $index }}
   namespace: {{ $.Chart.Name }}
 spec:

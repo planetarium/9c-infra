@@ -2,6 +2,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ .Chart.Name }}-gp3
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 parameters:
   fsType: ext4
   type: gp3

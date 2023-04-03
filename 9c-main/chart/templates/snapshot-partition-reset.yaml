@@ -3,6 +3,8 @@ kind: CronJob
 metadata:
   name: snapshot-partition-reset
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:

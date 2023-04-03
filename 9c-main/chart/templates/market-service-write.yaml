@@ -4,6 +4,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: market-service-write
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: market-service-write
   namespace: {{ $.Chart.Name }}
 spec:

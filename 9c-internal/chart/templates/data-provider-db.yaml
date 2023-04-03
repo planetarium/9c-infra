@@ -4,6 +4,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: data-provider-db
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: data-provider-db
   namespace: {{ $.Chart.Name }}
 spec:

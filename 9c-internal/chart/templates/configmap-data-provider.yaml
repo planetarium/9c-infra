@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-data-provider-script
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:
   check_chain_tip.sh: |-
     #!/usr/bin/env bash

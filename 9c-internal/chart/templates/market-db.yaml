@@ -4,6 +4,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: market-db
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: market-db
   namespace: {{ $.Chart.Name }}
 spec:

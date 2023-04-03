@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume
   namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
     volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com

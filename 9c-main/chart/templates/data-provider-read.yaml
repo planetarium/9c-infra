@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: data-provider-read
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: data-provider-read
   namespace: {{ $.Chart.Name }}
 spec:

@@ -4,6 +4,8 @@ kind: ServiceAccount
 metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-onboarding-eks
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: {{ $.Chart.Name }}-onboarding-iam-role
   namespace: {{ $.Chart.Name }}
 
@@ -14,6 +16,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: world-boss-service
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: world-boss-service
   namespace: {{ $.Chart.Name }}
 spec:
@@ -94,6 +97,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: world-boss-worker
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: world-boss-worker
   namespace: {{ $.Chart.Name }}
 spec:

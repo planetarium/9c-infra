@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: data-provider-write
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: data-provider-write
   namespace: {{ $.Chart.Name }}
 spec:

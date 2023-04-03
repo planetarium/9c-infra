@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: 9c-network-data-provider-script
   namespace: 9c-network
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:
   check_chain_tip.sh: |-
     #!/usr/bin/env bash

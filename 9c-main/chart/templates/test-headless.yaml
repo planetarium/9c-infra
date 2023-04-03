@@ -5,6 +5,7 @@ kind: StatefulSet
 metadata:
   labels:
     app: test-headless-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: test-headless-{{ $index }}
   namespace: {{ $.Chart.Name }}
 spec:
