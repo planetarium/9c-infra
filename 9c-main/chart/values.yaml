@@ -370,7 +370,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-6ef81cabb42bb3b68b4b7c75082a917cac5c5560
+    tag: git-c5f401cf707d0857f4e92876b844d002f42e01e4
 
 validator:
   count: 4
