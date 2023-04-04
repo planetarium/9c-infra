@@ -151,7 +151,6 @@ remoteHeadless:
 
   storage:
     data: 1000Gi
-    log: 10Gi
 
   resources:
     requests:
