@@ -122,8 +122,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: remote-headless-data-{{ $index }}
-        - mountPath: /app/logs
-          name: remote-headless-logs-{{ $index }}
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -185,16 +183,6 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.remoteHeadless.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
-      volumeMode: Filesystem
-  - metadata:
-      name: remote-headless-logs-{{ $index }}
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ $.Values.remoteHeadless.storage.log }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---

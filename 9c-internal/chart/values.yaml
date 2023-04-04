@@ -109,7 +109,6 @@ remoteHeadless:
     rpc: 31238
   storage:
     data: 500Gi
-    log: 4Gi
   resources:
     requests:
       cpu: 2
