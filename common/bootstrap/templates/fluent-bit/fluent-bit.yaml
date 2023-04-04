@@ -43,6 +43,12 @@ spec:
           - name: config
             mountPath: /fluent-bit/etc/parsers.conf
             subPath: parsers.conf
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            memory: 500Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
