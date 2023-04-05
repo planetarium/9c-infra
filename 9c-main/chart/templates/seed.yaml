@@ -71,11 +71,9 @@ spec:
           - containerPort: {{ $.Values.seed.ports.graphql }}
             name: graphql
             protocol: TCP
-          {{- if eq $.Values.consensusType "pbft" }}
           - containerPort: {{ $.Values.seed.ports.gossip }}
             name: gossip
             protocol: TCP
-          {{- end }}
         resources:
           {{- toYaml $.Values.seed.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
