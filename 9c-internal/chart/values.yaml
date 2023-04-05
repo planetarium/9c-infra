@@ -13,7 +13,7 @@ useExternalSecret: true
 slackToken: ''
 slackWebHookUrl: ''
 snapshot:
-  resetSnapshot: false
+  resetSnapshot: true
   slackChannel: 9c-internal
   image: planetariumhq/ninechronicles-snapshot:git-e9fb5872f18602ccfe0406afe2735b910f562209
   cfDistributionId: ''
