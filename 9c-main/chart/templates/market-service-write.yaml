@@ -43,9 +43,12 @@ spec:
           name: market-service-write
           ports:
             - containerPort: 80
+      resources:
+        requests:
+          cpu: 6000m
       restartPolicy: Always
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        node.kubernetes.io/instance-type: c7g.2xlarge
   updateStrategy:
     type: RollingUpdate
 {{ end }}
