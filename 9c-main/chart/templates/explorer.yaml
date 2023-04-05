@@ -77,7 +77,7 @@ spec:
         command:
         - dotnet
         image: {{ $.Values.explorer.image.repository }}:{{ $.Values.explorer.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: explorer
         ports:
         - containerPort: {{ $.Values.explorer.ports.graphql }}

@@ -88,7 +88,7 @@ spec:
         command:
         - dotnet
         image: {{ $.Values.testHeadless.image.repository }}:{{ $.Values.testHeadless.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: test-headless-{{ $index }}
         ports:
         - containerPort: {{ $.Values.testHeadless.ports.graphql }}

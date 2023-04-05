@@ -98,7 +98,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: miner-{{ $index }}
         ports:
         - containerPort: {{ $.Values.miner.ports.headless }}
