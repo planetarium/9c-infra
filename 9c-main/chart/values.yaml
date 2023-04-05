@@ -411,8 +411,8 @@ validator:
 
   resources:
     requests:
-      cpu: 1
-      memory: 6Gi
+      cpu: 2
+      memory: 20Gi
   
   nodeSelector: {}
   tolerations: []
