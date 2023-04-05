@@ -76,7 +76,7 @@ spec:
         command:
         - dotnet
         image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: onboarding-headless-query
         ports:
         - containerPort: {{ $.Values.onboardingHeadless.ports.graphql }}
@@ -214,7 +214,7 @@ spec:
         command:
         - dotnet
         image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: onboarding-headless-transfer
         ports:
         - containerPort: {{ $.Values.onboardingHeadless.ports.graphql }}

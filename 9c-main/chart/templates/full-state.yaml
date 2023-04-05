@@ -51,7 +51,7 @@ spec:
         command:
         - dotnet
         image: {{ $.Values.fullState.image.repository }}:{{ $.Values.fullState.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: main-full-state
         ports:
         - containerPort: {{ $.Values.fullState.ports.graphql }}

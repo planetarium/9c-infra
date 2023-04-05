@@ -58,7 +58,7 @@ spec:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         image: "{{ $.Values.seed.image.repository }}:{{ $.Values.seed.image.tag | default $.Chart.AppVersion }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         livenessProbe:
           initialDelaySeconds: 120
           periodSeconds: 5
