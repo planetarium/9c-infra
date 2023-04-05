@@ -23,7 +23,7 @@ node_groups = {
     instance_types    = ["m5.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 6
+    desired_size      = 10
     min_size          = 0
     max_size          = 12
   }
@@ -34,7 +34,7 @@ node_groups = {
     capacity_type     = "ON_DEMAND"
     desired_size      = 1
     min_size          = 0
-    max_size          = 2
+    max_size          = 3
     ami_type          = "AL2_ARM_64"
   }
 
@@ -42,9 +42,9 @@ node_groups = {
     instance_types    = ["c7g.4xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 6
+    desired_size      = 10
     min_size          = 0
-    max_size          = 6
+    max_size          = 10
     ami_type          = "AL2_ARM_64"
   }
 
@@ -52,7 +52,7 @@ node_groups = {
     instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 10
+    desired_size      = 8
     min_size          = 0
     max_size          = 20
     ami_type          = "AL2_ARM_64"

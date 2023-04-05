@@ -23,11 +23,9 @@ spec:
   - port: {{ $.Values.seed.ports.graphql }}
     targetPort: {{ $.Values.seed.ports.graphql }}
     name: graphql
-  {{- if eq $.Values.consensusType "pbft" }}
   - port: {{ $.Values.seed.ports.gossip }}
     targetPort: {{ $.Values.seed.ports.gossip }}
     name: gossip
-  {{- end }}
   selector:
     app: tcp-seed-{{ $index }}
   type: LoadBalancer
@@ -493,11 +491,9 @@ spec:
   - port: {{ $.Values.validator.ports.graphql }}
     targetPort: {{ $.Values.validator.ports.graphql }}
     name: gql
-  {{- if eq $.Values.consensusType "pbft" }}
   - port: {{ $.Values.validator.ports.gossip }}
     targetPort: {{ $.Values.validator.ports.gossip }}
     name: gossip
-  {{- end }}
   selector:
     app: validator-{{ $index }}
   type: LoadBalancer

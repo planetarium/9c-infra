@@ -108,13 +108,6 @@ spec:
           initialDelaySeconds: 1800
           periodSeconds: 30
           timeoutSeconds: 30
-        readinessProbe:
-          exec:
-            command:
-            - /bin/readiness_probe.sh
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          timeoutSeconds: 10
         ports:
         - containerPort: {{ $.Values.validator.ports.headless }}
           name: headless
@@ -122,11 +115,9 @@ spec:
         - containerPort: {{ $.Values.validator.ports.graphql }}
           name: graphql
           protocol: TCP
-        {{- if eq $.Values.consensusType "pbft" }}
         - containerPort: {{ $.Values.validator.ports.gossip }}
           name: gossip
           protocol: TCP
-        {{- end }}
         resources:
           {{- toYaml $.Values.validator.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
@@ -143,7 +134,7 @@ spec:
           readOnly: true
           subPath: readiness_probe.sh
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        node.kubernetes.io/instance-type: c7g.4xlarge
       dnsPolicy: ClusterFirst
       volumes:
       - configMap:
