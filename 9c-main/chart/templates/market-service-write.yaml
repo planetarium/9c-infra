@@ -45,7 +45,7 @@ spec:
             - containerPort: 80
       restartPolicy: Always
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        node.kubernetes.io/instance-type: r6g.xlarge
   updateStrategy:
     type: RollingUpdate
 {{ end }}
