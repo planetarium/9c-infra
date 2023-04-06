@@ -5,7 +5,7 @@
 
 clusterName: "9c-main-v2"
 logLevel: "debug"
-appProtocolVersion: "100382/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIDGiStwQY5CJjmfsvV1aoY0UswE7YN9.CfcdMP5eSil.AiBdI2aC8XEPzB9IhjkHboxwhWHFbBq4boLUL9vRy47oEA==/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzk3MDA3NjAyYTliZTBlYjE3OTg4ZDY5MjhjZTI5OGUwZTYyZTNhZGR1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0wM2U="
+appProtocolVersion: "200000/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQD4MxYR4lSu69b+TYUB91k.Ns5cJHlK0B6SzU60g16OOgIgUwg3wJNKSO7A68sKn.rDQiuHAjftT1fPOmwiLEZyvJE=/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzhjYWI5NjYwYTk2MzIyMDk4MjU5OWZjYjc0MjMyNjI2MzA5ZTIwZmF1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0wNWU="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -22,7 +22,7 @@ iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
 
 networkType: Main
-consensusType: pow
+consensusType: pbft
 
 useExternalSecret: true
 slackToken: ""
@@ -31,7 +31,7 @@ slackWebHookUrl: ""
 snapshot:
   resetSnapshot: false
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-9af8f34a244a3c1ce1bcd16d12cf61807319b8d7"
+  image: "planetariumhq/ninechronicles-snapshot:git-aaa36c4a632b7779b540a188f0c95c2cce619c15"
 
   # aws information for uploading snapshot
   # Do not upload values below filled
@@ -48,7 +48,7 @@ seed:
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
-    pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
     tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
 
   hosts:
@@ -87,9 +87,9 @@ miner:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # host domains if not using turn servers
   hosts: []
@@ -126,9 +126,9 @@ remoteHeadless:
   count: 5
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
   
   # dotnet args
 
@@ -172,9 +172,9 @@ dataProvider:
 
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-c02bce7d7146447b71fbaef3fa9c372d66231552"
+    tag: "git-06709e8c777c83c79aab4a1eb0701893625997bb"
   
   db:
     database: ""
@@ -187,9 +187,9 @@ dataProvider:
 explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
   
   # dotnet args
 
@@ -223,9 +223,9 @@ explorer:
 fullState:
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
   
   # dotnet args
 
@@ -259,9 +259,9 @@ onboardingHeadless:
   enabled: true
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
   
   # dotnet args
 
@@ -292,7 +292,7 @@ worldBoss:
 
   image:
     repository: planetariumhq/world-boss-service
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-f0ad3803c6034438715a782840a7776127ddb3ed"
 
@@ -310,12 +310,12 @@ bridge:
   enabled: true
   bridgeObserverImage:
     repository: planetariumhq/nine-chronicles-bridge-observer
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
   bridgeStatusBotImage:
     repository: moreal/bridge-status-bot-alpine
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "20210913-01"
 
@@ -331,9 +331,9 @@ testHeadless:
   count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
   
   # dotnet args
 
@@ -369,15 +369,15 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-04f1cd429bb52f6663d6c33f5210265d89a65af4
+    tag: "git-62e95d9b7464cbd015c6a7c0a2e85d1d6e85d9e0"
 
 validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v100382-1"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   consensusSeedStrings:
     - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
