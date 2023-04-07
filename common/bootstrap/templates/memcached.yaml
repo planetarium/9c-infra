@@ -10,7 +10,7 @@ spec:
   project: infra
   source:
     repoURL: https://charts.bitnami.com/bitnami
-    chart: memcahed
+    chart: memcached
     targetRevision: 6.3.13
     helm:
       values: |-
