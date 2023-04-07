@@ -4,6 +4,10 @@ argocdPath: ""
 # AWS account id
 accountId: ""
 
+memcached:
+  enabled: false
+  memory: 1Gi
+
 loki:
   enabled: false
   write:

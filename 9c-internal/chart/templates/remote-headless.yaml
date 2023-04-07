@@ -48,16 +48,6 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
       - name: wait
         image: alpine
         imagePullPolicy: Always
@@ -112,6 +102,17 @@ spec:
         {{- with $.Values.remoteHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
         command:
         - dotnet
         image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
