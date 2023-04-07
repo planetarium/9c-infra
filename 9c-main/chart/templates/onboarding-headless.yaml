@@ -141,7 +141,7 @@ spec:
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        - --host=9c-main-onboarding-query.nine-chronicles.com
+        - --host=9c-main-onboarding-transfer.nine-chronicles.com
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
