@@ -41,6 +41,10 @@ spec:
           read:
             count: 6
             nodeGroup: 9c-main-r6g_xl_2c
+        memcached:
+          enabled: true
+          memory: 2Gi
+          nodeGroup: 9c-main-r6g_xl_2c
 
   destination:
     server: https://kubernetes.default.svc
