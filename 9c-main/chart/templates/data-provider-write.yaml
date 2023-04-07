@@ -19,32 +19,6 @@ spec:
       labels:
         app: data-provider-write
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/data-provider
-        - $(RESET_SNAPSHOT_OPTION)
-        - data-provider-write
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: data-provider-write-data
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.snapshot.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)

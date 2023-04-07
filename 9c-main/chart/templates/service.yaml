@@ -494,6 +494,10 @@ spec:
   - port: {{ $.Values.validator.ports.gossip }}
     targetPort: {{ $.Values.validator.ports.gossip }}
     name: gossip
+  - port: 443
+    targetPort: {{ $.Values.validator.ports.graphql }}
+    name: https
+    protocol: TCP
   selector:
     app: validator-{{ $index }}
   type: LoadBalancer

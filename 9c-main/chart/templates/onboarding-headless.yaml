@@ -20,32 +20,6 @@ spec:
         app: onboarding-headless-query
       name: onboarding-headless-query
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/headless
-        - $(RESET_SNAPSHOT_OPTION)
-        - onboarding-headless-query
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: onboarding-headless-query-data
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.snapshot.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -57,9 +31,7 @@ spec:
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        {{- range $.Values.iceServers }}
-        - --ice-server={{ . }}
-        {{- end }}
+        - --host=9c-main-onboarding-query.nine-chronicles.com
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
@@ -158,32 +130,6 @@ spec:
         app: onboarding-headless-transfer
       name: onboarding-headless-transfer
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/headless
-        - $(RESET_SNAPSHOT_OPTION)
-        - onboarding-headless-transfer
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.onboardingHeadless.image.repository }}:{{ $.Values.onboardingHeadless.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: onboarding-headless-transfer-data
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.snapshot.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -195,9 +141,7 @@ spec:
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        {{- range $.Values.iceServers }}
-        - --ice-server={{ . }}
-        {{- end }}
+        - --host=9c-main-onboarding-query.nine-chronicles.com
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
