@@ -1,4 +1,4 @@
-{{ if .Values.memcahed.enabled }}
+{{ if .Values.memcached.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
