@@ -1,0 +1,32 @@
+{{ if .Values.memcahed.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: memcached
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: memcahed
+    targetRevision: 6.3.13
+    helm:
+      values: |-
+        resources:
+          requests:
+            memory: {{ $.Values.memcached.memory }}
+          limits:
+            memory: {{ $.Values.memcached.memory }}
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: {{ $.Values.memcached.nodeGroup }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+---
+{{ end }}
