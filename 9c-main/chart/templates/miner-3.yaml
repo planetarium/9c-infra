@@ -19,32 +19,6 @@ spec:
         app: main-miner-3
       name: main-miner-3
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/miner
-        - $(RESET_SNAPSHOT_OPTION)
-        - main-miner-3
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.miner.image.repository }}:{{ $.Values.miner.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: main-miner-3-data
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.snapshot.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll

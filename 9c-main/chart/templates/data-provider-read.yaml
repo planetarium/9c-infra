@@ -19,32 +19,6 @@ spec:
       labels:
         app: data-provider-read
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/data-provider
-        - $(RESET_SNAPSHOT_OPTION)
-        - data-provider-read
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: data-provider-read-data
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.snapshot.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - /app/NineChronicles.DataProvider.Executable
