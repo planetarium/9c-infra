@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
-    targetRevision: 6.49.0
+    targetRevision: 6.52.9
     helm:
       values: |-
         datasources:
@@ -28,6 +28,7 @@ spec:
               url: http://loki-gateway.monitoring.svc.cluster.local
               access: proxy
               timeout: 600
+              editable: true
             {{ end }}
         
         persistence:
