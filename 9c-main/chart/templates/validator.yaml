@@ -60,6 +60,7 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
         - --network-type={{ $.Values.networkType }}
+        - --tx-life-time=10
         command:
           - dotnet
         env:
