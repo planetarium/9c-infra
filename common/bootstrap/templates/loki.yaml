@@ -98,7 +98,7 @@ spec:
             grpc_client_config:
               grpc_compression: "snappy"
               max_send_msg_size: 160388078 # 32MiB, default = 16777216]
-              max_recv_msg_size: 1603
+              max_recv_msg_size: 160388078
 
           storage_config:
             aws:
