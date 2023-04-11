@@ -7,6 +7,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: ninechronicles-headless-metrics-aggregator
 spec:
+  selector:
+    matchLabels:
+      app: ninechronicles-headless-metrics-aggregator
   replicas: 1
   revisionHistoryLimit: 2
   strategy:
