@@ -53,7 +53,7 @@ spec:
         terminationMessagePolicy: File
       nodeSelector:
         beta.kubernetes.io/os: linux
-        alpha.eksctl.io/nodegroup-name: 9c-main
+        node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
