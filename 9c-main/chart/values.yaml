@@ -10,16 +10,16 @@ genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
 peerStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+- "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
+- "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
 
 iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
 
 networkType: Main
 consensusType: pbft
@@ -52,9 +52,9 @@ seed:
     tag: "git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6"
 
   hosts:
-     - "9c-main-tcp-seed-1.planetarium.dev"
-     - "9c-main-tcp-seed-2.planetarium.dev"
-     - "9c-main-tcp-seed-3.planetarium.dev"
+  - "9c-main-tcp-seed-1.planetarium.dev"
+  - "9c-main-tcp-seed-2.planetarium.dev"
+  - "9c-main-tcp-seed-3.planetarium.dev"
 
   ports:
     node: 31234
@@ -89,7 +89,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
+    tag: "v200000-2"
 
   # host domains if not using turn servers
   hosts: []
@@ -117,7 +117,7 @@ miner:
     requests:
       cpu: 2
       memory: 20Gi
-  
+
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -128,8 +128,8 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-ed113c0838261d12a6ed716fc427d948b6da30f2"
-  
+    tag: "v200000-2"
+
   # dotnet args
 
   extraArgs: []
@@ -138,11 +138,11 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-   - "9c-main-rpc-1.nine-chronicles.com"
-   - "9c-main-rpc-2.nine-chronicles.com"
-   - "9c-main-rpc-3.nine-chronicles.com"
-   - "9c-main-rpc-4.nine-chronicles.com"
-   - "9c-main-rpc-5.nine-chronicles.com"
+  - "9c-main-rpc-1.nine-chronicles.com"
+  - "9c-main-rpc-2.nine-chronicles.com"
+  - "9c-main-rpc-3.nine-chronicles.com"
+  - "9c-main-rpc-4.nine-chronicles.com"
+  - "9c-main-rpc-5.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -175,7 +175,6 @@ dataProvider:
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-06709e8c777c83c79aab4a1eb0701893625997bb"
-  
   db:
     database: ""
     connectionString: ""
@@ -189,8 +188,8 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
-  
+    tag: "v200000-2"
+
   # dotnet args
 
   extraArgs: []
@@ -225,8 +224,8 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
-  
+    tag: "v200000-2"
+
   # dotnet args
 
   extraArgs: []
@@ -261,8 +260,8 @@ onboardingHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
-  
+    tag: "v200000-2"
+
   # dotnet args
 
   extraArgs: []
@@ -333,8 +332,8 @@ testHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
-  
+    tag: "v200000-2"
+
   # dotnet args
 
   extraArgs: []
@@ -343,8 +342,8 @@ testHeadless:
   useTurnServer: true
 
   hosts:
-   - "9c-main-test-1.nine-chronicles.com"
-   - "9c-main-test-2.nine-chronicles.com"
+  - "9c-main-test-1.nine-chronicles.com"
+  - "9c-main-test-2.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -377,18 +376,18 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
+    tag: "v200000-2"
 
   consensusSeedStrings:
-    - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
-    - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31235"
-    - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31235"
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31235"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31235"
 
   hosts:
-    - "9c-main-validator-1.nine-chronicles.com"
-    - "9c-main-validator-2.nine-chronicles.com"
-    - "9c-main-validator-3.nine-chronicles.com"
-    - "9c-main-validator-4.nine-chronicles.com"
+  - "9c-main-validator-1.nine-chronicles.com"
+  - "9c-main-validator-2.nine-chronicles.com"
+  - "9c-main-validator-3.nine-chronicles.com"
+  - "9c-main-validator-4.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -413,7 +412,7 @@ validator:
     requests:
       cpu: 2
       memory: 20Gi
-  
+
   nodeSelector: {}
   tolerations: []
   affinity: {}
