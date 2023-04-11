@@ -4,14 +4,11 @@ metadata:
   namespace: monitoring
   labels:
     app: ninechronicles-headless-metrics-aggregator
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: ninechronicles-headless-metrics-aggregator
 spec:
   replicas: 1
   revisionHistoryLimit: 2
-  selector:
-    matchLabels:
-      app: ninechronicles-headless-metrics-aggregator
-      app.kubernetes.io/instance: {{ $.Chart.Name }}
   strategy:
     rollingUpdate:
       maxSurge: 25%
