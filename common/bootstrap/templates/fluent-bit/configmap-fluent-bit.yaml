@@ -83,11 +83,6 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
-        Rule                         $kubernetes['namespace_name'] default default_application.$TAG true
-        Emitter_Name                 filter_default_namespace
-    [FILTER]
-        Name                         rewrite_tag
-        Match                        application.*
         Rule                         $log_level ^(?!DBG)\w+$ cwl.$TAG true
         Emitter_Name                 for_cloudwatch
     [FILTER]

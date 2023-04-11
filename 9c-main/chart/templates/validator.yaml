@@ -69,6 +69,16 @@ spec:
               secretKeyRef:
                 key: validator-private-key-{{ $index }}
                 name: private-keys
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
           {{- with $.Values.validator.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -100,6 +110,8 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        - mountPath: /app/logs
+          name: json-log
       nodeSelector:
         node.kubernetes.io/instance-type: c7g.4xlarge
       dnsPolicy: ClusterFirst
@@ -112,6 +124,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-download-snapshot-script
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always
