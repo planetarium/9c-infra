@@ -14,6 +14,16 @@ spec:
     targetRevision: 6.3.13
     helm:
       values: |-
+        args:
+          - /run.sh
+          - -vvv
+          - -m 12000
+          - -I 128m
+          - -r
+          - -L
+        persistence:
+          enabled: true
+          size: 100Gi
         resources:
           requests:
             memory: {{ $.Values.memcached.memory }}

@@ -38,12 +38,23 @@ spec:
           write:
             count: 4
             nodeGroup: 9c-main-r6g_xl_2c
+            resources:
+              requests:
+                cpu: 1500m
+                memory: 6Gi
           read:
             count: 6
             nodeGroup: 9c-main-r6g_xl_2c
+            resources:
+              requests:
+                cpu: 2000m
+                memory: 10Gi
+              limits:
+                cpu: 2000m
+                memory: 10Gi
         memcached:
           enabled: true
-          memory: 2Gi
+          memory: 14Gi
           nodeGroup: 9c-main-r6g_xl_2c
 
   destination:

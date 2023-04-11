@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
-    targetRevision: 4.8.0
+    targetRevision: 5.0.0
     helm:
       values: |-
         loki:
@@ -37,38 +37,45 @@ spec:
               schema: v12
 
           querier:
-            max_concurrent: 16
+            max_concurrent: 32
 
-          query_range:
-            parallelise_shardable_queries: true
-            align_queries_with_step: true
-            cache_config:
-              embedded_cache:
-                enabled: true
-                max_size_mb: 1024
-                ttl: 1hr
-
+          memcached:
+            chunk_cache:
+              enabled: true
+              host: "memcached.monitoring.svc.cluster.local"
+              service: "memcache"
+              batch_size: 150
+              parallelism: 32
+            results_cache:
+              enabled: true
+              host: "memcached.monitoring.svc.cluster.local"
+              service: "memcache"
+              timeout: "5s"
+              default_validity: "12h"
 
           query_scheduler:
             max_outstanding_requests_per_tenant: 8192
 
           limits_config:
             enforce_metric_name: false
-            max_query_parallelism: 32
+            max_query_parallelism: 64
             max_query_series: 1000000
-            max_entries_limit_per_query: 100000
+            max_entries_limit_per_query: 1000000
             reject_old_samples: true
             reject_old_samples_max_age: 168h
             retention_period: 360h
-            split_queries_by_interval: 30m
+            split_queries_by_interval: 15m
             query_timeout: 600s
-            ingestion_rate_mb: 128
-            ingestion_burst_size_mb: 140
+            ingestion_rate_mb: 192
+            ingestion_burst_size_mb: 200
+            per_stream_rate_limit: 32MB
+            per_stream_rate_limit_burst: 48MB
 
           ingester:
             concurrent_flushes: 32
-            chunk_block_size: 1310720
-            chunk_target_size: 15728640
+            chunk_block_size: 262144
+            chunk_target_size: 1572864
+            chunk_encoding: "snappy"
             index_shards: 32
 
           server:
@@ -79,14 +86,19 @@ spec:
             http_listen_port: 3100
             http_server_read_timeout: 600s
             http_server_write_timeout: 600s
+            http_server_idle_timeout: 600s
 
           frontend:
             max_outstanding_per_tenant: 8192
             scheduler_worker_concurrency: 32
 
           frontend_worker:
-            parallelism: 16
-            match_max_concurrent: false
+            parallelism: 32
+            match_max_concurrent: true
+            grpc_client_config:
+              grpc_compression: "snappy"
+              max_send_msg_size: 160388078 # 32MiB, default = 16777216]
+              max_recv_msg_size: 160388078
 
           storage_config:
             aws:
