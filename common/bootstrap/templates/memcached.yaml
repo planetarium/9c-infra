@@ -14,6 +14,8 @@ spec:
     targetRevision: 6.3.13
     helm:
       values: |-
+        replicaCount: 4
+        architecture: "high-availability"
         args:
           - /run.sh
           - -vvv
