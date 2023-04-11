@@ -89,7 +89,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # host domains if not using turn servers
   hosts: []
@@ -128,7 +128,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # dotnet args
 
@@ -188,7 +188,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # dotnet args
 
@@ -224,7 +224,7 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # dotnet args
 
@@ -260,7 +260,7 @@ onboardingHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # dotnet args
 
@@ -332,7 +332,7 @@ testHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200000-2"
+    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
 
   # dotnet args
 
