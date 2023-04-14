@@ -36,6 +36,9 @@ spec:
               object_store: s3
               schema: v12
 
+          compactor:
+            retention_enabled: true
+
           querier:
             max_concurrent: 32
 
