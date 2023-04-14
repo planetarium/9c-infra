@@ -1,0 +1,6 @@
+marketService:
+  enabled: true
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: "git-94921e5d62f4a2922bf24bb44933deb57052b215"

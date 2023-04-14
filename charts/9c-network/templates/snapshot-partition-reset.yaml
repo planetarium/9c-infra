@@ -1,0 +1,148 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: snapshot-partition-reset
+  namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - name: upload-snapshot1
+            image: {{ $.Values.snapshot.image }}
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            - $(CF_DISTRIBUTION_ID)
+            - $(SLACK_TOKEN)
+            command:
+            - /bin/upload_snapshot.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: CF_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-keys
+                  key: cf_distribution_id
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-token
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/upload_snapshot.sh
+              readOnly: true
+              subPath: upload_snapshot.sh
+            - name: snapshot-volume-full
+              mountPath: /data
+            - name: aws-keys
+              mountPath: /secret
+              readOnly: true
+          - name: upload-snapshot2
+            image: {{ $.Values.snapshot.image }}
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            - $(CF_DISTRIBUTION_ID)
+            - $(SLACK_TOKEN)
+            command:
+            - /bin/upload_snapshot.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: CF_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-keys
+                  key: cf_distribution_id
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-token
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/upload_snapshot.sh
+              readOnly: true
+              subPath: upload_snapshot.sh
+            - name: snapshot-volume-full
+              mountPath: /data
+            - name: aws-keys
+              mountPath: /secret
+              readOnly: true
+          containers:
+          - args:
+            - s3://9c-snapshots/main/partition/
+            - s3://9c-snapshots/main/temp/partition/
+            - $(SLACK_TOKEN)
+            - $(CF_DISTRIBUTION_ID)
+            command:
+            - /bin/replace_snapshot.sh
+            image: nginx
+            name: replace-snapshot
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - mountPath: /bin/replace_snapshot.sh
+              name: script-volume
+              readOnly: true
+              subPath: replace_snapshot.sh
+            - mountPath: /data
+              name: snapshot-volume-full
+            - mountPath: /secret
+              name: aws-keys
+              readOnly: true
+            env:
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack-token
+                  key: token
+            - name: CF_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-keys
+                  key: cf_distribution_id
+          restartPolicy: OnFailure
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5.2xlarge
+          volumes:
+          - name: script-volume
+            configMap:
+              defaultMode: 0700
+              name: {{ .Chart.Name }}-snapshot-script-partition-reset
+          - name: snapshot-volume-full
+            persistentVolumeClaim:
+              claimName: snapshot-volume-full
+          - name: aws-keys
+            secret:
+              secretName: aws-keys
+  schedule: 30 0 1,15 * *
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

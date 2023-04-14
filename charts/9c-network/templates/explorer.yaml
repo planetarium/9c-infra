@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: explorer
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: explorer
+  namespace: {{ $.Chart.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: explorer
+  serviceName: explorer
+  template:
+    metadata:
+      labels:
+        app: explorer
+      name: explorer
+    spec:
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.explorer.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/explorer
+        {{- if $.Values.explorer.useTurnServer }}
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.explorer.ports.graphql }}
+        - --tx-life-time=10
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.explorer.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.explorer.image.repository }}:{{ $.Values.explorer.image.tag }}
+        imagePullPolicy: Always
+        name: explorer
+        ports:
+        - containerPort: {{ $.Values.explorer.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.explorer.ports.headless }}
+          name: headless
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.explorer.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: explorer-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5.large
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: explorer-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.explorer.storage.data }}
+      storageClassName: {{ $.Chart.Name }}-gp3
+      volumeMode: Filesystem
+---
+{{ end }}

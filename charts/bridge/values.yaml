@@ -1,0 +1,25 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-main-v2"
+bridge:
+  enabled: true
+  bridgeObserverImage:
+    repository: planetariumhq/nine-chronicles-bridge-observer
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
+  bridgeStatusBotImage:
+    repository: moreal/bridge-status-bot-alpine
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "20210913-01"
+
+  bridgeEnv:
+    privateKey: ""
+    mnemonic: ""
+    slackBridgeObserverToken: ""
+    slackWebToken: ""
+    etherscanToken: ""
