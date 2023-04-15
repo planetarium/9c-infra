@@ -111,12 +111,6 @@ spec:
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "15"
-        - name: IpRateLimiting__GeneralRules__1__Endpoint
-          value: "*:/graphql"
-        - name: IpRateLimiting__GeneralRules__1__Period
-          value: "1h"
-        - name: IpRateLimiting__GeneralRules__1__Limit
-          value: "3600"
         - name: POD_NAME
           valueFrom:
             fieldRef:
