@@ -5,7 +5,7 @@
 
 logLevel: "debug"
 appProtocolVersion: "1134/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIAWf4Cq3OjnVWBXjFK30MuLdUxL8+DnJZ2n5ruhpweSLAiA0yEKd4U46epOOugF+Ovsz9Qtl2H801ShC4ElM92OOGQ==/ZHU4OmxhdW5jaGVydTQyOjEvMGZlMGRkMjcxNTQwZmNkMDhmYTY2ZDQ3NThjMmU1MjI2YzVkMzI1YnU2OnBsYXllcnU0MjoxL2ZhYjhjNjE0NTM4YjAwNTdhNzEyYzdlOTI5ZTFmZDA0NzAyNTVmMDN1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0wNWU="
-genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+genesisBlockPath: "https://drfoj4ogb5dwf.cloudfront.net/genesis-block-9c-sample"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
 peerStrings:
@@ -16,10 +16,10 @@ iceServers:
 
 networkType: default
 
-useExternalSecret: true
+useExternalSecret: false
 slackToken: ""
 
-resetSnapshot: true
+resetSnapshot: false
 slackChannel: "bot-test"
 
 pos:
@@ -51,7 +51,7 @@ seed:
 
   # enter private keys if not using External Secrets
   privateKeys: []
-  # - "private key"
+  # - "private keys"
 
   env: []
 
@@ -88,15 +88,12 @@ miner:
     headless: 31234
     graphql: 80
 
-  # dotnet args
-  workerCount: 1000
-
   extraArgs: []
   # - --key=val
 
   # private keys if not using External Secrets
   privateKeys: []
-  # - "private key"
+  # - "private keys"
 
   storage:
     data: 500Gi
@@ -125,11 +122,8 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+    tag: "test-action-log"
   
-  # dotnet args
-  workerCount: 1000
-
   extraArgs: []
   # - --key=val
 

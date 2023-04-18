@@ -40,8 +40,8 @@ module "common" {
 
   addon_versions = {
     "coredns"            = "v1.8.7-eksbuild.3"
-    "kube-proxy"         = "v1.24.7-eksbuild.2"
-    "vpc_cni"            = "v1.11.4-eksbuild.1"
-    "aws_ebs_csi_driver" = "v1.6.1-eksbuild.1"
+    "kube-proxy"         = "v1.25.6-eksbuild.1"
+    "vpc_cni"            = "v1.12.2-eksbuild.1"
+    "aws_ebs_csi_driver" = "v1.17.0-eksbuild.1"
   }
 }
