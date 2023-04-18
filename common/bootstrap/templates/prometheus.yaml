@@ -63,8 +63,8 @@ spec:
             scrape_configs:
               - job_name: ninechronicles-headless-metrics-aggregator
                 metrics_path: /metrics
-                scrape_interval: 5m
-                scrape_timeout: 5m
+                scrape_interval: 1m
+                scrape_timeout: 50s
                 static_configs:
                   - targets:
                     - ninechronicles-headless-metrics-aggregator.monitoring.svc.cluster.local:80
