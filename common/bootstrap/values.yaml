@@ -15,6 +15,7 @@ loki:
       requests:
         cpu: 1500m
         memory: 6Gi
+    nodeGroup: ""
   read:
     resources:
       requests:
@@ -23,4 +24,4 @@ loki:
       limits:
         cpu: 1500m
         memory: 8Gi
-      
+    nodeGroup: ""
