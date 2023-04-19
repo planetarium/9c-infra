@@ -49,7 +49,6 @@ spec:
       - args:
         - NineChronicles.Headless.Executable.dll
         - run
-        - --workers={{ $.Values.miner.workerCount }}
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
