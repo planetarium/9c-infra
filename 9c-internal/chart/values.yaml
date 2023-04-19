@@ -96,7 +96,7 @@ miner:
   tolerations: []
   affinity: {}
 remoteHeadless:
-  count: 2
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
