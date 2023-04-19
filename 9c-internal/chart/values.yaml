@@ -24,7 +24,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-2c131ca94677337b2b16e5e58ba5180127c7d445
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
@@ -54,7 +54,7 @@ seed:
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-c984fa6e98016527e95fe9b50c39a2bf247bcfb6
   hosts:
   - "9c-internal-tcp.planetarium.dev"
@@ -77,7 +77,7 @@ miner:
   useTurnServer: true
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-2c131ca94677337b2b16e5e58ba5180127c7d445
   hosts: []
   ports:
@@ -96,10 +96,10 @@ miner:
   tolerations: []
   affinity: {}
 remoteHeadless:
-  count: 2
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-2c131ca94677337b2b16e5e58ba5180127c7d445
   extraArgs: []
   useTurnServer: true
@@ -126,7 +126,7 @@ dataProvider:
     log: 4Gi
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-6bdd28ccbaad047148fd95db41081e5767cf1ca4
   db:
     storage: 1000Gi
@@ -139,7 +139,7 @@ dataProvider:
 explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: git-2c131ca94677337b2b16e5e58ba5180127c7d445
   extraArgs: []
   useTurnServer: true
