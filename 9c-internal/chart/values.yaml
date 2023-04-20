@@ -152,7 +152,7 @@ explorer:
     log: 4Gi
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 4Gi
   nodeSelector:
     beta.kubernetes.io/os: linux

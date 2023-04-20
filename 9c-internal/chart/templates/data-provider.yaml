@@ -65,7 +65,6 @@ spec:
       containers:
       - args:
         - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(RESET_SNAPSHOT_OPTION)"
-          && /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
           && /app/NineChronicles.DataProvider.Executable
         command:
         - /bin/sh
