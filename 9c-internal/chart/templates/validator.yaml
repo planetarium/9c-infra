@@ -120,7 +120,7 @@ spec:
         - mountPath: /data
           name: validator-data-{{ $index }}
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
       dnsPolicy: ClusterFirst
       volumes:
       - name: script-volume
