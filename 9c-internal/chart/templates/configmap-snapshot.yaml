@@ -241,7 +241,7 @@ data:
         exit 1
       fi
 
-      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
+      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
         sleep 300
       else
         senderr "grep failed. Failed to preload." $1
@@ -316,7 +316,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 10 --apv "$1" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
         senderr "Snapshot creation failed." $2
         exit 1
       fi
