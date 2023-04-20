@@ -44,7 +44,7 @@ validator:
   env: []
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 12Gi
   nodeSelector: {}
   tolerations: []
@@ -112,7 +112,7 @@ remoteHeadless:
     data: 500Gi
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 12Gi
   nodeSelector:
     beta.kubernetes.io/os: linux
