@@ -119,6 +119,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: validator-data-{{ $index }}
+      nodeSelector:
+        node.kubernetes.io/instance-type: r6g.xlarge
       dnsPolicy: ClusterFirst
       volumes:
       - name: script-volume
