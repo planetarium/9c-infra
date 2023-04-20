@@ -125,7 +125,7 @@ spec:
           replicas: {{ $.Values.loki.write.count }}
           {{- with $.Values.loki.write.nodeGroup }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{- toYaml . }}
+            eks.amazonaws.com/nodegroup: {{ . }}
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
@@ -134,7 +134,7 @@ spec:
           replicas: {{ $.Values.loki.read.count }}
           {{- with $.Values.loki.read.nodeGroup }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{- toYaml . }}
+            eks.amazonaws.com/nodegroup: {{ . }}
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.read.resources | nindent 12 }}
