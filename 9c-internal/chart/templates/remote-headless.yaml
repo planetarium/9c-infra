@@ -60,7 +60,7 @@ spec:
         {{- if eq $.Values.consensusType "pbft" }}
           ENDPOINT="http://validator-1.{{ $.Chart.Name }}.svc.cluster.local/ui/playground"
         {{- else }}
-          ENDPOINT="http://miner-1.{{ $.Chart.Name }}.svc.cluster.local/ui/playground"
+          ENDPOINT="http://validator-1.{{ $.Chart.Name }}.svc.cluster.local/ui/playground"
         {{- end}}
           echo Checking: ${ENDPOINT}
           while [[ $(curl --silent --output /dev/null --request GET --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
