@@ -166,6 +166,8 @@ spec:
           subPath: setup_internal_db.sh
         - mountPath: /data
           name: data-provider-data
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.large
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

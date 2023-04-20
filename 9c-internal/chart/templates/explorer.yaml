@@ -133,6 +133,8 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.large
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
