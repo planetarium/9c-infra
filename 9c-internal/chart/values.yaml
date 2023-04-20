@@ -153,7 +153,7 @@ explorer:
   resources:
     requests:
       cpu: 2
-      memory: 8Gi
+      memory: 4Gi
   nodeSelector:
     beta.kubernetes.io/os: linux
   tolerations: []
