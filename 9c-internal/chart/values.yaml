@@ -90,7 +90,7 @@ miner:
   env: []
   resources:
     requests:
-      cpu: 2
+      cpu: 1
       memory: 8Gi
   nodeSelector: {}
   tolerations: []
