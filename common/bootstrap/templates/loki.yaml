@@ -123,15 +123,19 @@ spec:
 
         write:
           replicas: {{ $.Values.loki.write.count }}
+          {{- with $.Values.loki.write.nodeGroup }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{ $.Values.loki.write.nodeGroup }}
+            eks.amazonaws.com/nodegroup: {{- toYaml . }}
+          {{- end }}
           resources:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
 
         read:
           replicas: {{ $.Values.loki.read.count }}
+          {{- with $.Values.loki.read.nodeGroup }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{ $.Values.loki.read.nodeGroup }}
+            eks.amazonaws.com/nodegroup: {{- toYaml . }}
+          {{- end }}
           resources:
             {{- toYaml $.Values.loki.read.resources | nindent 12 }}
 
