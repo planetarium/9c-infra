@@ -25,3 +25,7 @@ loki:
         cpu: 1500m
         memory: 8Gi
     nodeGroup: ""
+
+prometheus:
+  server:
+    nodeGroup: ""

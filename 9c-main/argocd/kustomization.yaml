@@ -29,3 +29,33 @@ patchesJson6902:
             name: 9c-main-v2-external-secrets
             annotations:
               eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-main-v2-external-secrets
+  - target:
+      name: argocd-applicationset-controller
+    patch: |-
+      - op: add
+        path: /spec/template/spec/container/0/nodeGroup
+        value: 9c-main-r6g_xl_2c
+  - target:
+      name: argocd-dex-server
+    patch: |-
+      - op: add
+        path: /spec/template/spec/container/0/nodeGroup
+        value: 9c-main-r6g_xl_2c
+  - target:
+      name: argocd-notifications-controller
+    patch: |-
+      - op: add
+        path: /spec/template/spec/container/0/nodeGroup
+        value: 9c-main-r6g_xl_2c
+  - target:
+      name: argocd-server
+    patch: |-
+      - op: add
+        path: /spec/template/spec/container/0/nodeGroup
+        value: 9c-main-r6g_xl_2c
+  - target:
+      name: argocd-application-controller
+    patch: |-
+      - op: add
+        path: /spec/template/spec/container/0/nodeGroup
+        value: 9c-main-r6g_xl_2c
