@@ -15,7 +15,7 @@ slackWebHookUrl: ''
 snapshot:
   resetSnapshot: false
   slackChannel: 9c-internal
-  image: planetariumhq/ninechronicles-snapshot:git-2cf2e34e78e64bdc09f8ad27a10bc5889133e8f1
+  image: planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6 
   cfDistributionId: ''
   aws_access_key_id: ''
   aws_secret_access_key: ''

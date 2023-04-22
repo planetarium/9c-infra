@@ -43,6 +43,8 @@ spec:
           name: market-service
           ports:
             - containerPort: 80
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.large
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate

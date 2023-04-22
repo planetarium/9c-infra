@@ -85,7 +85,7 @@ data:
       fi
 
       if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
-        sleep 300
+        sleep 60
       else
         senderr "grep failed. Failed to preload."
         kill "$PID"
@@ -99,7 +99,7 @@ data:
       if ! kill -0 "$PID"; then
         echo "$PID doesn't exist. Failed to kill headless"
       else
-        kill -KILL "$PID"
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
         waitpid "$PID" || true
         chmod 777 -R "$STORE_PATH"
       fi
@@ -160,7 +160,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$2" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 1 --apv "$2" --snapshot-type "partition"; then
         senderr "Snapshot creation failed." $1
         exit 1
       fi

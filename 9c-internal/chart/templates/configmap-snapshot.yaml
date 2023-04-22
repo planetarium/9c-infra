@@ -91,6 +91,7 @@ data:
             rm "$snapshot_zip_filename"
         done
 
+        rm $save_dir/mainnet_latest.json
         aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
 
@@ -141,6 +142,7 @@ data:
               rm "$snapshot_zip_filename"
           done
 
+          rm $save_dir/mainnet_latest.json
           aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
 
@@ -242,7 +244,7 @@ data:
       fi
 
       if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
-        sleep 300
+        sleep 60
       else
         senderr "grep failed. Failed to preload." $1
         kill "$PID"
@@ -256,7 +258,7 @@ data:
       if ! kill -0 "$PID"; then
         echo "$PID doesn't exist. Failed to kill headless"
       else
-        kill "$PID"
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
         waitpid "$PID" || true
         chmod 777 -R "$STORE_PATH"
       fi
@@ -316,7 +318,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 1 --apv "$1" --snapshot-type "partition"; then
         senderr "Snapshot creation failed." $2
         exit 1
       fi

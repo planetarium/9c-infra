@@ -11,6 +11,7 @@ data:
         rewrite name 9c-main-tcp-seed-1.planetarium.dev tcp-seed-1.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-2.planetarium.dev tcp-seed-2.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-3.planetarium.dev tcp-seed-3.9c-network.svc.cluster.local
+        rewrite name 9c-main-full-state.planetarium.dev main-full-state.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-1.nine-chronicles.com remote-headless-1.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-2.nine-chronicles.com remote-headless-2.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-3.nine-chronicles.com remote-headless-3.9c-network.svc.cluster.local
