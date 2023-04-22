@@ -85,7 +85,7 @@ data:
       fi
 
       if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
-        sleep 300
+        sleep 60
       else
         senderr "grep failed. Failed to preload."
         kill "$PID"
@@ -99,7 +99,7 @@ data:
       if ! kill -0 "$PID"; then
         echo "$PID doesn't exist. Failed to kill headless"
       else
-        kill -KILL "$PID"
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
         waitpid "$PID" || true
         chmod 777 -R "$STORE_PATH"
       fi
@@ -316,7 +316,7 @@ data:
       fi
 
       if timeout 14400 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
-        sleep 300
+        sleep 60
       else
         senderr "grep failed. Failed to preload."
         kill "$PID"
@@ -330,7 +330,7 @@ data:
       if ! kill -0 "$PID"; then
         echo "$PID doesn't exist. Failed to kill headless"
       else
-        kill -KILL "$PID"
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
         waitpid "$PID" || true
         chmod 777 -R "$STORE_PATH"
       fi
