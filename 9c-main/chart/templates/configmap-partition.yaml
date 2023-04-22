@@ -161,7 +161,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 1 --apv "$1" --snapshot-type "partition"; then
         senderr "Snapshot creation failed."
         exit 1
       fi
