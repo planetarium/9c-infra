@@ -48,13 +48,13 @@ spec:
             resources:
               requests:
                 cpu: 2000m
-                memory: 10Gi
+                memory: 12Gi
               limits:
                 cpu: 2000m
-                memory: 10Gi
+                memory: 12Gi
         memcached:
           enabled: true
-          memory: 14Gi
+          memory: 16Gi
           nodeGroup: 9c-main-r6g_xl_2c
 
   destination:
