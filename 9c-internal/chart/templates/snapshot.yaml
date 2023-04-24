@@ -37,7 +37,6 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
-
           - name: preload-headless
             image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
             args:
@@ -98,9 +97,13 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
+            resources:
+              requests:
+                cpu: 1
+                memory: 12Gi
           restartPolicy: OnFailure
           nodeSelector:
-            node.kubernetes.io/instance-type: m5d.xlarge
+            node.kubernetes.io/instance-type: r6g.large
           volumes:
           - name: script-volume
             configMap:
