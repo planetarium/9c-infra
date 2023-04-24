@@ -19,7 +19,7 @@ spec:
         args:
           - /run.sh
           - -vvv
-          - -m 12000
+          - -m 16000
           - -I 128m
           - -r
           - -L
