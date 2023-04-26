@@ -1,12 +1,10 @@
-{{ range $idx := until (int .Values.testHeadless.count) }}
-{{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: test-headless-{{ $index }}
+    app: test-headless-2
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: test-headless-{{ $index }}
+  name: test-headless-2
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -14,14 +12,40 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: test-headless-{{ $index }}
-  serviceName: test-headless-{{ $index }}
+      app: test-headless-2
+  serviceName: test-headless-2
   template:
     metadata:
       labels:
-        app: test-headless-{{ $index }}
-      name: test-headless-{{ $index }}
+        app: test-headless-2
+      name: test-headless-2
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - test-headless-2
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.testHeadless2.image.repository }}:{{ $.Values.testHeadless2.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: test-headless-data-2
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "true"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -29,59 +53,51 @@ spec:
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
-        - --port={{ $.Values.testHeadless.ports.headless }}
+        - --port={{ $.Values.testHeadless2.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        {{- if $.Values.testHeadless.useTurnServer }}
+        {{- if $.Values.testHeadless2.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ index $.Values.testHeadless.hosts $idx }}
+        - --host={{ $.Values.testHeadless2.host }}
         {{- end }}
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port={{ $.Values.testHeadless.ports.graphql }}
+        - --graphql-port={{ $.Values.testHeadless2.ports.graphql }}
         - --rpc-server
         - --rpc-remote-server
         - --rpc-listen-host=0.0.0.0
-        - --rpc-listen-port={{ $.Values.testHeadless.ports.rpc }}
+        - --rpc-listen-port={{ $.Values.testHeadless2.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
-        {{- with $.Values.testHeadless.extraArgs }}
+        {{- with $.Values.testHeadless2.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         command:
         - dotnet
-        image: {{ $.Values.testHeadless.image.repository }}:{{ $.Values.testHeadless.image.tag }}
+        image: {{ $.Values.testHeadless2.image.repository }}:{{ $.Values.testHeadless2.image.tag }}
         imagePullPolicy: Always
-        name: test-headless-{{ $index }}
+        name: test-headless-2
         ports:
-        - containerPort: {{ $.Values.testHeadless.ports.graphql }}
+        - containerPort: {{ $.Values.testHeadless2.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: {{ $.Values.testHeadless.ports.headless }}
+        - containerPort: {{ $.Values.testHeadless2.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: {{ $.Values.testHeadless.ports.rpc }}
+        - containerPort: {{ $.Values.testHeadless2.ports.rpc }}
           name: rpc
           protocol: TCP
-        livenessProbe:
-          exec:
-            command:
-            - /bin/liveness_probe.sh
-          failureThreshold: 3
-          initialDelaySeconds: 1800
-          periodSeconds: 30
-          timeoutSeconds: 30
         readinessProbe:
           exec:
             command:
@@ -90,12 +106,12 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 10
         resources:
-          {{- toYaml $.Values.testHeadless.resources | nindent 10 }}
+          {{- toYaml $.Values.testHeadless2.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: test-headless-data-{{ $index }}
+          name: test-headless-data-2
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -110,7 +126,7 @@ spec:
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "15"
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -128,15 +144,13 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      name: test-headless-data-{{ $index }}
+      name: test-headless-data-2
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.testHeadless.storage.data }}
+          storage: {{ $.Values.testHeadless2.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 
----
-{{ end }}
