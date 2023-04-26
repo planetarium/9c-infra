@@ -55,13 +55,11 @@ data:
     apt-get -y install default-mysql-client
 
     HOME="/app"
-    export PATH="$PATH:/root/.dotnet/tools"
     NC_MySqlConnectionString=$1
     RESET_SNAPSHOT_OPTION=$2
 
     if $RESET_SNAPSHOT_OPTION
     then
-      cd /app/NineChronicles.DataProvider/NineChronicles.DataProvider.Executable
-      dotnet ef database update -- $NC_MySqlConnectionString
+      /root/.dotnet/tools/dotnet-ef database update --project /app/NineChronicles.DataProvider/NineChronicles.DataProvider.Executable $NC_MySqlConnectionString
     fi
 {{ end }}
