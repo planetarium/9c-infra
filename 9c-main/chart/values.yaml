@@ -224,7 +224,7 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-b9a8c0a4036e503059c533cace49942b9a2bdcb6"
+    tag: "git-efff16db0bc02e6957beccc7141b30d6a8299cd2"
 
   # dotnet args
 
