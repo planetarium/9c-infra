@@ -1,12 +1,10 @@
-{{ range $idx := until (int .Values.testHeadless.count) }}
-{{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: test-headless-{{ $index }}
+    app: test-headless-1
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: test-headless-{{ $index }}
+  name: test-headless-1
   namespace: {{ $.Chart.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -14,13 +12,13 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: test-headless-{{ $index }}
-  serviceName: test-headless-{{ $index }}
+      app: test-headless-1
+  serviceName: test-headless-1
   template:
     metadata:
       labels:
-        app: test-headless-{{ $index }}
-      name: test-headless-{{ $index }}
+        app: test-headless-1
+      name: test-headless-1
     spec:
       containers:
       - args:
@@ -29,49 +27,49 @@ spec:
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
-        - --port={{ $.Values.testHeadless.ports.headless }}
+        - --port={{ $.Values.testHeadless1.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        {{- if $.Values.testHeadless.useTurnServer }}
+        {{- if $.Values.testHeadless1.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ index $.Values.testHeadless.hosts $idx }}
+        - --host={{ $.Values.testHeadless1.host }}
         {{- end }}
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port={{ $.Values.testHeadless.ports.graphql }}
+        - --graphql-port={{ $.Values.testHeadless1.ports.graphql }}
         - --rpc-server
         - --rpc-remote-server
         - --rpc-listen-host=0.0.0.0
-        - --rpc-listen-port={{ $.Values.testHeadless.ports.rpc }}
+        - --rpc-listen-port={{ $.Values.testHeadless1.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
-        {{- with $.Values.testHeadless.extraArgs }}
+        {{- with $.Values.testHeadless1.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         command:
         - dotnet
-        image: {{ $.Values.testHeadless.image.repository }}:{{ $.Values.testHeadless.image.tag }}
+        image: {{ $.Values.testHeadless1.image.repository }}:{{ $.Values.testHeadless1.image.tag }}
         imagePullPolicy: Always
-        name: test-headless-{{ $index }}
+        name: test-headless-1
         ports:
-        - containerPort: {{ $.Values.testHeadless.ports.graphql }}
+        - containerPort: {{ $.Values.testHeadless1.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: {{ $.Values.testHeadless.ports.headless }}
+        - containerPort: {{ $.Values.testHeadless1.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: {{ $.Values.testHeadless.ports.rpc }}
+        - containerPort: {{ $.Values.testHeadless1.ports.rpc }}
           name: rpc
           protocol: TCP
         livenessProbe:
@@ -90,12 +88,12 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 10
         resources:
-          {{- toYaml $.Values.testHeadless.resources | nindent 10 }}
+          {{- toYaml $.Values.testHeadless1.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: test-headless-data-{{ $index }}
+          name: test-headless-data-1
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -128,15 +126,13 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      name: test-headless-data-{{ $index }}
+      name: test-headless-data-1
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.testHeadless.storage.data }}
+          storage: {{ $.Values.testHeadless1.storage.data }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 
----
-{{ end }}
