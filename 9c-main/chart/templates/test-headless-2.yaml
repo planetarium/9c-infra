@@ -20,32 +20,6 @@ spec:
         app: test-headless-2
       name: test-headless-2
     spec:
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/main/partition
-        - /data/headless
-        - $(RESET_SNAPSHOT_OPTION)
-        - test-headless-2
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.testHeadless2.image.repository }}:{{ $.Values.testHeadless2.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: test-headless-data-2
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "true"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -98,6 +72,14 @@ spec:
         - containerPort: {{ $.Values.testHeadless2.ports.rpc }}
           name: rpc
           protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
         readinessProbe:
           exec:
             command:
