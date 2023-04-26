@@ -392,7 +392,7 @@ spec:
     port: 443
     targetPort: {{ $.Values.testHeadless1.ports.graphql }}
   selector:
-    app: test-headless-{{ $index }}
+    app: test-headless-1
   type: LoadBalancer
 
 ---
@@ -430,7 +430,7 @@ spec:
     port: 443
     targetPort: {{ $.Values.testHeadless2.ports.graphql }}
   selector:
-    app: test-headless-{{ $index }}
+    app: test-headless-2
   type: LoadBalancer
 
 ---
