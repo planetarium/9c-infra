@@ -76,6 +76,11 @@ node_groups = {
     min_size          = 4
     max_size          = 10
     ami_type          = "AL2_ARM_64"
+    taints = [{
+      key    = "dedicated"
+      value  = "9c"
+      effect = "NO_SCHEDULE"
+    }]
   }
 
   "9c-main-r6g_xl_2c" = {
