@@ -159,7 +159,11 @@ remoteHeadless:
 
   nodeSelector:
     beta.kubernetes.io/os: linux
-  tolerations: []
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "9c"
+      effect: "NoSchedule"
   affinity: {}
 
 dataProvider:
@@ -446,7 +450,11 @@ validator:
       memory: 20Gi
 
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "9c"
+      effect: "NoSchedule"
   affinity: {}
 
 remoteActionEvaluatorHeadless:

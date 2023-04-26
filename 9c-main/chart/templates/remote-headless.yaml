@@ -125,6 +125,10 @@ spec:
           value: "5s"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
