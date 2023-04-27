@@ -1,6 +1,6 @@
 clusterName: 9c-internal-v2
 logLevel: debug
-appProtocolVersion: 1163/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIGsrWUQ8gPKw9ee7lfLzuRdg5dFJoL+L8jvTbIm1M9VSAiAtd7OSiQz4PwTe.Tc+dZl3D2BVgv3QQFjfokgGIWZBVw==/ZHU4OmxhdW5jaGVydTQyOjEvZjVjM2ZkMzUyMTg1OGQ0ZGEyZDZmOTU5Y2UzYjY3ODY1ZjE0ODcwNXU2OnBsYXllcnU0MjoxLzRhZTA1YjNlMzZjOGQyMTJiOWI0OTg4ZjA3OTJlNWViMDA2M2E1YzV1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0yN2U=
+appProtocolVersion: 1164/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIFyX8qCO2CYGubjsyMWX3wgIg7oKAcYBH4x6LgO5z5DqAiAvvyuV1ddZEN3Q5H0Z97a4GJLYUJHqu3LnpVKvzkbOgw==/ZHU4OmxhdW5jaGVydTQyOjEvZTBlYmI2ZjZkNzg5YmI4ZWU1ZWMxYTIxNDY1YTIwZDdlN2Y2OGY1NnU2OnBsYXllcnU0MjoxLzJiOGJmYjIzM2MxYWI3ZmNjY2YyMmEwOGE4MDBlZDJjZWNjZDZhNGV1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0yN2U=
 genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
 trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
@@ -25,7 +25,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-a39bfc566c143a3d3f6d6f7dd8e92f83a6097845
+    tag: git-eabf10a4c9ad04fba649183f79d4e06b4c720533
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -78,7 +78,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-a39bfc566c143a3d3f6d6f7dd8e92f83a6097845
+    tag: git-eabf10a4c9ad04fba649183f79d4e06b4c720533
   hosts: []
   ports:
     headless: 31234
@@ -100,7 +100,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-a39bfc566c143a3d3f6d6f7dd8e92f83a6097845
+    tag: git-eabf10a4c9ad04fba649183f79d4e06b4c720533
   extraArgs: []
   useTurnServer: true
   hosts: []
@@ -127,7 +127,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: git-10a4edd5467b009cb6bcdaf55a708ca74003850c
+    tag: git-d88a5465b86a0269f8f6d219eba47b6bcf42afa3
   db:
     storage: 1000Gi
     database: ''
@@ -140,7 +140,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-a39bfc566c143a3d3f6d6f7dd8e92f83a6097845
+    tag: git-eabf10a4c9ad04fba649183f79d4e06b4c720533
   extraArgs: []
   useTurnServer: true
   hosts: []
