@@ -51,6 +51,8 @@ spec:
           value: {{ $.Values.genesisBlockPath }}
         - name: NC_BlockInsertInterval
           value: '10'
+        - name: NC_BlockIndexFilePath
+          value: /data
         - name: NC_TxLifeTime
           value: '10'
         - name: NC_MySqlConnectionString
@@ -90,12 +92,11 @@ spec:
             command:
             - /bin/bash
             - -c
-            - "set -e\ntest=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
-              \ \\\n    --data '{\"query\":\"query{test}\"\
-              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.test'\n\
-              )\"\nif [[ -n $test ]]; then\n  echo \"DataProvider query successful!\"\
-              \nelse\n  echo \"DataProvider query unsuccessful!\"\nfi\n[[ -n $test\
-              \ ]]\n"
+            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
+              }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
+              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 120 ]]\n"
           initialDelaySeconds: 600
           periodSeconds: 60
           timeoutSeconds: 60
