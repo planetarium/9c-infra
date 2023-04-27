@@ -94,7 +94,7 @@ spec:
             resources:
               requests:
                 cpu: 1300m
-                memory: 10Gi
+                memory: 20Gi
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
@@ -123,6 +123,6 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
-  schedule: 0 6/12 * * *
+  schedule: 0 6 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

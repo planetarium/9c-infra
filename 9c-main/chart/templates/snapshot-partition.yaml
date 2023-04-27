@@ -92,7 +92,7 @@ spec:
             resources:
               requests:
                 cpu: 1300m
-                memory: 10Gi
+                memory: 20Gi
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
