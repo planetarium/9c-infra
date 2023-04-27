@@ -64,7 +64,7 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        dbg.*
-        Rule                         $kubernetes['container_name'] ^(?!remote-headless).*$ cwl.$TAG true
+        Rule                         $kubernetes['container_name'] ^(?!remote-headless|data-provider).*$ cwl.$TAG true
         Emitter_Name                 for_cloudwatch
     [FILTER]
         Name                         rewrite_tag
