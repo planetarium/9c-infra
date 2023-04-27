@@ -129,6 +129,7 @@ data:
     apt-get -y install zip
     apt-get -y install unzip
     apt-get -y install sudo
+    apt-get -y install p7zip
 
     uname=$(uname -r)
     arch=${uname##*.}
@@ -149,7 +150,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition--$2 in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+      curl --data "[K8S] $1. Check snapshot-full-$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
     }
 
     function make_and_upload_snapshot() {
@@ -168,7 +169,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "full"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$1" --snapshot-type "full"; then
         senderr "Snapshot creation failed."
         exit 1
       fi
@@ -177,14 +178,15 @@ data:
       LATEST_FULL_SNAPSHOT=$(ls -t $FULL_DIR/*.zip | head -1)
       UPLOAD_FULL_SNAPSHOT_FILENAME="9c-main-snapshot"
       FULL_SNAPSHOT_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.zip"
+      FULL_SNAPSHOT_FILENAME_7Z="$UPLOAD_FULL_SNAPSHOT_FILENAME.7z"
 
       S3_BUCKET_NAME="9c-snapshots-v2"
 
       AWS="/usr/local/bin/aws"
       AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
       AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
-      "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-      "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      "$AWS" configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
+      "$AWS" configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
       "$AWS" configure set default.region us-east-2
       "$AWS" configure set default.output json
       NOW=$(date '+%Y%m%d%H%M%S')
@@ -192,7 +194,10 @@ data:
       "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
       invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME"
-      
+      7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/
+      "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
+      invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z"
+      rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
       rm "$LATEST_FULL_SNAPSHOT"
     }
 
@@ -206,5 +211,4 @@ data:
     }
 
     trap '' HUP
-
-    make_and_upload_snapshot $1
+    make_and_upload_snapshot "$1"
