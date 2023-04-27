@@ -42,7 +42,7 @@ spec:
             resources:
               requests:
                 cpu: 1300m
-                memory: 10Gi
+                memory: 20Gi
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
@@ -83,7 +83,7 @@ spec:
             resources:
               requests:
                 cpu: 1300m
-                memory: 10Gi
+                memory: 20Gi
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
@@ -107,7 +107,7 @@ spec:
             resources:
               requests:
                 cpu: 1300m
-                memory: 10Gi
+                memory: 20Gi
             volumeMounts:
             - mountPath: /bin/replace_snapshot.sh
               name: script-volume
@@ -143,6 +143,6 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
-  schedule: 30 0 1,15 * *
+  schedule: 30 6 1,15 * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
