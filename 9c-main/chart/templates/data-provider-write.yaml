@@ -51,6 +51,8 @@ spec:
           value: {{ $.Values.genesisBlockPath }}
         - name: NC_BlockInsertInterval
           value: '10'
+        - name: NC_BlockIndexFilePath
+          value: /data
         - name: NC_TxLifeTime
           value: '10'
         - name: NC_MySqlConnectionString
