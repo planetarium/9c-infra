@@ -102,11 +102,6 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
-        env:
-        - name: IpRateLimiting__EnableRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Limit
-          value: "15"
       nodeSelector:
         node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
