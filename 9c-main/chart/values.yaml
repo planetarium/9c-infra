@@ -5,7 +5,7 @@
 
 clusterName: "9c-main-v2"
 logLevel: "debug"
-appProtocolVersion: "200000/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQD4MxYR4lSu69b+TYUB91k.Ns5cJHlK0B6SzU60g16OOgIgUwg3wJNKSO7A68sKn.rDQiuHAjftT1fPOmwiLEZyvJE=/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzhjYWI5NjYwYTk2MzIyMDk4MjU5OWZjYjc0MjMyNjI2MzA5ZTIwZmF1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0wNWU="
+appProtocolVersion: "200010/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQC29NBKXv7+lUCg6XoxmiSZKW31yojaocZ1fDjV4AF9HAIgM9pnUvIV9Cr+O6VnKKB1PZP1U3A4WB8Ok6toAZmHdBw=/ZHU4OmxhdW5jaGVydTQyOjEvZGZkNTI1MDQ3Yjc4ZWY4NjNmOGFkMzJkMDIzZjk0ZjBhZTU5YmI3ZXU2OnBsYXllcnU0MjoxLzMxZTJlNTc5ODhmYTY4OGJjM2EwYzhlZGFkYzFjN2UwZDFiOTdkNmN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0yOGU="
 genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -400,7 +400,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: "git-94921e5d62f4a2922bf24bb44933deb57052b215"
+    tag: "git-98b60c9de66f5f4d080edfe3d9e81628e47751a8"
 
 validator:
   count: 4
