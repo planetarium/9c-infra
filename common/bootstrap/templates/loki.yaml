@@ -129,6 +129,9 @@ spec:
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
+          persistence:
+            size: 50Gi
+            storageClass: gp3-extensible
 
         read:
           replicas: {{ $.Values.loki.read.count }}
@@ -138,6 +141,8 @@ spec:
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.read.resources | nindent 12 }}
+          persistence:
+            storageClass: gp3-extensible
 
         test:
           enabled: false
