@@ -50,7 +50,11 @@ spec:
             type: Recreate
           extraArgs:
             log.level: debug
-        
+          {{- with $.Values.prometheus.server.nodeGroup }}
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: {{ . }}
+          {{- end }}
+
         serverFiles:
           prometheus.yml:
             rule_files:
