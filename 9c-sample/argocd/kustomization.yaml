@@ -5,6 +5,7 @@ resources:
   - ../../common/argocd
   - bootstrap.yaml
   - argocd-ingress.yaml
+  - argocd-secret-store.yaml
   - argocd-secrets.yaml
 patchesStrategicMerge:
   - argocd-cm.yaml

@@ -16,7 +16,7 @@ iceServers:
 
 networkType: default
 
-useExternalSecret: false
+useExternalSecret: true
 slackToken: ""
 
 resetSnapshot: false
@@ -51,7 +51,7 @@ seed:
 
   # enter private keys if not using External Secrets
   privateKeys: []
-  # - "private keys"
+  # - "private key"
 
   env: []
 
@@ -93,7 +93,6 @@ miner:
 
   # private keys if not using External Secrets
   privateKeys: []
-  # - "private keys"
 
   storage:
     data: 500Gi
