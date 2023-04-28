@@ -96,7 +96,7 @@ spec:
               \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
               }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
               )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 120 ]]\n"
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 300 ]]\n"
           initialDelaySeconds: 600
           periodSeconds: 60
           timeoutSeconds: 60
