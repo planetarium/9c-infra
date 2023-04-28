@@ -25,7 +25,8 @@ spec:
           - -L
         persistence:
           enabled: true
-          size: 100Gi
+          size: 20Gi
+          storageClass: gp3-extensible
         resources:
           requests:
             memory: {{ $.Values.memcached.memory }}
