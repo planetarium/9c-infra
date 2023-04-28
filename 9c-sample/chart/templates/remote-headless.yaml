@@ -134,8 +134,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: remote-headless-data-{{ $index }}
-        - mountPath: /app/logs
-          name: remote-headless-logs-{{ $index }}
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -144,6 +142,19 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        - mountPath: /app/logs
+          name: json-log
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -157,6 +168,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-snapshot-script
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
@@ -168,16 +183,6 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.remoteHeadless.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
-      volumeMode: Filesystem
-  - metadata:
-      name: remote-headless-logs-{{ $index }}
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ $.Values.remoteHeadless.storage.log }}
       storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---
