@@ -32,6 +32,9 @@ spec:
         clusterName: 9c-main-v2
         argocdPath: 9c-main
         accountId: "319679068466"
+        prometheus:
+          server:
+            nodeGroup: 9c-main-r6g_xl_2c
         loki:
           enabled: true
           bucketName: loki.planetariumhq.com
