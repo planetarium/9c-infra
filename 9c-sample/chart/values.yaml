@@ -5,17 +5,19 @@
 
 clusterName: "9c-sample"
 logLevel: "debug"
-appProtocolVersion: "1134/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIAWf4Cq3OjnVWBXjFK30MuLdUxL8+DnJZ2n5ruhpweSLAiA0yEKd4U46epOOugF+Ovsz9Qtl2H801ShC4ElM92OOGQ==/ZHU4OmxhdW5jaGVydTQyOjEvMGZlMGRkMjcxNTQwZmNkMDhmYTY2ZDQ3NThjMmU1MjI2YzVkMzI1YnU2OnBsYXllcnU0MjoxL2ZhYjhjNjE0NTM4YjAwNTdhNzEyYzdlOTI5ZTFmZDA0NzAyNTVmMDN1OTp0aW1lc3RhbXB1MTA6MjAyMi0xMi0wNWU="
-genesisBlockPath: "https://drfoj4ogb5dwf.cloudfront.net/genesis-block-9c-sample"
+appProtocolVersion: "200010/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIAUCNU9yTZk4onxrkT8uxdfB3XFRfpxEyGzbj9BZTBlpAiBT987Kgqxnbg7yvyRn86w2c3j6.KtNsWwGKveBxMgTzw==/ZHU4OmxhdW5jaGVydTQyOjEvZGZkNTI1MDQ3Yjc4ZWY4NjNmOGFkMzJkMDIzZjk0ZjBhZTU5YmI3ZXU2OnBsYXllcnU0MjoyL2Q3MjA2OGEwODEwZjcyYzg5MDE2MzQ0N2I5YjRkYjg2NjMzYWE0ZTJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
+genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
 trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
 
 peerStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
 
 iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
-networkType: default
+networkType: main
 
 useExternalSecret: true
 slackToken: ""
@@ -79,7 +81,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4b89dc443bb30f7d0ea2089d774041b833e35336"
+    tag: "v200010-1"
 
   # host domains if not using turn servers
   hosts: []
@@ -122,7 +124,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "test-action-log"
+    tag: "log-200010-test"
   
   extraArgs: []
   # - --key=val
@@ -156,5 +158,9 @@ remoteHeadless:
 
   nodeSelector:
     beta.kubernetes.io/os: linux
-  tolerations: []
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "9c"
+      effect: "NoSchedule"
   affinity: {}
