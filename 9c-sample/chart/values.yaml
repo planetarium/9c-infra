@@ -22,7 +22,7 @@ networkType: main
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: false
+resetSnapshot: true
 slackChannel: "bot-test"
 
 pos:
