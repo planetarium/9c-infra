@@ -101,14 +101,6 @@ spec:
         - dotnet
         image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
         imagePullPolicy: Always
-        livenessProbe:
-          exec:
-            command:
-            - /bin/liveness_probe.sh
-          failureThreshold: 3
-          initialDelaySeconds: 1800
-          periodSeconds: 30
-          timeoutSeconds: 30
         name: remote-headless-{{ $index }}
         ports:
         - containerPort: {{ $.Values.remoteHeadless.ports.graphql }}
@@ -159,6 +151,8 @@ spec:
       tolerations:
         {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
       {{- end }}
+      nodeSelector:
+        beta.kubernetes.io/instance-type: r5.large
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
