@@ -45,7 +45,7 @@ spec:
         - name: SLACK_TOKEN
           valueFrom:
             secretKeyRef:
-              name: slack-token
+              name: slack
               key: slack-token
       - name: wait
         image: alpine
@@ -155,6 +155,10 @@ spec:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
