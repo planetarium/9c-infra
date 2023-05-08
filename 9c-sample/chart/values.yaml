@@ -37,7 +37,7 @@ seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: IfNotPresent # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-317f5ec9793de2aed55ddd51fb8107201f29fcf3"
+    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
 
   hosts: []
   #  - "aba29d1ea27f647c49878c2b6c5f1eaf-2140823651.us-east-2.elb.amazonaws.com"
@@ -54,7 +54,6 @@ seed:
 
   # enter private keys if not using External Secrets
   privateKeys: []
-  # - "private key"
 
   env: []
 
@@ -96,7 +95,6 @@ miner:
 
   # private keys if not using External Secrets
   privateKeys: []
-
   storage:
     data: 500Gi
 
@@ -124,8 +122,8 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "log-200010-test"
-  
+    tag: "v200010-1"
+
   extraArgs: []
   # - --key=val
 
@@ -158,9 +156,4 @@ remoteHeadless:
 
   nodeSelector:
     beta.kubernetes.io/os: linux
-  tolerations:
-    - key: "dedicated"
-      operator: "Equal"
-      value: "9c"
-      effect: "NoSchedule"
   affinity: {}

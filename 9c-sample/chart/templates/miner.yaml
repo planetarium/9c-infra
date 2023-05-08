@@ -118,6 +118,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: miner-data-{{ $index }}
+      nodeSelector:
+        beta.kubernetes.io/instance-type: r5.large
       dnsPolicy: ClusterFirst
       volumes:
       - name: script-volume
