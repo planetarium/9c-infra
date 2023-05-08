@@ -1,0 +1,96 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: monitoring
+  labels:
+    k8s-app: fluent-bit
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush                     5
+        Log_Level                 info
+        Daemon                    off
+        Parsers_File              parsers.conf
+        HTTP_Server               On
+        HTTP_Listen               0.0.0.0
+        HTTP_Port                 2020
+        storage.path              /var/fluent-bit/state/flb-storage/
+        storage.sync              normal
+        storage.checksum          off
+        storage.backlog.mem_limit 5M
+    @INCLUDE application-log.conf
+  application-log.conf: |
+    
+    [INPUT]
+        Name                         tail
+        Tag                          loki.*
+        Exclude_Path                 /var/log/headless/log-*, /var/log/headless/metric-*
+        Path                         /var/log/headless/*.json
+        Parser                       docker
+        DB                           /var/fluent-bit/state/flb_loki.db
+        Skip_Long_Lines              On
+        Refresh_Interval             10
+        Rotate_Wait                  30
+        storage.type                 filesystem
+        Read_from_Head               ${READ_FROM_HEAD}
+    [FILTER]
+        Name                         kubernetes
+        Match                        loki.*
+        Kube_URL                     https://kubernetes.default.svc:443
+        Kube_Tag_Prefix              loki.var.log.headless.
+        Regex_Parser                 kube_json
+        Merge_Log                    Off
+        K8S-Logging.Parser           On
+        K8S-Logging.Exclude          Off
+        Labels                       Off
+        Annotations                  Off
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        loki.*
+        Rule                         $kubernetes['container_name'] ^.*$ s3json.$kubernetes['container_name'].$TAG true
+        Emitter_Name                 for_s3_json
+    # [OUTPUT]
+    #     Name   kinesis_streams
+    #     Match  s3json.*
+    #     region us-east-2
+    #     stream sample-ds
+    [OUTPUT]
+        Name                         s3
+        Match                        s3json.*
+        region                       ${AWS_REGION}
+        Bucket                       athena.planetarium-dev.com
+        compression                  gzip
+        Total_file_size              100M
+        S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters ._
+  parsers.conf: |
+    [PARSER]
+        Name                docker
+        Format              json
+        Time_Key            time
+        Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
+    [PARSER]
+        Name                syslog
+        Format              regex
+        Regex               ^(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key            time
+        Time_Format         %b %d %H:%M:%S
+    [PARSER]
+        Name                container_firstline
+        Format              regex
+        Regex               (?<log>(?<="log":")\S(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
+        Time_Key            time
+        Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
+    [PARSER]
+        Name                libplanet
+        Format              regex
+        Regex               (?<log_time>(?<=\[)\d{2}:\d{2}:\d{2})\s(?<log_level>\w{3})\]\s(?<log_source>(?<=\[).*\])?(?<log_message>.*)
+    [PARSER]
+        Name                kube_json
+        Format              regex
+        Regex               (?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>[^_]+)(_[0-9]*)?\.json$
+        Time_Key            time
+        Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
+
