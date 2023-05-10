@@ -194,7 +194,7 @@ data:
       "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
       invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME"
-      7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/
+      7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
       "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
       invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z"
       rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
