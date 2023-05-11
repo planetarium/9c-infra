@@ -22,7 +22,7 @@ networkType: main
 useExternalSecret: true
 slackToken: ""
 
-resetSnapshot: true
+resetSnapshot: false
 slackChannel: "bot-test"
 
 pos:
@@ -73,7 +73,7 @@ seed:
   affinity: {}
 
 miner:
-  count: 1
+  count: 0
   useTurnServer: true
 
   image:
@@ -117,7 +117,7 @@ miner:
   affinity: {}
 
 remoteHeadless:
-  count: 2
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: IfNotPresent
