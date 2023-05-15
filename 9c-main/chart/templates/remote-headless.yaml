@@ -119,6 +119,10 @@ spec:
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Period
+          value: "2s"
+        - name: IpRateLimiting__GeneralRules__1__Period
+          value: "2s"
       nodeSelector:
         node.kubernetes.io/instance-type: c7g.4xlarge
       dnsPolicy: ClusterFirst
