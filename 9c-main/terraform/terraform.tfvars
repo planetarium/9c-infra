@@ -32,9 +32,29 @@ node_groups = {
     instance_types    = ["c7g.2xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
+    desired_size      = 0
+    min_size          = 0
+    max_size          = 1
+    ami_type          = "AL2_ARM_64"
+  }
+
+  "9c-main-r7g_xl_2c" = {
+    instance_types    = ["r7g.xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
     desired_size      = 1
     min_size          = 0
-    max_size          = 3
+    max_size          = 2
+    ami_type          = "AL2_ARM_64"
+  }
+
+  "9c-main-m7g_xl_2c" = {
+    instance_types    = ["m7g.xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 5
+    min_size          = 0
+    max_size          = 6
     ami_type          = "AL2_ARM_64"
   }
 
@@ -52,7 +72,7 @@ node_groups = {
     instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 11
+    desired_size      = 10
     min_size          = 0
     max_size          = 20
     ami_type          = "AL2_ARM_64"
@@ -62,8 +82,7 @@ node_groups = {
     instance_types    = ["m5.2xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 2
+    desired_size      = 0
     min_size          = 0
     max_size          = 5
   }
-}
