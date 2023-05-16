@@ -108,7 +108,7 @@ spec:
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "15"
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

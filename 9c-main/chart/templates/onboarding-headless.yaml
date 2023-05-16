@@ -80,7 +80,7 @@ spec:
           readOnly: true
           subPath: readiness_probe.sh
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

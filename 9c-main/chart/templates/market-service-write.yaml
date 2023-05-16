@@ -48,7 +48,7 @@ spec:
           cpu: 6000m
       restartPolicy: Always
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.2xlarge
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
   updateStrategy:
     type: RollingUpdate
 {{ end }}
