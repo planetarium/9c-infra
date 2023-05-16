@@ -92,15 +92,15 @@ spec:
           protocol: TCP
         resources:
           requests:
-            cpu: 1000m
-            memory: 20Gi
+            cpu: '3'
+            memory: 12Gi
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
           name: data-provider-read-data
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
