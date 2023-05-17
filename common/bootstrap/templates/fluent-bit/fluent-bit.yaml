@@ -49,6 +49,8 @@ spec:
             memory: 100Mi
           limits:
             memory: 500Mi
+        tolerations:
+          - operator: "Exists"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
