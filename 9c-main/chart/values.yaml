@@ -328,12 +328,12 @@ bridge:
 testHeadless1:
   enabled: true
   image:
-    repository: planetariumhq/ninechronicles-headless
+    repository: longfin/9c-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
+    tag: "v200020-perf-tune-13"
 
-  # dotnet args
+  loggingEnabled: true
 
   extraArgs: []
   # - --key=val
@@ -368,7 +368,7 @@ testHeadless2:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200010-1"
 
-  # dotnet args
+  loggingEnabled: false
 
   extraArgs: []
   # - --key=val
