@@ -120,11 +120,11 @@ spec:
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
-          value: "2s"
+          value: "5s"
         - name: IpRateLimiting__GeneralRules__1__Period
-          value: "2s"
+          value: "5s"
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.4xlarge
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
