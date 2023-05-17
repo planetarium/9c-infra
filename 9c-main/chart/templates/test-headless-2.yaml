@@ -102,6 +102,23 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.testHeadless2.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
+        {{- if $.Values.testHeadless2.loggingEnabled }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-2.json
+        {{- end }}
       nodeSelector:
         node.kubernetes.io/instance-type: m5.large
       dnsPolicy: ClusterFirst
@@ -117,6 +134,12 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-download-snapshot-script
+      {{- if $.Values.testHeadless2.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
