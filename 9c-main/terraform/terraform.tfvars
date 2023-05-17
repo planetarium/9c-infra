@@ -58,13 +58,23 @@ node_groups = {
     ami_type          = "AL2_ARM_64"
   }
 
+  "9c-main-m7g_2xl_2c" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 5
+    min_size          = 5
+    max_size          = 10
+    ami_type          = "AL2_ARM_64"
+  }
+
   "9c-main-c7g_4xl_2c" = {
     instance_types    = ["c7g.4xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 10
-    min_size          = 10
-    max_size          = 20
+    desired_size      = 4
+    min_size          = 4
+    max_size          = 10
     ami_type          = "AL2_ARM_64"
   }
 
