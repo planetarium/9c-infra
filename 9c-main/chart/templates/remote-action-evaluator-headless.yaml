@@ -81,6 +81,7 @@ spec:
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
+        - --config=/bin/appsettings.json
         {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
