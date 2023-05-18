@@ -21,6 +21,32 @@ spec:
         app: remote-action-evaluator-headless
       name: remote-action-evaluator-headless
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - remote-action-evaluator-headless
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: {{ $.Values.remoteActionEvaluatorHeadless.image.repository }}:{{ $.Values.remoteActionEvaluatorHeadless.image.tag }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: remote-action-evaluator-headless-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: true
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -55,6 +81,7 @@ spec:
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
+        - --config=/bin/appsettings.json
         {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

@@ -455,7 +455,7 @@ remoteActionEvaluatorHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-e61d14e8cbf0a8e9f738c6d0d1dc0f07812e67fe"
+    tag: "git-9b5a4a417df03860bad6de9a16892a95ebd56ddb"
 
   loggingEnabled: true
 
@@ -489,7 +489,7 @@ lib9cStateService:
   image:
     repository: planetariumhq/lib9c-stateservice
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-e61d14e8cbf0a8e9f738c6d0d1dc0f07812e67fe"
+    tag: "git-9b5a4a417df03860bad6de9a16892a95ebd56ddb"
 
   ports:
     http: 5157
