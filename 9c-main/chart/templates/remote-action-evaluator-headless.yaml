@@ -268,9 +268,75 @@ metadata:
 data:
   appsettings.json: |-
     {
-      "ActionEvaluator": {
-        "type": "RemoteActionEvaluator",
-        "stateServiceEndpoint": "http://lib9c-state-service.9c-network.svc.cluster.local:5157/evaluation"
-      }
+        "Serilog": {
+            "Using": [
+                "Serilog.Expressions",
+                "Serilog.Sinks.Console",
+                "Serilog.Sinks.RollingFile"
+            ],
+            "MinimumLevel": "Debug",
+            "WriteTo": [
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] [{Source}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByIncludingOnly",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByExcluding",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "Filter": [
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Stun.TurnClient'"
+                    }
+                }
+            ]
+        },
+        "ActionEvaluator": {
+            "type": "RemoteActionEvaluator",
+            "stateServiceEndpoint": "http://lib9c-state-service.9c-network.svc.cluster.local:5157/evaluation"
+        }
     }
 {{- end }}
