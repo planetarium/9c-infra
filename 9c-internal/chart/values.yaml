@@ -102,8 +102,9 @@ remoteHeadless:
     pullPolicy: Always
     tag: git-4324cc4564b09656c9f3c114d44734a6ea4b3151
   extraArgs: []
-  useTurnServer: true
-  hosts: []
+  useTurnServer: false
+  hosts:
+  - "9c-internal-rpc-1.nine-chronicles.com"
   ports:
     headless: 31234
     graphql: 80
