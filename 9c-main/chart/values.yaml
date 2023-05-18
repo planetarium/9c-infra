@@ -448,3 +448,56 @@ validator:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+remoteActionEvaluatorHeadless:
+  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-e61d14e8cbf0a8e9f738c6d0d1dc0f07812e67fe"
+
+  loggingEnabled: true
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  host: "9c-main-remote-aev-test.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+lib9cStateService:
+  enabled: true
+  image:
+    repository: planetariumhq/lib9c-stateservice
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-e61d14e8cbf0a8e9f738c6d0d1dc0f07812e67fe"
+
+  ports:
+    http: 5157
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
