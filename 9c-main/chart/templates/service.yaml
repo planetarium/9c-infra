@@ -539,3 +539,62 @@ spec:
 
 ---
 {{ end }}
+
+{{ if .Values.remoteActionEvaluatorHeadless.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-action-evaluator-headless
+  namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: graphql
+    port: {{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}
+    targetPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}
+  - name: rpc
+    port: {{ $.Values.remoteActionEvaluatorHeadless.ports.rpc }}
+    targetPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.rpc }}
+  - name: headless
+    port: {{ $.Values.remoteActionEvaluatorHeadless.ports.headless }}
+    targetPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.headless }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}
+  selector:
+    app: remote-action-evaluator-headless
+  type: LoadBalancer
+
+---
+{{ end }}
+
+{{ if .Values.lib9cStateService.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lib9c-state-service
+  namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+spec:
+  ports:
+  - name: http
+    port: 5157
+    targetPort: 5157
+  selector:
+    app: lib9c-state-service
+  type: ClusterIP
+
+---
+{{ end }}
