@@ -1,6 +1,7 @@
 clusterName: 9c-internal-v2
 logLevel: debug
-appProtocolVersion: 1166/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIDrg4MJY.JvcEFbPQDqj1cGutrLjDkJPZCcm+eUra7ltAiA16UQcULetnM+vgHZ.0bwnyTmGKxtxbdP0ALb5P+hTjg==/ZHU4OmxhdW5jaGVydTQyOjEvZGE4MGVkNjVjNWQyNGVjYjEyMDU1Zjc2MDkzNTMyY2M1NzdmZWNkMnU2OnBsYXllcnU0MjoxLzlmMjEwN2JkYzgzNTE5YzMxZGY5NWZhY2ZiNDg2NjhhY2RlNThlMzd1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0xN2U=
+appProtocolVersion: 
+  1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ==
 genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
 trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
@@ -15,7 +16,8 @@ slackWebHookUrl: ''
 snapshot:
   resetSnapshot: true
   slackChannel: 9c-internal
-  image: planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6 
+  image: 
+    planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6
   cfDistributionId: ''
   aws_access_key_id: ''
   aws_secret_access_key: ''
@@ -25,7 +27,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-4324cc4564b09656c9f3c114d44734a6ea4b3151
+    tag: git-90e5d3eb79cb0eed3cb97025008283ebf67d8978
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -78,7 +80,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-4324cc4564b09656c9f3c114d44734a6ea4b3151
+    tag: git-90e5d3eb79cb0eed3cb97025008283ebf67d8978
   hosts: []
   ports:
     headless: 31234
@@ -100,7 +102,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-4324cc4564b09656c9f3c114d44734a6ea4b3151
+    tag: git-90e5d3eb79cb0eed3cb97025008283ebf67d8978
   extraArgs: []
   useTurnServer: false
   hosts:
@@ -128,7 +130,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: git-fe1ccb19a7573fc3c9d8e1ddf288240ad61aef6f
+    tag: git-fc386956e3e0ef4d9da0f1167008088d54d74b52
   db:
     storage: 1000Gi
     database: ''
@@ -141,7 +143,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-4324cc4564b09656c9f3c114d44734a6ea4b3151
+    tag: git-90e5d3eb79cb0eed3cb97025008283ebf67d8978
   extraArgs: []
   useTurnServer: true
   hosts: []
