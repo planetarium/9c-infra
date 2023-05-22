@@ -336,7 +336,7 @@ data:
         },
         "Headless": {
             "ActionEvaluator": {
-                "type": "RemoteActionEvaluator",
+                "type": "Default",
                 "stateServiceEndpoint": "http://lib9c-state-service.9c-network.svc.cluster.local:5157/evaluation"
             }
         }
