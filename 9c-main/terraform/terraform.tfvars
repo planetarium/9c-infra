@@ -62,9 +62,9 @@ node_groups = {
     instance_types    = ["m7g.2xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 5
-    min_size          = 5
-    max_size          = 10
+    desired_size      = 3
+    min_size          = 3
+    max_size          = 5
     ami_type          = "AL2_ARM_64"
   }
 
@@ -96,3 +96,4 @@ node_groups = {
     min_size          = 0
     max_size          = 5
   }
+}
