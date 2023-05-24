@@ -19,7 +19,7 @@ private_subnets = {
 
 # node group
 node_groups = {
-  "9c-internal-mead-c5_4xl_2c" = {
+  "9c-internal-v2-c5_4xl_2c" = {
     instance_types    = ["c5d.4xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
@@ -28,7 +28,7 @@ node_groups = {
     max_size          = 1
   }
 
-  "9c-internal-mead-m5d_l_2c" = {
+  "9c-internal-v2-m5d_l_2c" = {
     instance_types    = ["m5d.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
@@ -37,7 +37,7 @@ node_groups = {
     max_size          = 10
   }
 
-  "9c-internal-mead-m5d_2xl_2c" = {
+  "9c-internal-v2-m5d_2xl_2c" = {
     instance_types    = ["m5d.2xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
@@ -46,7 +46,7 @@ node_groups = {
     max_size          = 5
   }
 
-  "9c-internal-mead-m5d_xl_2c" = {
+  "9c-internal-v2-m5d_xl_2c" = {
     instance_types    = ["m5d.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
@@ -55,7 +55,7 @@ node_groups = {
     max_size          = 15
   }
 
-  "9c-internal-mead-r6g_l_2c" = {
+  "9c-internal-v2-r6g_l_2c" = {
     instance_types    = ["r6g.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
@@ -65,7 +65,7 @@ node_groups = {
     ami_type          = "AL2_ARM_64"
   }
 
-  "9c-internal-mead-r6g_xl_2c" = {
+  "9c-internal-v2-r6g_xl_2c" = {
     instance_types    = ["r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
