@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 9c-network
+  name: 9c-internal-mead
   namespace: argocd
 spec:
   project: default
@@ -14,4 +14,4 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-network
+    namespace: 9c-internal-mead
