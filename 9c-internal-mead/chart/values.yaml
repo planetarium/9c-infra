@@ -5,12 +5,12 @@ appProtocolVersion:
 genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
 trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
-- 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-tcp.planetarium.dev,31234
+- 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-mead-tcp.planetarium.dev,31234
 iceServers:
 - turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478
 networkType: Internal
 consensusType: pbft
-useExternalSecret: true
+useExternalSecret: false
 slackToken: ''
 slackWebHookUrl: ''
 snapshot:
@@ -29,12 +29,12 @@ validator:
     pullPolicy: Always
     tag: git-ee36b2b5560cf463a7735829bc3ffb29dea37e8f
   consensusSeedStrings:
-  - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
+  - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-mead-tcp.planetarium.dev,31235
   hosts:
-  - "9c-internal-validator-1.nine-chronicles.com"
-  - "9c-internal-validator-2.nine-chronicles.com"
-  - "9c-internal-validator-3.nine-chronicles.com"
-  - "9c-internal-validator-4.nine-chronicles.com"
+  - "9c-internal-mead-validator-1.nine-chronicles.com"
+  - "9c-internal-mead-validator-2.nine-chronicles.com"
+  - "9c-internal-mead-validator-3.nine-chronicles.com"
+  - "9c-internal-mead-validator-4.nine-chronicles.com"
   ports:
     headless: 31234
     graphql: 80
@@ -59,7 +59,7 @@ seed:
     pullPolicy: Always
     tag: git-22bed8ef41ab09258e6404462ec8e07cd038d089
   hosts:
-  - "9c-internal-tcp.planetarium.dev"
+  - "9c-internal-mead-tcp.planetarium.dev"
   ports:
     node: 31234
     gossip: 31235
@@ -75,7 +75,7 @@ seed:
   tolerations: []
   affinity: {}
 miner:
-  count: 1
+  count: 0
   useTurnServer: true
   image:
     repository: planetariumhq/ninechronicles-headless
@@ -104,9 +104,9 @@ remoteHeadless:
     pullPolicy: Always
     tag: git-ee36b2b5560cf463a7735829bc3ffb29dea37e8f
   extraArgs: []
-  useTurnServer: false
+  useTurnServer: true
   hosts:
-  - "9c-internal-rpc-1.nine-chronicles.com"
+  - "9c-internal-mead-rpc-1.nine-chronicles.com"
   ports:
     headless: 31234
     graphql: 80
@@ -122,7 +122,7 @@ remoteHeadless:
   tolerations: []
   affinity: {}
 dataProvider:
-  enabled: true
+  enabled: false
   render: true
   storage:
     data: 1000Gi
