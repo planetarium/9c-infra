@@ -29,18 +29,18 @@ spec:
     path: common/bootstrap
     helm:
       values: |
-        clusterName: 9c-internal-mead
-        argocdPath: 9c-internal-mead
+        clusterName: 9c-internal-v2
+        argocdPath: 9c-internal-v2
         accountId: "319679068466"
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
           write:
             count: 2
-            nodeGroup: 9c-internal-mead-r6g_xl_2c
+            nodeGroup: 9c-internal-v2-r6g_xl_2c
           read:
             count: 3
-            nodeGroup: 9c-internal-mead-r6g_xl_2c
+            nodeGroup: 9c-internal-v2-r6g_xl_2c
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

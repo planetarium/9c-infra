@@ -26,6 +26,6 @@ patchesJson6902:
             VAULT_ADDR: ''
           serviceAccount:
             create: true
-            name: 9c-internal-mead-external-secrets
+            name: 9c-internal-v2-external-secrets
             annotations:
-              eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-internal-mead-external-secrets
+              eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-9c-internal-v2-external-secrets
