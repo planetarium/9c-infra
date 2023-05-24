@@ -120,7 +120,7 @@ spec:
         - mountPath: /data
           name: validator-data-{{ $index }}
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-internal-v2-r6g_l_2c
+        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
       dnsPolicy: ClusterFirst
       volumes:
       - name: script-volume

@@ -161,7 +161,7 @@ spec:
         - mountPath: /app/logs
           name: json-log
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-internal-v2-r6g_l_2c
+        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
