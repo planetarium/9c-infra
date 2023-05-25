@@ -162,7 +162,7 @@ remoteHeadless:
   tolerations:
     - key: "dedicated"
       operator: "Equal"
-      value: "9c"
+      value: "remote-headless"
       effect: "NoSchedule"
   affinity: {}
 
@@ -453,7 +453,7 @@ validator:
   tolerations:
     - key: "dedicated"
       operator: "Equal"
-      value: "9c"
+      value: "validator"
       effect: "NoSchedule"
   affinity: {}
 
