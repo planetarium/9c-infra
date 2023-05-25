@@ -237,6 +237,8 @@ spec:
           {{- toYaml $.Values.lib9cStateService.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
