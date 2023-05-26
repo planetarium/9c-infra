@@ -23,3 +23,6 @@ bridge:
     slackBridgeObserverToken: ""
     slackWebToken: ""
     etherscanToken: ""
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large

@@ -37,8 +37,10 @@ spec:
             - name: bridge-status-bot-scripts
               mountPath: /scripts/bot.sh
               subPath: bot.sh
+          {{- with $.Values.bridge.nodeSelector }}
           nodeSelector:
-            node.kubernetes.io/instance-type: m5.large
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumes:
           - name: bridge-status-bot-scripts
             configMap:
