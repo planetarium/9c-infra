@@ -243,6 +243,7 @@ data:
     apt-get -y install zip
     apt-get -y install unzip
     apt-get -y install sudo
+    apt-get -y install p7zip
 
     uname=$(uname -r)
     arch=${uname##*.}
