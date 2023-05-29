@@ -123,8 +123,10 @@ spec:
           value: "5s"
         - name: IpRateLimiting__GeneralRules__1__Period
           value: "5s"
+      {{- with $.Values.remoteHeadless.nodeSelector }}
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

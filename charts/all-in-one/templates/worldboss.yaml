@@ -82,8 +82,11 @@ spec:
           name: world-boss-service
           ports:
             - containerPort: 5000
+      {{- with $.Values.worldBoss.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
         node.kubernetes.io/instance-type: m5.large
+      {{- end }}
       restartPolicy: Always
       serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
       serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role

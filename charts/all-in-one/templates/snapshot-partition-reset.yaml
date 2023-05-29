@@ -27,10 +27,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/preload_headless.sh
@@ -106,10 +106,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-token
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
@@ -130,10 +130,10 @@ spec:
             - /bin/replace_snapshot.sh
             image: nginx
             name: replace-snapshot
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - mountPath: /bin/replace_snapshot.sh
               name: script-volume
@@ -156,8 +156,10 @@ spec:
                   name: aws-keys
                   key: cf_distribution_id
           restartPolicy: OnFailure
+          {{- with $.Values.snapshot.nodeSelector }}
           nodeSelector:
-            node.kubernetes.io/instance-type: r6g.xlarge
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumes:
           - name: script-volume
             configMap:

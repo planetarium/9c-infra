@@ -25,10 +25,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 10Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/preload_headless.sh
@@ -64,10 +64,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-token
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
@@ -83,8 +83,10 @@ spec:
               mountPath: /secret
               readOnly: true
           restartPolicy: OnFailure
+          {{- with $.Values.snapshot.nodeSelector }}
           nodeSelector:
-            node.kubernetes.io/instance-type: r6g.xlarge
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumes:
           - name: script-volume
             configMap:
