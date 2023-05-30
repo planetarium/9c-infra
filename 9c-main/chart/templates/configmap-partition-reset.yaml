@@ -128,6 +128,7 @@ data:
     apt-get -y install zip
     apt-get -y install unzip
     apt-get -y install sudo
+    apt-get -y install p7zip
 
     uname=$(uname -r)
     arch=${uname##*.}
@@ -208,8 +209,26 @@ data:
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
       
+      mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
+      unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
+      unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
+      7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+      7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+
+      "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/latest.7z" --quiet --acl public-read
+      "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/state_latest.7z" --quiet --acl public-read
+
+      invalidate_cf "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/main/$1/partition/$UPLOAD_FILENAME.*"
+      invalidate_cf "/main/$1/partition/$STATE_FILENAME.*"
+
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
+      rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+      rm "/data/snapshots/7z/partition/state_latest.7z"
+      rm -r "$PARTITION_DIR/partition-snapshot"
+      rm -r "$STATE_DIR/state-snapshot"
       rm -r "$METADATA_DIR"
     }
 
@@ -260,11 +279,11 @@ data:
       ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
       TEMP_PREFIX=$(echo $2 | awk '{gsub(/\//,"\\/");print}')
 
-      for f in $(aws s3 ls $1 | awk 'NF>1{print $4}' | grep "zip\|json"); do
+      for f in $(aws s3 ls $1 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
         aws s3 mv $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/")
       done
 
-      for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json"); do
+      for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
         aws s3 mv $(echo $f | sed "s/.*/$TEMP_PREFIX&/") $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX/")
       done
 

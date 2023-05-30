@@ -128,6 +128,7 @@ data:
     apt-get -y install zip
     apt-get -y install unzip
     apt-get -y install sudo
+    apt-get -y install p7zip
 
     uname=$(uname -r)
     arch=${uname##*.}
@@ -227,8 +228,26 @@ data:
       invalidate_cf "/main/partition/internal/$UPLOAD_FILENAME.*"
       invalidate_cf "/main/partition/internal/$STATE_FILENAME.*"
 
+      mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
+      unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
+      unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
+      7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+      7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+
+      "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/latest.7z" --quiet --acl public-read
+      "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/partition/state_latest.7z" --quiet --acl public-read
+
+      invalidate_cf "/main/partition/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
+      invalidate_cf "/main/partition/$STATE_FILENAME.*"
+
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
+      rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+      rm "/data/snapshots/7z/partition/state_latest.7z"
+      rm -r "$PARTITION_DIR/partition-snapshot"
+      rm -r "$STATE_DIR/state-snapshot"
       rm -r "$METADATA_DIR"
     }
 
