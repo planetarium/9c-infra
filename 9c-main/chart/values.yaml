@@ -400,7 +400,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: "git-82a567a0f66ac5fd04319bbc3c1b0efa7f6e9c49"
+    tag: "git-5530341fd4d146e48c91a171ec77a07e07b0dd89"
 
 validator:
   count: 4
