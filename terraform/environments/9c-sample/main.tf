@@ -35,8 +35,16 @@ module "common" {
       desired_size      = 10
       min_size          = 0
       max_size          = 10
+      taints = [
+        {
+          effect = "NO_SCHEDULE"
+          key    = "dedicated"
+          value  = "9c"
+        }
+      ]
     }
   }
+
 
   addon_versions = {
     "coredns"            = "v1.8.7-eksbuild.3"

@@ -59,6 +59,7 @@ variable "node_groups" {
       desired_size      = 10
       min_size          = 10
       max_size          = 20
+      taints = []
     }
   }
 }

@@ -14,6 +14,15 @@ resource "aws_eks_node_group" "node_groups" {
     min_size     = each.value["min_size"]
   }
 
+  dynamic "taint" {
+    for_each = try(each.value["taints"], [])
+    content {
+      effect = taint.value["effect"]
+      key    = taint.value["key"]
+      value  = taint.value["value"]
+    }
+  }
+
   update_config {
     max_unavailable = 1
   }

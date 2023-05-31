@@ -17,6 +17,15 @@ resource "aws_eks_node_group" "node_groups" {
     max_unavailable = 1
   }
 
+  dynamic "taint" {
+    for_each = try(each.value["taints"], [])
+    content {
+      effect = taint.value["effect"]
+      key    = taint.value["key"]
+      value  = taint.value["value"]
+    }
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,

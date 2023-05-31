@@ -114,6 +114,10 @@ spec:
           name: json-log
       nodeSelector:
         node.kubernetes.io/instance-type: c7g.4xlarge
+      {{- with $.Values.validator.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.validator.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       volumes:
       - configMap:

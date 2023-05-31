@@ -36,6 +36,8 @@ spec:
         
         nodeExporter:
           enabled: true
+          tolerations:
+            - operator: "Exists"
         
         pushgateway:
           enabled: false
