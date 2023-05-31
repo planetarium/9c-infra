@@ -497,7 +497,7 @@ lib9cStateService:
   image:
     repository: planetariumhq/lib9c-stateservice
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200020-1"
+    tag: "git-9b90f4a92f8a972ef9abae34f230c88ddc9e3cde"
 
   ports:
     http: 5157
