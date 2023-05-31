@@ -17,6 +17,7 @@ if [ "$MANUAL_ARGS" ]; then
 else
     if [ "$HEADLESS_TAG" ]; then
         sources="ninechronicles-headless/from tag $HEADLESS_TAG|$sources"
+        sources="lib9c-stateservice/from tag $HEADLESS_TAG|$sources"
     fi
 
     if [ "$DATAPROVIDER_TAG" ]; then
