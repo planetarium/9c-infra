@@ -120,9 +120,13 @@ spec:
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
-          value: "10s"
+          value: "60s"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "12"
         - name: IpRateLimiting__GeneralRules__1__Period
-          value: "10s"
+          value: "60s"
+        - name: IpRateLimiting__GeneralRules__1__Limit
+          value: "12"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c
       {{- with $.Values.remoteHeadless.tolerations }}
