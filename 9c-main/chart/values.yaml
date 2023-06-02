@@ -162,7 +162,7 @@ remoteHeadless:
   tolerations:
     - key: "dedicated"
       operator: "Equal"
-      value: "remote-headless"
+      value: "remote-headless-test"
       effect: "NoSchedule"
   affinity: {}
 
