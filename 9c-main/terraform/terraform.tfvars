@@ -73,6 +73,22 @@ node_groups = {
     }]
   }
 
+  "9c-main-m7g_2xl_2c_test" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 3
+    min_size          = 3
+    max_size          = 10
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "remote-headless-test"
+      effect = "NO_SCHEDULE"
+    }]
+  }
+
   "9c-main-c7g_4xl_2c" = {
     instance_types    = ["c7g.4xlarge"]
     availability_zone = "us-east-2c"

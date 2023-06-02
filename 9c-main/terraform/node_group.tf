@@ -7,6 +7,7 @@ resource "aws_eks_node_group" "node_groups" {
   instance_types  = each.value["instance_types"]
   capacity_type   = try(each.value["capacity_type"], "ON_DEMAND")
   ami_type        = try(each.value["ami_type"], "AL2_x86_64")
+  disk_size       = try(each.value["disk_size"], 20)
 
   scaling_config {
     desired_size = each.value["desired_size"]
