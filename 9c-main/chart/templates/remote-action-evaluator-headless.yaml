@@ -198,7 +198,7 @@ metadata:
   name: lib9c-state-service
   namespace: {{ $.Chart.Name }}
 spec:
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 3
   selector:
     matchLabels:
