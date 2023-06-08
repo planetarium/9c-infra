@@ -59,28 +59,8 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
-        Rule                         $log_level ^(?!DBG)\w+$ dbg.$TAG true
-        Emitter_Name                 for_dbg
-    [FILTER]
-        Name                         rewrite_tag
-        Match                        dbg.*
-        Rule                         $kubernetes['container_name'] ^(?!remote-headless|data-provider).*$ cwl.$TAG true
-        Emitter_Name                 for_cloudwatch
-    [FILTER]
-        Name                         rewrite_tag
-        Match                        application.*
         Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_s3
-    [OUTPUT]
-        Name                         cloudwatch_logs
-        Match                        cwl.*
-        region                       ${AWS_REGION}
-        log_retention_days           14
-        log_group_name               fallback-group
-        log_group_template           /aws/containerinsights/${CLUSTER_NAME}/$kubernetes['namespace_name'].$kubernetes['container_name']
-        log_stream_prefix            ${HOST_NAME}-
-        auto_create_group            true
-        extra_user_agent             container-insights
     [OUTPUT]
         Name                         s3
         Match                        s3.*
@@ -144,6 +124,7 @@ data:
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
+
     [INPUT]
         Name                systemd
         Tag                 dataplane.systemd.*
@@ -247,10 +228,6 @@ data:
         Regex               (?<log>(?<="log":")\S(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
         Time_Key            time
         Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
-    [PARSER]
-        Name                libplanet
-        Format              regex
-        Regex               (?<log_time>(?<=\[)\d{2}:\d{2}:\d{2})\s(?<log_level>\w{3})\]\s(?<log_source>(?<=\[).*\])?(?<log_message>.*)
     [PARSER]
         Name                kube_json
         Format              regex
