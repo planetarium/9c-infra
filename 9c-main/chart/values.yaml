@@ -497,7 +497,7 @@ remoteActionEvaluatorHeadless:
   affinity: {}
 
 lib9cStateService:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/lib9c-stateservice
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
