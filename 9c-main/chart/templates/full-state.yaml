@@ -83,6 +83,10 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.fullstate.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
       dnsPolicy: ClusterFirst
@@ -94,6 +98,12 @@ spec:
           defaultMode: 448
           name: {{ $.Chart.Name }}-probe-script
         name: probe-script
+      {{- if $.Values.fullstate.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+        {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
