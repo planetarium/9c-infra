@@ -50,13 +50,6 @@ data:
         Labels                       Off
         Annotations                  Off
     [FILTER]
-        Name                         parser
-        Match                        application.*
-        Key_Name                     log
-        Parser                       libplanet
-        Reserve_Data                 On
-        Preserve_Key                 On
-    [FILTER]
         Name                         rewrite_tag
         Match                        application.*
         Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['container_name'].$TAG true
