@@ -194,6 +194,8 @@ explorer:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200020-1"
 
+  loggingEnabled: true
+
   # dotnet args
 
   extraArgs: []
@@ -229,6 +231,8 @@ fullState:
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200020-1"
+
+  loggingEnabled: true
 
   # dotnet args
 
@@ -372,7 +376,7 @@ testHeadless2:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200020-1"
 
-  loggingEnabled: false
+  loggingEnabled: true
 
   extraArgs: []
   # - --key=val
