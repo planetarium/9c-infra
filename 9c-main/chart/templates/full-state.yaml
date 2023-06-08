@@ -83,7 +83,7 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
-        {{- if $.Values.fullstate.loggingEnabled }}
+        {{- if $.Values.fullState.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
         {{- end }}
@@ -98,7 +98,7 @@ spec:
           defaultMode: 448
           name: {{ $.Chart.Name }}-probe-script
         name: probe-script
-      {{- if $.Values.fullstate.loggingEnabled }}
+      {{- if $.Values.fullState.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
