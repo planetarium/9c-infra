@@ -5,6 +5,9 @@ metadata:
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: bot-test
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: bot-test
+    notifications.argoproj.io/subscribe.on-sync-running.slack: bot-test
+    notifications.argoproj.io/subscribe.on-deployed.slack: bot-test
 spec:
   project: default
   source:
