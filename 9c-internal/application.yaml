@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: 9c-network
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: bot-test
 spec:
   project: default
   source:
