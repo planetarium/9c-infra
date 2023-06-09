@@ -5,28 +5,34 @@
 
 clusterName: "9c-main-v2"
 logLevel: "debug"
-appProtocolVersion: "200010/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIAUCNU9yTZk4onxrkT8uxdfB3XFRfpxEyGzbj9BZTBlpAiBT987Kgqxnbg7yvyRn86w2c3j6.KtNsWwGKveBxMgTzw==/ZHU4OmxhdW5jaGVydTQyOjEvZGZkNTI1MDQ3Yjc4ZWY4NjNmOGFkMzJkMDIzZjk0ZjBhZTU5YmI3ZXU2OnBsYXllcnU0MjoyL2Q3MjA2OGEwODEwZjcyYzg5MDE2MzQ0N2I5YjRkYjg2NjMzYWE0ZTJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
-genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
-trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
-peerStrings:
-- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-- "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-- "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
 
-iceServers:
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
-
-networkType: Main
-consensusType: pbft
-
-useExternalSecret: true
-slackToken: ""
-slackWebHookUrl: ""
+  appProtocolVersion: "200010/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIAUCNU9yTZk4onxrkT8uxdfB3XFRfpxEyGzbj9BZTBlpAiBT987Kgqxnbg7yvyRn86w2c3j6.KtNsWwGKveBxMgTzw==/ZHU4OmxhdW5jaGVydTQyOjEvZGZkNTI1MDQ3Yjc4ZWY4NjNmOGFkMzJkMDIzZjk0ZjBhZTU5YmI3ZXU2OnBsYXllcnU0MjoyL2Q3MjA2OGEwODEwZjcyYzg5MDE2MzQ0N2I5YjRkYjg2NjMzYWE0ZTJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  
+  peerStrings:
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+  
+  iceServers:
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+  
+  networkType: Main
+  consensusType: pbft
+  
+  useExternalSecret: true
+  slackToken: ""
+  slackWebHookUrl: ""
 
 snapshot:
   resetSnapshot: false
@@ -90,54 +96,14 @@ seed:
   tolerations: []
   affinity: {}
 
-miner:
-  count: 1
-  useTurnServer: false
-
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
-
-  # host domains if not using turn servers
-  hosts: []
-  #  - "a7e209d2837b94a9db601e3f7385daf5-1493908636.us-east-2.elb.amazonaws.com"
-
-  ports:
-    headless: 31234
-    graphql: 80
-
-  # dotnet args
-
-  extraArgs: []
-  # - --key=val
-
-  # private keys if not using External Secrets
-  privateKeys: []
-  # - "private key"
-
-  storage:
-    data: 1000Gi
-
-  env: []
-
-  resources:
-    requests:
-      cpu: 2
-      memory: 20Gi
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-
 remoteHeadless:
   count: 5
   image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
+    # follow global image
+    repository: ""
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: ""
+    pullPolicy: Always
 
   # dotnet args
 
@@ -202,10 +168,10 @@ dataProvider:
 
 explorer:
   image:
-    repository: planetariumhq/ninechronicles-headless
+    # follow global image
+    repository: ""
+    tag: ""
     pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
 
   # dotnet args
 
@@ -238,10 +204,10 @@ explorer:
 
 fullState:
   image:
-    repository: planetariumhq/ninechronicles-headless
+    # follow global image
+    repository: ""
+    tag: ""
     pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
 
   # dotnet args
 
@@ -268,36 +234,6 @@ fullState:
 
   nodeSelector:
     node.kubernetes.io/instance-type: r6g.xlarge
-  tolerations: []
-  affinity: {}
-
-onboardingHeadless:
-  enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
-
-  # dotnet args
-
-  extraArgs: []
-  # - --key=val
-
-  ports:
-    headless: 31234
-    graphql: 80
-
-  storage:
-    data: 1000Gi
-
-  resources:
-    requests:
-      cpu: 1
-      memory: 6Gi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
   tolerations: []
   affinity: {}
 
@@ -428,13 +364,18 @@ marketService:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
+  db:
+    database: ""
+    user: ""
+    connectionString: ""
+
 validator:
   count: 4
   image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
+    repository: ""
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: ""
+    pullPolicy: Always
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"

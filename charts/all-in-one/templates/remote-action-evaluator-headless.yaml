@@ -30,7 +30,11 @@ spec:
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
+        {{- if and $.Values.remoteActionEvaluatorHeadless.image.repository $.Values.remoteActionEvaluatorHeadless.image.tag }}
         image: {{ $.Values.remoteActionEvaluatorHeadless.image.repository }}:{{ $.Values.remoteActionEvaluatorHeadless.image.tag }}
+        {{- else }}
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+        {{- end }}
         name: reset-snapshot
         volumeMounts:
         - name: download-snapshot-script
@@ -51,21 +55,21 @@ spec:
       - args:
         - NineChronicles.Headless.Executable.dll
         - run
-        - --app-protocol-version={{ $.Values.appProtocolVersion }}
-        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
-        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --app-protocol-version={{ $.Values.global.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.global.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.global.genesisBlockPath }}
         - --port={{ $.Values.remoteActionEvaluatorHeadless.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
         {{- if $.Values.remoteActionEvaluatorHeadless.useTurnServer }}
-        {{- range $.Values.iceServers }}
+        {{- range $.Values.global.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
         - --host={{ $.Values.remoteActionEvaluatorHeadless.host }}
         {{- end }}
-        {{- range $.Values.peerStrings }}
+        {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}
         {{- end }}
         - --graphql-server
@@ -80,7 +84,7 @@ spec:
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
-        - --network-type={{ $.Values.networkType }}
+        - --network-type={{ $.Values.global.networkType }}
         - --config=/bin/appsettings.json
         {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}

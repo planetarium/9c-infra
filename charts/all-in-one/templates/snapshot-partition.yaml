@@ -11,7 +11,11 @@ spec:
         spec:
           initContainers:
           - name: preload-headless
+            {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
             image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+            {{- else }}
+            image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+            {{- end }}
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
@@ -19,7 +23,7 @@ spec:
             - /bin/preload_headless.sh
             env:
             - name: APP_PROTOCOL_VERSION_KEY
-              value: {{ $.Values.appProtocolVersion }}
+              value: {{ $.Values.global.appProtocolVersion }}
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
@@ -48,7 +52,7 @@ spec:
             - /bin/upload_snapshot.sh
             env:
             - name: APP_PROTOCOL_VERSION_KEY
-              value: {{ $.Values.appProtocolVersion }}
+              value: {{ $.Values.global.appProtocolVersion }}
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:

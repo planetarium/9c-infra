@@ -29,10 +29,10 @@ spec:
         - name: NC_StorePath
           value: /data/data-provider
         - name: NC_AppProtocolVersionToken
-          value: {{ $.Values.appProtocolVersion }}
+          value: {{ $.Values.global.appProtocolVersion }}
         - name: NC_Confirmations
           value: '0'
-        {{ range $idx, $peer := $.Values.peerStrings }}
+        {{ range $idx, $peer := $.Values.global.peerStrings }}
         - name: NC_PeerStrings__{{ $idx }}
           value: {{ $peer }}
         {{ end }}
@@ -43,11 +43,11 @@ spec:
         - name: NC_Render
           value: 'false'
         - name: NC_NetworkType
-          value: "{{ $.Values.networkType }}"
+          value: "{{ $.Values.global.networkType }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
-          value: {{ $.Values.trustedAppProtocolVersionSigner }}
+          value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
         - name: NC_GenesisBlockPath
-          value: {{ $.Values.genesisBlockPath }}
+          value: {{ $.Values.global.genesisBlockPath }}
         - name: NC_TxLifeTime
           value: '10'
         - name: NC_MySqlConnectionString

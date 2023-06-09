@@ -26,9 +26,9 @@ spec:
         - Libplanet.Seed.Executable.dll
         - run
         - --log-level={{ $.Values.logLevel }}
-        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --app-protocol-version={{ $.Values.global.appProtocolVersion }}
         {{- if $.Values.seed.useTurnServer }}
-        - --ice-server={{ index $.Values.iceServers $idx }}
+        - --ice-server={{ index $.Values.global.iceServers $idx }}
         {{- else }}
         - --host={{ index $.Values.seed.hosts $idx }}
         {{- end }}
@@ -37,7 +37,7 @@ spec:
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.seed.ports.graphql }}
         - --workers={{ $.Values.seed.workerCount }}
-        {{- if eq $.Values.consensusType "pbft" }}
+        {{- if eq $.Values.global.consensusType "pbft" }}
         - --gossip-port={{ $.Values.seed.ports.gossip }}
         {{- end }}
         {{- with $.Values.seed.extraArgs }}
