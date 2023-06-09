@@ -178,7 +178,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200020-1"
+    tag: "git-ec7cff96351e365ee6d330c03875098896b1d7be"
   db:
     database: ""
     connectionString: ""
@@ -336,10 +336,10 @@ bridge:
 testHeadless1:
   enabled: true
   image:
-    repository: longfin/9c-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200020-perf-tune-13"
+    tag: "v200020-1"
 
   loggingEnabled: true
 
