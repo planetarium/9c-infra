@@ -8,7 +8,11 @@ resource "aws_iam_role" "athena_grafana_assumerole" {
             "Sid": "AssumeFromEKSNode",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::319679068466:role/eks-9c-main-v2-node-role"
+                "AWS": [
+                    "arn:aws:iam::319679068466:role/eks-9c-main-v2-node-role",
+                    "arn:aws:sts::319679068466:assumed-role/eks-9c-main-v2-node-role/*"
+                ],
+                "Service": "ec2.amazonaws.com"
             },
             "Action": "sts:AssumeRole"
         }
