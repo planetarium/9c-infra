@@ -341,7 +341,7 @@ testHeadless1:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200020-1"
 
-  loggingEnabled: false
+  loggingEnabled: true
 
   extraArgs: []
   # - --key=val
@@ -376,7 +376,7 @@ testHeadless2:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200020-1"
 
-  loggingEnabled: false
+  loggingEnabled: true
 
   extraArgs: []
   # - --key=val
