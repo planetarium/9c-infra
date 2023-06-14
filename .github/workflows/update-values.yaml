@@ -11,12 +11,16 @@ on:
         - 9c-main
         - 9c-internal
         - 9c-sample
-      headless-tag:
-        description: 'Headless tag to change'
-      dataprovider-tag:
-        description: 'Dataprovider tag to change'
-      seed-branch:
-        description: 'Seed branch to change'
+      headless:
+        description: 'Source for headless to change (e.g. tag 1, branch release/3)'
+      dataprovider:
+        description: 'Same, for DP'
+      seed:
+        description: 'Same, for seed'
+      world-boss-service:
+        description: 'Same, for world-boss-service'
+      market-service:
+        description: 'Same, for market-service'
       bump-apv:
         required: true
         description: 'Bump APV'
@@ -34,7 +38,7 @@ jobs:
       - name: make-args
         id: make-args
         run: |
-          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.bump-apv }}" "${{ github.event.inputs.dir }}" "${{ github.event.inputs.headless-tag }}" "${{ github.event.inputs.dataprovider-tag }}" "${{ github.event.inputs.seed-branch }}" "${{ github.event.inputs.manual-args }}"
+          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.bump-apv }}" "${{ github.event.inputs.dir }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.dataprovider }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.manual-args }}"
 
       - name: Update values
         uses: planetarium/9c-toolbelt@main

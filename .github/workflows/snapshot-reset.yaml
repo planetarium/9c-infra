@@ -1,9 +1,6 @@
 name: Internal Snapshot Reset
 on:
   workflow_dispatch:
-    inputs:
-      rc:
-        description: 'Rc number (e.g. 100310)'
 
 concurrency:
   group: release
