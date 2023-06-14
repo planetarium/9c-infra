@@ -5,7 +5,7 @@ on:
       network:
         required: true
         description: 'Network environment'
-        default: 'internal'
+        default: 'main'
         type: choice
         options:
         - main
