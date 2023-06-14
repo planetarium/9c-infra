@@ -3,9 +3,11 @@ set -ex
 
 BUMP_APV=$1
 DIR=$2
-HEADLESS_TAG=$3
-DATAPROVIDER_TAG=$4
-SEED_BRANCH=$5
+HEADLESS=$3
+DATAPROVIDER=$4
+SEED=$5
+WORLD_BOSS_SERVICE=$5
+MARKET_SERVICE=$5
 MANUAL_ARGS=$6
 
 file_path="9c-infra/$DIR/chart/values.yaml"
@@ -15,17 +17,25 @@ bump_apv=""
 if [ "$MANUAL_ARGS" ]; then
     sources="$MANUAL_ARGS"
 else
-    if [ "$HEADLESS_TAG" ]; then
-        sources="ninechronicles-headless/from tag $HEADLESS_TAG|$sources"
-        sources="lib9c-stateservice/from tag $HEADLESS_TAG|$sources"
+    if [ "$HEADLESS" ]; then
+        sources="ninechronicles-headless/from $HEADLESS|$sources"
+        sources="lib9c-stateservice/from $HEADLESS|$sources"
     fi
 
-    if [ "$DATAPROVIDER_TAG" ]; then
-        sources="ninechronicles-dataprovider/from tag $DATAPROVIDER_TAG|$sources"
+    if [ "$DATAPROVIDER" ]; then
+        sources="ninechronicles-dataprovider/from $DATAPROVIDER|$sources"
     fi
 
-    if [ "$SEED_BRANCH" ]; then
-        sources="libplanet-seed/from branch $SEED_BRANCH|$sources"
+    if [ "$SEED" ]; then
+        sources="libplanet-seed/from $SEED|$sources"
+    fi
+
+    if [ "$WORLD_BOSS_SERVICE" ]; then
+        sources="world-boss-service/from $WORLD_BOSS_SERVICE|$sources"
+    fi
+
+    if [ "$MARKET_SERVICE" ]; then
+        sources="market-service/from $MARKET_SERVICE|$sources"
     fi
 
     if [ "$BUMP_APV" == "false" ]; then
