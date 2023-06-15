@@ -78,6 +78,7 @@ spec:
         - --consensus-private-key
         - $(PRIVATE_KEY)
         - --consensus-port={{ $.Values.validator.ports.gossip }}
+        - --tx-quota-per-signer=4
         {{- range $.Values.validator.consensusSeedStrings }}
         - --consensus-seed={{ . }}
         {{- end }}
