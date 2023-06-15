@@ -40,7 +40,8 @@ validator:
     headless: 31234
     graphql: 80
     gossip: 6000
-  extraArgs: []
+  extraArgs:
+    - --tx-quota-per-signer=4
   privateKeys: []
   storage:
     data: 500Gi
@@ -104,7 +105,8 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
-  extraArgs: []
+  extraArgs:
+    - --tx-quota-per-signer=4
   useTurnServer: true
   hosts:
   - "9c-internal-mead-rpc-1.nine-chronicles.com"
@@ -145,7 +147,8 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
-  extraArgs: []
+  extraArgs:
+    - --tx-quota-per-signer=4
   useTurnServer: true
   hosts: []
   ports:

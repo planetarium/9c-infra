@@ -86,7 +86,6 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}
-        - --tx-quota-per-signer=4
         {{- with $.Values.explorer.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
