@@ -28,7 +28,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-2274ad579124412f0f1b437a644829824a3ffce6
+    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-mead-tcp.planetarium.dev,31235
   hosts:
@@ -40,7 +40,8 @@ validator:
     headless: 31234
     graphql: 80
     gossip: 6000
-  extraArgs: []
+  extraArgs:
+    - --tx-quota-per-signer=4
   privateKeys: []
   storage:
     data: 500Gi
@@ -81,7 +82,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-2274ad579124412f0f1b437a644829824a3ffce6
+    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
   hosts: []
   ports:
     headless: 31234
@@ -103,8 +104,9 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-2274ad579124412f0f1b437a644829824a3ffce6
-  extraArgs: []
+    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+  extraArgs:
+    - --tx-quota-per-signer=4
   useTurnServer: true
   hosts:
   - "9c-internal-mead-rpc-1.nine-chronicles.com"
@@ -144,8 +146,9 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-2274ad579124412f0f1b437a644829824a3ffce6
-  extraArgs: []
+    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+  extraArgs:
+    - --tx-quota-per-signer=4
   useTurnServer: true
   hosts: []
   ports:
