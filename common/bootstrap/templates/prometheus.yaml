@@ -74,6 +74,8 @@ spec:
                 static_configs:
                   - targets:
                     - ninechronicles-headless-metrics-aggregator.monitoring.svc.cluster.local:80
+                tls_config:
+                  insecure_skip_verify: true
               - job_name: scrape-headlesses
                 metrics_path: /metrics
                 scrape_interval: 8s
