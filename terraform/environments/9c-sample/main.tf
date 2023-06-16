@@ -28,28 +28,24 @@ module "common" {
       desired_size      = 5
       min_size          = 0
       max_size          = 5
+	  capacity_type     = "SPOT"
     }
-    "9c-sample-m5_l_2c" = {
-      instance_types    = ["m5.large"]
+    "9c-sample-r6g_xl_2c" = {
+      instance_types    = ["r6g.xlarge"]
       availability_zone = "us-east-2c"
-      desired_size      = 10
+      desired_size      = 5
       min_size          = 0
       max_size          = 10
-      taints = [
-        {
-          effect = "NO_SCHEDULE"
-          key    = "dedicated"
-          value  = "9c"
-        }
-      ]
+	  capacity_type     = "SPOT"
+      ami_type          = "AL2_ARM_64"
     }
   }
 
 
   addon_versions = {
-    "coredns"            = "v1.8.7-eksbuild.3"
-    "kube-proxy"         = "v1.25.6-eksbuild.1"
-    "vpc_cni"            = "v1.12.2-eksbuild.1"
+    "coredns"            = "v1.10.1-eksbuild.1"
+    "kube-proxy"         = "v1.27.1-eksbuild.1"
+    "vpc_cni"            = "v1.12.6-eksbuild.2"
     "aws_ebs_csi_driver" = "v1.17.0-eksbuild.1"
   }
 }

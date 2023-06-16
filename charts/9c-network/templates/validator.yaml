@@ -21,7 +21,6 @@ spec:
         app: validator-{{ $index }}
       name: validator-{{ $index }}
     spec:
-      containers:
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/main/partition
@@ -34,7 +33,7 @@ spec:
         image: bash:latest
         name: reset-snapshot
         volumeMounts:
-        - name: script-volume
+        - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
           readOnly: true
           subPath: download_snapshot.sh
@@ -48,6 +47,7 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+      containers:
       - args:
         - NineChronicles.Headless.Executable.dll
         - run

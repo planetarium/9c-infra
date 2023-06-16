@@ -8,5 +8,6 @@ parameters:
   fsType: ext4
   type: gp3
 provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 allowVolumeExpansion: true

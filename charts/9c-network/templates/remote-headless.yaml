@@ -34,7 +34,7 @@ spec:
         image: bash:latest
         name: reset-snapshot
         volumeMounts:
-        - name: script-volume
+        - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
           readOnly: true
           subPath: download_snapshot.sh
@@ -134,6 +134,7 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        env:
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
