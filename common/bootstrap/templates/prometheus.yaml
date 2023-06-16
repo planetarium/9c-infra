@@ -67,53 +67,6 @@ spec:
               - /etc/config/alerts
         
             scrape_configs:
-              - job_name: ninechronicles-headless-metrics-aggregator
-                metrics_path: /metrics
-                scrape_interval: 1m
-                scrape_timeout: 50s
-                static_configs:
-                  - targets:
-                    - ninechronicles-headless-metrics-aggregator.monitoring.svc.cluster.local:80
-                tls_config:
-                  insecure_skip_verify: true
-              - job_name: scrape-headlesses
-                metrics_path: /metrics
-                scrape_interval: 8s
-                scrape_timeout: 6s
-                static_configs:
-                  - targets:
-                    - 9c-main-validator-1.nine-chronicles.com:80
-                    - 9c-main-validator-2.nine-chronicles.com:80
-                    - 9c-main-validator-3.nine-chronicles.com:80
-                    - 9c-main-validator-4.nine-chronicles.com:80
-                    labels:
-                      group: validator
-                  - targets:
-                    - 9c-main-rpc-1.nine-chronicles.com:80
-                    - 9c-main-rpc-2.nine-chronicles.com:80
-                    - 9c-main-rpc-3.nine-chronicles.com:80
-                    - tky-nc-1.ninodes.com:80
-                    - sgp-nc-1.ninodes.com:80
-                    - nj-nc-1.ninodes.com:80
-                    - la-nc-1.ninodes.com:80
-                    - fra-nc-1.ninodes.com:80
-                    labels:
-                      group: rpc
-                  - targets:
-                    - 9c-main-full-state.planetarium.dev:80
-                    labels:
-                      group: full-state
-                  - targets:
-                    - api.9c.gg:80
-                    - 9c-main-data-provider-db.nine-chronicles.com:80
-                    labels:
-                      group: data-provider
-                  - targets:
-                    - d131807iozwu1d.cloudfront.net:80
-                    labels:
-                      group: explorer
-                tls_config:
-                  insecure_skip_verify: true
               - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
                 job_name: kubernetes-nodes-cadvisor
                 kubernetes_sd_configs:
@@ -132,6 +85,9 @@ spec:
                 tls_config:
                   ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                   insecure_skip_verify: true
+            {{- with $.Values.prometheus.server.extraScrapeConfigs }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
