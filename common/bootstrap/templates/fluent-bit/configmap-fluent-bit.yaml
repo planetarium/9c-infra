@@ -124,7 +124,7 @@ data:
         Bucket                       fluent-bit.planetariumhq.com
         compression                  gzip
         Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/json/$TAG[2]/$TAG[1]/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format                /${CLUSTER_NAME}/json/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
 
     [INPUT]
