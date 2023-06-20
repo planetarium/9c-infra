@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 clusterName: "9c-main-v2"
 logLevel: "debug"
 appProtocolVersion: "200020/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIF6Bnpm61Of99k.zKwHkqEnXAm9IQrPkrgs03EzLbhqbAiBVJg9kXqg7M+Q1dzKopETKaCoMK9xO6HL1JM29UbNRIQ==/ZHU4OmxhdW5jaGVydTQyOjEvODBkYjhmNDU1MTU5ODNiYWY5YjFkYjEwMDZmOWIwMjRjNWIzMWU1NnU2OnBsYXllcnU0MjoxL2M2NjUyYTEzNmQ1ZDZkMmVhOGQyNmFmNmM0M2Y1MTg5ZmJiYzYxZGN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
@@ -462,7 +461,7 @@ validator:
   affinity: {}
 
 remoteActionEvaluatorHeadless:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -497,7 +496,7 @@ remoteActionEvaluatorHeadless:
   affinity: {}
 
 lib9cStateService:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/lib9c-stateservice
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
