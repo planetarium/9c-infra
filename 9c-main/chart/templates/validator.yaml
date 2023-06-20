@@ -61,6 +61,7 @@ spec:
         {{- end }}
         - --network-type={{ $.Values.networkType }}
         - --tx-life-time=10
+        - --tx-quota-per-signer=1
         command:
           - dotnet
         env:
