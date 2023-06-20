@@ -9,9 +9,9 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: "git-b58a31cb2fe2d17bd759741cabb78bdd146de601"
 
-  appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
+  appProtocolVersion: "200020/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIFp.SfFaK3PCLyqwN28j4qptXqWnToggZOQTLAFly5I3AiBr.824.h8.VwjhVwz5zulv7pKqBLARAP6pYQGPd6js+A==/ZHU4OmxhdW5jaGVydTQyOjEvODBkYjhmNDU1MTU5ODNiYWY5YjFkYjEwMDZmOWIwMjRjNWIzMWU1NnU2OnBsYXllcnU0MjoxL2M2NjUyYTEzNmQ1ZDZkMmVhOGQyNmFmNmM0M2Y1MTg5ZmJiYzYxZGN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   
@@ -25,7 +25,7 @@ global:
   networkType: Default
   consensusType: pbft
   
-  useExternalSecret: false
+  useExternalSecret: true
   slackToken: ""
   slackWebHookUrl: ""
 
@@ -55,9 +55,8 @@ seed:
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
   - "9c-sample-tcp-seed-1.planetarium.dev"
@@ -83,7 +82,8 @@ seed:
     requests:
       cpu: 1
 
-  nodeSelector: {}
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-sample-c5_l_2c
   tolerations: []
   affinity: {}
 
@@ -116,10 +116,12 @@ remoteHeadless:
 
   resources:
     requests:
-      cpu: 2
-      memory: 20Gi
+      cpu: 1
+      memory: 16Gi
 
-  nodeSelector: {}
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-sample-r6g_xl_2c
+    
   tolerations: []
   affinity: {}
 
@@ -167,7 +169,8 @@ validator:
       cpu: 2
       memory: 20Gi
 
-  nodeSelector: {}
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-sample-r6g_xl_2c
 
   tolerations: []
   affinity: {}
