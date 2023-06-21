@@ -7,11 +7,11 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: main
-    path: 9c-sample/chart
+    targetRevision: feature/split-chart
+    path: charts/9c-network
     helm:
       valueFiles:
-        - values.yaml
+        - ../../9c-sample/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-sample
+    namespace: 9c-network
