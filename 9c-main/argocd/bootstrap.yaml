@@ -66,6 +66,10 @@ spec:
                     - nj-nc-1.ninodes.com:80
                     - la-nc-1.ninodes.com:80
                     - fra-nc-1.ninodes.com:80
+                    - ash-nc-1.ninodes.com:80
+                    - phx-nc-1.ninodes.com:80
+                    - sgp-nc-2.ninodes.com:80
+                    - nld-nc-1.ninodes.com:80
                     labels:
                       group: rpc
                   - targets:
