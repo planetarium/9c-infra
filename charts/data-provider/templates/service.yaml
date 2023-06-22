@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider-write
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
@@ -20,7 +20,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider-read
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:

@@ -5,83 +5,71 @@
 
 clusterName: ""
 logLevel: ""
+namespace: "9c-network"
+
 appProtocolVersion: ""
 genesisBlockPath: ""
 trustedAppProtocolVersionSigner: ""
 
 peerStrings:
-- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-sample-tcp-seed-1.planetarium.dev,31234"
 
 iceServers:
 - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
 
-networkType: ""
+networkType: Default
 consensusType: pbft
+
+resetSnapshot: false
 
 useExternalSecret: false
 slackToken: ""
 slackWebHookUrl: ""
 
-snapshot:
-  resetSnapshot: false
-  slackChannel: ""
-  image: "planetariumhq/ninechronicles-snapshot:git-aaa36c4a632b7779b540a188f0c95c2cce619c15"
-
-  # aws information for uploading snapshot
-  # Do not upload values below filled
-  # recommended to obtain from ExternalSecret
-  cfDistributionId: ""
-  aws_access_key_id: ""
-  aws_secret_access_key: ""
-
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
 
-validator:
-  count: 4
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+count: 4
+image:
+  repository: planetariumhq/ninechronicles-headless
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v200020-1"
 
-  consensusSeedStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
+consensusSeedStrings:
+- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-sample-tcp-seed-1.planetarium.dev,31235"
 
-  hosts:
-  - "9c-main-validator-1.nine-chronicles.com"
-  - "9c-main-validator-2.nine-chronicles.com"
-  - "9c-main-validator-3.nine-chronicles.com"
-  - "9c-main-validator-4.nine-chronicles.com"
+hosts:
+- "9c-sample-validator-1.nine-chronicles.com"
+- "9c-sample-validator-2.nine-chronicles.com"
+- "9c-sample-validator-3.nine-chronicles.com"
+- "9c-sample-validator-4.nine-chronicles.com"
 
-  ports:
-    headless: 31234
-    graphql: 80
-    gossip: 6000
+ports:
+  headless: 31234
+  graphql: 80
+  gossip: 6000
 
-  # dotnet args
+# dotnet args
 
-  extraArgs: []
-  # - --key=val
+extraArgs: []
+# - --key=val
 
-  # private keys if not using External Secrets
-  privateKeys: []
-  # - "<private key>"
+# private keys if not using External Secrets
+privateKeys: []
+# - "<private key>"
 
-  storage:
-    data: 1000Gi
+storage:
+  class: "9c-network-gp3"
+  data: 1000Gi
 
-  env: []
+env: []
 
-  resources:
-    requests:
-      cpu: 2
-      memory: 20Gi
+resources:
+  requests:
+    cpu: 2
+    memory: 20Gi
 
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

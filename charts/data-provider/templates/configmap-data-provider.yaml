@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: 9c-network-data-provider-script
-  namespace: 9c-network
+  namespace: {{ $.Values.namespace }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:

@@ -5,7 +5,7 @@ metadata:
     app: data-provider-write
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: data-provider-write
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -19,6 +19,32 @@ spec:
       labels:
         app: data-provider-write
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
@@ -42,7 +68,7 @@ spec:
         - name: NC_NoMiner
           value: 'true'
         - name: NC_Render
-          value: "{{ $.Values.dataProvider.render }}"
+          value: "{{ $.Values.render }}"
         - name: NC_NetworkType
           value: "{{ $.Values.networkType }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
@@ -83,8 +109,8 @@ spec:
             secretKeyRef:
               key: database
               name: data-provider
-        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
-        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
         livenessProbe:
           exec:
             command:
@@ -108,9 +134,7 @@ spec:
           name: headless
           protocol: TCP
         resources:
-          requests:
-            cpu: 1000m
-            memory: 10Gi
+          {{- toYaml $.Values.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -120,8 +144,10 @@ spec:
           subPath: check_chain_tip.sh
         - mountPath: /data
           name: data-provider-write-data
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.2xlarge
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -145,7 +171,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.dataProvider.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
       volumeMode: Filesystem
 ---

@@ -1,12 +1,12 @@
 ---
-{{ range $idx := until (int .Values.remoteHeadless.count) }}
+{{ range $idx := until (int .Values.count) }}
 {{ $index := add $idx 1 }}
 
 apiVersion: v1
 kind: Service
 metadata:
   name: remote-headless-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   annotations:
@@ -20,17 +20,17 @@ spec:
   externalTrafficPolicy: Local
   ports:
   - name: graphql
-    port: {{ $.Values.remoteHeadless.ports.graphql }}
-    targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
+    port: {{ $.Values.ports.graphql }}
+    targetPort: {{ $.Values.ports.graphql }}
   - name: rpc
-    port: {{ $.Values.remoteHeadless.ports.rpc }}
-    targetPort: {{ $.Values.remoteHeadless.ports.rpc }}
+    port: {{ $.Values.ports.rpc }}
+    targetPort: {{ $.Values.ports.rpc }}
   - name: headless
-    port: {{ $.Values.remoteHeadless.ports.headless }}
-    targetPort: {{ $.Values.remoteHeadless.ports.headless }}
+    port: {{ $.Values.ports.headless }}
+    targetPort: {{ $.Values.ports.headless }}
   - name: https
     port: 443
-    targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
+    targetPort: {{ $.Values.ports.graphql }}
   selector:
     app: remote-headless-{{ $index }}
   type: LoadBalancer

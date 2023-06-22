@@ -1,4 +1,4 @@
-{{ range $idx := until (int .Values.validator.count) }}
+{{ range $idx := until (int .Values.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -7,7 +7,7 @@ metadata:
     app: validator-{{ $index }}
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: validator-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -21,6 +21,32 @@ spec:
         app: validator-{{ $index }}
       name: validator-{{ $index }}
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/validator
+        - $(RESET_SNAPSHOT_OPTION)
+        - validator-{{ $index }}
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - mountPath: /bin/download_snapshot.sh
+          name: script-volume
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: validator-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -29,13 +55,13 @@ spec:
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
         {{- if eq $.Values.consensusType "pbft" }}
-        - --host={{ index $.Values.validator.hosts $idx }}
+        - --host={{ index $.Values.hosts $idx }}
         {{- else }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
         {{- end }}
-        - --port={{ $.Values.validator.ports.headless }}
+        - --port={{ $.Values.ports.headless }}
         - --store-path=/data/validator
         - --store-type=rocksdb
         {{- range $.Values.peerStrings }}
@@ -43,7 +69,7 @@ spec:
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port={{ $.Values.validator.ports.graphql }}
+        - --graphql-port={{ $.Values.ports.graphql }}
         {{- if eq $.Values.consensusType "pbft" }}
         - --swarm-private-key
         - $(PRIVATE_KEY)
@@ -51,12 +77,12 @@ spec:
         - $(PRIVATE_KEY)
         - --consensus-private-key
         - $(PRIVATE_KEY)
-        - --consensus-port={{ $.Values.validator.ports.gossip }}
-        {{- range $.Values.validator.consensusSeedStrings }}
+        - --consensus-port={{ $.Values.ports.gossip }}
+        {{- range $.Values.consensusSeedStrings }}
         - --consensus-seed={{ . }}
         {{- end }}
         {{- end }}
-        {{- with $.Values.validator.extraArgs }}
+        {{- with $.Values.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         - --network-type={{ $.Values.networkType }}
@@ -79,24 +105,24 @@ spec:
                 fieldPath: metadata.namespace
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
-          {{- with $.Values.validator.env }}
+          {{- with $.Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        image: {{ $.Values.validator.image.repository }}:{{ $.Values.validator.image.tag }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: Always
         name: validator-{{ $index }}
         ports:
-        - containerPort: {{ $.Values.validator.ports.headless }}
+        - containerPort: {{ $.Values.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: {{ $.Values.validator.ports.graphql }}
+        - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: {{ $.Values.validator.ports.gossip }}
+        - containerPort: {{ $.Values.ports.gossip }}
           name: gossip
           protocol: TCP
         resources:
-          {{- toYaml $.Values.validator.resources | nindent 10 }}
+          {{- toYaml $.Values.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -128,8 +154,6 @@ spec:
           path: /var/log/headless
           type: DirectoryOrCreate
         name: json-log
-      imagePullSecrets:
-      - name: acr-regcred
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
@@ -144,8 +168,8 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.validator.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
       volumeMode: Filesystem
 ---
 {{ end }}

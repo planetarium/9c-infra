@@ -1,4 +1,4 @@
-{{ range $idx := until (int .Values.remoteHeadless.count) }}
+{{ range $idx := until (int .Values.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -7,7 +7,7 @@ metadata:
     app: remote-headless-{{ $index }}
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: remote-headless-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -22,6 +22,32 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - remote-headless-{{ $index }}
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: remote-headless-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -29,49 +55,49 @@ spec:
         - --app-protocol-version={{ $.Values.appProtocolVersion }}
         - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.genesisBlockPath }}
-        - --port={{ $.Values.remoteHeadless.ports.headless }}
+        - --port={{ $.Values.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
         - --store-path=/data/headless
-        {{- if $.Values.remoteHeadless.useTurnServer }}
+        {{- if $.Values.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ index $.Values.remoteHeadless.hosts $idx }}
+        - --host={{ index $.Values.hosts $idx }}
         {{- end }}
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
         {{- end }}
         - --graphql-server
         - --graphql-host=0.0.0.0
-        - --graphql-port={{ $.Values.remoteHeadless.ports.graphql }}
+        - --graphql-port={{ $.Values.ports.graphql }}
         - --rpc-server
         - --rpc-remote-server
         - --rpc-listen-host=0.0.0.0
-        - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
+        - --rpc-listen-port={{ $.Values.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
-        {{- with $.Values.remoteHeadless.extraArgs }}
+        {{- with $.Values.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         command:
         - dotnet
-        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: Always
         name: remote-headless-{{ $index }}
         ports:
-        - containerPort: {{ $.Values.remoteHeadless.ports.graphql }}
+        - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: {{ $.Values.remoteHeadless.ports.headless }}
+        - containerPort: {{ $.Values.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: {{ $.Values.remoteHeadless.ports.rpc }}
+        - containerPort: {{ $.Values.ports.rpc }}
           name: rpc
           protocol: TCP
         livenessProbe:
@@ -90,7 +116,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 10
         resources:
-          {{- toYaml $.Values.remoteHeadless.resources | nindent 10 }}
+          {{- toYaml $.Values.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -127,8 +153,10 @@ spec:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.4xlarge
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -156,8 +184,8 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.remoteHeadless.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
       volumeMode: Filesystem
 ---
 {{ end }}

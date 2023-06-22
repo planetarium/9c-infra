@@ -5,10 +5,10 @@ metadata:
     app: data-provider-read
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: data-provider-read
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -19,6 +19,32 @@ spec:
       labels:
         app: data-provider-read
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - /app/NineChronicles.DataProvider.Executable
@@ -34,14 +60,14 @@ spec:
           value: '0'
         {{ range $idx, $peer := $.Values.peerStrings }}
         - name: NC_PeerStrings__{{ $idx }}
-          value: {{ $peer}}
+          value: {{ $peer }}
         {{ end }}
         - name: NC_Preload
           value: 'true'
         - name: NC_NoMiner
           value: 'true'
         - name: NC_Render
-          value: 'false'
+          value: "{{ $.Values.render }}"
         - name: NC_NetworkType
           value: "{{ $.Values.networkType }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
@@ -55,8 +81,8 @@ spec:
             secretKeyRef:
               key: read-value
               name: data-provider
-        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
-        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
         livenessProbe:
           exec:
             command:
@@ -92,16 +118,16 @@ spec:
           name: headless
           protocol: TCP
         resources:
-          requests:
-            cpu: 1000m
-            memory: 20Gi
+          {{- toYaml $.Values.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
           name: data-provider-read-data
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -121,7 +147,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.dataProvider.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
       volumeMode: Filesystem
 ---
