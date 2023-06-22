@@ -27,7 +27,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-3091462be6e5ce26d72fbe3d773c80d9c7d2ed3f
+    tag: git-9be9127d951fe30bc9def310560c7d2eaa39deb1
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -80,7 +80,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-3091462be6e5ce26d72fbe3d773c80d9c7d2ed3f
+    tag: git-9be9127d951fe30bc9def310560c7d2eaa39deb1
   hosts: []
   ports:
     headless: 31234
@@ -102,7 +102,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-3091462be6e5ce26d72fbe3d773c80d9c7d2ed3f
+    tag: git-9be9127d951fe30bc9def310560c7d2eaa39deb1
   extraArgs: []
   useTurnServer: false
   hosts:
@@ -130,7 +130,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: git-cafc35322f20849854d9104541f5478162b2c194
+    tag: git-a46a55313e0637e2d37b44e56b5aa70438f9ba41
   db:
     storage: 1000Gi
     database: ''
@@ -143,7 +143,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-3091462be6e5ce26d72fbe3d773c80d9c7d2ed3f
+    tag: git-9be9127d951fe30bc9def310560c7d2eaa39deb1
   extraArgs: []
   useTurnServer: true
   hosts: []
