@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: snapshot-partition
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -95,11 +95,11 @@ spec:
           - name: script-volume
             configMap:
               defaultMode: 0700
-              name: {{ .Chart.Name }}-snapshot-script-partition
+              name: {{ .Release.Name }}-snapshot-script-partition
           - name: download-snapshot-script
             configMap:
               defaultMode: 0700
-              name: {{ $.Chart.Name }}-download-snapshot-script
+              name: {{ $.Release.Name }}-download-snapshot-script
           - name: snapshot-volume-partition
             persistentVolumeClaim:
               claimName: snapshot-volume-partition

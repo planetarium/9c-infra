@@ -4,9 +4,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: market-db
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: market-db
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -54,6 +54,6 @@ spec:
         resources:
           requests:
             storage: {{ $.Values.marketService.db.size }}
-        storageClassName: {{ $.Chart.Name }}-gp3
+        storageClassName: {{ $.Release.Name }}-gp3
         volumeMode: Filesystem
 {{ end }}

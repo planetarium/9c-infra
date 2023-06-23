@@ -6,7 +6,7 @@
 clusterName: "9c-sample"
 logLevel: "debug"
 
-namespace: "9c-network"
+namespace: "9c-sample"
 nameOverwrite: "explorer"
 
 appProtocolVersion: "200000/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQD4MxYR4lSu69b+TYUB91k.Ns5cJHlK0B6SzU60g16OOgIgUwg3wJNKSO7A68sKn.rDQiuHAjftT1fPOmwiLEZyvJE=/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzhjYWI5NjYwYTk2MzIyMDk4MjU5OWZjYjc0MjMyNjI2MzA5ZTIwZmF1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0wNWU="
@@ -41,7 +41,6 @@ image:
   tag: "git-ed113c0838261d12a6ed716fc427d948b6da30f2"
 
 # dotnet args
-
 extraArgs: []
 # - --key=val
 

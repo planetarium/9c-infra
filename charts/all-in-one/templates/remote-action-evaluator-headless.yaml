@@ -4,9 +4,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: remote-action-evaluator-headless
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: remote-action-evaluator-headless
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -162,16 +162,16 @@ spec:
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Chart.Name }}-probe-script
+          name: {{ $.Release.Name }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
       - name: remote-action-evaluator-headless-configmap
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-remote-action-evaluator-headless-configmap
+          name: {{ $.Release.Name }}-remote-action-evaluator-headless-configmap
       {{- if $.Values.remoteActionEvaluatorHeadless.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
@@ -189,7 +189,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.remoteActionEvaluatorHeadless.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+      storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 
 ---
@@ -200,9 +200,9 @@ kind: Deployment
 metadata:
   labels:
     app: lib9c-state-service
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: lib9c-state-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -222,7 +222,7 @@ spec:
         - --urls=http://0.0.0.0:5157/
         command:
         - dotnet
-        image: "{{ $.Values.lib9cStateService.image.repository }}:{{ $.Values.lib9cStateService.image.tag | default $.Chart.AppVersion }}"
+        image: "{{ $.Values.lib9cStateService.image.repository }}:{{ $.Values.lib9cStateService.image.tag | default $.Release.AppVersion }}"
         env:
         - name: RemoteBlockChainStatesEndpoint
           value: "http://remote-action-evaluator-headless.9c-network.svc.cluster.local:{{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}/graphql/explorer"
@@ -269,10 +269,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-remote-action-evaluator-headless-configmap
-  namespace: {{ $.Chart.Name }}
+  name: {{ .Release.Name }}-remote-action-evaluator-headless-configmap
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   appsettings.json: |-
     {

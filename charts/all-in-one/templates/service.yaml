@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tcp-seed-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -39,9 +39,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: remote-headless-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -75,9 +75,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider-write
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   ports:
   - name: graphql
@@ -93,9 +93,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-provider-read
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   ports:
   - name: graphql
@@ -111,9 +111,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: explorer
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -140,9 +140,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: main-full-state
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -172,9 +172,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: test-headless-1
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -210,9 +210,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: test-headless-2
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -247,13 +247,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
   name: world-boss-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
@@ -281,9 +281,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: market-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -314,9 +314,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: validator-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -352,9 +352,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: remote-action-evaluator-headless
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -390,9 +390,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: lib9c-state-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   ports:
   - name: http

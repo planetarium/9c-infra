@@ -3,9 +3,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: data-provider-read
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: data-provider-read
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 2
@@ -111,7 +111,7 @@ spec:
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
@@ -123,6 +123,6 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.dataProvider.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+      storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---

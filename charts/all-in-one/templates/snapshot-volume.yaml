@@ -2,9 +2,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume-partition
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
     volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
@@ -14,7 +14,7 @@ spec:
   resources:
     requests:
       storage: 1000Gi
-  storageClassName: {{ $.Chart.Name }}-gp3
+  storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem
 
 ---
@@ -23,9 +23,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume-full
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
     volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
@@ -35,5 +35,5 @@ spec:
   resources:
     requests:
       storage: 1000Gi
-  storageClassName: {{ $.Chart.Name }}-gp3
+  storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem

@@ -2,9 +2,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: snapshot-partition-reset
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -168,7 +168,7 @@ spec:
           - name: script-volume
             configMap:
               defaultMode: 0700
-              name: {{ .Chart.Name }}-snapshot-script-partition-reset
+              name: {{ .Release.Name }}-snapshot-script-partition-reset
           - name: snapshot-volume-full
             persistentVolumeClaim:
               claimName: snapshot-volume-full

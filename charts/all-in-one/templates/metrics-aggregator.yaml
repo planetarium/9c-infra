@@ -4,7 +4,7 @@ metadata:
   namespace: monitoring
   labels:
     app: ninechronicles-headless-metrics-aggregator
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: ninechronicles-headless-metrics-aggregator
 spec:
   selector:

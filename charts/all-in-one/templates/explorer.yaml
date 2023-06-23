@@ -3,9 +3,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: explorer
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: explorer
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -105,12 +105,12 @@ spec:
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Chart.Name }}-probe-script
+          name: {{ $.Release.Name }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
@@ -122,7 +122,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.explorer.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+      storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
 {{ end }}
