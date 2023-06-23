@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tcp-seed-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -37,9 +37,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: remote-headless-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -73,9 +73,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: validator-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"

@@ -5,9 +5,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: validator-{{ $index }}
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: validator-{{ $index }}
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -138,12 +138,12 @@ spec:
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Chart.Name }}-probe-script
+          name: {{ $.Release.Name }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always
@@ -161,7 +161,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.validator.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp3
+      storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
 {{ end }}
