@@ -6,7 +6,7 @@
 clusterName: "9c-sample"
 logLevel: "debug"
 
-namespace: "9c-network"
+namespace: "9c-sample"
 nameOverwrite: "explorer"
 
 appProtocolVersion: "200020/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIFp.SfFaK3PCLyqwN28j4qptXqWnToggZOQTLAFly5I3AiBr.824.h8.VwjhVwz5zulv7pKqBLARAP6pYQGPd6js+A==/ZHU4OmxhdW5jaGVydTQyOjEvODBkYjhmNDU1MTU5ODNiYWY5YjFkYjEwMDZmOWIwMjRjNWIzMWU1NnU2OnBsYXllcnU0MjoxL2M2NjUyYTEzNmQ1ZDZkMmVhOGQyNmFmNmM0M2Y1MTg5ZmJiYzYxZGN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
@@ -54,7 +54,7 @@ ports:
   rpc: 31238
 
 storage:
-  class: "9c-network-gp3"
+  class: "9c-sample-gp3"
   data: 1000Gi
 
 resources:
@@ -62,6 +62,7 @@ resources:
     cpu: 2
     memory: 20Gi
 
-nodeSelector: {}
+nodeSelector:
+  eks.amazonaws.com/nodegroup: 9c-sample-r6g_xl_2c
 tolerations: []
 affinity: {}

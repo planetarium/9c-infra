@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 9c-network
+  name: 9c-sample
   namespace: argocd
 spec:
   project: default
