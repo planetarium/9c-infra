@@ -1,0 +1,67 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-sample"
+logLevel: "debug"
+
+namespace: "9c-network"
+nameOverwrite: "explorer"
+
+appProtocolVersion: "200020/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIFp.SfFaK3PCLyqwN28j4qptXqWnToggZOQTLAFly5I3AiBr.824.h8.VwjhVwz5zulv7pKqBLARAP6pYQGPd6js+A==/ZHU4OmxhdW5jaGVydTQyOjEvODBkYjhmNDU1MTU5ODNiYWY5YjFkYjEwMDZmOWIwMjRjNWIzMWU1NnU2OnBsYXllcnU0MjoxL2M2NjUyYTEzNmQ1ZDZkMmVhOGQyNmFmNmM0M2Y1MTg5ZmJiYzYxZGN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
+genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+peerStrings:
+- "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+iceServers:
+- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+
+networkType: Default
+consensusType: pbft
+
+resetSnapshot: true
+
+useExternalSecret: false
+slackToken: ""
+slackWebHookUrl: ""
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+count: 1
+image:
+  repository: planetariumhq/ninechronicles-headless
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "git-b58a31cb2fe2d17bd759741cabb78bdd146de601"
+
+# dotnet args
+
+extraArgs: []
+# - --key=val
+
+useTurnServer: false
+
+hosts:
+- "9c-sample-rpc-1.planetarium.dev"
+
+ports:
+  headless: 31234
+  graphql: 80
+  rpc: 31238
+
+storage:
+  class: "9c-network-gp3"
+  data: 1000Gi
+
+resources:
+  requests:
+    cpu: 2
+    memory: 20Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
