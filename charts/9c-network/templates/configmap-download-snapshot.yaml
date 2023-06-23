@@ -14,7 +14,7 @@ data:
     apk update
     apk add jq curl wget aria2 sudo zip
 
-    base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
+    base_url=${1:-https://snapshots.nine-chronicles.com/internal}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
     service_name=$4

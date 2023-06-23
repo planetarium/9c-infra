@@ -1,3 +1,4 @@
+{{ if .Values.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -50,4 +51,5 @@ spec:
           requests:
             storage: {{ $.Values.db.storage }}
         storageClassName: {{ $.Values.storage.class }}
+{{ end }}
         volumeMode: Filesystem

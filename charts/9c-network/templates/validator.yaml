@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
       - args:
-        - https://snapshots.nine-chronicles.com/main/partition
+        - https://snapshots.nine-chronicles.com/internal
         - /data/validator
         - $(RESET_SNAPSHOT_OPTION)
         - validator-{{ $index }}

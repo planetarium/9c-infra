@@ -5,10 +5,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: remote-headless-{{ $index }}
+  name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
   namespace: {{ $.Values.namespace }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ default "remote-headless" $.Values.nameOverwrite }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -32,7 +32,7 @@ spec:
     port: 443
     targetPort: {{ $.Values.ports.graphql }}
   selector:
-    app: remote-headless-{{ $index }}
+    app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
   type: LoadBalancer
 
 ---

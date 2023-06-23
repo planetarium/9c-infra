@@ -1,20 +1,18 @@
-worldBoss:
-  enabled: true
-  ports:
-    targetPort: 5000
+ports:
+  targetPort: 5000
 
-  image:
-    repository: planetariumhq/world-boss-service
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-f0ad3803c6034438715a782840a7776127ddb3ed"
+image:
+  repository: planetariumhq/world-boss-service
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "git-f0ad3803c6034438715a782840a7776127ddb3ed"
 
-  worldBossEnv:
-    databaseUrl: ""
-    redisHost: ""
-    redisPort: ""
-    kmsKeyId: ""
-    slackToken: ""
-    celeryBrokerUrl: ""
-    celeryResultBackend: ""
-    slackSigningSecret: ""
+worldBossEnv:
+  databaseUrl: ""
+  redisHost: ""
+  redisPort: ""
+  kmsKeyId: ""
+  slackToken: ""
+  celeryBrokerUrl: ""
+  celeryResultBackend: ""
+  slackSigningSecret: ""

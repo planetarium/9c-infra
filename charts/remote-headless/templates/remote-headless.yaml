@@ -4,9 +4,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: remote-headless-{{ $index }}
+    app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: remote-headless-{{ $index }}
+  name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
   namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
@@ -14,20 +14,20 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: remote-headless-{{ $index }}
-  serviceName: remote-headless-{{ $index }}
+      app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+  serviceName: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
   template:
     metadata:
       labels:
-        app: remote-headless-{{ $index }}
-      name: remote-headless-{{ $index }}
+        app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+      name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
     spec:
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/internal
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
-        - remote-headless-{{ $index }}
+        - {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
@@ -39,7 +39,7 @@ spec:
           readOnly: true
           subPath: download_snapshot.sh
         - mountPath: /data
-          name: remote-headless-data-{{ $index }}
+          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.resetSnapshot }}"
@@ -89,7 +89,7 @@ spec:
         - dotnet
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: Always
-        name: remote-headless-{{ $index }}
+        name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
         ports:
         - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
@@ -121,7 +121,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: remote-headless-data-{{ $index }}
+          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -152,7 +152,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_{{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}.json
       {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -178,7 +178,7 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      name: remote-headless-data-{{ $index }}
+      name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
     spec:
       accessModes:
       - ReadWriteOnce

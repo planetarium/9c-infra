@@ -24,7 +24,7 @@ spec:
     spec:
       initContainers:
       - args:
-        - https://snapshots.nine-chronicles.com/main/partition
+        - https://snapshots.nine-chronicles.com/internal
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
         - remote-headless-{{ $index }}
