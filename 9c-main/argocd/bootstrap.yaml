@@ -82,14 +82,14 @@ spec:
           enabled: true
           bucketName: loki.planetariumhq.com
           write:
-            count: 2
+            count: 3
             nodeGroup: 9c-main-r6g_xl_2c
             resources:
               requests:
                 cpu: 1500m
                 memory: 6Gi
           read:
-            count: 4
+            count: 3
             nodeGroup: 9c-main-r6g_xl_2c
             resources:
               requests:
