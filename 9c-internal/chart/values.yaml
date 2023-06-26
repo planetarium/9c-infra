@@ -102,7 +102,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-8a1268671089a6cff8fda174e8ca954b48252fa6
+    tag: git-00ad48e95e5e4a6523e14bccbafa0250c6c9fb0a
   extraArgs: []
   useTurnServer: false
   hosts:
