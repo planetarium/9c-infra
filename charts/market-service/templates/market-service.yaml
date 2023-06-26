@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: market-service
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: market-service
+  namespace: {{ $.Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-service
+  serviceName: market-service
+  template:
+    metadata:
+      labels:
+        app: market-service
+    spec:
+      containers:
+        - args:
+            - MarketService.dll
+          command:
+            - dotnet
+          env:
+            - name: ConnectionStrings__MARKET
+              valueFrom:
+                secretKeyRef:
+                  key: connection-string
+                  name: market-db
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: RpcConfig__Host
+              value: 9c-main-test-1.nine-chronicles.com
+            - name: RpcConfig__Port
+              value: "31238"
+            - name: WorkerConfig__SyncShop
+              value: "false"
+            - name: WorkerConfig__SyncProduct
+              value: "false"
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          name: market-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate

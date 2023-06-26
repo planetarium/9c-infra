@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: data-provider-write
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: data-provider-write
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: data-provider-write
+  serviceName: data-provider-write
+  template:
+    metadata:
+      labels:
+        app: data-provider-write
+    spec:
+      containers:
+      - args:
+        - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
+          && /app/NineChronicles.DataProvider.Executable
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: NC_StorePath
+          value: /data/data-provider
+        - name: NC_AppProtocolVersionToken
+          value: {{ $.Values.global.appProtocolVersion }}
+        - name: NC_Confirmations
+          value: '0'
+        {{ range $idx, $peer := $.Values.global.peerStrings }}
+        - name: NC_PeerStrings__{{ $idx }}
+          value: {{ $peer }}
+        {{ end }}
+        - name: NC_Preload
+          value: 'false'
+        - name: NC_NoMiner
+          value: 'true'
+        - name: NC_Render
+          value: "{{ $.Values.dataProvider.render }}"
+        - name: NC_NetworkType
+          value: "{{ $.Values.global.networkType }}"
+        - name: NC_TrustedAppProtocolVersionSigners__0
+          value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
+        - name: NC_GenesisBlockPath
+          value: {{ $.Values.global.genesisBlockPath }}
+        - name: NC_BlockInsertInterval
+          value: '10'
+        - name: NC_BlockIndexFilePath
+          value: /data
+        - name: NC_TxLifeTime
+          value: '10'
+        - name: NC_MySqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              key: write-value
+              name: data-provider
+        - name: DP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: write-host
+              name: data-provider
+        - name: DP_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: data-provider
+        - name: DP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: data-provider
+        - name: DP_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: data-provider
+        - name: DP_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: data-provider
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
+              }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
+              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 300 ]]\n"
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          timeoutSeconds: 60
+        name: data-provider-write
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        {{- with $.Values.dataProvider.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bin/check_chain_tip.sh
+          name: data-provider-script-volume
+          readOnly: true
+          subPath: check_chain_tip.sh
+        - mountPath: /data
+          name: data-provider-write-data
+      {{- with $.Values.dataProvider.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-provider-script-volume
+        configMap:
+          defaultMode: 488
+          name: {{ $.Release.Name }}-data-provider-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Release.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: data-provider-write-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.dataProvider.storage.data }}
+      storageClassName: {{ $.Release.Name }}-gp3
+      volumeMode: Filesystem
+---

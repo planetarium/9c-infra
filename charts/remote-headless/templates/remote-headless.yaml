@@ -1,0 +1,191 @@
+{{ range $idx := until (int .Values.count) }}
+{{ $index := add $idx 1 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+  serviceName: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+  template:
+    metadata:
+      labels:
+        app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+      name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ $.Release.Name }}-slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.genesisBlockPath }}
+        - --port={{ $.Values.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- if $.Values.useTurnServer }}
+        {{- range $.Values.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- else }}
+        - --host={{ index $.Values.hosts $idx }}
+        {{- end }}
+        {{- range $.Values.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.ports.graphql }}
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.ports.rpc }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
+        - --sentry-trace-sample-rate=0.5
+        - --tx-life-time=10
+        - --network-type={{ $.Values.networkType }}
+        {{- with $.Values.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: Always
+        name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+        ports:
+        - containerPort: {{ $.Values.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.ports.headless }}
+          name: headless
+          protocol: TCP
+        - containerPort: {{ $.Values.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        - mountPath: /app/logs
+          name: json-log
+        env:
+        - name: IpRateLimiting__EnableRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "15"
+        - name: IpRateLimiting__GeneralRules__1__Endpoint
+          value: "*:/graphql"
+        - name: IpRateLimiting__GeneralRules__1__Period
+          value: "1h"
+        - name: IpRateLimiting__GeneralRules__1__Limit
+          value: "3600"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_{{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}.json
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Chart.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
+      volumeMode: Filesystem
+---
+{{ end }}

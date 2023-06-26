@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 9c-sample
+  name: data-provider
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: feature/split-chart
-    path: charts/9c-network
+    path: charts/data-provider
     helm:
       valueFiles:
-        - ../../9c-sample/values.yaml
+        - ../../9c-sample/data-provider/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-network
+    namespace: 9c-sample

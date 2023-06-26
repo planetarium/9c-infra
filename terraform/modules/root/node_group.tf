@@ -6,6 +6,7 @@ resource "aws_eks_node_group" "node_groups" {
   subnet_ids      = var.create_vpc ? [aws_subnet.public[each.value["availability_zone"]].id] : var.public_subnet_ids
   instance_types  = each.value["instance_types"]
   capacity_type   = try(each.value["capacity_type"], "ON_DEMAND")
+  ami_type        = try(each.value["ami_type"], "AL2_x86_64")
 
   scaling_config {
     desired_size = each.value["desired_size"]
@@ -34,21 +35,3 @@ resource "aws_eks_node_group" "node_groups" {
   ]
 }
 
-# EKS can't directly set the "Name" tag, so we use the autoscaling_group_tag resource. 
-resource "aws_autoscaling_group_tag" "node_groups" {
-  # for_each = toset(
-  #   [for asg in flatten(
-  #     [for resource in aws_eks_node_group.node_groups[*].resources : resource.autoscaling_groups]
-  #   ) : asg.name]
-  # )
-
-  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
-
-  autoscaling_group_name = each.value
-
-  tag {
-    key   = "Name"
-    value = each.value
-    propagate_at_launch = true
-  }
-}

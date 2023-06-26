@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: main-full-state
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: main-full-state
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: main-full-state
+  serviceName: main-full-state
+  template:
+    metadata:
+      labels:
+        app: main-full-state
+      name: main-full-state
+    spec:
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.global.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.global.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.global.genesisBlockPath }}
+        - --port={{ $.Values.fullState.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/full-state
+        {{- if $.Values.fullState.useTurnServer }}
+        {{- range $.Values.global.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- range $.Values.global.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.fullState.ports.graphql }}
+        - --tx-life-time=10
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --network-type={{ $.Values.global.networkType }}
+        {{- with $.Values.fullState.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        {{- if and $.Values.fullState.image.repository $.Values.fullState.image.tag }}
+        image: {{ $.Values.fullState.image.repository }}:{{ $.Values.fullState.image.tag }}
+        {{- else }}
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+        {{- end }}
+        imagePullPolicy: Always
+        name: main-full-state
+        ports:
+        - containerPort: {{ $.Values.fullState.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.fullState.ports.headless }}
+          name: headless
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        resources:
+          {{- toYaml $.Values.fullState.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: main-full-state-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+      nodeSelector:
+        node.kubernetes.io/instance-type: r6g.xlarge
+      {{- with $.Values.fullState.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Release.Name }}-probe-script
+        name: probe-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: main-full-state-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.fullState.storage.data }}
+      storageClassName: {{ $.Release.Name }}-gp3
+      volumeMode: Filesystem
+---
+{{ end }}

@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: monitoring
+  labels:
+    app: ninechronicles-headless-metrics-aggregator
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: ninechronicles-headless-metrics-aggregator
+spec:
+  selector:
+    matchLabels:
+      app: ninechronicles-headless-metrics-aggregator
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ninechronicles-headless-metrics-aggregator
+    spec:
+      containers:
+      - image: planetariumhq/ninechronicles-headless-metrics-aggregator:git-8ce68c6ae9bc1adcec902ef2e77bfaf0efd4ec01
+        imagePullPolicy: IfNotPresent
+        command:
+          - poetry
+          - run
+          - uvicorn
+          - app:app
+          - --port=80
+          - --host=0.0.0.0
+          - --log-level=trace
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 1
+        name: ninechronicles-headless-metrics-aggregator
+        ports:
+        - containerPort: 80
+          name: metrics
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "0.4"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        node.kubernetes.io/instance-type: m5.large
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: monitoring
+  name: ninechronicles-headless-metrics-aggregator
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+spec:
+  ports:
+  - name: metrics
+    port: 80
+    targetPort: 80
+  selector:
+    app: ninechronicles-headless-metrics-aggregator
+

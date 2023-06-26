@@ -1,0 +1,173 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-sample"
+logLevel: "debug"
+
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+
+  appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
+  
+  peerStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+  resetSnapshot: true
+  
+  iceServers: []
+  
+  networkType: Default
+  consensusType: pbft
+  
+  useExternalSecret: false
+  slackToken: ""
+  slackWebHookUrl: ""
+
+snapshot:
+  slackChannel: "bot-test"
+  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+
+  # aws information for uploading snapshot
+  # Do not upload values below filled
+  # recommended to obtain from ExternalSecret
+  cfDistributionId: ""
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
+
+  resources:
+    requests:
+      cpu: 1300m
+      memory: 20Gi
+
+  nodeSelector: {}
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+seed:
+  count: 1
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+
+  hosts:
+  - "9c-sample-tcp-seed-1.planetarium.dev"
+
+  ports:
+    node: 31234
+    gossip: 31235
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # enter private keys if not using External Secrets
+  privateKeys:
+  - ""
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+remoteHeadless:
+  count: 1
+  image:
+    # follow global image
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  hosts:
+  - "9c-sample-rpc-1.planetarium.dev"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+validator:
+  count: 4
+  image:
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  consensusSeedStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+  hosts:
+  - "9c-sample-validator-1.planetarium.dev"
+  - "9c-sample-validator-2.planetarium.dev"
+  - "9c-sample-validator-3.planetarium.dev"
+  - "9c-sample-validator-4.planetarium.dev"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    gossip: 6000
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  # private keys if not using External Secrets
+  privateKeys:
+  - ""
+  - ""
+  - ""
+  - ""
+
+  storage:
+    data: 1000Gi
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+
+  tolerations: []
+  affinity: {}

@@ -1,0 +1,352 @@
+{{ if .Values.remoteActionEvaluatorHeadless.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: remote-action-evaluator-headless
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: remote-action-evaluator-headless
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: remote-action-evaluator-headless
+  serviceName: remote-action-evaluator-headless
+  template:
+    metadata:
+      labels:
+        app: remote-action-evaluator-headless
+      name: remote-action-evaluator-headless
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/main/partition
+        - /data/headless
+        - $(RESET_SNAPSHOT_OPTION)
+        - remote-action-evaluator-headless
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        {{- if and $.Values.remoteActionEvaluatorHeadless.image.repository $.Values.remoteActionEvaluatorHeadless.image.tag }}
+        image: {{ $.Values.remoteActionEvaluatorHeadless.image.repository }}:{{ $.Values.remoteActionEvaluatorHeadless.image.tag }}
+        {{- else }}
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+        {{- end }}
+        name: reset-snapshot
+        volumeMounts:
+        - name: download-snapshot-script
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: remote-action-evaluator-headless-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "false"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version={{ $.Values.global.appProtocolVersion }}
+        - --trusted-app-protocol-version-signer={{ $.Values.global.trustedAppProtocolVersionSigner }}
+        - --genesis-block-path={{ $.Values.global.genesisBlockPath }}
+        - --port={{ $.Values.remoteActionEvaluatorHeadless.ports.headless }}
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        {{- if $.Values.remoteActionEvaluatorHeadless.useTurnServer }}
+        {{- range $.Values.global.iceServers }}
+        - --ice-server={{ . }}
+        {{- end }}
+        {{- else }}
+        - --host={{ $.Values.remoteActionEvaluatorHeadless.host }}
+        {{- end }}
+        {{- range $.Values.global.peerStrings }}
+        - --peer={{ . }}
+        {{- end }}
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port={{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.remoteActionEvaluatorHeadless.ports.rpc }}
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
+        - --sentry-trace-sample-rate=0.5
+        - --tx-life-time=10
+        - --network-type={{ $.Values.global.networkType }}
+        - --config=/bin/appsettings.json
+        {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.remoteActionEvaluatorHeadless.image.repository }}:{{ $.Values.remoteActionEvaluatorHeadless.image.tag }}
+        imagePullPolicy: Always
+        name: remote-action-evaluator-headless
+        ports:
+        - containerPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.headless }}
+          name: headless
+          protocol: TCP
+        - containerPort: {{ $.Values.remoteActionEvaluatorHeadless.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.remoteActionEvaluatorHeadless.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: remote-action-evaluator-headless-data
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        - mountPath: /bin/appsettings.json
+          name: remote-action-evaluator-headless-configmap
+          readOnly: true
+          subPath: appsettings.json
+        {{- if $.Values.remoteActionEvaluatorHeadless.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
+        env:
+        {{- if $.Values.remoteActionEvaluatorHeadless.loggingEnabled }}
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JSON_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-action-evaluator-headless.json
+        {{- end }}
+        - name: IpRateLimiting__EnableRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "15"
+      {{- with $.Values.remoteActionEvaluatorHeadless }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Release.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Release.Name }}-download-snapshot-script
+      - name: remote-action-evaluator-headless-configmap
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Release.Name }}-remote-action-evaluator-headless-configmap
+      {{- if $.Values.remoteActionEvaluatorHeadless.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: remote-action-evaluator-headless-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.remoteActionEvaluatorHeadless.storage.data }}
+      storageClassName: {{ $.Release.Name }}-gp3
+      volumeMode: Filesystem
+
+---
+{{- end }}
+{{ if .Values.lib9cStateService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lib9c-state-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: lib9c-state-service
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: lib9c-state-service
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: lib9c-state-service
+      name: lib9c-state-service
+    spec:
+      containers:
+      - args:
+        - Lib9c.StateService.dll
+        - --urls=http://0.0.0.0:5157/
+        command:
+        - dotnet
+        image: "{{ $.Values.lib9cStateService.image.repository }}:{{ $.Values.lib9cStateService.image.tag | default $.Release.AppVersion }}"
+        env:
+        - name: RemoteBlockChainStatesEndpoint
+          value: "http://remote-action-evaluator-headless.9c-network.svc.cluster.local:{{ $.Values.remoteActionEvaluatorHeadless.ports.graphql }}/graphql/explorer"
+        imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 120
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: {{ $.Values.lib9cStateService.ports.http }}
+          timeoutSeconds: 1
+        name: lib9c-state-service
+        ports:
+          - containerPort: 5157
+            name: http
+            protocol: TCP
+        resources:
+          {{- toYaml $.Values.lib9cStateService.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        {{- toYaml $.Values.lib9cStateService.podSecurityContext | nindent 8 }}
+      {{- with $.Values.lib9cStateService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.lib9cStateService.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.lib9cStateService.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+{{ if .Values.remoteActionEvaluatorHeadless.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-remote-action-evaluator-headless-configmap
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  appsettings.json: |-
+    {
+        "Serilog": {
+            "Using": [
+                "Serilog.Expressions",
+                "Serilog.Sinks.Console",
+                "Serilog.Sinks.RollingFile"
+            ],
+            "MinimumLevel": "Debug",
+            "WriteTo": [
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] [{Source}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByIncludingOnly",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByExcluding",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "Filter": [
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Stun.TurnClient'"
+                    }
+                }
+            ]
+        },
+        "Headless": {
+            "ActionEvaluator": {
+                "type": "RemoteActionEvaluator",
+                "stateServiceEndpoint": "http://lib9c-state-service.9c-network.svc.cluster.local:5157/evaluation"
+            }
+        }
+    }
+{{- end }}

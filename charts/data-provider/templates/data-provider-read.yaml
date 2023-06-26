@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: data-provider-read
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: data-provider-read
+  namespace: {{ $.Values.namespace }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: data-provider-read
+  serviceName: data-provider-read
+  template:
+    metadata:
+      labels:
+        app: data-provider-read
+    spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/internal
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        image: bash:latest
+        name: reset-snapshot
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
+      containers:
+      - args:
+        - /app/NineChronicles.DataProvider.Executable
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: NC_StorePath
+          value: /data/data-provider
+        - name: NC_AppProtocolVersionToken
+          value: {{ $.Values.appProtocolVersion }}
+        - name: NC_Confirmations
+          value: '0'
+        {{ range $idx, $peer := $.Values.peerStrings }}
+        - name: NC_PeerStrings__{{ $idx }}
+          value: {{ $peer }}
+        {{ end }}
+        - name: NC_Preload
+          value: 'true'
+        - name: NC_NoMiner
+          value: 'true'
+        - name: NC_Render
+          value: "{{ $.Values.render }}"
+        - name: NC_NetworkType
+          value: "{{ $.Values.networkType }}"
+        - name: NC_TrustedAppProtocolVersionSigners__0
+          value: {{ $.Values.trustedAppProtocolVersionSigner }}
+        - name: NC_GenesisBlockPath
+          value: {{ $.Values.genesisBlockPath }}
+        - name: NC_TxLifeTime
+          value: '10'
+        - name: NC_MySqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              key: read-value
+              name: data-provider
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\ntest=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{test}\"\
+              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.test'\n\
+              )\"\nif [[ -n $test ]]; then\n  echo \"DataProvider query successful!\"\
+              \nelse\n  echo \"DataProvider query unsuccessful!\"\nfi\n[[ -n $test\
+              \ ]]\n"
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          timeoutSeconds: 60
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\npreloaded=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{nodeStatus{preloadEnded}}\"}' \\\
+              \n    http://localhost:80/graphql_headless \\\n  | jq .data.nodeStatus.preloadEnded\n\
+              )\"\n[[ \"$preloaded\" = \"true\" ]]\n"
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        name: data-provider-read
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        resources:
+          {{- toYaml $.Values.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: data-provider-read-data
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: data-provider-read-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
+      volumeMode: Filesystem
+---
