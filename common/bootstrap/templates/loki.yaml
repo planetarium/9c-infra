@@ -42,6 +42,7 @@ spec:
           querier:
             max_concurrent: 32
 
+          {{- if $.Values.memcached.enabled }}
           memcached:
             chunk_cache:
               enabled: true
@@ -55,6 +56,7 @@ spec:
               service: "memcache"
               timeout: "5s"
               default_validity: "12h"
+          {{- end }}
 
           query_scheduler:
             max_outstanding_requests_per_tenant: 8192
