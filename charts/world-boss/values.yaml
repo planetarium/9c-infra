@@ -1,3 +1,5 @@
+namespace: "9c-sample"
+
 ports:
   targetPort: 5000
 
@@ -6,6 +8,14 @@ image:
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "git-f0ad3803c6034438715a782840a7776127ddb3ed"
+
+nodeSelector:
+  node.kubernetes.io/instance-type: m5.large
+
+serviceAccount:
+  create: true
+  name: worldboss
+  iamRole: arn:aws:iam::319679068466:role/9c-onboarding-eks
 
 worldBossEnv:
   databaseUrl: ""

@@ -1,12 +1,14 @@
+{{- if $.Values.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-onboarding-eks
+    eks.amazonaws.com/role-arn: {{ $.Values.serviceAccount.iamRole }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: {{ $.Chart.Name }}-onboarding-iam-role
-  namespace: {{ $.Chart.Name }}
+  name: {{ $.Values.serviceAccount.iamRole }}
+  namespace: {{ $.Values.namespace }}
+{{- end }}
 
 ---
 
@@ -17,7 +19,7 @@ metadata:
     app: world-boss-service
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: world-boss-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -98,7 +100,7 @@ metadata:
     app: world-boss-worker
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: world-boss-worker
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -162,10 +164,12 @@ spec:
           name: world-boss-worker
           ports:
             - containerPort: 5000
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
-      serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
-      serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role
+      serviceAccount: {{ $.Values.serviceAccount.name }}
+      serviceAccountName: {{ $.Values.serviceAccount.names }}
   updateStrategy:
     type: RollingUpdate
