@@ -27,7 +27,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-ae8b3878adee0c5475a3a9db136c58cf19f5e889
+    tag: revert-gas-limit
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
@@ -80,7 +80,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-ae8b3878adee0c5475a3a9db136c58cf19f5e889
+    tag: revert-gas-limit
   hosts: []
   ports:
     headless: 31234
@@ -102,7 +102,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-ae8b3878adee0c5475a3a9db136c58cf19f5e889
+    tag: revert-gas-limit
   extraArgs: []
   useTurnServer: false
   hosts:
@@ -143,7 +143,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-ae8b3878adee0c5475a3a9db136c58cf19f5e889
+    tag: revert-gas-limit
   extraArgs: []
   useTurnServer: true
   hosts: []
