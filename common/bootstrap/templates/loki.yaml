@@ -19,7 +19,7 @@ spec:
           auth_enabled: false
           commonConfig:
             path_prefix: /var/loki
-            replication_factor: 6
+            replication_factor: 3
           storage:
             bucketNames:
               admin: admin
