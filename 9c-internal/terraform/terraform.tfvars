@@ -74,4 +74,14 @@ node_groups = {
     max_size          = 15
     ami_type          = "AL2_ARM_64"
   }
+
+  "9c-internal-c7g_4xl_2c" = {
+    instance_types    = ["c7g.4xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "SPOT"
+    desired_size      = 4
+    min_size          = 4
+    max_size          = 5
+    ami_type          = "AL2_ARM_64"
+  }
 }

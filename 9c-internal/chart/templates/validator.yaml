@@ -99,6 +99,10 @@ spec:
           {{- end }}
         image: {{ $.Values.validator.image.repository }}:{{ $.Values.validator.image.tag }}
         imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 2
+            memory: 20Gi
         name: validator-{{ $index }}
         ports:
         - containerPort: {{ $.Values.validator.ports.headless }}
@@ -120,7 +124,7 @@ spec:
         - mountPath: /data
           name: validator-data-{{ $index }}
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+        eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
       dnsPolicy: ClusterFirst
       volumes:
       - name: script-volume
