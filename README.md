@@ -1,92 +1,191 @@
-# Guide for Setting Up Test Clusters
-이 문서에서는 테스트용 네트워크를 [AWS dev 계정](https://start.1password.com/open/i?a=SGC2PENG75GZVAYBIM7ZDAK6XE&h=planetarium.1password.com&i=bbi6tmt4hyynp6hvace6ytmwqy&v=7zjxhskpdxvoznqnvhdi3iam4i)에 구축하는 것을 기준으로 설명합니다.
 
-## A. 준비
-------
+# 9c-infra 사용가이드
 
-### 1. 설치 필요
- - [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
- - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
- - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
- - [helm](https://helm.sh/docs/intro/install/)
+- [9c-infra](https://github.com/planetarium/9c-infra)의 다양한 용도 및 사용방법을 다룹니다.
+- 현재(2023/06/26)의 9c-main, 9c-internal의 상태는 본 가이드에서 제시하는 구조를 따르지 않고 있습니다.
 
-### 2. AWS credential 설정
-AWS dev 계정의 credential을 [1password](https://start.1password.com/open/i?a=SGC2PENG75GZVAYBIM7ZDAK6XE&v=7zjxhskpdxvoznqnvhdi[…]4i&i=tnnwtjxlngcxzo7soiimfx5x6q&h=planetarium.1password.com)를 참조해서 `~/.aws/credential` 에 입력해줍니다. (1password의 `AWS(dev) Access Key`)
+### 역할
+
+ 9c-infra는 nine chronicles 노드에 기반한 infra를 코드로 관리하기 위한 목적으로 탄생하였습니다. 여기에서 infra라 함은 EKS cluster를 운영하기 위해 필요한 AWS resource들과, cluster 내부에 구축되는 kubernetes resource들로 이루어집니다. 또한 관리라 함은, 그러한 리소스들에 대한 여러 가지 설정 정보들을 코드로 관리함으로서 얻는 재활용성, 멱등성 등의 장점을 취하고, PR-merge 구조를 통해 변경되는 설정을 안전하게 적용하고 그 이력을 쉽게 남기려는 측면을 이야기 합니다.
+
+ 현재 9c-infra에서는 AWS resource는 terraform으로, k8s resource는 helm chart를 통해 관리하고자 합니다. 또한 9c-infra에 올라가는 helm chart의 상태가 EKS cluster에 잘 반영되도록 argoCD를 통해 gitops를 적용합니다.
+
+ 장기적으로는 여기에 위치한 일부 helm chart는 public repository에까지 배포 및 관리되어 외부 사용자로 하여금 쉽게 설치 및 운영하는 것을 목표로 합니다.
+
+### 구성
+
+9c-infra가 앞서 언급한 resource를 관리하는 도구들을 사용하는 방식을 살펴봅니다.
+
+root directory를 보면 다음과 같이 구성되어 있습니다.
+
 ```
-# ~/.aws/credentials
-...
-[planetarium-dev]
-aws_access_key_id = <AWS_ACCESS_KEY_ID>
-aws_secret_access_key = <AWS_SECRET_ACCESS_KEY>
-region = us-east-2
-...
+9c-infra
+├── 9c-internal
+├── 9c-internal-mead
+├── 9c-main
+├── 9c-sample
+├── 9c-sample-vpc
+├── GUIDE.md
+├── LICENSE
+├── README.md
+├── charts
+├── common
+├── scripts
+└── terraform
 ```
-혹은 aws cli의 `aws configure` 로 입력할 수 있습니다.
 
-## B. 테스트 클러스터 생성 with Terraform
-------
-본 문서는 terraform을 이용해 cluster를 구축합니다. 관련 resource들은 전부 `terraform` 폴더에 있습니다.
-### 중요 사항
-- 아래 예제는 `9c-sample`이라는 클러스터를 구축하는 단계로 정리 돼있습니다.
-- **다른 명칭의 클러스터를 구축하고 싶다면 `9c-sample` 폴더를 원하는 클러스터 이름으로 변경하고 변경된 폴더 내의 `9c-sample` 명칭을 변경한 이름으로 모두 바꿔주시면 됩니다 (아래 4번 참조).**
-### 구축 순서
-1. `terraform/provider.tf`에서 profile을 `~/.aws/credentials` 에서 dev계정의 profile을 사용하도록 설정합니다. 
-2. 해당 profile을 사용하도록 환경변수를 설정합니다.
-     ````
-     $ export AWS_PROFILE=planetarium-dev
-     ````
-3. `terraform/backend.tf`에서 state를 저장할 s3 경로를 지정합니다. 이때 bucket과 key에 해당하는 경로는 미리 존재해야 합니다.
-4. 아래 나열된 파일 내의 `9c-sample` 명칭들을 원하는 클러스터 이름으로 변경해줍니다 (예: `9c-test`)
-  - `9c-test/application.yaml`
-  - `9c-test/argocd/bootstrap.yaml`
-  - `9c-test/argocd/kustomization.yaml`
-  - `9c-test/chart/Chart.yaml`
-  - `9c-test/terraform/backend.tf`
-  - `9c-test/terraform/terraform.tfvars`
-  - `9c-test/terraform/variables.tf`
-  - `9c-test/terraform/.terraform/terraform.tfstate`
-5. `terraform/variables.tf`에서 cluster와 관련된 리소스들의 이름을 정해줍니다.
+- 9c-*
+    - 각 클러스터별 설정을 가지고 있습니다.
+    - terraform
+    - `terraform` directory에 [module](https://developer.hashicorp.com/terraform/language/modules)과 environments로 나누어서 관리합니다.
+    
     ```
-    name = "9c-sample"
-    instance_types = ["c5.large"]
-
-    desired_size = 10
-    max_size = 20
-    min_size = 10
-     ```
-     그 외 vpc나 subnet ID를 수정할 수 있습니다.
-     위 변수들은 `terraform/variables.tf`에서 어떤 것들이 있는지 확인할 수 있습니다.
-6. `terraform` directory 경로에서 아래 커맨드를 실행해줍니다.
-   ```
-   $ terraform init
-   ```
-   terraform state를 지정된 backend에 생성하고 provider를 내려받는 등 initialize작업을 수행합니다.
-    ```  
-   $ terraform plan
-   ```
-   plan은 현재 terraform state와 실제 리소스, 사용자의 코드를 비교해서 어떤 부분에 변경이 생길지 보여줍니다. 중요한 리소스가 삭제나 업데이트 되지는 않을지 한번 체크해봅시다.
-7. ```
-   $ terraform apply
-   ```
-   terraform plan의 변경사항들을 실제 리소스에 반영합니다. 해당 코드는 다음의 리소스들을 생성합니다.
-    - EKS cluster
-    - EKS Node Group
-    - vpc, subnet tags
-    - addons
-    - cluster 운영에 필요한 각종 IAM role
-8. AWS dev 계정 `EKS`와 `S3`에 들어가서 리소스가 잘 생성됐는지 확인해봅니다.
-
-## C. 네트워크 및 노드 띄우기 with Helm
-------
-1. `chart/values.yaml`에서 `useExternalSecret` 값을 `false`로 바꿔주고 `seed` 와 `miner`의 `privateKeys` 값을 넣어줍니다.
-- ex) `privateKeys: ["XXXXXX"]`
-
-2. `9c-sample` directory 경로에서 아래 커맨드를 실행해줍니다.
-  ```
-  helm template 9c-sample chart/ --values chart/values.yaml | kubectl apply -f-
-  ```
-3. 클러스터에 접속해서 노드 상태를 확인해봅니다.
-  ```
-  kubectl get pod -n 9c-sample --watch
-  ```
-  또는 [Lens](https://k8slens.dev/)로 확인 가능합니다.
+    terraform
+    ├── environments
+    │   ├── 9c-internal
+    │   │   ├── main.tf
+    │   │   └── provider.tf
+    │   └── 9c-sample
+    │       ├── main.tf
+    │       └── provider.tf
+    └── modules
+        └── root
+            ├── addons.tf
+            ├── aws_loadbalancer_controller.tf
+            ├── cluster_autoscaler.tf
+            ├── eks.tf
+            ├── external_dns.tf
+            ├── external_secrets.tf
+            ├── fluent_bit.tf
+            ├── iam.tf
+            ├── irsa.tf
+            ├── loki.tf
+            ├── main.tf
+            ├── node_group.tf
+            ├── subnet_tags.tf
+            ├── variables.tf
+            └── vpc.tf
+    ```
+    
+    - `terraform/environments/9c-sample` 에서 `terraform apply` 로 적용합니다.
+    - charts
+    - `charts` directory에 용도별로 관리합니다.
+    
+    ```
+    charts
+    ├── 9c-network
+    │   ├── Chart.yaml
+    │   ├── templates
+    │   │   ├── configmap-download-snapshot.yaml
+    │   │   ├── ...
+    │   │   └── validator.yaml
+    │   └── values.yaml
+    ├── all-in-one
+    │   ├── Chart.yaml
+    │   ├── templates
+    │   │   ├── bridge.yaml
+    │   │   ├── configmap-data-provider.yaml
+    │   │   ├── ...
+    │   │   ├── validator.yaml
+    │   │   └── worldboss.yaml
+    │   └── values.yaml
+    ├── ...
+    ├── validator
+    │   ├── Chart.yaml
+    │   ├── templates
+    │   │   ├── configmap-download-snapshot.yaml
+    │   │   ├── ...
+    │   │   └── validator.yaml
+    │   └── values.yaml
+    └── world-boss
+        ├── Chart.yaml
+        ├── templates
+        │   ├── secret-store.yaml
+        │   ├── ...
+        │   └── worldboss.yaml
+        └── values.yaml
+    ```
+    
+    - `all-in-one`: 현재 9c-main과 동일한 구성으로 모든 컴포넌트를 포함합니다.
+    - `9c-network`: testnet 목적으로 존재하는 chart로 다음의 요소들만 포함합니다.
+        - validator
+        - remote-headless
+        - seed
+    - 위 두 chart를 제외한 나머지는 namespace를 직접 생성해주지 않기 때문에 value로 주입해야 합니다.
+    - argoCD
+    - argoCD에 관련된 설정은 클러스터별로 공통으로 가지고 있는 설정은 `common` directory에 모아두고, 개별적으로 가지고 있는 설정들은 각 클러스터의 `argocd` 디렉토리에서 보관합니다.
+    
+    ```
+    common
+    ├── argocd
+    │   ├── deployment.yaml
+    │   ├── kubernetes-external-secrets.yaml
+    │   ├── kustomization.yaml
+    │   └── namespace.yaml
+    └── bootstrap
+        ├── Chart.yaml
+        ├── templates
+        │   ├── argocd-app.yaml
+        │   ├── aws-cluster-autoscaler.yaml
+        │   ├── aws-load-balancer-controller.yaml
+        │   ├── external-dns.yaml
+        │   ├── fluent-bit
+        │   │   ├── configmap-fluent-bit.yaml
+        │   │   └── fluent-bit.yaml
+        │   ├── gp3-extensible.yaml
+        │   ├── grafana.yaml
+        │   ├── loki.yaml
+        │   ├── memcached.yaml
+        │   ├── metrics-server.yaml
+        │   ├── namespace-monitoring.yaml
+        │   └── prometheus.yaml
+        └── values.yaml
+    ```
+    
+    ```
+    9c-main/argocd
+    ├── argocd-cm.yaml
+    ├── argocd-ingress.yaml
+    ├── argocd-node-selectors.yaml
+    ├── argocd-rbac-cm.yaml
+    ├── argocd-secret-store.yaml
+    ├── argocd-secrets.yaml
+    ├── bootstrap.yaml
+    └── kustomization.yaml
+    ```
+    
+    - `9c-main/argocd` 에서 kustomize를 통해 common에 있는 설정까지 한꺼번에 반영합니다.
+    
+    ```yaml
+    $ kustomize build 9c-main/argocd/ | kubectl apply -f-
+    ```
+    
+    - 이 과정에서 별도로 정의한 `bootstrap` 이라는 helm chart를 적용하여 클러스터 운영 전반에 필요한 도구들을 설치합니다.
+    - example
+    
+    ```
+    9c-sample
+    ├── 9c-network
+    │   ├── application.yaml
+    │   └── values.yaml
+    ├── argocd
+    │   ├── argocd-cm.yaml
+    │   ├── argocd-ingress.yaml
+    │   ├── argocd-rbac-cm.yaml
+    │   ├── argocd-secret-store.yaml
+    │   ├── argocd-secrets.yaml
+    │   ├── bootstrap.yaml
+    │   └── kustomization.yaml
+    ├── data-provider
+    │   ├── application.yaml
+    │   └── values.yaml
+    └── explorer
+        ├── application.yaml
+        └── values.yaml
+    ```
+    
+    - argocd에서 bootstrap, kustomization등 필요한 설정 준비
+    - 그 외 각 application별로 `application.yaml` , helm chart의 `values.yaml` 준비
+    - argocd에서는 `Application` 이라는 리소스를 통해 github repository의 특정 경로에 존재하는 manifest를 cluster와 sync하도록 설정합니다. `application.yaml` 은 그러한 `Application` 리소스를 정의하는 manifest입니다.
+    - 단순한 manifest도 sync할 수 있지만 일반적으로 helm chart를 이용하는 편이 더 많은 이점을 제공합니다.
+    - argocd의 구성 및 사용방법은 추후 더 자세히 다룰 예정입니다.
