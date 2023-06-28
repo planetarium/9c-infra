@@ -1,6 +1,6 @@
 # Helm chart for 9c-infra
 
-생성하려는 helm chart를 `charts` directory에서 선택합니다. 그에 대한 `values.yaml` file역시 `{cluster name}/{chart name}/` 에 생성합니다. 준비된 helm chart 목록은 `charts` directory를 참고합니다.
+생성하려는 helm chart를 `charts` directory에서 선택합니다. 그에 대한 `values.yaml` file 역시 `{cluster name}/{chart name}/` 에 생성합니다. 준비된 helm chart 목록은 `charts` directory를 참고합니다.
 
 testnet을 구성하려는 경우 `9c-network`를  사용하길 권장합니다.
 
