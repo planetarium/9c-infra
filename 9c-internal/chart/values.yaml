@@ -27,7 +27,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: revert-gas-limit
+    tag: git-2f97969fbd5c79f2c42d33b31d004575a822a6e1-voteset
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
   hosts:
