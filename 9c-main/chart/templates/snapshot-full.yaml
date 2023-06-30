@@ -101,3 +101,4 @@ spec:
   schedule: 0 6 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
+  suspend: false
