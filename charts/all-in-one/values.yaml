@@ -170,6 +170,7 @@ remoteHeadless:
       memory: 20Gi
 
   loggingEnabled: false
+  rateLimitEnabled: false
 
   nodeSelector: {}
   tolerations: []
@@ -198,10 +199,7 @@ dataProvider:
     user: user
     password: ""
 
-  resources:
-    requests:
-      cpu: '3'
-      memory: 12Gi
+  resources: {}
 
   nodeSelector: {}
 

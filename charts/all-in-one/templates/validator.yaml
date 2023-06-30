@@ -109,7 +109,7 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: JSON_LOG_PATH
-            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
           {{- end }}
           {{- with $.Values.validator.env }}
             {{- toYaml . | nindent 12 }}

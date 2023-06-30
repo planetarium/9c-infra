@@ -71,6 +71,7 @@ spec:
 ---
 {{ end }}
 
+{{ if $.Values.dataProvider.rwMode }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -105,7 +106,45 @@ spec:
     app: data-provider-read
   type: LoadBalancer
 
+{{ else }}
 ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-provider
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+  - name: graphql
+    port: 80
+    targetPort: 80
+  selector:
+    app: data-provider
+  type: LoadBalancer
+---
+{{ end }}
+
+{{ if $.Values.dataProvider.db.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-provider-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: data-provider-db
+  type: LoadBalancer
+---
+{{ end }}
 
 apiVersion: v1
 kind: Service
@@ -136,6 +175,7 @@ spec:
 
 ---
 
+{{ if $.Values.fullState.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -164,7 +204,7 @@ spec:
   type: LoadBalancer
 
 ---
-
+{{ end }}
 
 {{ if .Values.testHeadless1.enabled }}
 
@@ -306,6 +346,27 @@ spec:
   type: LoadBalancer
 
 ---
+{{ end }}
+
+{{ if $.Values.marketService.db.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-db
+  namespace: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: market-db
+  type: LoadBalancer
+
 {{ end }}
 
 {{ range $idx := until (int .Values.validator.count) }}

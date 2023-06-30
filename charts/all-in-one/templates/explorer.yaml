@@ -20,6 +20,36 @@ spec:
         app: explorer
       name: explorer
     spec:
+      initContainers:
+        - args:
+            - 'https://snapshots.nine-chronicles.com/internal'
+            - /data/explorer
+            - $(RESET_SNAPSHOT_OPTION)
+            - explorer
+            - $(SLACK_WEBHOOK_URL)
+          command:
+            - /bin/download_snapshot.sh
+          env:
+            - name: RESET_SNAPSHOT_OPTION
+              value: 'true'
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: slack-webhook-url
+                  name: slack
+          image: 'bash:latest'
+          imagePullPolicy: Always
+          name: reset-snapshot
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /bin/download_snapshot.sh
+              name: script-volume
+              readOnly: true
+              subPath: download_snapshot.sh
+            - mountPath: /data
+              name: explorer-data
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -53,6 +83,19 @@ spec:
         {{- end }}
         command:
         - dotnet
+        env:
+          {{- if $.Values.explorer.loggingEnabled }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_explorer.json
+          {{- end }}
         {{- if and $.Values.explorer.image.repository $.Values.explorer.image.tag }}
         image: {{ $.Values.explorer.image.repository }}:{{ $.Values.explorer.image.tag }}
         {{- else }}
@@ -97,6 +140,10 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.explorer.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
       {{- with $.Values.explorer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
