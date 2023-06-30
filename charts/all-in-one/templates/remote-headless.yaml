@@ -50,6 +50,33 @@ spec:
             name: script-volume
             readOnly: true
             subPath: download_snapshot.sh
+            - mountPath: /data
+              name: remote-headless-data-{{ $index }}
+        - command:
+            - sh
+            - '-c'
+            - >
+              apk --no-cache add curl
+
+              # Endpoint to check
+
+              ENDPOINT="http://validator-1.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+
+              echo Checking: ${ENDPOINT}
+
+              while [[ $(curl --silent --output /dev/null --request GET
+              --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
+                echo "Not ready"
+                sleep 5s
+              done
+
+              echo Ready
+          image: alpine
+          imagePullPolicy: Always
+          name: wait
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -80,8 +107,10 @@ spec:
         - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
+        {{- if $.Values.remoteHeadless.sentryEnabled }}
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
+        {{- end }}
         - --tx-life-time=10
         - --network-type={{ $.Values.global.networkType }}
         {{- with $.Values.remoteHeadless.extraArgs }}
@@ -136,7 +165,7 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
-        {{- if $.Values.validator.loggingEnabled }}
+        {{- if $.Values.remoteHeadless.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
         {{- end }}
@@ -151,14 +180,16 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: JSON_LOG_PATH
-            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
           {{- end }}
+        {{- if $.Values.rateLimitEnabled }}
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
           value: "5s"
         - name: IpRateLimiting__GeneralRules__1__Period
           value: "5s"
+        {{- end }}
       {{- with $.Values.remoteHeadless.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
