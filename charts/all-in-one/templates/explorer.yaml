@@ -45,7 +45,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /bin/download_snapshot.sh
-              name: script-volume
+              name: download-snapshot-script
               readOnly: true
               subPath: download_snapshot.sh
             - mountPath: /data
