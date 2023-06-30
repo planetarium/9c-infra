@@ -464,7 +464,7 @@ spec:
       - name: script-volume
         configMap:
           defaultMode: 0700
-          name: {{ $.Release.Name }}-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
       - name: data-provider-script-volume
         configMap:
           defaultMode: 488
