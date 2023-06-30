@@ -16,7 +16,7 @@ spec:
     path: charts/all-in-one
     helm:
       valueFiles:
-        - values.yaml
+        - ../../9c-internal-v2/9c-network/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: 9c-network
