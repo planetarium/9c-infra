@@ -1,3 +1,4 @@
+{{ if $.Values.snapshot.fullSnapshotEnabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -107,3 +108,4 @@ spec:
   schedule: 0 6 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
+{{ end }}

@@ -18,7 +18,7 @@ spec:
   volumeMode: Filesystem
 
 ---
-
+{{ if $.Values.snapshot.fullSnapshotEnabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -37,3 +37,4 @@ spec:
       storage: 1000Gi
   storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem
+{{ end }}

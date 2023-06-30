@@ -29,23 +29,18 @@ spec:
                 secretKeyRef:
                   key: connection-string
                   name: market-db
-            - name: DOTNET_gcServer
-              value: "1"
-            - name: RpcConfig__Host
-              value: 9c-main-rpc-3.nine-chronicles.com
-            - name: RpcConfig__Port
-              value: "31238"
-            - name: WorkerConfig__SyncShop
-              value: "false"
-            - name: WorkerConfig__SyncProduct
-              value: "false"
+          {{- with $.Values.marketService.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: {{ $.Values.marketService.image.repository }}:{{ $.Values.marketService.image.tag }}
           name: market-service
           ports:
             - containerPort: 80
       restartPolicy: Always
+      {{- with $.Values.marketService.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
 {{ end }}

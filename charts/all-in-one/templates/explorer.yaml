@@ -35,6 +35,9 @@ spec:
         {{- range $.Values.global.iceServers }}
         - --ice-server={{ . }}
         {{- end }}
+        {{- else }}
+        - --host={{ $.Values.explorer.host }}
+        {{- end }}
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}
         {{- end }}
@@ -125,4 +128,3 @@ spec:
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
-{{ end }}

@@ -24,12 +24,13 @@ global:
   networkType: Default
   consensusType: pbft
   
+  resetSnapshot: false
   useExternalSecret: false
   slackToken: ""
   slackWebHookUrl: ""
 
 snapshot:
-  resetSnapshot: false
+  fullSnapshotEnabled: false
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
@@ -129,6 +130,8 @@ validator:
       cpu: 2
       memory: 20Gi
 
+  loggingEnabled: false
+
   nodeSelector: {}
 
   tolerations: []
@@ -166,12 +169,15 @@ remoteHeadless:
       cpu: 2
       memory: 20Gi
 
+  loggingEnabled: false
+
   nodeSelector: {}
   tolerations: []
   affinity: {}
 
 dataProvider:
   enabled: false
+  rwMode: false
   render: true
 
   storage:
@@ -184,6 +190,7 @@ dataProvider:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v200010-1"
   db:
+    local: false
     database: ""
     connectionString: ""
     host: ""
@@ -213,7 +220,7 @@ explorer:
 
   useTurnServer: true
 
-  hosts: []
+  host: ""
   #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
   #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
 
@@ -249,7 +256,7 @@ fullState:
 
   useTurnServer: true
 
-  hosts: []
+  host: ""
   #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
   #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
 
@@ -384,15 +391,21 @@ testHeadless2:
 
 marketService:
   enabled: false
+  rwMode: false
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
     tag: "git-833c0b3b932f158a4bbb5c4d522049102883a897"
 
-  nodeSelector: {}
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large
+
+  resources: {}
+
+  env: []
 
   db:
-    local: true
+    local: false
     database: ""
     user: ""
     connectionString: ""
