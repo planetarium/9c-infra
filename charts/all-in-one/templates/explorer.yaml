@@ -37,7 +37,11 @@ spec:
                 secretKeyRef:
                   key: slack-webhook-url
                   name: slack
-          image: 'bash:latest'
+          {{- if and $.Values.explorer.image.repository $.Values.explorer.image.tag }}
+          image: {{ $.Values.explorer.image.repository }}:{{ $.Values.explorer.image.tag }}
+          {{- else }}
+          image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+          {{- end }}
           imagePullPolicy: Always
           name: reset-snapshot
           resources: {}
