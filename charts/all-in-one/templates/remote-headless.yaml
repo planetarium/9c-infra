@@ -211,6 +211,7 @@ spec:
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
+        name: json-log
       {{- end }}
   updateStrategy:
     type: RollingUpdate

@@ -98,7 +98,7 @@ remoteHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
-  loggingEnabled: false
+  loggingEnabled: true
 
 
 dataProvider:
