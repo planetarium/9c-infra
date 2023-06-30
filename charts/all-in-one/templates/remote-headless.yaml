@@ -22,6 +22,34 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
+      initContainers:
+        - args:
+          - 'https://snapshots.nine-chronicles.com/internal'  
+          - /data/headless
+          - $(RESET_SNAPSHOT_OPTION)
+          - remote-headless-{{ $index }}
+          - $(SLACK_WEBHOOK_URL)
+          command:
+          - /bin/download_snapshot.sh
+          env:
+          - name: RESET_SNAPSHOT_OPTION  
+            value: 'true'  
+          - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                key: slack-webhook-url
+                name: slack
+          image: 'bash:latest'
+          imagePullPolicy: Always
+          name: reset-snapshot
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bin/download_snapshot.sh
+            name: script-volume
+            readOnly: true
+            subPath: download_snapshot.sh
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -108,19 +136,23 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.validator.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
+        {{- end }}
         env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
+          {{- if $.Values.remoteHeadless.loggingEnabled }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
+          {{- end }}
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
@@ -144,10 +176,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.remoteHeadless.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
-        name: json-log
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

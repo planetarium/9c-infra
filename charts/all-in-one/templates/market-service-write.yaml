@@ -1,4 +1,4 @@
-{{ if .Values.marketService.enabled }}
+{{ if and .Values.marketService.enabled .Values.marketService.rwMode }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -29,27 +29,21 @@ spec:
                 secretKeyRef:
                   key: connection-string
                   name: market-db
-            - name: DOTNET_gcServer
-              value: "1"
-            - name: RpcConfig__Host
-              value: 9c-main-test-1.nine-chronicles.com
-            - name: RpcConfig__Port
-              value: "31238"
-            - name: WorkerConfig__SyncShop
-              value: "true"
-            - name: WorkerConfig__SyncProduct
-              value: "true"
+          {{- with $.Values.marketService.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: {{ $.Values.marketService.image.repository }}:{{ $.Values.marketService.image.tag }}
           name: market-service-write
           ports:
             - containerPort: 80
+      {{- with $.Values.marketService.resources }}
       resources:
-        requests:
-          cpu: 6000m
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
       {{- with $.Values.marketService.nodeSelector }}
       nodeSelector:
-        {{ toYaml . | nindent 10 }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
   updateStrategy:
     type: RollingUpdate

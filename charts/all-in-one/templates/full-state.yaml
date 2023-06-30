@@ -1,3 +1,4 @@
+{{ if $.Values.fullState.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -34,6 +35,9 @@ spec:
         {{- if $.Values.fullState.useTurnServer }}
         {{- range $.Values.global.iceServers }}
         - --ice-server={{ . }}
+        {{- end }}
+        {{- else }}
+        - --host={{ $.Values.fullState.host }}
         {{- end }}
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}
@@ -87,8 +91,6 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
-      nodeSelector:
-        node.kubernetes.io/instance-type: r6g.xlarge
       {{- with $.Values.fullState.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
