@@ -44,6 +44,9 @@ seed:
   hosts:
   - "9c-internal-tcp.planetarium.dev"
 
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
 validator:
   count: 4
   image:
@@ -68,7 +71,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
 
 remoteHeadless:
   image:
@@ -92,7 +95,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 
 dataProvider:
@@ -116,6 +119,9 @@ dataProvider:
     user: user
     password: ''
 
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
 explorer:
   enabled: true
   image:
@@ -132,7 +138,7 @@ explorer:
       memory: 4Gi
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    node.kubernetes.io/instance-type: m5d.large
 
 marketService:
   enabled: true
@@ -143,3 +149,6 @@ marketService:
 
   db:
     size: 1Gi
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
