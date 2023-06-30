@@ -312,8 +312,8 @@ spec:
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
-        {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
-        image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+        {{- if and $.Values.dataProvider.image.repository $.Values.dataProvider.image.tag }}
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         {{- else }}
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         {{- end }}
