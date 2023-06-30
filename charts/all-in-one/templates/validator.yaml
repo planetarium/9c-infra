@@ -168,8 +168,8 @@ spec:
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
-      {{- end }}
         name: json-log
+      {{- end }}
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always
