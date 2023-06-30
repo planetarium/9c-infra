@@ -8,7 +8,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: "revert-gas-limit"
 
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -42,14 +42,13 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "9c-main-tcp-seed-1.planetarium.dev"
+  - "9c-internal-tcp.planetarium.dev"
 
 validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: revert-gas-limit
 
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
@@ -68,11 +67,13 @@ validator:
       cpu: 1
       memory: 12Gi
 
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+
 remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: revert-gas-limit
 
   hosts:
   - "9c-internal-rpc-1.nine-chronicles.com"
@@ -120,7 +121,6 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: revert-gas-limit
 
   storage:
     data: 500Gi
