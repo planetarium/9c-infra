@@ -50,8 +50,8 @@ spec:
             name: script-volume
             readOnly: true
             subPath: download_snapshot.sh
-            - mountPath: /data
-              name: remote-headless-data-{{ $index }}
+          - mountPath: /data
+            name: remote-headless-data-{{ $index }}
         - command:
             - sh
             - '-c'
