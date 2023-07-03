@@ -364,7 +364,7 @@ spec:
 ---
 {{ end }}
 
-{{ if $.Values.marketService.db.local }}
+{{ if .Values.marketService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
