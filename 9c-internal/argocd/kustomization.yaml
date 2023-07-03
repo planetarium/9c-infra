@@ -7,6 +7,7 @@ resources:
   - argocd-secrets.yaml
   - argocd-secret-store.yaml
   - argocd-ingress.yaml
+  - argocd-notifications.yaml
 patchesStrategicMerge:
   - argocd-cm.yaml
   - argocd-rbac-cm.yaml
