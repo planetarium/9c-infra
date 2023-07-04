@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
       - args:
-        - https://snapshots.nine-chronicles.com/main/partition
+        - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
         - remote-action-evaluator-headless

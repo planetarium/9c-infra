@@ -1,3 +1,4 @@
+{{- if $.Values.explorer.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -22,7 +23,7 @@ spec:
     spec:
       initContainers:
         - args:
-            - 'https://snapshots.nine-chronicles.com/internal'
+            - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
             - /data/explorer
             - $(RESET_SNAPSHOT_OPTION)
             - explorer
@@ -179,3 +180,4 @@ spec:
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
+{{- end }}

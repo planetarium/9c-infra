@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
         - args:
-          - 'https://snapshots.nine-chronicles.com/internal'  
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/validator
           - $(RESET_SNAPSHOT_OPTION)
           - validator-{{ $index }}
