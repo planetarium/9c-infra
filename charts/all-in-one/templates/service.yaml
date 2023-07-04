@@ -160,6 +160,7 @@ spec:
 ---
 {{ end }}
 
+{{ if $.Values.explorer.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -185,7 +186,7 @@ spec:
   selector:
     app: explorer
   type: LoadBalancer
-
+{{ end }}
 ---
 
 {{ if $.Values.fullState.enabled }}
@@ -379,7 +380,7 @@ spec:
   selector:
     app: market-db
   type: LoadBalancer
-
+---
 {{ end }}
 
 {{ range $idx := until (int .Values.validator.count) }}
