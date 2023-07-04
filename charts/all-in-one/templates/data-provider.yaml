@@ -20,6 +20,36 @@ spec:
       labels:
         app: data-provider-read
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        {{- if and $.Values.dataProvider.image.repository $.Values.dataProvider.image.tag }}
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+        {{- else }}
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+        {{- end }}
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        name: reset-snapshot
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.global.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - /app/NineChronicles.DataProvider.Executable
@@ -148,6 +178,36 @@ spec:
       labels:
         app: data-provider-write
     spec:
+      initContainers:
+      - args:
+        - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
+        - /data/data-provider
+        - $(RESET_SNAPSHOT_OPTION)
+        - data-provider
+        - $(SLACK_WEBHOOK_URL)
+        command:
+        - /bin/download_snapshot.sh
+        {{- if and $.Values.dataProvider.image.repository $.Values.dataProvider.image.tag }}
+        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+        {{- else }}
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+        {{- end }}
+        volumeMounts:
+        - name: script-volume
+          mountPath: /bin/download_snapshot.sh
+          readOnly: true
+          subPath: download_snapshot.sh
+        - mountPath: /data
+          name: data-provider-data
+        name: reset-snapshot
+        env:
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.global.resetSnapshot }}"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
       containers:
       - args:
         - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
@@ -305,7 +365,7 @@ spec:
     spec:
       initContainers:
       - args:
-        - https://snapshots.nine-chronicles.com/internal
+        - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
         - /data/data-provider
         - $(RESET_SNAPSHOT_OPTION)
         - data-provider

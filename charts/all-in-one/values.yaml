@@ -47,7 +47,7 @@ snapshot:
   aws_access_key_id: ""
   aws_secret_access_key: ""
 
-  uploadPath: "internal"
+  path: "internal"
 
   resources:
     requests:

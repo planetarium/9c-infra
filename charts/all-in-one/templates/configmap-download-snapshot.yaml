@@ -21,7 +21,7 @@ data:
       echo "Try again"
     done
 
-    base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
+    base_url=${1:-https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
     service_name=$4

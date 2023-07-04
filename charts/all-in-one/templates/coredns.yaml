@@ -1,3 +1,4 @@
+{{- if eq $.Values.global.networkType "Main" }}
 apiVersion: v1
 data:
   Corefile: |
@@ -35,3 +36,4 @@ metadata:
     k8s-app: kube-dns
   name: coredns
   namespace: kube-system
+{{- end }}

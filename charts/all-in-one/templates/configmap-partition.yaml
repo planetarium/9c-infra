@@ -6,149 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  preload_full_state.sh: >-
-    #!/usr/bin/env bash
-
-    set -ex
-
-
-    apt-get -y update
-
-    apt-get -y install zip
-
-    apt-get -y install curl
-
-    HOME="/app"
-
-
-    APP_PROTOCOL_VERSION=$1
-
-    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-
-    GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
-
-    STORE_PATH="/data/full-state"
-
-    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
-
-    {{- range $i, $s := $.Values.global.peerStrings }}
-    SEED{{ add $i 1 }}="{{ $s }}"
-    {{- end }}
-
-    ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-
-
-    HEADLESS="$HOME/NineChronicles.Headless.Executable"
-
-    HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
-
-    HEADLESS_LOG_DIR="/data/snapshot_logs"
-
-    HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
-
-    mkdir -p "$HEADLESS_LOG_DIR"
-
-
-    PID_FILE="$HOME/headless_pid"
-
-    function senderr() {
-      echo "$1"
-      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%23{{ $.Values.snapshot.slackChannel }}'
-    }
-
-
-    function preload_complete() {
-      echo "$1"
-    }
-
-
-    function waitpid() {
-      PID="$1"
-      while [ -e "/proc/$PID" ]; do
-        sleep 1
-      done
-    }
-
-
-    function run_headless() {
-      chmod 777 -R "$STORE_PATH"
-
-      "$HEADLESS" \
-          --no-miner \
-          --genesis-block-path="$GENESIS_BLOCK_PATH" \
-          --store-type=rocksdb \
-          --store-path="$STORE_PATH" \
-          --app-protocol-version="$APP_PROTOCOL_VERSION" \
-          --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
-          --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
-          --peer "$SEED2" \
-          --peer "$SEED3" \
-          > "$HEADLESS_LOG" 2>&1 &
-
-      PID="$!"
-
-      echo "$PID" | tee "$PID_FILE"
-
-      if ! kill -0 "$PID"; then
-        senderr "$PID doesn't exist. Failed to run headless"
-        exit 1
-      fi
-    }
-
-
-    function wait_preloading() {
-      touch "$PID_FILE"
-      PID="$(cat "$PID_FILE")"
-
-      if ! kill -0 "$PID"; then
-        senderr "$PID doesn't exist. Failed to run headless"
-        exit 1
-      fi
-
-      if timeout 14400 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
-        sleep 30
-      else
-        senderr "grep failed. Failed to preload."
-        kill "$PID"
-        exit 1
-      fi
-    }
-
-
-    function kill_headless() {
-      touch "$PID_FILE"
-      PID="$(cat "$PID_FILE")"
-      if ! kill -0 "$PID"; then
-        echo "$PID doesn't exist. Failed to kill headless"
-      else
-        kill -KILL "$PID"
-        waitpid "$PID" || true
-        chmod 777 -R "$STORE_PATH"
-      fi
-    }
-
-
-    function rotate_log() {
-      cd "$HEADLESS_LOG_DIR"
-      if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
-        zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-        rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-      fi
-    }
-
-    trap '' HUP
-
-
-    run_headless
-
-    wait_preloading
-
-    preload_complete "Preloading completed"
-
-    kill_headless
-
-    rotate_log
   preload_headless.sh: >-
     #!/usr/bin/env bash
 
@@ -333,7 +190,7 @@ data:
       STATE_DIR="/data/snapshots/state"
       METADATA_DIR="/data/snapshots/metadata"
       FULL_DIR="/data/snapshots/full"
-      URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.uploadPath }}/latest.json"
+      URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
       mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
       if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -363,9 +220,9 @@ data:
       STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
       S3_BUCKET_NAME="9c-snapshots-v2"
-      S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.uploadPath }}/$UPLOAD_SNAPSHOT_FILENAME"
-      S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.uploadPath }}/$UPLOAD_METADATA_FILENAME"
-      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
+      S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_SNAPSHOT_FILENAME"
+      S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_METADATA_FILENAME"
+      {{- if eq $.Values.snapshot.path "main/partition" }}
       S3_LATEST_INTERNAL_SNAPSHOT_PATH="main/partition/internal/$UPLOAD_SNAPSHOT_FILENAME"
       S3_LATEST_INTERNAL_METADATA_PATH="main/partition/internal/$UPLOAD_METADATA_FILENAME"
       {{- end }}
@@ -379,24 +236,24 @@ data:
       "$AWS" configure set default.output json
       NOW=$(date '+%Y%m%d%H%M%S')
 
-      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
-      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
+      {{- if eq $.Values.snapshot.path "main/partition" }}
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
       {{- end }}
 
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$SNAPSHOT_FILENAME.*"
-      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$UPLOAD_FILENAME.*"
-      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$STATE_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
-      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
+      {{- if eq $.Values.snapshot.path "main/partition" }}
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
@@ -444,6 +301,7 @@ data:
     trap '' HUP
 
     make_and_upload_snapshot $1
+  {{- if eq $.Values.global.networkType "Main" }}
   preload_dp_migrator.sh: |-
     #!/usr/bin/env bash
     set -ex
@@ -556,4 +414,4 @@ data:
     preload_complete "Preloading completed"
     kill_headless
     rotate_log
-
+  {{- end }}

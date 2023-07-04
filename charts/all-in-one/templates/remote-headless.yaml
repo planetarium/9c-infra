@@ -24,7 +24,7 @@ spec:
     spec:
       initContainers:
         - args:
-          - 'https://snapshots.nine-chronicles.com/internal'  
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/headless
           - $(RESET_SNAPSHOT_OPTION)
           - remote-headless-{{ $index }}
