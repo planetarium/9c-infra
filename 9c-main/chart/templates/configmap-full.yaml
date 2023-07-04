@@ -180,6 +180,10 @@ data:
       FULL_SNAPSHOT_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.zip"
       FULL_SNAPSHOT_FILENAME_7Z="$UPLOAD_FULL_SNAPSHOT_FILENAME.7z"
 
+      LATEST_METADATA=$(ls -t $METADATA_DIR/*.json | head -1)
+      LATEST_METADATA_FILENAME=$(basename "$LATEST_METADATA")
+      UPLOAD_METADATA_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.json"
+
       S3_BUCKET_NAME="9c-snapshots-v2"
 
       AWS="/usr/local/bin/aws"
@@ -192,6 +196,7 @@ data:
       NOW=$(date '+%Y%m%d%H%M%S')
 
       "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
       invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME"
       7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
