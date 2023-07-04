@@ -41,6 +41,7 @@ spec:
           - name: upload-snapshot1
             image: {{ $.Values.snapshot.image }}
             args:
+            - temp
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
             - $(CF_DISTRIBUTION_ID)
@@ -82,6 +83,7 @@ spec:
           - name: upload-snapshot2
             image: {{ $.Values.snapshot.image }}
             args:
+            - temp
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
             - $(CF_DISTRIBUTION_ID)
