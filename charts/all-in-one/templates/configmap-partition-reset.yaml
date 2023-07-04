@@ -27,17 +27,15 @@ data:
 
     SLACK_TOKEN=$2
 
-    GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
+    GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 
     STORE_PATH="/data/headless"
 
-    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
-    SEED1="027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-
-    SEED2="02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-
-    SEED3="0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+    {{- range $i, $s := $.Values.global.peerStrings }}
+    SEED{{ add $i 1 }}="{{ $s }}"
+    {{- end }}
 
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
@@ -57,7 +55,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
     }
 
 
@@ -85,9 +83,9 @@ data:
           --app-protocol-version="$APP_PROTOCOL_VERSION" \
           --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
           --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
-          --peer "$SEED2" \
-          --peer "$SEED3" \
+          {{- range $i, $s := $.Values.global.peerStrings }}
+          --peer "$SEED{{ add $i 1 }}" \
+          {{- end }}
           > "$HEADLESS_LOG" 2>&1 &
 
       PID="$!"
@@ -110,8 +108,8 @@ data:
         exit 1
       fi
 
-      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
-        sleep 30
+      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
+        sleep 60
       else
         senderr "grep failed. Failed to preload."
         kill "$PID"
@@ -155,57 +153,40 @@ data:
     rotate_log
   replace_snapshot.sh: >-
     #!/usr/bin/env bash
-
     set -ex
 
-
     apt-get -y update
-
     apt-get -y install curl
-
     apt-get -y install zip
-
     apt-get -y install unzip
-
     apt-get -y install sudo
 
-
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o
-    "awscliv2.zip"
-
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
     unzip awscliv2.zip
-
     sudo ./aws/install
 
-
     AWS="/usr/local/bin/aws"
-
-    AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id" | base64)"
-
-    AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key" | base64)"
-
+    AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+    AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
     "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-
     "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-
     "$AWS" configure set default.region us-east-2
-
     "$AWS" configure set default.output json
-
     APP_PROTOCOL_VERSION=$2
-
     VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-
     SLACK_TOKEN=$3
-
     CF_DISTRIBUTION_ID=$4
-
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
     }
-
 
     function replace_snapshot() {
       ARCHIVE="archive_"$(date '+%Y%m%d')
@@ -214,15 +195,15 @@ data:
       ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
       TEMP_PREFIX=$(echo $2 | awk '{gsub(/\//,"\\/");print}')
 
-      for f in $(aws s3 ls $1 | awk 'NF>1{print $4}' | grep "zip\|json"); do
+      for f in $(aws s3 ls $1 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
         aws s3 mv $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/")
       done
 
-      for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json"); do
+      for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
         aws s3 mv $(echo $f | sed "s/.*/$TEMP_PREFIX&/") $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX/")
       done
 
-      BUCKET="s3://9c-snapshots"
+      BUCKET="s3://9c-snapshots-v2"
       BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
       CF_PATH=$(echo $1 | sed -e "s/^$BUCKET_PREFIX//" | sed "s/.*/&*/")
 
@@ -230,54 +211,41 @@ data:
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/temp/partition/*"
     }
 
-
     trap '' HUP
-
 
     replace_snapshot $1 $2
   upload_snapshot.sh: >-
     #!/usr/bin/env bash
-
     set -ex
 
-
     apt-get -y update
-
     apt-get -y install curl
-
     apt-get -y install zip
-
     apt-get -y install unzip
-
     apt-get -y install sudo
+    apt-get -y install p7zip
 
-
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o
-    "awscliv2.zip"
-
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
     unzip awscliv2.zip
-
     sudo ./aws/install
 
-
     HOME="/app"
-
     STORE_PATH="/data/headless"
-
     APP_PROTOCOL_VERSION=$2
-
     VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-
     SLACK_TOKEN=$3
-
     CF_DISTRIBUTION_ID=$4
-
 
     function senderr() {
       echo "$1"
       curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
     }
-
 
     function make_and_upload_snapshot() {
       SNAPSHOT="$HOME/NineChronicles.Snapshot"
@@ -294,7 +262,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 10 --apv "$2" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$2" --snapshot-type "partition"; then
         senderr "Snapshot creation failed." $1
         exit 1
       fi
@@ -314,13 +282,13 @@ data:
       LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
       STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
-      S3_BUCKET_NAME="9c-snapshots"
+      S3_BUCKET_NAME="9c-snapshots-v2"
       S3_LATEST_SNAPSHOT_PATH="main/$1/partition/$UPLOAD_SNAPSHOT_FILENAME"
       S3_LATEST_METADATA_PATH="main/$1/partition/$UPLOAD_METADATA_FILENAME"
 
       AWS="/usr/local/bin/aws"
-      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id" | base64)"
-      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key" | base64)"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
       "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
       "$AWS" configure set default.region us-east-2
@@ -336,13 +304,29 @@ data:
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
       "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
       
+      mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
+      unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
+      unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
+      7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+      7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+
+      "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/latest.7z" --quiet --acl public-read
+      "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/state_latest.7z" --quiet --acl public-read
+
+      invalidate_cf "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/main/$1/partition/$UPLOAD_FILENAME.*"
+      invalidate_cf "/main/$1/partition/$STATE_FILENAME.*"
+
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
+      rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+      rm "/data/snapshots/7z/partition/state_latest.7z"
+      rm -r "$PARTITION_DIR/partition-snapshot"
+      rm -r "$STATE_DIR/state-snapshot"
       rm -r "$METADATA_DIR"
     }
 
-
     trap '' HUP
-
 
     make_and_upload_snapshot $1 $2

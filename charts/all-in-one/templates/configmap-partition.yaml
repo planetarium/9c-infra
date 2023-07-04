@@ -25,17 +25,15 @@ data:
 
     VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 
-    GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
+    GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 
     STORE_PATH="/data/full-state"
 
-    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
-    SEED1="027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-
-    SEED2="02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-
-    SEED3="0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+    {{- range $i, $s := $.Values.global.peerStrings }}
+    SEED{{ add $i 1 }}="{{ $s }}"
+    {{- end }}
 
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
@@ -55,7 +53,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%239c-mainnet'
+      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%23{{ $.Values.snapshot.slackChannel }}'
     }
 
 
@@ -168,21 +166,19 @@ data:
 
     APP_PROTOCOL_VERSION=$1
 
-    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_WEBHOOK=$2
 
-    SLACK_TOKEN=$2
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:4}"
 
-    GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
+    GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 
     STORE_PATH="/data/headless"
 
-    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
-    SEED1="027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-
-    SEED2="02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-
-    SEED3="0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+    {{- range $i, $s := $.Values.global.peerStrings }}
+    SEED{{ add $i 1 }}="{{ $s }}"
+    {{- end }}
 
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
@@ -202,7 +198,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-v'$VERSION_NUMBER' in 9c-internal cluster at preload_headless.sh."}' $SLACK_WEBHOOK
     }
 
 
@@ -230,9 +226,10 @@ data:
           --app-protocol-version="$APP_PROTOCOL_VERSION" \
           --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
           --ice-server="$ICE_SERVER" \
-          --peer "$SEED1" \
-          --peer "$SEED2" \
-          --peer "$SEED3" \
+          {{- range $i, $s := $.Values.global.peerStrings }}
+          --peer "$SEED{{ add $i 1 }}" \
+          {{- end }}
+          --network-type=Default \
           > "$HEADLESS_LOG" 2>&1 &
 
       PID="$!"
@@ -240,7 +237,7 @@ data:
       echo "$PID" | tee "$PID_FILE"
 
       if ! kill -0 "$PID"; then
-        senderr "$PID doesn't exist. Failed to run headless"
+        senderr "$PID doesn't exist. Failed to run headless" $1
         exit 1
       fi
     }
@@ -251,14 +248,14 @@ data:
       PID="$(cat "$PID_FILE")"
 
       if ! kill -0 "$PID"; then
-        senderr "$PID doesn't exist. Failed to run headless"
+        senderr "$PID doesn't exist. Failed to run headless" $1
         exit 1
       fi
 
-      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "CompleteBlocksAsync() finished;"; then
-        sleep 30
+      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
+        sleep 60
       else
-        senderr "grep failed. Failed to preload."
+        senderr "grep failed. Failed to preload." $1
         kill "$PID"
         exit 1
       fi
@@ -271,7 +268,7 @@ data:
       if ! kill -0 "$PID"; then
         echo "$PID doesn't exist. Failed to kill headless"
       else
-        kill -KILL "$PID"
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
         waitpid "$PID" || true
         chmod 777 -R "$STORE_PATH"
       fi
@@ -300,47 +297,34 @@ data:
     rotate_log
   upload_snapshot.sh: >-
     #!/usr/bin/env bash
-
     set -ex
 
-
     apt-get -y update
-
     apt-get -y install curl
-
     apt-get -y install zip
-
     apt-get -y install unzip
-
     apt-get -y install sudo
+    apt-get -y install p7zip
 
-
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o
-    "awscliv2.zip"
-
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
     unzip awscliv2.zip
-
     sudo ./aws/install
 
-
     HOME="/app"
-
     STORE_PATH="/data/headless"
-
-    APP_PROTOCOL_VERSION=$1
-
-    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-
-    SLACK_TOKEN=$2
-
+    SLACK_WEBHOOK=$2
     CF_DISTRIBUTION_ID=$3
-
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition-$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in 9c-internal cluster at upload_snapshot.sh."}' $2
     }
-
 
     function make_and_upload_snapshot() {
       SNAPSHOT="$HOME/NineChronicles.Snapshot"
@@ -349,7 +333,7 @@ data:
       STATE_DIR="/data/snapshots/state"
       METADATA_DIR="/data/snapshots/metadata"
       FULL_DIR="/data/snapshots/full"
-      URL="https://snapshots.nine-chronicles.com/main/partition/latest.json"
+      URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.uploadPath }}/latest.json"
 
       mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
       if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -358,7 +342,7 @@ data:
         echo "URL does not exist: $URL"
       fi
 
-      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 10 --apv "$1" --snapshot-type "partition"; then
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
         senderr "Snapshot creation failed."
         exit 1
       fi
@@ -378,36 +362,41 @@ data:
       LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
       STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
-      S3_BUCKET_NAME="9c-snapshots"
-      S3_LATEST_SNAPSHOT_PATH="main/partition/$UPLOAD_SNAPSHOT_FILENAME"
-      S3_LATEST_METADATA_PATH="main/partition/$UPLOAD_METADATA_FILENAME"
+      S3_BUCKET_NAME="9c-snapshots-v2"
+      S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.uploadPath }}/$UPLOAD_SNAPSHOT_FILENAME"
+      S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.uploadPath }}/$UPLOAD_METADATA_FILENAME"
+      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
       S3_LATEST_INTERNAL_SNAPSHOT_PATH="main/partition/internal/$UPLOAD_SNAPSHOT_FILENAME"
       S3_LATEST_INTERNAL_METADATA_PATH="main/partition/internal/$UPLOAD_METADATA_FILENAME"
+      {{- end }}
 
       AWS="/usr/local/bin/aws"
-      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id" | base64)"
-      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key" | base64)"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
       "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
       "$AWS" configure set default.region us-east-2
       "$AWS" configure set default.output json
       NOW=$(date '+%Y%m%d%H%M%S')
 
-      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
+      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
+      {{- end }}
 
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-      invalidate_cf "/main/partition/$SNAPSHOT_FILENAME.*"
-      invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
-      invalidate_cf "/main/partition/$STATE_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$UPLOAD_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$STATE_FILENAME.*"
 
+      {{- if eq $.Values.snapshot.uploadPath "main/partition" }}
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
@@ -418,11 +407,30 @@ data:
       invalidate_cf "/main/partition/internal/$UPLOAD_FILENAME.*"
       invalidate_cf "/main/partition/internal/$STATE_FILENAME.*"
 
+      mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
+      unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
+      unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
+      7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+      7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+
+      "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/latest.7z" --quiet --acl public-read
+      "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/partition/state_latest.7z" --quiet --acl public-read
+
+      invalidate_cf "/main/partition/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
+      invalidate_cf "/main/partition/$STATE_FILENAME.*"
+
+      rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+      rm "/data/snapshots/7z/partition/state_latest.7z"
+      rm -r "$PARTITION_DIR/partition-snapshot"
+      rm -r "$STATE_DIR/state-snapshot"
+      {{- end }}
+
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
       rm -r "$METADATA_DIR"
     }
-
 
     function invalidate_cf() {
       if "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$1"; then
@@ -433,8 +441,119 @@ data:
       fi
     }
 
-
     trap '' HUP
 
-
     make_and_upload_snapshot $1
+  preload_dp_migrator.sh: |-
+    #!/usr/bin/env bash
+    set -ex
+
+    apt-get -y update
+    apt-get -y install zip
+    apt-get -y install curl
+    HOME="/app"
+
+    APP_PROTOCOL_VERSION=$1
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
+    STORE_PATH="/data/data-provider"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    SEED1="027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
+    SEED2="02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
+    SEED3="0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+    ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+
+    HEADLESS="$HOME/NineChronicles.Headless.Executable"
+    HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
+    HEADLESS_LOG_DIR="/data/snapshot_logs"
+    HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
+    mkdir -p "$HEADLESS_LOG_DIR"
+
+    PID_FILE="$HOME/headless_pid"
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%239c-mainnet'
+    }
+
+    function preload_complete() {
+      echo "$1"
+    }
+
+    function waitpid() {
+      PID="$1"
+      while [ -e "/proc/$PID" ]; do
+        sleep 1
+      done
+    }
+
+    function run_headless() {
+      chmod 777 -R "$STORE_PATH"
+
+      "$HEADLESS" \
+          --no-miner \
+          --genesis-block-path="$GENESIS_BLOCK_PATH" \
+          --store-type=rocksdb \
+          --store-path="$STORE_PATH" \
+          --app-protocol-version="$APP_PROTOCOL_VERSION" \
+          --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
+          --ice-server="$ICE_SERVER" \
+          --peer "$SEED1" \
+          --peer "$SEED2" \
+          --peer "$SEED3" \
+          > "$HEADLESS_LOG" 2>&1 &
+
+      PID="$!"
+
+      echo "$PID" | tee "$PID_FILE"
+
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+    }
+
+    function wait_preloading() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+
+      if timeout 14400 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
+        sleep 60
+      else
+        senderr "grep failed. Failed to preload."
+        kill "$PID"
+        exit 1
+      fi
+    }
+
+    function kill_headless() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+      if ! kill -0 "$PID"; then
+        echo "$PID doesn't exist. Failed to kill headless"
+      else
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
+        waitpid "$PID" || true
+        chmod 777 -R "$STORE_PATH"
+      fi
+    }
+
+    function rotate_log() {
+      cd "$HEADLESS_LOG_DIR"
+      if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
+        zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+        rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+      fi
+    }
+    trap '' HUP
+
+    run_headless
+    wait_preloading
+    preload_complete "Preloading completed"
+    kill_headless
+    rotate_log
+

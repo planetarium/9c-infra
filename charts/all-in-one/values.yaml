@@ -30,7 +30,13 @@ global:
   slackWebHookUrl: ""
 
 snapshot:
-  fullSnapshotEnabled: false
+  downloadSnapshot: false
+  fullSnapshot:
+    enabled: false
+    suspend: false
+  partitionReset:
+    enabled: false
+    suspend: false
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
@@ -41,10 +47,12 @@ snapshot:
   aws_access_key_id: ""
   aws_secret_access_key: ""
 
+  uploadPath: "internal"
+
   resources:
     requests:
       cpu: 1300m
-      memory: 20Gi
+      memory: 10Gi
 
   nodeSelector: {}
 
