@@ -25,7 +25,7 @@ data:
 
     SLACK_WEBHOOK=$2
 
-    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:4}"
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 
     GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 

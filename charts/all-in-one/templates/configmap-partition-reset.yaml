@@ -55,7 +55,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in {{ $.Values.clusterName }} cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
     }
 
 
