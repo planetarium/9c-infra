@@ -25,17 +25,15 @@ data:
 
     VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 
-    GENESIS_BLOCK_PATH="https://release.nine-chronicles.com/genesis-block-9c-main"
+    GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 
     STORE_PATH="/data/full-state"
 
-    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
-    SEED1="027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-
-    SEED2="02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-
-    SEED3="0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+    {{- range $i, $s := $.Values.global.peerStrings }}
+    SEED{{ add $i 1 }}="{{ $s }}"
+    {{- end }}
 
     ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
@@ -55,7 +53,7 @@ data:
 
     function senderr() {
       echo "$1"
-      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%239c-mainnet'
+      curl --data "[K8S] $1. Check dp-migrator-v$VERSION_NUMBER in 9c-main cluster at preload_headless.sh." $'https://planetariumhq.slack.com/services/hooks/slackbot?token=uMiaEmgPwdi5ihEm8y8ngfJe&channel=%23{{ $.Values.snapshot.slackChannel }}'
     }
 
 
@@ -394,7 +392,7 @@ data:
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.uploadPath }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-      invalidate_cf "/{{ $.Values.snapshot.uploadPath }/}$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$SNAPSHOT_FILENAME.*"
       invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$UPLOAD_FILENAME.*"
       invalidate_cf "/{{ $.Values.snapshot.uploadPath }}/$STATE_FILENAME.*"
 

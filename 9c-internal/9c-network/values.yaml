@@ -27,7 +27,7 @@ global:
   useExternalSecret: true
 
 snapshot:
-  fullSnapshotEnabled: false
+  downloadSnapshot: true
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 

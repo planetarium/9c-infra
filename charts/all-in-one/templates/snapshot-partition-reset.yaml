@@ -1,3 +1,4 @@
+{{ if $.Values.snapshot.partitionReset.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -178,3 +179,5 @@ spec:
   schedule: 30 6 1,15 * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
+  suspend: {{ $.Values.snapshot.partitionReset.suspend }}
+{{ end }}
