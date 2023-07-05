@@ -528,7 +528,7 @@ spec:
       - name: script-volume
         configMap:
           defaultMode: 0700
-          name: {{ $.Release.Name }}-snapshot-script
+          name: {{ $.Release.Name }}-snapshot-script-partition
       - name: data-provider-script-volume
         configMap:
           defaultMode: 488
