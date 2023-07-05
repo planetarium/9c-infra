@@ -45,7 +45,7 @@ spec:
           name: remote-action-evaluator-headless-data
         env:
         - name: RESET_SNAPSHOT_OPTION
-          value: "false"
+          value: "{{ $.Values.global.resetSnapshot }}"
         - name: SLACK_WEBHOOK_URL
           valueFrom:
             secretKeyRef:
