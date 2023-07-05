@@ -19,6 +19,7 @@ data:
     download_option=$3
     service_name=$4
     SLACK_WEBHOOK=$5
+    complete_snapshot_reset=${6:-"false"}
 
     if $download_option
     then
@@ -146,11 +147,29 @@ data:
           aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
 
-      if [ -f $save_dir/mainnet_latest.json ]
+      if [ -f $save_dir/$mainnet_snapshot_json_filename ]
       then
-        local_previous_mainnet_blockEpoch=$(cat "$save_dir/mainnet_latest.json" | jq ".BlockEpoch")
-        local_previous_mainnet_blockIndex=$(cat "$save_dir/mainnet_latest.json" | jq ".Index")
-        download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_previous_mainnet_blockIndex
+        if [ $complete_snapshot_reset = "true" ]
+        then
+          echo "Completely delete the existing store and download a new snapshot"
+          rm -r "$save_dir"
+          mkdir -p "$save_dir"
+          download_unzip_full_snapshot
+        else
+          local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+          if [ -f $save_dir/$mainnet_snapshot_json_filename ]
+          then
+            local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
+            download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
+          else
+            local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+            epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
+            echo $epoch_seconds
+            local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
+            echo $local_chain_tip_blockEpoch
+            download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+          fi
+        fi
       else
         download_unzip_full_snapshot
       fi
