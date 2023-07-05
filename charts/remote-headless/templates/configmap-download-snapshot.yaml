@@ -48,7 +48,7 @@ data:
 
       function download_unzip_partial_snapshot() {
         snapshot_json_filename="latest.json"
-        mainnet_snapshot_json_filename="latest.json"
+        mainnet_snapshot_json_filename="mainnet_latest.json"
         snapshot_zip_filename="state_latest.zip"
         snapshot_zip_filename_array=("$snapshot_zip_filename")
         mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
@@ -104,7 +104,7 @@ data:
 
       function download_unzip_full_snapshot() {
           snapshot_json_filename="latest.json"
-          mainnet_snapshot_json_filename="latest.json"
+          mainnet_snapshot_json_filename="mainnet_latest.json"
           snapshot_zip_filename="state_latest.zip"
           snapshot_zip_filename_array=("$snapshot_zip_filename")
 
@@ -152,22 +152,29 @@ data:
           aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
 
-      if [[ -d "$save_dir" ]]
+      if [ -f $save_dir/$mainnet_snapshot_json_filename ]
       then
-        local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
-        if [ -f $save_dir/latest.json ]
+        if [ $complete_snapshot_reset = "true" ]
         then
-          local_previous_mainnet_blockEpoch=$(cat "$save_dir/latest.json" | jq ".BlockEpoch")
-          download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
+          echo "Completely delete the existing store and download a new snapshot"
+          rm -r "$save_dir"
+          mkdir -p "$save_dir"
+          download_unzip_full_snapshot
         else
-          local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
-          epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
-          echo $epoch_seconds
-          local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
-          echo $local_chain_tip_blockEpoch
-          download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+          local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+          if [ -f $save_dir/$mainnet_snapshot_json_filename ]
+          then
+            local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
+            download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
+          else
+            local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+            epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
+            echo $epoch_seconds
+            local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
+            echo $local_chain_tip_blockEpoch
+            download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+          fi
         fi
-
       else
         download_unzip_full_snapshot
       fi
