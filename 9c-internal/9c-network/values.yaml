@@ -73,7 +73,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 remoteHeadless:
   image:
