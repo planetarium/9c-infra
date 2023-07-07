@@ -9,6 +9,8 @@ metadata:
   namespace: {{ $.Release.Name }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: bot-test
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: bot-test
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
