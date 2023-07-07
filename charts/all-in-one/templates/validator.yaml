@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: validator-{{ $index }}
   namespace: {{ $.Release.Name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   revisionHistoryLimit: 3

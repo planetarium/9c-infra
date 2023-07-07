@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: remote-headless-{{ $index }}
   namespace: {{ $.Release.Name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
