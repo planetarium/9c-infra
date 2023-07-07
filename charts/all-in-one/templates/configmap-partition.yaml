@@ -152,7 +152,7 @@ data:
     kill_headless
 
     rotate_log
-  upload_snapshot.sh: >-
+  upload_snapshot.sh: |-
     #!/usr/bin/env bash
     set -ex
 
