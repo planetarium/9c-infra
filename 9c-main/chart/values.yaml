@@ -127,7 +127,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-2f97969fbd5c79f2c42d33b31d004575a822a6e1"
+    tag: "3"
 
   # dotnet args
 
