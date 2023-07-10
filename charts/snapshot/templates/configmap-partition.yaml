@@ -84,7 +84,7 @@ data:
         exit 1
       fi
 
-      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
+      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
         sleep 60
       else
         senderr "grep failed. Failed to preload."
@@ -321,7 +321,7 @@ data:
         exit 1
       fi
 
-      if timeout 14400 tail -f "$HEADLESS_LOG" | grep -m1 "BlockCandidateProcess() finished appending blocks"; then
+      if timeout 14400 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
         sleep 60
       else
         senderr "grep failed. Failed to preload."
