@@ -37,7 +37,7 @@ spec:
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         {{- end }}
         volumeMounts:
-        - name: script-volume
+        - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
           readOnly: true
           subPath: download_snapshot.sh
@@ -195,7 +195,7 @@ spec:
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         {{- end }}
         volumeMounts:
-        - name: script-volume
+        - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
           readOnly: true
           subPath: download_snapshot.sh
@@ -380,7 +380,7 @@ spec:
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         {{- end }}
         volumeMounts:
-        - name: script-volume
+        - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
           readOnly: true
           subPath: download_snapshot.sh
@@ -527,10 +527,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: reset-snapshot-script
-      - name: script-volume
+      - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Release.Name }}-snapshot-script-partition
+          name: {{ $.Release.Name }}-download-snapshot-script
       - name: data-provider-script-volume
         configMap:
           defaultMode: 488
