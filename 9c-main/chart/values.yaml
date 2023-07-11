@@ -30,7 +30,7 @@ slackWebHookUrl: ""
 snapshot:
   resetSnapshot: false
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+  image: "planetariumhq/ninechronicles-snapshot:git-c3669931b652f49b8b38e111c0f2c51619e436d4"
 
   # aws information for uploading snapshot
   # Do not upload values below filled
