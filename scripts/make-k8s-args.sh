@@ -10,7 +10,12 @@ WORLD_BOSS_SERVICE=$6
 MARKET_SERVICE=$7
 MANUAL_ARGS=$8
 
-file_path="9c-infra/$DIR/chart/values.yaml"
+if [ "$DIR" == "9c-internal" ]; then
+    file_path="9c-infra/$DIR/9c-network/values.yaml"
+else
+    file_path="9c-infra/$DIR/chart/values.yaml"
+fi
+
 sources=""
 bump_apv=""
 
