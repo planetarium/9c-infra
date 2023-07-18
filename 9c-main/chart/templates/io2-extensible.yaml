@@ -1,0 +1,13 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Chart.Name }}-io2-extensible
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+parameters:
+  fsType: ext4
+  iopsPerGB: "10"
+  type: io2
+provisioner: ebs.csi.aws.com
+reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
+allowVolumeExpansion: true
