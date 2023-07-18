@@ -53,6 +53,7 @@ spec:
                     - 9c-main-rpc-2.nine-chronicles.com:80
                     - 9c-main-rpc-3.nine-chronicles.com:80
                     - 9c-main-rpc-4.nine-chronicles.com:80
+                    - 9c-main-rpc-5.nine-chronicles.com:80
                     - 9c-main-test-1.nine-chronicles.com:80
                     - 9c-main-test-2.nine-chronicles.com:80
                     - sgp-nc-1.ninodes.com:80
