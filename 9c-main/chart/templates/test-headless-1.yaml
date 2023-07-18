@@ -54,6 +54,7 @@ spec:
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.networkType }}
+        - --config=appsettings.configmap.json
         {{- with $.Values.testHeadless1.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -106,6 +107,8 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
         env:
         {{- if $.Values.testHeadless1.loggingEnabled }}
         - name: POD_NAME
@@ -148,6 +151,10 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

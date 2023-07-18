@@ -106,7 +106,7 @@ spec:
           subPath: readiness_probe.sh
         - mountPath: /app/logs
           name: json-log
-        - mountPath: /app/appsettings.local.json
+        - mountPath: /app/appsettings.configmap.json
           name: appsettings
         env:
         - name: POD_NAME

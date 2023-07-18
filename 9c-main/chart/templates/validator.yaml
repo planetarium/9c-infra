@@ -113,7 +113,7 @@ spec:
           subPath: readiness_probe.sh
         - mountPath: /app/logs
           name: json-log
-        - mountPath: /app/appsettings.local.json
+        - mountPath: /app/appsettings.configmap.json
           name: appsettings
       nodeSelector:
         node.kubernetes.io/instance-type: c7g.4xlarge

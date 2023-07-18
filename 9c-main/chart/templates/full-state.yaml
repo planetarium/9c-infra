@@ -86,7 +86,7 @@ spec:
         {{- if $.Values.fullState.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
-        - mountPath: /app/appsettings.local.json
+        - mountPath: /app/appsettings.configmap.json
           name: appsettings
         {{- end }}
         env:

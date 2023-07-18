@@ -94,7 +94,7 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
-        - mountPath: /app/appsettings.local.json
+        - mountPath: /app/appsettings.configmap.json
           name: appsettings
         env:
         {{- if $.Values.explorer.loggingEnabled }}
