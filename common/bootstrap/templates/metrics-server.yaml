@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: metrics-server
-    targetRevision: 6.2.12
+    targetRevision: 6.4.4
     helm:
       values: |-
         apiService:
