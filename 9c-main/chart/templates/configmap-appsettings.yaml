@@ -123,7 +123,7 @@ data:
                 }
             ],
             "QuotaExceededResponse": {
-                "Content": "\{\{ \"message\": \"Whoa! Calm down, cowboy!\", \"details\": \"Quota exceeded. Maximum allowed: {0} per {1}. Please try again in {2} second(s).\" \}\}",
+                "Content": "{{ "{{" }} \"message\": \"Whoa! Calm down, cowboy!\", \"details\": \"Quota exceeded. Maximum allowed: {0} per {1}. Please try again in {2} second(s).\" {{ "}}" }}",
                 "ContentType": "application/json",
                 "StatusCode": 429
             },

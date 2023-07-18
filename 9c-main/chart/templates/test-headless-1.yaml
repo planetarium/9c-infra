@@ -109,6 +109,7 @@ spec:
         {{- end }}
         - mountPath: /app/appsettings.configmap.json
           name: appsettings
+          subPath: appsettings.json
         env:
         {{- if $.Values.testHeadless1.loggingEnabled }}
         - name: POD_NAME
