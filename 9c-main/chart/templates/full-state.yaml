@@ -86,6 +86,8 @@ spec:
         {{- if $.Values.fullState.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
         {{- end }}
         env:
         {{- if $.Values.fullState.loggingEnabled }}
@@ -116,7 +118,11 @@ spec:
           path: /var/log/headless
           type: DirectoryOrCreate
         name: json-log
-        {{- end }}
+      {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
