@@ -102,6 +102,16 @@ spec:
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_fullState.json
         {{- end }}
+        - name: IpRateLimiting__EnableEndpointRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__2__Endpoint
+          value: "*:/graphql"
+        - name: IpRateLimiting__GeneralRules__2__Period
+          value: 1s
+        - name: IpRateLimiting__GeneralRules__2__Limit
+          value: "1"
+        - name: IpRateLimiting__IpBanMinute
+          value: "1"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
       dnsPolicy: ClusterFirst
