@@ -112,6 +112,10 @@ spec:
           value: "1"
         - name: IpRateLimiting__IpBanMinute
           value: "1"
+        - name: IpRateLimiting__IpWhiteList__1
+          value: "157.245.68.243"
+        - name: IpRateLimiting__IpWhiteList__2
+          value: "::1"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
       dnsPolicy: ClusterFirst
