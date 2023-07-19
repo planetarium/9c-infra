@@ -14,4 +14,4 @@ spec:
         - ../../9c-sample/9c-network/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-network
+    namespace: 9c-pluggable
