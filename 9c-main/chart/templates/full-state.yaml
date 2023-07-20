@@ -116,6 +116,8 @@ spec:
           value: "::ffff:157.245.68.243"
         - name: IpRateLimiting__IpWhiteList__2
           value: "::1"
+        - name: IpRateLimiting__IpWhiteList__3
+          value: "::ffff:172.70.127.155"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
       dnsPolicy: ClusterFirst
