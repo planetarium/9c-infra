@@ -88,7 +88,7 @@ spec:
           - name: IpRateLimiting__GeneralRules__2__Limit
             value: "1"
           - name: IpRateLimiting__IpBanMinute
-            value: "1"
+            value: "30"
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
           {{- with $.Values.validator.env }}
