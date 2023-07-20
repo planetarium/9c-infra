@@ -113,7 +113,7 @@ spec:
         - name: IpRateLimiting__IpBanMinute
           value: "1"
         - name: IpRateLimiting__IpWhiteList__1
-          value: "157.245.68.243"
+          value: "::ffff:157.245.68.243"
         - name: IpRateLimiting__IpWhiteList__2
           value: "::1"
       nodeSelector:
