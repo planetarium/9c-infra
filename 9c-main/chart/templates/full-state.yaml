@@ -104,7 +104,7 @@ spec:
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_fullState.json
         {{- end }}
         - name: IpRateLimiting__EnableEndpointRateLimiting
-          value: "true"
+          value: "false"
         - name: IpRateLimiting__GeneralRules__2__Endpoint
           value: "*:/graphql"
         - name: IpRateLimiting__GeneralRules__2__Period
@@ -122,7 +122,11 @@ spec:
         - name: IpRateLimiting__IpWhiteList__4
           value: "::ffff:3.18.248.125"
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
