@@ -110,9 +110,9 @@ spec:
         - name: IpRateLimiting__GeneralRules__2__Period
           value: 1s
         - name: IpRateLimiting__GeneralRules__2__Limit
-          value: "5"
+          value: "3"
         - name: IpRateLimiting__IpBanMinute
-          value: "1"
+          value: "10"
         - name: IpRateLimiting__IpWhiteList__1
           value: "::ffff:157.245.68.243"
         - name: IpRateLimiting__IpWhiteList__2
