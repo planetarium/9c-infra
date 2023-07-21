@@ -91,6 +91,8 @@ spec:
             value: "30"
           - name: IpRateLimiting__IpWhiteList__1
             value: "::ffff:3.18.248.125"
+          - name: IpRateLimiting__IpWhiteList__2
+            value: "::ffff:13.124.239.97"
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
           {{- with $.Values.validator.env }}
