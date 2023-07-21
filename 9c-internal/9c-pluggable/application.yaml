@@ -11,7 +11,7 @@ spec:
     path: charts/9c-network
     helm:
       valueFiles:
-        - ./values.yaml
+        - ../../9c-internal/9c-pluggable/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: 9c-pluggable
