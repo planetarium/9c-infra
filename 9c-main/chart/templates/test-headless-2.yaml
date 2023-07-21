@@ -118,9 +118,23 @@ spec:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-2.json
+        - name: IpRateLimiting__EnableEndpointRateLimiting
+          value: "true"
+        - name: IpRateLimiting__GeneralRules__0__Period
+          value: "60s"
+        - name: IpRateLimiting__GeneralRules__0__Limit
+          value: "12"
+        - name: IpRateLimiting__GeneralRules__1__Period
+          value: "60s"
+        - name: IpRateLimiting__GeneralRules__1__Limit
+          value: "12"
         {{- end }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

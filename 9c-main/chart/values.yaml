@@ -345,7 +345,7 @@ testHeadless1:
   extraArgs: []
   # - --key=val
 
-  useTurnServer: true
+  useTurnServer: false
 
   host: "9c-main-test-1.nine-chronicles.com"
 
@@ -380,7 +380,7 @@ testHeadless2:
   extraArgs: []
   # - --key=val
 
-  useTurnServer: true
+  useTurnServer: false
 
   host: "9c-main-test-2.nine-chronicles.com"
 
