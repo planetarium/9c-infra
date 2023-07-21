@@ -88,7 +88,7 @@ miner:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   # host domains if not using turn servers
   hosts: []
@@ -127,7 +127,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   # dotnet args
 
@@ -191,7 +191,7 @@ explorer:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   loggingEnabled: true
 
@@ -229,7 +229,7 @@ fullState:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   loggingEnabled: true
 
@@ -267,7 +267,7 @@ onboardingHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   # dotnet args
 
@@ -338,7 +338,7 @@ testHeadless1:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   loggingEnabled: true
 
@@ -373,7 +373,7 @@ testHeadless2:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   loggingEnabled: true
 
@@ -415,7 +415,7 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
@@ -466,7 +466,7 @@ remoteActionEvaluatorHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   loggingEnabled: true
 
@@ -500,7 +500,7 @@ lib9cStateService:
   image:
     repository: planetariumhq/lib9c-stateservice
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-67ab8a4a2f1b441301b9b9e82d520c3fff7b3246"
 
   ports:
     http: 5157
