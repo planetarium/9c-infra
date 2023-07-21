@@ -45,6 +45,7 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}
+        - --no-reduce-store
         {{- with $.Values.fullState.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
