@@ -111,7 +111,7 @@ spec:
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_explorer.json
         {{- end }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        node.kubernetes.io/instance-type: r7g.xlarge
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
