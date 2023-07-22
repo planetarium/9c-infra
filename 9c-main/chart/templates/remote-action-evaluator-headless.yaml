@@ -80,6 +80,7 @@ spec:
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
+        - --tx-quota-per-signer=1
         - --network-type={{ $.Values.networkType }}
         - --config=/bin/appsettings.json
         {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
