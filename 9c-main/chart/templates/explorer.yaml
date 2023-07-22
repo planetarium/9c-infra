@@ -42,6 +42,7 @@ spec:
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.explorer.ports.graphql }}
         - --tx-life-time=10
+        - --tx-quota-per-signer=1
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}

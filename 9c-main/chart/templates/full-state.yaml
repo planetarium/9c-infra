@@ -46,6 +46,7 @@ spec:
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}
         - --no-reduce-store
+        - --tx-quota-per-signer=1
         {{- with $.Values.fullState.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
