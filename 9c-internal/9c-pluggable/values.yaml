@@ -82,10 +82,10 @@ validator:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
   hosts:
-  - "9c-pluggable-validator-1.planetarium.dev"
-  - "9c-pluggable-validator-2.planetarium.dev"
-  - "9c-pluggable-validator-3.planetarium.dev"
-  - "9c-pluggable-validator-4.planetarium.dev"
+  - "validator-1.9c-pluggable.svc.cluster.local"
+  - "validator-2.9c-pluggable.svc.cluster.local"
+  - "validator-3.9c-pluggable.svc.cluster.local"
+  - "validator-4.9c-pluggable.svc.cluster.local"
 
   # private keys if not using External Secrets
   privateKeys:
