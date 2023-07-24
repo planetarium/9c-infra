@@ -44,14 +44,14 @@ spec:
                 scrape_timeout: 6s
                 static_configs:
                   - targets:
-                    - 9c-main-validator-1.nine-chronicles.com:80
-                    - 9c-main-validator-2.nine-chronicles.com:80
-                    - 9c-main-validator-3.nine-chronicles.com:80
-                    - 9c-main-validator-4.nine-chronicles.com:80
+                    - 9c-internal-validator-1.nine-chronicles.com:80
+                    - 9c-internal-validator-2.nine-chronicles.com:80
+                    - 9c-internal-validator-3.nine-chronicles.com:80
+                    - 9c-internal-validator-4.nine-chronicles.com:80
                     labels:
                       group: validator
                   - targets:
-                    - 9c-main-rpc-1.nine-chronicles.com:80
+                    - 9c-internal-rpc-1.nine-chronicles.com:80
                     labels:
                       group: rpc
                 tls_config:
