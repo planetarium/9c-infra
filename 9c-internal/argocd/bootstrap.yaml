@@ -34,6 +34,28 @@ spec:
         clusterName: 9c-internal-v2
         argocdPath: 9c-internal
         accountId: "319679068466"
+        prometheus:
+          server:
+            nodeGroup: 9c-internal-r6g_xl_2c
+            extraScrapeConfigs:
+              - job_name: scrape-headlesses
+                metrics_path: /metrics
+                scrape_interval: 8s
+                scrape_timeout: 6s
+                static_configs:
+                  - targets:
+                    - 9c-main-validator-1.nine-chronicles.com:80
+                    - 9c-main-validator-2.nine-chronicles.com:80
+                    - 9c-main-validator-3.nine-chronicles.com:80
+                    - 9c-main-validator-4.nine-chronicles.com:80
+                    labels:
+                      group: validator
+                  - targets:
+                    - 9c-main-rpc-1.nine-chronicles.com:80
+                    labels:
+                      group: rpc
+                tls_config:
+                  insecure_skip_verify: true
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
