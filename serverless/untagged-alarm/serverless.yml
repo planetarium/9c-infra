@@ -1,0 +1,26 @@
+service: untagged-alarm
+
+frameworkVersion: '3'
+
+
+provider:
+  name: aws
+  region: us-east-2
+  runtime: python3.9
+  iam:
+    role:
+      name: lambda-untagged-alarm
+      managedPolicies:
+        - arn:aws:iam::aws:policy/ResourceGroupsandTagEditorReadOnlyAccess
+      tags:
+        Name: UntaggedAlarm
+        Team: devops
+        Owner: jihyung
+        Environment: development
+
+functions:
+  rateHandler:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every minute
+      - schedule: rate(1 minute)
