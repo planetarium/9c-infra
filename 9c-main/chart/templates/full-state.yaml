@@ -41,7 +41,11 @@ spec:
         - --graphql-server
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.fullState.ports.graphql }}
-        - --tx-life-time=30
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.fullState.ports.rpc }}
+        - --tx-life-time=10
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.networkType }}
@@ -62,6 +66,9 @@ spec:
         - containerPort: {{ $.Values.fullState.ports.headless }}
           name: headless
           protocol: TCP
+        - containerPort: {{ $.Values.fullState.ports.rpc }}
+          name: rpc
+          protocol: TCP
         livenessProbe:
           exec:
             command:
@@ -70,6 +77,13 @@ spec:
           initialDelaySeconds: 1800
           periodSeconds: 30
           timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
         resources:
           {{- toYaml $.Values.fullState.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
@@ -107,25 +121,21 @@ spec:
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
-          value: "60s"
+          value: 60s
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "12"
         - name: IpRateLimiting__GeneralRules__1__Period
-          value: "60s"
+          value: 60s
         - name: IpRateLimiting__GeneralRules__1__Limit
-          value: "12"
-        - name: IpRateLimiting__IpBanThresholdCount
-          value: "10"
-        - name: IpRateLimiting__IpBanMinute
-          value: "60"
+          value: "120"
         - name: IpRateLimiting__IpWhiteList__1
-          value: "::ffff:157.245.68.243"
+          value: ::ffff:157.245.68.243
         - name: IpRateLimiting__IpWhiteList__2
-          value: "::1"
+          value: ::1
         - name: IpRateLimiting__IpWhiteList__3
-          value: "::ffff:172.70.126.138"
+          value: ::ffff:172.70.126.138
         - name: IpRateLimiting__IpWhiteList__4
-          value: "::ffff:3.18.248.125"
+          value: ::ffff:3.18.248.125
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
       {{- with $.Values.remoteHeadless.tolerations }}

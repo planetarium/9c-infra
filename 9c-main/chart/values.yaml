@@ -247,6 +247,7 @@ fullState:
   ports:
     headless: 31234
     graphql: 80
+    rpc: 31238
 
   storage:
     data: 1000Gi
