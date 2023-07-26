@@ -121,21 +121,21 @@ spec:
         - name: IpRateLimiting__EnableEndpointRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Period
-          value: 60s
+          value: "60s"
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "12"
         - name: IpRateLimiting__GeneralRules__1__Period
-          value: 60s
+          value: "60s"
         - name: IpRateLimiting__GeneralRules__1__Limit
           value: "120"
         - name: IpRateLimiting__IpWhiteList__1
-          value: ::ffff:157.245.68.243
+          value: "::ffff:157.245.68.243"
         - name: IpRateLimiting__IpWhiteList__2
-          value: ::1
+          value: "::1"
         - name: IpRateLimiting__IpWhiteList__3
-          value: ::ffff:172.70.126.138
+          value: "::ffff:172.70.126.138"
         - name: IpRateLimiting__IpWhiteList__4
-          value: ::ffff:3.18.248.125
+          value: "::ffff:3.18.248.125"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
       {{- with $.Values.remoteHeadless.tolerations }}
