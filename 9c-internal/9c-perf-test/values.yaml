@@ -45,7 +45,7 @@ seed:
   - ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-perf-test-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 remoteHeadless:
   count: 1
@@ -68,7 +68,7 @@ remoteHeadless:
       memory: 16Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-perf-test-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
 
 validator:
   count: 4
@@ -100,4 +100,4 @@ validator:
       memory: 20Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-perf-test-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
