@@ -17,7 +17,7 @@ global:
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
-  resetSnapshot: false
+  resetSnapshot: true
   
   useExternalSecret: true
   networkType: Default
