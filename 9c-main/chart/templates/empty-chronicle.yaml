@@ -55,11 +55,11 @@ spec:
           volumeMounts:
           - name: empty-chronicle-data
             mountPath: /store
-        volumes:
-        - name: download-snapshot-script
-          configMap:
-            defaultMode: 0700
-            name: {{ $.Chart.Name }}-download-snapshot-script
+      volumes:
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
       {{- with .Values.emptyChronicle.tolerations }}
