@@ -165,6 +165,29 @@ remoteHeadless:
     effect: "NoSchedule"
   affinity: {}
 
+emptyChronicle:
+  image:
+    repository: planetariumhq/emptychronicle
+    pullPolicy: Always
+    tag: "git-c2ae4a3e3558e60428572e99f96b9563db391150"
+  
+  ports:
+    port: 80
+  
+  resources:
+    requests:
+      cpu: 2
+      memory: 8Gi
+ 
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "empty-chronicle-test"
+    effect: "NoSchedule"
+
+  storage:
+    data: 1000Gi
+
 dataProvider:
   enabled: true
   render: true
