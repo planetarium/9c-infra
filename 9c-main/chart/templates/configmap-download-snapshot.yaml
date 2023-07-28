@@ -27,6 +27,7 @@ data:
     service_name=$4
     SLACK_WEBHOOK=$5
     complete_snapshot_reset=${6:-"false"}
+    mainnet_snapshot_json_filename="latest.json"
 
     if [ $download_option = "true" ]
     then
@@ -49,7 +50,6 @@ data:
 
       function download_unzip_partial_snapshot() {
         snapshot_json_filename="latest.json"
-        mainnet_snapshot_json_filename="mainnet_latest.json"
         snapshot_zip_filename="state_latest.zip"
         snapshot_zip_filename_array=("$snapshot_zip_filename")
         mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
@@ -105,7 +105,6 @@ data:
 
       function download_unzip_full_snapshot() {
           snapshot_json_filename="latest.json"
-          mainnet_snapshot_json_filename="mainnet_latest.json"
           snapshot_zip_filename="state_latest.zip"
           snapshot_zip_filename_array=("$snapshot_zip_filename")
 
