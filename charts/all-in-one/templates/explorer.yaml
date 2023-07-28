@@ -36,7 +36,7 @@ spec:
             - /bin/download_snapshot.sh
           env:
             - name: RESET_SNAPSHOT_OPTION
-              value: 'true'
+              value: "{{ $.Values.global.resetSnapshot }}"
             - name: SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
