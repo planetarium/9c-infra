@@ -166,6 +166,8 @@ remoteHeadless:
   affinity: {}
 
 emptyChronicle:
+  enabled: true
+
   image:
     repository: planetariumhq/emptychronicle
     pullPolicy: Always
