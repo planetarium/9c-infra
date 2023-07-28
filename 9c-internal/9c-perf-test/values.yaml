@@ -39,7 +39,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "9c-pluggable-tcp-seed-1.planetarium.dev"
+  - "9c-perf-test-tcp-seed-1.planetarium.dev"
 
   privateKeys:
   - ""
