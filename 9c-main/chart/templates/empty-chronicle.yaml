@@ -10,6 +10,7 @@ spec:
   selector:
     matchLabels:
       app: empty-chronicle
+  serviceName: empty-chronicle
   template:
     metadata:
       labels:
