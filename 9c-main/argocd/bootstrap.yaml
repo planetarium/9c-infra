@@ -64,7 +64,7 @@ spec:
                     labels:
                       group: rpc
                   - targets:
-                    - 9c-main-full-state.planetarium.dev:80
+                    - 9c-main-full-state.nine-chronicles.com:80
                     labels:
                       group: full-state
                   - targets:
