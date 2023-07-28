@@ -44,7 +44,7 @@ spec:
                 name: slack
                 key: slack-webhook-url
       containers:
-        - name: {{ .Chart.Name }}
+        - name: empty-chronicle
           image: "{{ .Values.emptyChronicle.image.repository }}:{{ .Values.emptyChronicle.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
