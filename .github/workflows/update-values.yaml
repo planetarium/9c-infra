@@ -15,6 +15,8 @@ on:
         description: 'Source for headless to change (e.g. tag 1, branch release/3)'
       dataprovider:
         description: 'Same, for DP'
+      lib9c-stateservice:
+        description: 'Same, for lib9c-stateservice'
       seed:
         description: 'Same, for seed'
       world-boss-service:
@@ -38,7 +40,7 @@ jobs:
       - name: make-args
         id: make-args
         run: |
-          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.bump-apv }}" "${{ github.event.inputs.dir }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.dataprovider }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.manual-args }}"
+          bash ./scripts/make-k8s-args.sh "${{ github.event.inputs.bump-apv }}" "${{ github.event.inputs.dir }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.lib9c-stateservice }}" "${{ github.event.inputs.dataprovider }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.manual-args }}"
 
       - name: Update values
         uses: planetarium/9c-toolbelt@main
