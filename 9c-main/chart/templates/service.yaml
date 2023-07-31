@@ -405,3 +405,28 @@ spec:
 
 ---
 {{ end }}
+
+{{ if .Values.emptyChronicle.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: empty-chronicle
+  namespace: {{ $.Chart.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: http
+    port: 80
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  selector:
+    app: empty-chronicle
+  type: LoadBalancer
+
+---
+{{ end }}
