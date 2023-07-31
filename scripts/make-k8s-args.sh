@@ -4,11 +4,12 @@ set -ex
 BUMP_APV=$1
 DIR=$2
 HEADLESS=$3
-DATAPROVIDER=$4
-SEED=$5
-WORLD_BOSS_SERVICE=$6
-MARKET_SERVICE=$7
-MANUAL_ARGS=$8
+LIB9C_STATESERVICE=$4
+DATAPROVIDER=$5
+SEED=$6
+WORLD_BOSS_SERVICE=$7
+MARKET_SERVICE=$8
+MANUAL_ARGS=$9
 
 if [ "$DIR" == "9c-internal" ]; then
     file_path="9c-infra/$DIR/9c-network/values.yaml"
@@ -24,7 +25,10 @@ if [ "$MANUAL_ARGS" ]; then
 else
     if [ "$HEADLESS" ]; then
         sources="ninechronicles-headless/from $HEADLESS|$sources"
-        sources="lib9c-stateservice/from $HEADLESS|$sources"
+    fi
+
+    if [ "$LIB9C_STATESERVICE" ]; then
+        sources="lib9c-stateservice/from $LIB9C_STATESERVICE|$sources"
     fi
 
     if [ "$DATAPROVIDER" ]; then
