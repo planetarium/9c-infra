@@ -71,6 +71,6 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: (( $.Values.emptyChronicle.storage.data ))
+            storage: {{ $.Values.emptyChronicle.storage.data }}
         storageClassName: {{ $.Chart.Name }}-gp3
         volumeMode: Filesystem
