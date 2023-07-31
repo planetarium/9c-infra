@@ -181,12 +181,6 @@ emptyChronicle:
       cpu: 2
       memory: 8Gi
  
-  tolerations:
-  - key: "dedicated"
-    operator: "Equal"
-    value: "empty-chronicle-test"
-    effect: "NoSchedule"
-
   storage:
     data: 1000Gi
 

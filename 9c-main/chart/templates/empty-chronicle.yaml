@@ -63,10 +63,6 @@ spec:
           name: {{ $.Chart.Name }}-download-snapshot-script
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
-      {{- with .Values.emptyChronicle.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       volumeClaimTemplates:
       - metadata:
           name: empty-chronicle-data
