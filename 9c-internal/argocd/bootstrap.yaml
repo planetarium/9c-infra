@@ -48,15 +48,15 @@ spec:
                     - 9c-internal-validator-2.nine-chronicles.com:80
                     - 9c-internal-validator-3.nine-chronicles.com:80
                     - 9c-internal-validator-4.nine-chronicles.com:80
-                    - 9c-perf-test-validator-1.nine-chronicles.com:80
-                    - 9c-perf-test-validator-2.nine-chronicles.com:80
-                    - 9c-perf-test-validator-3.nine-chronicles.com:80
-                    - 9c-perf-test-validator-4.nine-chronicles.com:80
+                    - 9c-perf-test-validator-1.planetarium.dev:80
+                    - 9c-perf-test-validator-2.planetarium.dev:80
+                    - 9c-perf-test-validator-3.planetarium.dev:80
+                    - 9c-perf-test-validator-4.planetarium.dev:80
                     labels:
                       group: validator
                   - targets:
                     - 9c-internal-rpc-1.nine-chronicles.com:80
-                    - 9c-perf-test-rpc-1.nine-chronicles.com:80
+                    - 9c-perf-test-rpc-1.planetarium.dev:80
                     labels:
                       group: rpc
                 tls_config:
