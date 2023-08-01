@@ -174,7 +174,7 @@ emptyChronicle:
     tag: "git-c2ae4a3e3558e60428572e99f96b9563db391150"
   
   ports:
-    port: 80
+    port: 5050
   
   resources:
     requests:
