@@ -59,6 +59,9 @@ remoteHeadless:
   hosts:
   - "9c-perf-test-rpc-1.planetarium.dev"
 
+  extraArgs:
+  - "--tx-life-time=1000000"
+
   storage:
     data: 1000Gi
 
@@ -86,6 +89,9 @@ validator:
   - "9c-perf-test-validator-2.planetarium.dev"
   - "9c-perf-test-validator-3.planetarium.dev"
   - "9c-perf-test-validator-4.planetarium.dev"
+
+  extraArgs:
+  - "--tx-life-time=1000000"
 
   # private keys if not using External Secrets
   privateKeys:
