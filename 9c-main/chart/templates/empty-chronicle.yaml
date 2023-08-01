@@ -61,8 +61,6 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Chart.Name }}-download-snapshot-script
-      nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
   volumeClaimTemplates:
     - metadata:
         name: empty-chronicle-data
