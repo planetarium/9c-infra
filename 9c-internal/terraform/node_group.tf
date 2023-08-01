@@ -27,15 +27,15 @@ resource "aws_eks_node_group" "node_groups" {
 }
 
 # EKS can't directly set the "Name" tag, so we use the autoscaling_group_tag resource.
-resource "aws_autoscaling_group_tag" "node_groups" {
-
-  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
-
-  autoscaling_group_name = each.value
-
-  tag {
-    key   = "Name"
-    value = each.value
-    propagate_at_launch = true
-  }
-}
+# resource "aws_autoscaling_group_tag" "node_groups" {
+# 
+#   for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
+# 
+#   autoscaling_group_name = each.value
+# 
+#   tag {
+#     key   = "Name"
+#     value = each.value
+#     propagate_at_launch = true
+#   }
+# }
