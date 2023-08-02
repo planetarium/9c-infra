@@ -13,6 +13,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 spec:
   externalTrafficPolicy: Local
@@ -48,6 +49,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 spec:
   externalTrafficPolicy: Local
@@ -86,6 +88,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 spec:
   ports:

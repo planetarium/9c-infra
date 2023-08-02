@@ -133,13 +133,10 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- with $.Values.remoteHeadless.env }}
         env:
-        - name: IpRateLimiting__EnableEndpointRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Period
-          value: "5s"
-        - name: IpRateLimiting__GeneralRules__1__Period
-          value: "5s"
+          {{- toYaml $.Values.remoteHeadless.env | nindent 10 }}
+        {{- end }}
       {{- with $.Values.remoteHeadless.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

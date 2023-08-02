@@ -8,7 +8,7 @@ logLevel: "debug"
 
 global:
   image:
-    tag: "git-322a3c6a6cc2c54be1d06e80f8a6439dd76f93f4"
+    tag: "test-200tx-2"
 
   appProtocolVersion: "200040/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCICx20hKZH0vOgd5L.uPS.m8IB3AL.gaqajch.tidbjpFAiASY9xDsXU3vmGUJdhgNdhfb3imBENuYUXRBqTz46IfLA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA3LTIwZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -61,6 +61,15 @@ remoteHeadless:
 
   extraArgs:
   - "--tx-life-time=1000000"
+  - "--block-interval=4500"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "5s"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "5s"
 
   storage:
     data: 1000Gi
@@ -92,6 +101,7 @@ validator:
 
   extraArgs:
   - "--tx-life-time=1000000"
+  - "--block-interval=4500"
 
   # private keys if not using External Secrets
   privateKeys:
