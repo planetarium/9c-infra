@@ -61,7 +61,6 @@ remoteHeadless:
 
   extraArgs:
   - "--tx-life-time=1000000"
-  - "--block-interval=4500"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -101,7 +100,7 @@ validator:
 
   extraArgs:
   - "--tx-life-time=1000000"
-  - "--block-interval=4500"
+  - "--consensus-target-block-interval=4500"
 
   # private keys if not using External Secrets
   privateKeys:
