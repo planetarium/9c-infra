@@ -171,7 +171,7 @@ emptyChronicle:
   image:
     repository: planetariumhq/emptychronicle
     pullPolicy: Always
-    tag: "git-0d3f629781b06e35ff2711b915aeb57e8b81b6ef"
+    tag: "git-ee41ed18aa8cbe044d03d7a4bdb58fed59ec7328"
   
   ports:
     port: 5050
