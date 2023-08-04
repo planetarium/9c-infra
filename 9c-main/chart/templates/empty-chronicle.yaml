@@ -20,7 +20,7 @@ spec:
       initContainers:
         - args:
           - https://snapshots.nine-chronicles.com/main/partition
-          - /store
+          - /data
           - $(RESET_SNAPSHOT_OPTION)
           - empty-chronicle
           - $(SLACK_WEBHOOK_URL)
@@ -33,7 +33,7 @@ spec:
             mountPath: /bin/download_snapshot.sh
             readOnly: true
             subPath: download_snapshot.sh
-          - mountPath: /store
+          - mountPath: /data
             name: empty-chronicle-data
           env:
           - name: RESET_SNAPSHOT_OPTION
@@ -55,7 +55,7 @@ spec:
             {{- toYaml .Values.emptyChronicle.resources | nindent 12 }}
           volumeMounts:
           - name: empty-chronicle-data
-            mountPath: /store
+            mountPath: /data
       volumes:
       - name: download-snapshot-script
         configMap:
