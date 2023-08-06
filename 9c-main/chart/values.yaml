@@ -264,7 +264,7 @@ fullState:
 
   useTurnServer: false
 
-  hosts: "9c-main-full-state.nine-chronicles.com"
+  host: "9c-main-full-state.nine-chronicles.com"
 
   ports:
     headless: 31234
