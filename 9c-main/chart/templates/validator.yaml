@@ -62,7 +62,7 @@ spec:
         - --network-type={{ $.Values.networkType }}
         - --tx-life-time=10
         - --tx-quota-per-signer=1
-        - --consensus-target-block-interval=4500
+        - --consensus-target-block-interval=6500
         command:
           - dotnet
         env:

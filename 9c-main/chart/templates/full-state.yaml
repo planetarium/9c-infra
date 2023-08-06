@@ -34,6 +34,8 @@ spec:
         {{- if $.Values.fullState.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
+        {{- else }}
+        - --host={{ $.Values.fullState.host }}
         {{- end }}
         {{- range $.Values.peerStrings }}
         - --peer={{ . }}
@@ -119,7 +121,7 @@ spec:
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_fullState.json
         {{- end }}
         - name: IpRateLimiting__EnableEndpointRateLimiting
-          value: "true"
+          value: "false"
         - name: IpRateLimiting__GeneralRules__0__Period
           value: "60s"
         - name: IpRateLimiting__GeneralRules__0__Limit
