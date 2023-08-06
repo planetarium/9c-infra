@@ -270,7 +270,7 @@ fullState:
     headless: 31234
     graphql: 80
     rpc: 31238
-s
+
   storage:
     data: 1000Gi
 
