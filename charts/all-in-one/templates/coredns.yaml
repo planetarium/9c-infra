@@ -17,11 +17,17 @@ data:
         rewrite name 9c-main-rpc-3.nine-chronicles.com remote-headless-3.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-4.nine-chronicles.com remote-headless-4.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-5.nine-chronicles.com remote-headless-5.9c-network.svc.cluster.local
+        rewrite name 9c-main-rpc-6.nine-chronicles.com remote-headless-6.9c-network.svc.cluster.local
+        rewrite name 9c-main-rpc-7.nine-chronicles.com remote-headless-7.9c-network.svc.cluster.local
+        rewrite name 9c-main-rpc-8.nine-chronicles.com remote-headless-8.9c-network.svc.cluster.local
+        rewrite name 9c-main-rpc-9.nine-chronicles.com remote-headless-9.9c-network.svc.cluster.local
+        rewrite name 9c-main-rpc-10.nine-chronicles.com remote-headless-10.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-1.nine-chronicles.com validator-1.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-2.nine-chronicles.com validator-2.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-3.nine-chronicles.com validator-3.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-4.nine-chronicles.com validator-4.9c-network.svc.cluster.local
         rewrite name 9c-main-test-1.nine-chronicles.com test-headless-1.9c-network.svc.cluster.local
+        rewrite name 9c-main-test-1.nine-chronicles.com test-headless-2.9c-network.svc.cluster.local
         {{- end }}
         prometheus :9153
         forward . /etc/resolv.conf
