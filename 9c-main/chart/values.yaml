@@ -127,7 +127,7 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "10"
+    tag: "git-bab771d3e62f2ae30389280bae0efd3ea093759a"
 
   # dotnet args
 
@@ -262,11 +262,9 @@ fullState:
   extraArgs: []
   # - --key=val
 
-  useTurnServer: true
+  useTurnServer: false
 
-  hosts: []
-  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
-  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+  host: "9c-main-full-state.nine-chronicles.com"
 
   ports:
     headless: 31234

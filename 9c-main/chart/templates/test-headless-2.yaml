@@ -131,11 +131,7 @@ spec:
           value: "12"
         {{- end }}
       nodeSelector:
-        eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
-      {{- with $.Values.remoteHeadless.tolerations }}
-      tolerations:
-        {{- toYaml $.Values.remoteHeadless.tolerations | nindent 8 }}
-      {{- end }}
+        eks.amazonaws.com/nodegroup: 9c-main-r6g_xl_2c
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
