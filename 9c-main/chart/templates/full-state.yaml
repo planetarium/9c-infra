@@ -34,6 +34,7 @@ spec:
         {{- if $.Values.fullState.useTurnServer }}
         {{- range $.Values.iceServers }}
         - --ice-server={{ . }}
+        {{- end }}
         {{- else }}
         - --host={{ $.Values.fullState.host }}
         {{- end }}
