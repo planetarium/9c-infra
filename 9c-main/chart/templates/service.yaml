@@ -160,6 +160,12 @@ spec:
   - name: headless
     port: {{ $.Values.fullState.ports.headless }}
     targetPort: {{ $.Values.fullState.ports.headless }}
+  - name: rpc
+    port: {{ $.Values.fullState.ports.rpc }}
+    targetPort: {{ $.Values.fullState.ports.rpc }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.fullState.ports.graphql }}
   selector:
     app: main-full-state
   type: LoadBalancer
