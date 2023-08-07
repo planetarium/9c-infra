@@ -37,7 +37,7 @@ resource "aws_eks_node_group" "node_groups" {
 }
 
 # EKS can't directly set the "Name" tag, so we use the autoscaling_group_tag resource.
-resource "aws_autoscaling_group_tag" "node_groups" {
+resource "aws_autoscaling_group_tag" "node_name_tag" {
 
   for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
 
@@ -46,6 +46,58 @@ resource "aws_autoscaling_group_tag" "node_groups" {
   tag {
     key   = "Name"
     value = each.value
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group_tag" "node_service_tag" {
+
+  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
+
+  autoscaling_group_name = each.value
+
+  tag {
+    key   = "Service"
+	value = aws_eks_cluster.cluster.name
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group_tag" "node_environment_tag" {
+
+  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
+
+  autoscaling_group_name = each.value
+
+  tag {
+    key   = "Environment"
+	value = "production"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group_tag" "node_owner_tag" {
+
+  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
+
+  autoscaling_group_name = each.value
+
+  tag {
+    key   = "Owner"
+	value = "jihyung"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group_tag" "node_team_tag" {
+
+  for_each = toset([for node in aws_eks_node_group.node_groups : node.resources[0].autoscaling_groups[0].name])
+
+  autoscaling_group_name = each.value
+
+  tag {
+    key   = "Team"
+	value = "game"
     propagate_at_launch = true
   }
 }
