@@ -47,6 +47,9 @@ spec:
         - name: empty-chronicle
           image: "{{ .Values.emptyChronicle.image.repository }}:{{ .Values.emptyChronicle.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
+          env:
+            - name: PN_AppProtocolVersionToken
+              value: {{ $.Values.appProtocolVersion }}
           ports:
             - name: http
               containerPort: {{ .Values.emptyChronicle.ports.port }}
