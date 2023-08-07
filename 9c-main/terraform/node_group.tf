@@ -44,8 +44,8 @@ resource "aws_autoscaling_group_tag" "node_name_tag" {
   autoscaling_group_name = each.value
 
   tag {
-    key   = "Name"
-    value = each.value
+    key                 = "Name"
+    value               = each.value
     propagate_at_launch = true
   }
 }
@@ -57,8 +57,8 @@ resource "aws_autoscaling_group_tag" "node_service_tag" {
   autoscaling_group_name = each.value
 
   tag {
-    key   = "Service"
-	value = aws_eks_cluster.cluster.name
+    key                 = "Service"
+    value               = aws_eks_cluster.cluster.name
     propagate_at_launch = true
   }
 }
@@ -70,8 +70,8 @@ resource "aws_autoscaling_group_tag" "node_environment_tag" {
   autoscaling_group_name = each.value
 
   tag {
-    key   = "Environment"
-	value = "production"
+    key                 = "Environment"
+    value               = "production"
     propagate_at_launch = true
   }
 }
@@ -83,8 +83,8 @@ resource "aws_autoscaling_group_tag" "node_owner_tag" {
   autoscaling_group_name = each.value
 
   tag {
-    key   = "Owner"
-	value = "jihyung"
+    key                 = "Owner"
+    value               = "jihyung"
     propagate_at_launch = true
   }
 }
@@ -96,8 +96,8 @@ resource "aws_autoscaling_group_tag" "node_team_tag" {
   autoscaling_group_name = each.value
 
   tag {
-    key   = "Team"
-	value = "game"
+    key                 = "Team"
+    value               = "game"
     propagate_at_launch = true
   }
 }
