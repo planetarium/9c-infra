@@ -483,12 +483,12 @@ validator:
   affinity: {}
 
 remoteActionEvaluatorHeadless:
-  enabled: false
+  enabled: true
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "20"
+    tag: "git-464d506caba9ab17e52d2fc84abafeeee35fd51e"
 
   loggingEnabled: true
 
