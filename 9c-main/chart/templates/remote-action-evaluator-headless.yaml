@@ -136,6 +136,8 @@ spec:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-action-evaluator-headless.json
+        - name: JSON_AEV_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-action-evaluator-aev.json
         {{- end }}
         - name: IpRateLimiting__EnableRateLimiting
           value: "true"
@@ -351,6 +353,16 @@ data:
               },
               "range": {
                 "start": 7512001,
+                "end": 7520000,
+              }
+            },
+            {
+              "actionEvaluator": {
+                "type": "RemoteActionEvaluator",
+                "stateServiceEndpoint": "http://localhost:11112/evaluation"
+              },
+              "range": {
+                "start": 7520001,
                 "end": 9223372036854775807
               }
             }
@@ -365,6 +377,10 @@ data:
             {
               "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/170da2660770f6dec9911ba174618a8c5b154dca/linux-x64.zip",
               "port": 11111
+            },
+            {
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/1a2887911c7ba4492fa9eb99564a58f0f461a42b/linux-x64.zip",
+              "port": 11112
             }
           ],
           "StateServicesDownloadPath": "/tmp/lib9c-stateservices",
