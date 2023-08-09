@@ -371,15 +371,15 @@ data:
         "StateServiceManagerService": {
           "StateServices": [
             {
-              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/279166ddf7ae05967d8887a20179816712632d39/linux-x64.zip",
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/279166ddf7ae05967d8887a20179816712632d39/linux-arm64.zip",
               "port": 11110
             },
             {
-              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/170da2660770f6dec9911ba174618a8c5b154dca/linux-x64.zip",
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/170da2660770f6dec9911ba174618a8c5b154dca/linux-arm64.zip",
               "port": 11111
             },
             {
-              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/1a2887911c7ba4492fa9eb99564a58f0f461a42b/linux-x64.zip",
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/1a2887911c7ba4492fa9eb99564a58f0f461a42b/linux-arm64.zip",
               "port": 11112
             }
           ],
