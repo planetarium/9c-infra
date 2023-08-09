@@ -82,7 +82,6 @@ spec:
         - --tx-life-time=10
         - --tx-quota-per-signer=1
         - --network-type={{ $.Values.networkType }}
-        - --config=/bin/appsettings.json
         {{- with $.Values.remoteActionEvaluatorHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
