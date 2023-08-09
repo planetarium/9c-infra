@@ -60,7 +60,7 @@ remoteHeadless:
   - "9c-perf-test-rpc-1.planetarium.dev"
 
   extraArgs:
-  - "--tx-life-time=1000000"
+  - "--tx-life-time=2000000"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -99,7 +99,7 @@ validator:
   - "9c-perf-test-validator-4.planetarium.dev"
 
   extraArgs:
-  - "--tx-life-time=1000000"
+  - "--tx-life-time=2000000"
   - "--consensus-target-block-interval=4500"
 
   # private keys if not using External Secrets
