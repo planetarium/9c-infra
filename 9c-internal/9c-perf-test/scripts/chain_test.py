@@ -38,7 +38,7 @@ blocks = explorer_data['chainQuery']['blockQuery']['blocks']
 # send signed txs to internal miner
 async def send_tx(session, transactions):
     for transaction in transactions:
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(1)
         signed_tx = transaction['serializedPayload']
         query = f'mutation{{stageTxV2(payload: "{signed_tx}")}}'
         async with session.post("http://9c-perf-test-rpc-1.planetarium.dev/graphql", data=dict(query=query)) as response:
