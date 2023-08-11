@@ -360,7 +360,7 @@ testHeadless1:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "20"
+    tag: "git-13e6d0e94d91957d1776415ad411d2dc935c4925"
 
   loggingEnabled: true
 
