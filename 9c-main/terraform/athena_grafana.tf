@@ -8,14 +8,12 @@ resource "aws_iam_role" "athena_grafana_assumerole" {
             "Sid": "AssumeFromEKSNode",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "*",
+                "AWS": "*"
             },
-            "Action": "sts:AssumeRole"
+            "Action": "sts:AssumeRole",
             "Condition" : {
-                "ForAnyValue:StringLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:sts::319679068466:assumed-role/eks-9c-main-v2-node-role/*"
-                    ]
+                "StringLike": {
+                    "aws:PrincipalArn": "arn:aws:sts::319679068466:*"
                 } 
             }
         }
@@ -29,62 +27,64 @@ resource "aws_iam_policy" "athena_grafana" {
   name   = "eks-${var.name}-athena-grafana-policy"
   policy = <<-EOF
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AthenaQueryAccess",
-      "Effect": "Allow",
-      "Action": [
-        "athena:ListDatabases",
-        "athena:ListDataCatalogs",
-        "athena:ListWorkGroups",
-        "athena:GetDatabase",
-        "athena:GetDataCatalog",
-        "athena:GetQueryExecution",
-        "athena:GetQueryResults",
-        "athena:GetTableMetadata",
-        "athena:GetWorkGroup",
-        "athena:ListTableMetadata",
-        "athena:StartQueryExecution",
-        "athena:StopQueryExecution"
-      ],
-      "Resource": ["*"]
-    },
-    {
-      "Sid": "GlueReadAccess",
-      "Effect": "Allow",
-      "Action": [
-        "glue:GetDatabase",
-        "glue:GetDatabases",
-        "glue:GetTable",
-        "glue:GetTables",
-        "glue:GetPartition",
-        "glue:GetPartitions",
-        "glue:BatchGetPartition"
-      ],
-      "Resource": ["*"]
-    },
-    {
-      "Sid": "AthenaS3Access",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetBucketLocation",
-        "s3:GetObject",
-        "s3:ListBucket",
-        "s3:ListBucketMultipartUploads",
-        "s3:ListMultipartUploadParts",
-        "s3:AbortMultipartUpload",
-        "s3:PutObject"
-      ],
-      "Resource": ["arn:aws:s3:::9c-athena-result"]
-    },
-    {
-      "Sid": "AthenaExamplesS3Access",
-      "Effect": "Allow",
-      "Action": ["s3:GetObject", "s3:ListBucket"],
-      "Resource": ["arn:aws:s3:::9c-athena-result"]
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "athena:GetTableMetadata",
+                "athena:StartQueryExecution",
+                "athena:ListDataCatalogs",
+                "glue:GetTables",
+                "glue:GetPartitions",
+                "athena:GetQueryResults",
+                "glue:BatchGetPartition",
+                "athena:GetDatabase",
+                "athena:GetDataCatalog",
+                "athena:ListWorkGroups",
+                "glue:GetDatabases",
+                "glue:GetTable",
+                "glue:GetDatabase",
+                "athena:GetWorkGroup",
+                "glue:GetPartition",
+                "athena:ListDatabases",
+                "athena:StopQueryExecution",
+                "athena:GetQueryExecution",
+                "athena:ListTableMetadata"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucketMultipartUploads",
+                "s3:AbortMultipartUpload",
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [
+                "arn:aws:s3:::arn:aws:s3:::9c-athena-result/arn:aws:s3:::9c-athena-result/*",
+                "arn:aws:s3:::9c-athena-result"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::arn:aws:s3:::9c-athena-result/*",
+                "arn:aws:s3:::9c-athena-result"
+            ]
+        }
+    ]
 }
 EOF
 }
