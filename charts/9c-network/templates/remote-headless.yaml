@@ -133,8 +133,24 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
-        {{- with $.Values.remoteHeadless.env }}
+        {{- if $.Values.remoteHeadless.logger.enabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
         env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        {{- if $.Values.remoteHeadless.logger.enabled }}
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_{{ $.Values.remoteHeadless.logger.name }}-{{ $index }}.json
+        {{- end }}
+        {{- with $.Values.remoteHeadless.env }}
           {{- toYaml $.Values.remoteHeadless.env | nindent 10 }}
         {{- end }}
       {{- with $.Values.remoteHeadless.nodeSelector }}
@@ -154,6 +170,12 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.remoteHeadless.logger.enabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

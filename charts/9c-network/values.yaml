@@ -101,6 +101,10 @@ remoteHeadless:
   extraArgs: []
   # - --key=val
 
+  logger:
+    enabled: false
+    name: "remote-headless"
+
   useTurnServer: false
 
   hosts:
@@ -149,6 +153,10 @@ validator:
 
   extraArgs: []
   # - --key=val
+
+  logger:
+    enabled: false
+    name: "validator"
 
   # private keys if not using External Secrets
   privateKeys:
