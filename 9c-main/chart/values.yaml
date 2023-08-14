@@ -488,7 +488,7 @@ remoteActionEvaluatorHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-6ca447a67e8c227409067ed3c4460e01fcfac37b"
+    tag: "git-0fa9313600b0064923657ccbe924a68b4471e26a"
 
   loggingEnabled: true
 
