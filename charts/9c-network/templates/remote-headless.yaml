@@ -133,6 +133,10 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.remoteHeadless.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
         {{- with $.Values.remoteHeadless.env }}
         env:
           {{- toYaml $.Values.remoteHeadless.env | nindent 10 }}
@@ -154,6 +158,12 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.remoteHeadless.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

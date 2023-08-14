@@ -94,6 +94,18 @@ spec:
               secretKeyRef:
                 key: validator-private-key-{{ $index }}
                 name: private-keys
+          {{- if $.Values.validator.loggingEnabled }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
+          {{- end }}
           {{- with $.Values.validator.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -143,6 +155,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.validator.loggingEnabled }}
+      - mountPath: /app/logs
+        name: json-log
+      {{- end }}
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always
