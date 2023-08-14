@@ -45,7 +45,7 @@ seed:
   - ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
 
 remoteHeadless:
   count: 1
