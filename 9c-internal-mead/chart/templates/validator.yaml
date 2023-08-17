@@ -145,7 +145,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.validator.storage.data }}
-      storageClassName: {{ $.Chart.Name }}-gp2
+      storageClassName: {{ $.Chart.Name }}-gp3
       volumeMode: Filesystem
 ---
 {{ end }}
