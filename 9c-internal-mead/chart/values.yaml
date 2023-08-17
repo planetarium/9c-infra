@@ -2,7 +2,7 @@ clusterName: 9c-internal-v2
 logLevel: debug
 appProtocolVersion: 
   1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ==
-genesisBlockPath: https://release.nine-chronicles.com/genesis-block-9c-main
+genesisBlockPath: https://release.nine-chronicles.com/genesis-block-aura
 trustedAppProtocolVersionSigner: 02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478
 peerStrings:
 - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-mead-tcp.planetarium.dev,31234
@@ -28,7 +28,7 @@ validator:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+    tag: git-19b2ef6215ddbd827ada014f687c3ee10438a048
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-mead-tcp.planetarium.dev,31235
   hosts:
@@ -82,7 +82,7 @@ miner:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+    tag: git-19b2ef6215ddbd827ada014f687c3ee10438a048
   hosts: []
   ports:
     headless: 31234
@@ -104,7 +104,7 @@ remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+    tag: git-19b2ef6215ddbd827ada014f687c3ee10438a048
   extraArgs:
     - --tx-quota-per-signer=4
   useTurnServer: true
@@ -146,7 +146,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: git-29dcc419248d7df78e243e2f71762549fca68ee7
+    tag: git-19b2ef6215ddbd827ada014f687c3ee10438a048
   extraArgs:
     - --tx-quota-per-signer=4
   useTurnServer: true
