@@ -27,6 +27,9 @@ if [ $download_option = "true" ]; then
 	# strip tailing slash
 	base_url=${base_url%/}
 
+	export base_url
+	export save_dir
+
 	function get_snapshot_value() {
 		snapshot_json_url="$1"
 		snapshot_param="$2"
@@ -37,6 +40,7 @@ if [ $download_option = "true" ]; then
 
 	function download_unzip_single_snapshot() {
 		snapshot_zip_filename="$1"
+		echo "download_unzip_single_snapshot: download $snapshot_zip_filename"
 		rm "$snapshot_zip_filename" 2>/dev/null
 
 		snapshot_zip_url="$base_url/$snapshot_zip_filename"
@@ -47,6 +51,8 @@ if [ $download_option = "true" ]; then
 		unzip -o "$snapshot_zip_filename" -d "$save_dir"
 		rm "$snapshot_zip_filename"
 	}
+
+	export -f download_unzip_single_snapshot
 
 	function get_chain_tip_json() {
 		/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir"
@@ -86,9 +92,7 @@ if [ $download_option = "true" ]; then
 			mkdir -p "$save_dir"
 		fi
 
-		for ((i = ${#snapshot_zip_filename_array[@]} - 1; i >= 0; i--)); do
-			download_unzip_single_snapshot "${snapshot_zip_filename_array[$i]}"
-		done
+		printf "%s\n" "${snapshot_zip_filename_array[@]}" | xargs -P 8 -I {} /bin/bash -c 'download_unzip_single_snapshot "$@"' -- {}
 
 		aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
 	}
@@ -122,9 +126,7 @@ if [ $download_option = "true" ]; then
 			mkdir -p "$save_dir"
 		fi
 
-		for ((i = ${#snapshot_zip_filename_array[@]} - 1; i >= 0; i--)); do
-			download_unzip_single_snapshot "${snapshot_zip_filename_array[$i]}"
-		done
+		printf "%s\n" "${snapshot_zip_filename_array[@]}" | xargs -P 8 -I {} /bin/bash -c 'download_unzip_single_snapshot "$@"' -- {}
 
 		aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
 	}
