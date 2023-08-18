@@ -152,13 +152,13 @@ then
       mkdir -p "$save_dir"
       download_unzip_full_snapshot
     else
-      local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+      local_chain_tip_index="$($(/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
       if [ -f $save_dir/$mainnet_snapshot_json_filename ]
       then
         local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
         download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
       else
-        local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+        local_chain_tip_timestamp="$($(/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
         epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
         echo $epoch_seconds
         local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
