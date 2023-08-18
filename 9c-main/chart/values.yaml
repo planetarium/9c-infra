@@ -122,12 +122,12 @@ miner:
   affinity: {}
 
 remoteHeadless:
-  count: 10
+  count: 3
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-a6eb9abc3963bfa78d0f98a8c37f87bb55e12731"
+    tag: "git-b28205610194c2d9bf75912f2a7b33996e980da2"
 
   # dotnet args
 
