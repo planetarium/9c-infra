@@ -43,9 +43,6 @@ spec:
           name: market-service-write
           ports:
             - containerPort: 80
-      resources:
-        requests:
-          cpu: 6000m
       restartPolicy: Always
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c

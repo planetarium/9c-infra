@@ -129,7 +129,7 @@ spec:
         - name: IpRateLimiting__GeneralRules__1__Period
           value: "60s"
         - name: IpRateLimiting__GeneralRules__1__Limit
-          value: "12"
+          value: "6"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
       {{- with $.Values.remoteHeadless.tolerations }}
