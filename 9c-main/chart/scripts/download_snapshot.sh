@@ -35,6 +35,23 @@ if [ $download_option = "true" ]; then
 		echo "$snapshot_param_return_value"
 	}
 
+	function download_unzip_single_snapshot() {
+		snapshot_zip_filename="$1"
+		rm "$snapshot_zip_filename" 2>/dev/null
+
+		snapshot_zip_url="$base_url/$snapshot_zip_filename"
+		echo "$snapshot_zip_url"
+
+		aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+		echo "Unzipping $snapshot_zip_filename"
+		unzip -o "$snapshot_zip_filename" -d "$save_dir"
+		rm "$snapshot_zip_filename"
+	}
+
+	function get_chain_tip_json() {
+		/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir"
+	}
+
 	function download_unzip_partial_snapshot() {
 		snapshot_json_filename="latest.json"
 		snapshot_zip_filename="state_latest.zip"
@@ -70,16 +87,7 @@ if [ $download_option = "true" ]; then
 		fi
 
 		for ((i = ${#snapshot_zip_filename_array[@]} - 1; i >= 0; i--)); do
-			snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
-			rm "$snapshot_zip_filename" 2>/dev/null
-
-			snapshot_zip_url="$base_url/$snapshot_zip_filename"
-			echo "$snapshot_zip_url"
-
-			aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
-			echo "Unzipping $snapshot_zip_filename"
-			unzip -o "$snapshot_zip_filename" -d "$save_dir"
-			rm "$snapshot_zip_filename"
+			download_unzip_single_snapshot "${snapshot_zip_filename_array[$i]}"
 		done
 
 		aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
@@ -115,16 +123,7 @@ if [ $download_option = "true" ]; then
 		fi
 
 		for ((i = ${#snapshot_zip_filename_array[@]} - 1; i >= 0; i--)); do
-			snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
-			rm "$snapshot_zip_filename" 2>/dev/null
-
-			snapshot_zip_url="$base_url/$snapshot_zip_filename"
-			echo "$snapshot_zip_url"
-
-			aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
-			echo "Unzipping $snapshot_zip_filename"
-			unzip -o "$snapshot_zip_filename" -d "$save_dir"
-			rm "$snapshot_zip_filename"
+			download_unzip_single_snapshot "${snapshot_zip_filename_array[$i]}"
 		done
 
 		aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
@@ -137,12 +136,12 @@ if [ $download_option = "true" ]; then
 			mkdir -p "$save_dir"
 			download_unzip_full_snapshot
 		else
-			local_chain_tip_index="$($(/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+			local_chain_tip_index="$(get_chain_tip_json | jq -r '.Index')"
 			if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
 				local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
 				download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
 			else
-				local_chain_tip_timestamp="$($(/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+				local_chain_tip_timestamp="$(get_chain_tip_json | jq -r '.Timestamp')"
 				epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
 				echo $epoch_seconds
 				local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
