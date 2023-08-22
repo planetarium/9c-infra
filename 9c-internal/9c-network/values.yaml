@@ -48,7 +48,7 @@ seed:
     node.kubernetes.io/instance-type: m5d.xlarge
 
 validator:
-  count: 4
+  count: 8
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -61,6 +61,10 @@ validator:
   - "9c-internal-validator-2.nine-chronicles.com"
   - "9c-internal-validator-3.nine-chronicles.com"
   - "9c-internal-validator-4.nine-chronicles.com"
+  - "9c-internal-validator-5.nine-chronicles.com"
+  - "9c-internal-validator-6.nine-chronicles.com"
+  - "9c-internal-validator-7.nine-chronicles.com"
+  - "9c-internal-validator-8.nine-chronicles.com"
 
   storage:
     data: 500Gi
