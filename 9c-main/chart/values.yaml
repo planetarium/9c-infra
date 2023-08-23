@@ -200,7 +200,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "30"
+    tag: "31"
   db:
     database: ""
     connectionString: ""
