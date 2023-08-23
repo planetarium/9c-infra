@@ -193,7 +193,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.validator.storage.data }}
-      storageClassName: {{ $.Release.Name }}-gp2
+      storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
 {{ end }}
