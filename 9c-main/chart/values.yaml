@@ -432,7 +432,7 @@ marketService:
     tag: "git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c"
 
 validator:
-  count: 8
+  count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
