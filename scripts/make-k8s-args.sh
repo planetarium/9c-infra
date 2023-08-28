@@ -16,7 +16,7 @@ if [ "$DIR" == "9c-internal" ]; then
 else
     file_path="9c-infra/$DIR/chart/values.yaml"
 fi
-
+eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4
 sources=""
 bump_apv=""
 
