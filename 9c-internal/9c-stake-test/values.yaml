@@ -22,7 +22,7 @@ global:
   consensusType: pbft
 
   resetSnapshot: false
-  useExternalSecret: true
+  useExternalSecret: false
 
 snapshot:
   downloadSnapshot: false
