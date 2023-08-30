@@ -160,7 +160,7 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.large
+    node.kubernetes.io/instance-type: m5d.xlarge
 
   env:
   - name: DOTNET_gcServer
