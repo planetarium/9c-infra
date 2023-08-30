@@ -53,9 +53,6 @@ validator:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
 
-  consensusSeedStrings:
-  - 02101677a587605b9c900ab15241844afa99ae05e952ad1b9d2680bdf3b029deb9,tcp-seed-1,31235
-
   hosts:
   - "9c-internal-stake-validator.nine-chronicles.com"
 
@@ -163,7 +160,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: 9c-internal-rpc-1.nine-chronicles.com
+    value: 9c-internal-stake-rpc-1.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
