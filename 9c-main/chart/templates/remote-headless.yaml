@@ -130,6 +130,8 @@ spec:
           value: "60s"
         - name: IpRateLimiting__GeneralRules__1__Limit
           value: "6"
+        - name: MultiAccountManaging__EnableManaging
+          value: "true"
       nodeSelector:
         eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
       {{- with $.Values.remoteHeadless.tolerations }}
