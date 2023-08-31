@@ -127,9 +127,9 @@ spec:
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "12"
         - name: IpRateLimiting__GeneralRules__1__Period
-          value: "60s"
+          value: "300s"
         - name: IpRateLimiting__GeneralRules__1__Limit
-          value: "6"
+          value: "10"
         - name: MultiAccountManaging__EnableManaging
           value: "true"
       nodeSelector:
