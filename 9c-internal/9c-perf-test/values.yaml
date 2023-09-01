@@ -19,9 +19,11 @@ global:
 
   resetSnapshot: false
   
-  useExternalSecret: true
   networkType: Default
   consensusType: pbft
+
+externalSecret:
+  enabled: true
 
 snapshot:
   slackChannel: "bot-test"
