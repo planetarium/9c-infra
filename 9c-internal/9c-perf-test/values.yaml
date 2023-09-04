@@ -8,7 +8,7 @@ logLevel: "debug"
 
 global:
   image:
-    tag: "test-200tx-3"
+    tag: "avatar-substate"
 
   appProtocolVersion: "200040/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCICx20hKZH0vOgd5L.uPS.m8IB3AL.gaqajch.tidbjpFAiASY9xDsXU3vmGUJdhgNdhfb3imBENuYUXRBqTz46IfLA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA3LTIwZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
