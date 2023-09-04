@@ -15,7 +15,7 @@ global:
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   
   peerStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-perf-test-tcp-seed-1.planetarium.dev,31234"
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.9c-perf-test.svc.cluster.local,31234"
 
   resetSnapshot: false
   
@@ -96,7 +96,7 @@ validator:
     pullPolicy: Always
 
   consensusSeedStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-perf-test-tcp-seed-1.planetarium.dev,31235"
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.9c-perf-test.svc.cluster.local,31235"
 
   hosts:
   - "9c-perf-test-validator-1.planetarium.dev"
