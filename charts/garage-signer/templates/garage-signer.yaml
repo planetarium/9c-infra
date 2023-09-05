@@ -43,33 +43,33 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: database-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
                   key: redis-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: KMS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: kms-key-id
-                  name: garage-signer-env
+                  name: garage-signer
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: celery-broker-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: celery-result-backend
-                  name: garage-signer-env
+                  name: garage-signer
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: garage-signer
           ports:
             - containerPort: 5000
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        node.kubernetes.io/instance-type: m5d.large
       restartPolicy: Always
       serviceAccount: {{ $.Values.serviceAccount.name }}
       serviceAccountName: {{ $.Values.serviceAccount.name }}
@@ -109,27 +109,27 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: database-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
                   key: redis-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: KMS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: kms-key-id
-                  name: garage-signer-env
+                  name: garage-signer
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: celery-broker-url
-                  name: garage-signer-env
+                  name: garage-signer
             - name: CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: celery-result-backend
-                  name: garage-signer-env
+                  name: garage-signer
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: garage-signer-worker
           ports:

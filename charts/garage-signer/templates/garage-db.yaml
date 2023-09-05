@@ -5,7 +5,7 @@ metadata:
     app: garage-db
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: garage-db
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   replicas: 1
   selector:
@@ -22,18 +22,18 @@ spec:
           - name: POSTGRES_DB
             valueFrom:
               secretKeyRef:
-                key: database
-                name: garage-signer-env
+                key: db-name
+                name: garage-signer
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: db-password
-                name: garage-signer-env
+                name: garage-signer
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
                 key: db-user
-                name: garage-signer-env
+                name: garage-signer
           image: postgres:13.3
           name: garage-db
           ports:
