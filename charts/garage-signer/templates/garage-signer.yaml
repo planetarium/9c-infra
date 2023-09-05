@@ -6,7 +6,7 @@ metadata:
     eks.amazonaws.com/role-arn: {{ $.Values.serviceAccount.iamRole }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: {{ $.Values.serviceAccount.iamRole }}
+  name: {{ $.Values.serviceAccount.name }}
   namespace: {{ $.Values.namespace }}
 {{- end }}
 
@@ -71,8 +71,8 @@ spec:
       nodeSelector:
         node.kubernetes.io/instance-type: m5.large
       restartPolicy: Always
-      serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
-      serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role
+      serviceAccount: {{ $.Values.serviceAccount.name }}
+      serviceAccountName: {{ $.Values.serviceAccount.name }}
   updateStrategy:
     type: RollingUpdate
 
@@ -140,6 +140,6 @@ spec:
       {{- end }}
       restartPolicy: Always
       serviceAccount: {{ $.Values.serviceAccount.name }}
-      serviceAccountName: {{ $.Values.serviceAccount.names }}
+      serviceAccountName: {{ $.Values.serviceAccount.name }}
   updateStrategy:
     type: RollingUpdate
