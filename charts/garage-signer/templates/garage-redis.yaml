@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: garage-redis
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: garage-redis
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: garage-redis
+  serviceName: garage-redis
+  template:
+    metadata:
+      labels:
+        app: garage-redis
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --appendonly
+            - "yes"
+          image: redis:6.2
+          name: garage-redis
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
