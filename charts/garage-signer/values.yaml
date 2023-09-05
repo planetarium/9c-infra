@@ -9,6 +9,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "git-8eb59f1c0fe1293302c337819a1ecca7f31aa51d"
 
+db:
+  database: ""
+  user: ""
+  size: 100Gi
+
+storage:
+  class: 9c-network-gp3
+
 nodeSelector:
   node.kubernetes.io/instance-type: m5.large
 
@@ -19,8 +27,7 @@ serviceAccount:
 
 garageSignerEnv:
   databaseUrl: ""
-  redisHost: ""
-  redisPort: ""
+  redisUrl: ""
   kmsKeyId: ""
   celeryBrokerUrl: ""
   celeryResultBackend: ""
