@@ -17,7 +17,7 @@ serviceAccount:
   name: garage-signer
   iamRole: arn:aws:iam::319679068466:role/9c-onboarding-eks
 
-worldBossEnv:
+garageSignerEnv:
   databaseUrl: ""
   redisHost: ""
   redisPort: ""
