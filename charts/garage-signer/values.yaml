@@ -14,9 +14,9 @@ db:
   user: ""
   size: 100Gi
 
-useExternalSecret: true
+useExternalSecret: false
 
-clusterName: 9c-internal-v2
+clusterName: ""
 
 storage:
   class: 9c-network-gp3

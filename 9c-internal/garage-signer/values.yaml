@@ -1,0 +1,16 @@
+namespace: "9c-network"
+
+clusterName: 9c-internal-v2
+
+useExternalSecret: true
+
+nodeSelector:
+  node.kubernetes.io/instance-type: m5d.large
+
+image:
+  repository: planetariumhq/9c-signer
+  pullPolicy: Always
+  tag: "git-0a11b5ee85796aec3ce87403b5d62d4265f5e218"
+
+db:
+  size: 1Gi
