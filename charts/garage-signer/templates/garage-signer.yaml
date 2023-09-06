@@ -64,15 +64,10 @@ spec:
                 secretKeyRef:
                   key: celery-result-backend
                   name: garage-signer
-            - name: INTERNAL_HEADLESS_URL
+            - name: HEADLESS_URL
               valueFrom:
                 secretKeyRef:
-                  key: internal-headless-url
-                  name: garage-signer
-            - name: MAIN_HEADLESS_URL
-              valueFrom:
-                secretKeyRef:
-                  key: main-headless-url
+                  key: headless-url
                   name: garage-signer
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: garage-signer
@@ -140,15 +135,10 @@ spec:
                 secretKeyRef:
                   key: celery-result-backend
                   name: garage-signer
-            - name: INTERNAL_HEADLESS_URL
+            - name: HEADLESS_URL
               valueFrom:
                 secretKeyRef:
-                  key: internal-headless-url
-                  name: garage-signer
-            - name: MAIN_HEADLESS_URL
-              valueFrom:
-                secretKeyRef:
-                  key: main-headless-url
+                  key: headless-url
                   name: garage-signer
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: garage-signer-worker

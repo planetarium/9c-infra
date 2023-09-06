@@ -10,7 +10,7 @@ nodeSelector:
 image:
   repository: planetariumhq/9c-signer
   pullPolicy: Always
-  tag: "git-0a11b5ee85796aec3ce87403b5d62d4265f5e218"
+  tag: "git-e2ba90138588b2521dfcf531beaa2a6c91ebaefa"
 
 db:
   size: 1Gi
