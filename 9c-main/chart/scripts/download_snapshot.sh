@@ -17,7 +17,8 @@ save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
 download_option=$3
 service_name=$4
 SLACK_WEBHOOK=$5
-complete_snapshot_reset=${6:-"false"}
+rollback_snapshot=${6:-"false"}
+complete_snapshot_reset=${7:-"false"}
 mainnet_snapshot_json_filename="latest.json"
 
 if [ $download_option = "true" ]
@@ -45,11 +46,15 @@ then
     snapshot_zip_filename_array=("$snapshot_zip_filename")
     mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
     mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
+    mainnet_snapshot_blockEpoch=$(get_snapshot_value "$mainnet_snapshot_json_url" "BlockEpoch")
 
-    if [ "$mainnet_snapshot_blockIndex" -lt $2 ]
-    then
-        echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
-        return
+    if [ "$mainnet_snapshot_blockEpoch" -le $1 ]; then
+        if [ $rollback_snapshot = "false" ]; then
+          if [ "$mainnet_snapshot_blockIndex" -le $2 ]; then
+              echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
+              return
+          fi
+        fi
     fi
 
     while :
