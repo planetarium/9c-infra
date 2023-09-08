@@ -69,6 +69,10 @@ remoteHeadless:
       cpu: 1
       memory: 16Gi
 
+  logger:
+    enabled: true
+    name: "9c-perf-test-origin-rpc"
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
 
@@ -95,6 +99,10 @@ validator:
   - ""
   - ""
   - ""
+
+  logger:
+    enabled: true
+    name: "9c-perf-test-origin-validator"
 
   resources:
     requests:
