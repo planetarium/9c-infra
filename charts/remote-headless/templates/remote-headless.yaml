@@ -31,7 +31,7 @@ spec:
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
-        image: bash:latest
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         name: reset-snapshot
         volumeMounts:
         - name: download-snapshot-script
