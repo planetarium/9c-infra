@@ -8,16 +8,16 @@ logLevel: "debug"
 
 global:
   image:
-    tag: "git-b58a31cb2fe2d17bd759741cabb78bdd146de601"
+    tag: "41"
 
-  appProtocolVersion: "200020/54684Ac4ee5B933e72144C4968BEa26056880d71/MEQCIFp.SfFaK3PCLyqwN28j4qptXqWnToggZOQTLAFly5I3AiBr.824.h8.VwjhVwz5zulv7pKqBLARAP6pYQGPd6js+A==/ZHU4OmxhdW5jaGVydTQyOjEvODBkYjhmNDU1MTU5ODNiYWY5YjFkYjEwMDZmOWIwMjRjNWIzMWU1NnU2OnBsYXllcnU0MjoxL2M2NjUyYTEzNmQ1ZDZkMmVhOGQyNmFmNmM0M2Y1MTg5ZmJiYzYxZGN1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
+  appProtocolVersion: "200040/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCICx20hKZH0vOgd5L.uPS.m8IB3AL.gaqajch.tidbjpFAiASY9xDsXU3vmGUJdhgNdhfb3imBENuYUXRBqTz46IfLA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA3LTIwZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
-  resetSnapshot: false
+  resetSnapshot: true
   
   networkType: Default
   consensusType: pbft
@@ -41,7 +41,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "9c-pluggable-tcp-seed-1.planetarium.dev"
+  - "9c-perf-test-origin-tcp-seed-1.planetarium.dev"
 
   privateKeys:
   - ""
@@ -59,7 +59,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "9c-pluggable-rpc-1.planetarium.dev"
+  - "9c-perf-test-origin-rpc-1.planetarium.dev"
 
   storage:
     data: 1000Gi
@@ -69,8 +69,12 @@ remoteHeadless:
       cpu: 1
       memory: 16Gi
 
+  logger:
+    enabled: true
+    name: "9c-perf-test-origin-rpc"
+
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-pluggable-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
 
 validator:
   count: 4
@@ -84,10 +88,10 @@ validator:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
   hosts:
-  - "9c-pluggable-validator-1.planetarium.dev"
-  - "9c-pluggable-validator-2.planetarium.dev"
-  - "9c-pluggable-validator-3.planetarium.dev"
-  - "9c-pluggable-validator-4.planetarium.dev"
+  - "9c-perf-test-origin-validator-1.planetarium.dev"
+  - "9c-perf-test-origin-validator-2.planetarium.dev"
+  - "9c-perf-test-origin-validator-3.planetarium.dev"
+  - "9c-perf-test-origin-validator-4.planetarium.dev"
 
   # private keys if not using External Secrets
   privateKeys:
@@ -96,10 +100,14 @@ validator:
   - ""
   - ""
 
+  logger:
+    enabled: true
+    name: "9c-perf-test-origin-validator"
+
   resources:
     requests:
       cpu: 2
       memory: 20Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
