@@ -14,6 +14,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Release.Name "9c-network" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -50,6 +51,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Release.Name "9c-network" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -89,6 +91,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "5"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "2"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Release.Name "9c-network" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
 spec:
   ports:
   - port: {{ $.Values.validator.ports.headless }}
