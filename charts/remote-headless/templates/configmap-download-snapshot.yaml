@@ -77,7 +77,7 @@ data:
             snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
             snapshot_zip_filename_array+=("$snapshot_zip_filename")
             rm -r $save_dir/block/epoch$BlockEpoch/*
-              rm -r $save_dir/tx/epoch$BlockEpoch/*
+            rm -r $save_dir/tx/epoch$BlockEpoch/*
 
             if [ $(("$PreviousBlockEpoch"+2)) -lt $1 ]
             then
