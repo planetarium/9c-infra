@@ -69,8 +69,10 @@ data:
 
             snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
             snapshot_zip_filename_array+=("$snapshot_zip_filename")
+            rm -r $save_dir/block/epoch$BlockEpoch/*
+              rm -r $save_dir/tx/epoch$BlockEpoch/*
 
-            if [ $(("$PreviousBlockEpoch"+1)) -lt $1 ]
+            if [ $(("$PreviousBlockEpoch"+2)) -lt $1 ]
             then
                 break
             fi
@@ -83,6 +85,13 @@ data:
             echo "[Info] The directory $save_dir does not exist and is created."
             mkdir -p "$save_dir"
         fi
+
+        rm -r $save_dir/block/blockindex/*
+        rm -r $save_dir/tx/txindex/*
+        rm -r $save_dir/txbindex/*
+        rm -r $save_dir/blockcommit/*
+        rm -r $save_dir/txexec/*
+        rm -r $save_dir/states/*
 
         for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
         do
@@ -97,6 +106,10 @@ data:
             unzip -o "$snapshot_zip_filename" -d "$save_dir"
             rm "$snapshot_zip_filename"
         done
+
+        if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
+            rm $save_dir/$mainnet_snapshot_json_filename
+        fi
 
         aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }
