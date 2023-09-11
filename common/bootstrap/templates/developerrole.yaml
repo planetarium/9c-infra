@@ -315,6 +315,26 @@ rules:
       - ingresses
       - ingresses/status
       - networkpolicies
+  - apiGroups:
+    - argoproj.io
+    resources:
+    - applications
+    - appprojects
+    verbs:
+    - create
+    - get
+    - list
+    - watch
+    - update
+    - patch
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - events
+    verbs:
+    - create
+    - list
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
