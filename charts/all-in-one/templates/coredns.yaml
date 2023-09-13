@@ -27,7 +27,7 @@ data:
         rewrite name 9c-main-validator-7.nine-chronicles.com validator-7.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-8.nine-chronicles.com validator-8.9c-network.svc.cluster.local
         rewrite name 9c-main-test-1.nine-chronicles.com test-headless-1.9c-network.svc.cluster.local
-        rewrite name 9c-main-test-1.nine-chronicles.com test-headless-2.9c-network.svc.cluster.local
+        rewrite name 9c-main-test-2.nine-chronicles.com test-headless-2.9c-network.svc.cluster.local
         {{- end }}
         prometheus :9153
         forward . /etc/resolv.conf

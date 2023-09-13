@@ -262,7 +262,7 @@ data:
         exit 1
       fi
 
-      if timeout 1800 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
+      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
         sleep 60
       else
         senderr "grep failed. Failed to preload." $1

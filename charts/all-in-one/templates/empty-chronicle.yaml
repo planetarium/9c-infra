@@ -22,7 +22,7 @@ spec:
       initContainers:
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
-          - /data/empty-chronicle
+          - /data
           - $(RESET_SNAPSHOT_OPTION)
           - empty-chronicle
           - $(SLACK_WEBHOOK_URL)
@@ -38,7 +38,7 @@ spec:
               readOnly: true
               subPath: download_snapshot.sh
             - mountPath: /data
-              name: explorer-data
+              name: empty-chronicle-data
           env:
           - name: RESET_SNAPSHOT_OPTION
             value: "false"

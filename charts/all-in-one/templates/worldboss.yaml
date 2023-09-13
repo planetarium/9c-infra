@@ -85,7 +85,6 @@ spec:
       {{- with $.Values.worldBoss.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-        node.kubernetes.io/instance-type: m5.large
       {{- end }}
       restartPolicy: Always
       serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
@@ -166,8 +165,10 @@ spec:
           name: world-boss-worker
           ports:
             - containerPort: 5000
+      {{- with $.Values.worldBoss.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
       serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
       serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role
