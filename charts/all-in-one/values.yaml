@@ -467,3 +467,22 @@ lib9cStateService:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+emptyChronicle:
+  enabled: false
+
+  image:
+    repository: planetariumhq/emptychronicle
+    pullPolicy: Always
+    tag: "git-2a76d3c2352243d8e1aa6315a91f729305e00f63"
+
+  ports:
+    port: 5050
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 8Gi
+
+  storage:
+    data: 1000Gi

@@ -1,0 +1,83 @@
+{{- if $.Values.emptyChronicle.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: empty-chronicle
+  labels:
+    app: empty-chronicle
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: empty-chronicle
+  serviceName: empty-chronicle
+  template:
+    metadata:
+      labels:
+        app: empty-chronicle
+      name: empty-chronicle
+    spec:
+      initContainers:
+        - args:
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
+          - /data/empty-chronicle
+          - $(RESET_SNAPSHOT_OPTION)
+          - empty-chronicle
+          - $(SLACK_WEBHOOK_URL)
+          - $(SNAPSHOT_ROLLBACK_OPTION)
+          command:
+          - /bin/download_snapshot.sh
+          image: {{ $.Values.emptyChronicle.image.repository }}:{{ $.Values.emptyChronicle.image.tag }}
+          imagePullPolicy: Always
+          name: reset-snapshot
+          volumeMounts:
+            - mountPath: /bin/download_snapshot.sh
+              name: download-snapshot-script
+              readOnly: true
+              subPath: download_snapshot.sh
+            - mountPath: /data
+              name: explorer-data
+          env:
+          - name: RESET_SNAPSHOT_OPTION
+            value: "false"
+          - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: slack
+                key: slack-webhook-url
+      containers:
+        - name: empty-chronicle
+          image: "{{ .Values.emptyChronicle.image.repository }}:{{ .Values.emptyChronicle.image.tag }}"
+          imagePullPolicy: Always
+          env:
+            - name: PN_AppProtocolVersionToken
+              value: {{ $.Values.global.appProtocolVersion }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.emptyChronicle.ports.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.emptyChronicle.resources | nindent 12 }}
+          volumeMounts:
+          - name: empty-chronicle-data
+            mountPath: /data
+      volumes:
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Chart.Name }}-download-snapshot-script
+  volumeClaimTemplates:
+    - metadata:
+        name: empty-chronicle-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.emptyChronicle.storage.data }}
+        storageClassName: {{ $.Chart.Name }}-gp3
+        volumeMode: Filesystem
+---
+{{- end }}
