@@ -54,7 +54,7 @@ seed:
   workerCount: 1000
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    node.kubernetes.io/instance-type: m5.large
 
 validator:
   count: 4
@@ -91,7 +91,7 @@ remoteHeadless:
   - "9c-main-rpc-10.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
   loggingEnabled: true
 
@@ -105,7 +105,7 @@ dataProvider:
     tag: 'git-e54da4e7f84f0d7969b5050609adb71d5be139de'
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    node.kubernetes.io/instance-type: 9c-main-m7g_xl_2c
 
 explorer:
   enabled: true
@@ -116,7 +116,7 @@ explorer:
   loggingEnabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    node.kubernetes.io/instance-type: r7g.xlarge
 
 marketService:
   enabled: true
@@ -124,7 +124,7 @@ marketService:
     tag: "git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.large
+    node.kubernetes.io/instance-type: m5.large
 
 fullState:
   loggingEnabled: true
@@ -134,7 +134,7 @@ fullState:
   host: "9c-main-full-state.nine-chronicles.com"
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    node.kubernetes.io/instance-type: 9c-main-m7g_2xl_2c_test
 
 worldBoss:
   enabled: true
@@ -161,7 +161,7 @@ testHeadless1:
   host: "9c-main-test-1.nine-chronicles.com"
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    node.kubernetes.io/instance-type: 9c-main-m7g_2xl_2c_test
 
 testHeadless2:
   enabled: true
@@ -175,7 +175,7 @@ testHeadless2:
   host: "9c-main-test-2.nine-chronicles.com"
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    node.kubernetes.io/instance-type: 9c-main-r6g_xl_2c
 
 emptyChronicle:
   enabled: true
@@ -195,4 +195,4 @@ remoteActionEvaluatorHeadless:
   host: "9c-main-remote-aev-test.nine-chronicles.com"
 
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
