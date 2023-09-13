@@ -20,7 +20,7 @@ global:
   resetSnapshot: true
   rollbackSnapshot: false
   
-  networkType: Default
+  networkType: Internal
   consensusType: pbft
 
 externalSecret:
@@ -62,6 +62,9 @@ remoteHeadless:
   hosts:
   - "9c-perf-test-origin-rpc-1.planetarium.dev"
 
+  extraArgs:
+  - "--tx-life-time=2000000"
+
   storage:
     data: 1000Gi
 
@@ -93,6 +96,10 @@ validator:
   - "9c-perf-test-origin-validator-2.planetarium.dev"
   - "9c-perf-test-origin-validator-3.planetarium.dev"
   - "9c-perf-test-origin-validator-4.planetarium.dev"
+
+  extraArgs:
+  - "--tx-life-time=2000000"
+  - "--consensus-target-block-interval=6500"
 
   # private keys if not using External Secrets
   privateKeys:
