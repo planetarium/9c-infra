@@ -18,6 +18,7 @@ global:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-perf-test-tcp-seed-1.planetarium.dev,31234"
 
   resetSnapshot: true
+  rollbackSnapshot: true
   
   networkType: Default
   consensusType: pbft
