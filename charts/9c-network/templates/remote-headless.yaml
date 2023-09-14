@@ -51,6 +51,8 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+        resources:
+          {{- toYaml $.Values.remoteHeadless.resources | nindent 10 }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
