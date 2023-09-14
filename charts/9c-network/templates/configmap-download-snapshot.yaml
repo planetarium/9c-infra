@@ -11,8 +11,15 @@ data:
 
     cd /data
 
-    apk update
-    apk add jq curl wget aria2 sudo zip
+    until apt-get -y update
+    do
+      echo "Try again"
+    done
+
+    until apt-get -y install curl jq wget aria2 sudo zip
+    do
+      echo "Try again"
+    done
 
     base_url=${1:-https://snapshots.nine-chronicles.com/internal}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
