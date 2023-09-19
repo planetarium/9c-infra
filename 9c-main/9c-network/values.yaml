@@ -363,7 +363,7 @@ emptyChronicle:
   enabled: true
 
   image:
-    tag: "git-2a76d3c2352243d8e1aa6315a91f729305e00f63"
+    tag: "git-7bef02eb0105de7c14741e45282c63c7b40c70fb"
 
 remoteActionEvaluatorHeadless:
   enabled: true

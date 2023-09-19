@@ -14,7 +14,7 @@ MANUAL_ARGS=$9
 if [ "$DIR" == "9c-internal" ]; then
     file_path="9c-infra/$DIR/9c-network/values.yaml"
 else
-    file_path="9c-infra/$DIR/chart/values.yaml"
+    file_path="9c-infra/$DIR/9c-network/values.yaml"
 fi
 
 sources=""
