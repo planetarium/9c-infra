@@ -7,9 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: test-headless-1
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
+  spec:
   podManagementPolicy: OrderedReady
   replicas: 1
   revisionHistoryLimit: 3
@@ -113,25 +111,31 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+          subPath: appsettings.json
         env:
-        {{- if $.Values.testHeadless1.loggingEnabled }}
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
+          {{- if $.Values.testHeadless1.loggingEnabled }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
+          {{- end }}
+        {{- with $.Values.testHeadless1.env }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
-        - name: IpRateLimiting__EnableRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Limit
-          value: "15"
       {{- with $.Values.testHeadless1.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.testHeadless1.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
@@ -153,6 +157,10 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

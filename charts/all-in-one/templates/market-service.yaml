@@ -37,7 +37,7 @@ spec:
           ports:
             - containerPort: 80
       restartPolicy: Always
-      {{- with $.Values.marketService.nodeSelector }}
+      {{- with $.Values.marketService.nodeSelector.read }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

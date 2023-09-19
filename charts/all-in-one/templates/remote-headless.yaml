@@ -8,8 +8,6 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: remote-headless-{{ $index }}
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -24,6 +22,7 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
@@ -86,6 +85,7 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -178,6 +178,8 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
         env:
           {{- if $.Values.remoteHeadless.loggingEnabled }}
           - name: POD_NAME
@@ -191,16 +193,15 @@ spec:
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
           {{- end }}
-        {{- if $.Values.rateLimitEnabled }}
-        - name: IpRateLimiting__EnableEndpointRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Period
-          value: "5s"
-        - name: IpRateLimiting__GeneralRules__1__Period
-          value: "5s"
+        {{- with $.Values.remoteHeadless.env }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       {{- with $.Values.remoteHeadless.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
@@ -222,6 +223,10 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

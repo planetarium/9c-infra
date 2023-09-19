@@ -6,41 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  liveness_probe.sh: |-
-    #!/usr/bin/env bash
-    set -ex
-
-    preloaded="$(
-      curl \
-        -H 'Content-Type: application/json' \
-        --data '{"query":"query{nodeStatus{preloadEnded}}"}' \
-        http://localhost:80/graphql \
-      | jq .data.nodeStatus.preloadEnded
-    )"
-
-    echo $preloaded
-    if [[ "$preloaded" = "true" ]]; then
-      echo "Preload finished. Check chain tip."
-      last_block="$(
-        curl \
-          -H 'Content-Type: application/json' \
-          --data '{"query":"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}"}' \
-          http://localhost:80/graphql \
-        | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'
-      )"
-      last_timestamp="$(date +%s -u --date="$last_block")"
-      now="$(date +%s -u)"
-      [[ $(( now - last_timestamp )) -lt 400 ]]
-    fi
-  readiness_probe.sh: |-
-    #!/usr/bin/env bash
-    set -ex
-
-    preloaded="$(
-      curl \
-        -H 'Content-Type: application/json' \
-        --data '{"query":"query{nodeStatus{preloadEnded}}"}' \
-        http://localhost:80/graphql \
-      | jq .data.nodeStatus.preloadEnded
-    )"
-    [[ "$preloaded" = "true" ]]
+  liveness_probe.sh: |- {{ .Files.Get "scripts/common/liveness_probe.sh" | nindent 4 }}
+  liveness_probe_miner.sh: |- {{ .Files.Get "scripts/common/liveness_probe_miner.sh" | nindent 4 }}
+  readiness_probe.sh: |- {{ .Files.Get "scripts/common/readiness_probe.sh" | nindent 4 }}

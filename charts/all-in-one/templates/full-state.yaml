@@ -7,8 +7,6 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: main-full-state
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -47,6 +45,10 @@ spec:
         - --graphql-server
         - --graphql-host=0.0.0.0
         - --graphql-port={{ $.Values.fullState.ports.graphql }}
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
         - --tx-life-time=10
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
@@ -70,6 +72,9 @@ spec:
         - containerPort: {{ $.Values.fullState.ports.headless }}
           name: headless
           protocol: TCP
+        - containerPort: {{ $.Values.fullState.ports.rpc }}
+          name: rpc
+          protocol: TCP
         livenessProbe:
           exec:
             command:
@@ -78,6 +83,13 @@ spec:
           initialDelaySeconds: 1800
           periodSeconds: 30
           timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
         resources:
           {{- toYaml $.Values.fullState.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
@@ -93,9 +105,35 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+        {{- if $.Values.fullState.loggingEnabled }}
+        - mountPath: /app/logs
+          name: json-log
+        {{- end }}
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          {{- if $.Values.remoteHeadless.loggingEnabled }}
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_full-state.json
+          {{- end }}
+          {{- with $.Values.fullState.env }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- with $.Values.fullState.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.fullState.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.fullState.tolerations | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -106,6 +144,16 @@ spec:
           defaultMode: 448
           name: {{ $.Release.Name }}-probe-script
         name: probe-script
+      {{- if $.Values.fullState.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

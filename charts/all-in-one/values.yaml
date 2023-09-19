@@ -37,6 +37,8 @@ snapshot:
   partitionReset:
     enabled: false
     suspend: false
+  snapshotPartition:
+    suspend: false
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
@@ -52,7 +54,7 @@ snapshot:
   resources:
     requests:
       cpu: 1300m
-      memory: 10Gi
+      memory: 20Gi
 
   nodeSelector: {}
 
@@ -268,6 +270,7 @@ fullState:
 
   ports:
     headless: 31234
+    rpc: 31238
     graphql: 80
 
   storage:
@@ -278,9 +281,11 @@ fullState:
       cpu: 2
       memory: 20Gi
 
+  env: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  loggingEnabled: false
 
 worldBoss:
   enabled: false
@@ -342,6 +347,8 @@ testHeadless1:
 
   useTurnServer: false
 
+  env: []
+
   host: "9c-main-test-1.nine-chronicles.com"
 
   ports:
@@ -376,6 +383,8 @@ testHeadless2:
 
   useTurnServer: false
 
+  env: []
+
   host: "9c-main-test-2.nine-chronicles.com"
 
   ports:
@@ -404,7 +413,8 @@ marketService:
     tag: "git-833c0b3b932f158a4bbb5c4d522049102883a897"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    read: {}
+    write: {}
 
   resources: {}
 
@@ -467,3 +477,22 @@ lib9cStateService:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+emptyChronicle:
+  enabled: false
+
+  image:
+    repository: planetariumhq/emptychronicle
+    pullPolicy: Always
+    tag: "git-2a76d3c2352243d8e1aa6315a91f729305e00f63"
+
+  ports:
+    port: 5050
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 8Gi
+
+  storage:
+    data: 1000Gi

@@ -10,6 +10,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -45,6 +48,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -177,6 +183,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -206,6 +215,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
@@ -220,6 +232,12 @@ spec:
   - name: headless
     port: {{ $.Values.fullState.ports.headless }}
     targetPort: {{ $.Values.fullState.ports.headless }}
+  - name: rpc
+    port: {{ $.Values.fullState.ports.rpc }}
+    targetPort: {{ $.Values.fullState.ports.rpc }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.fullState.ports.graphql }}
   selector:
     app: main-full-state
   type: LoadBalancer
@@ -238,8 +256,10 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -278,6 +298,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -351,6 +374,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
@@ -384,6 +410,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-db
 spec:
   ports:
@@ -408,6 +437,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -446,6 +478,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -484,6 +519,9 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
@@ -496,6 +534,41 @@ spec:
   selector:
     app: lib9c-state-service
   type: ClusterIP
+
+---
+{{ end }}
+
+{{ if .Values.emptyChronicle.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: empty-chronicle
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=empty-chronicle
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: http
+    port: 80
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  selector:
+    app: empty-chronicle
+  type: LoadBalancer
 
 ---
 {{ end }}

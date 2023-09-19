@@ -88,10 +88,6 @@ spec:
       terminationGracePeriodSeconds: 30
       securityContext:
         {{- toYaml $.Values.seed.podSecurityContext | nindent 8 }}
-      {{- with $.Values.seed.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with $.Values.seed.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

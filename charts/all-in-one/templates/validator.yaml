@@ -8,8 +8,6 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: validator-{{ $index }}
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -23,6 +21,7 @@ spec:
         app: validator-{{ $index }}
       name: validator-{{ $index }}
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
@@ -60,6 +59,7 @@ spec:
             subPath: download_snapshot.sh
           - mountPath: /data
             name: validator-data-{{ $index }}
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -121,7 +121,7 @@ spec:
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
           {{- end }}
           {{- with $.Values.validator.env }}
-            {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 10 }}
           {{- end }}
         {{- if and $.Values.validator.image.repository $.Values.validator.image.tag }}
         image: {{ $.Values.validator.image.repository }}:{{ $.Values.validator.image.tag }}
@@ -159,9 +159,15 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
       {{- with $.Values.validator.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.validator.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.validator.tolerations | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
       volumes:
@@ -179,6 +185,10 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
       imagePullSecrets:
       - name: acr-regcred
       restartPolicy: Always

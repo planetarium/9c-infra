@@ -7,10 +7,6 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: explorer
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: bot-test
-    notifications.argoproj.io/subscribe.on-sync-failed.slack: bot-test
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -25,6 +21,7 @@ spec:
         app: explorer
       name: explorer
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
         - args:
             - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
@@ -62,6 +59,7 @@ spec:
               subPath: download_snapshot.sh
             - mountPath: /data
               name: explorer-data
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -156,6 +154,8 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
       {{- with $.Values.explorer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -173,6 +173,16 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.explorer.loggingEnabled }}
+      - hostPath:
+          path: /var/log/headless
+          type: DirectoryOrCreate
+        name: json-log
+      {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

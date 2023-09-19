@@ -7,9 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: test-headless-2
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
+  spec:
   podManagementPolicy: OrderedReady
   replicas: 1
   revisionHistoryLimit: 3
@@ -56,7 +54,7 @@ spec:
         - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
         - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
-        - --network-type={{ $.Values.networkType }}
+        - --network-type={{ $.Values.global.networkType }}
         {{- with $.Values.testHeadless2.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -114,20 +112,32 @@ spec:
           name: json-log
         {{- end }}
         {{- if $.Values.testHeadless2.loggingEnabled }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+          subPath: appsettings.json
         env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-2.json
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-2.json
+          {{- end }}
+        {{- with $.Values.testHeadless2.env }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
+      {{- with $.Values.testHeadless2.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.testHeadless2.tolerations }}
+      tolerations:
+        {{- toYaml $.Values.testHeadless2.tolerations | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
