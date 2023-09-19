@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 
 
-clusterName: ""
+clusterName: "9c-internal-v2"
 logLevel: ""
-namespace: "9c-network"
+namespace: "9c-single"
 
 appProtocolVersion: ""
 genesisBlockPath: ""
@@ -24,17 +24,17 @@ slackToken: ""
 slackWebHookUrl: ""
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
-volumeReclaimPolicy: "Delete"
+volumeReclaimPolicy: "Retain"
 
 snapshot:
-  enabled: false
-  path: internal
+  enabled: true
+  path: "internal"
 
-externalSecret:
-  enabled: false
-  prefix: ""
+externalSecrets:
+  enabled: true
+  prefix: "9c-single"
 
-count: 4
+count: 1
 image:
   repository: planetariumhq/ninechronicles-headless
   pullPolicy: Always
@@ -46,9 +46,6 @@ consensusSeedStrings:
 
 hosts:
 - "9c-sample-validator-1.nine-chronicles.com"
-- "9c-sample-validator-2.nine-chronicles.com"
-- "9c-sample-validator-3.nine-chronicles.com"
-- "9c-sample-validator-4.nine-chronicles.com"
 
 ports:
   headless: 31234
@@ -66,14 +63,14 @@ privateKeys: []
 
 storage:
   class: "9c-network-gp3"
-  data: 1000Gi
+  data: 500Gi
 
 env: []
 
 resources:
   requests:
     cpu: 2
-    memory: 20Gi
+    memory: 4Gi
 
 nodeSelector: {}
 tolerations: []
