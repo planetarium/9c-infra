@@ -363,8 +363,8 @@ spec:
       labels:
         app: data-provider
     spec:
-      {{- if $.Values.global.resetSnapshot }}
       initContainers:
+      {{- if $.Values.global.resetSnapshot }}
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
         - /data/data-provider
