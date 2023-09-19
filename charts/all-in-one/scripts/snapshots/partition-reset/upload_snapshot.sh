@@ -27,7 +27,7 @@ CF_DISTRIBUTION_ID=$4
 
 function senderr() {
   echo "$1"
-  curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+  curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in {{ $.Values.clusterName }} cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
 }
 
 function make_and_upload_snapshot() {
@@ -97,9 +97,9 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/latest.7z" --quiet --acl public-read
   "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/state_latest.7z" --quiet --acl public-read
 
-  invalidate_cf "/main/$1/partition/$SNAPSHOT_FILENAME.*"
-  invalidate_cf "/main/$1/partition/$UPLOAD_FILENAME.*"
-  invalidate_cf "/main/$1/partition/$STATE_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
 
   rm "$LATEST_SNAPSHOT"
   rm "$LATEST_STATE"

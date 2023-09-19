@@ -7,19 +7,19 @@ do
   echo "Try again"
 done
 
-until apt-get -y install jq wget aria2 sudo zip
+until apt-get -y install curl jq wget aria2 sudo zip
 do
   echo "Try again"
 done
 
-base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
+base_url=${1:-https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}}
 save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
 download_option=$3
 service_name=$4
 SLACK_WEBHOOK=$5
 rollback_snapshot=${6:-"false"}
 complete_snapshot_reset=${7:-"false"}
-mainnet_snapshot_json_filename="latest.json"
+mainnet_snapshot_json_filename={{- if eq $.Values.global.networkType "Main" }}"latest.json"{{- else }}"mainnet_latest.json"{{- end }}
 
 if [ $download_option = "true" ]
 then
