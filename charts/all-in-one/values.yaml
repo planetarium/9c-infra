@@ -496,3 +496,23 @@ emptyChronicle:
 
   storage:
     data: 1000Gi
+
+patrolRewardService:
+  enabled: false
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-d86b316bab2f80b1a96c09adb4f89fed7d4bd8c2"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  env: []
+
+  db:
+    local: false
+    database: ""
+    user: ""
+    connectionString: ""
+    size: 1Gi
