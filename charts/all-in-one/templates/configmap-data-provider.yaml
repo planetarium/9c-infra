@@ -7,4 +7,4 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  check_chain_tip.sh: |- {{ .Files.Get "scripts/data-provider/check_chain_tip.sh" | nindent 4 }}
+  check_chain_tip.sh: |- {{ tpl (.Files.Get "scripts/data-provider/check_chain_tip.sh") . | nindent 4 }}
