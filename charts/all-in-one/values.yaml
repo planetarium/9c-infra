@@ -482,7 +482,7 @@ emptyChronicle:
   enabled: false
 
   image:
-    repository: planetariumhq/emptychronicle
+    repository: planetariumhq/emptychronicle-headless
     pullPolicy: Always
     tag: "git-2a76d3c2352243d8e1aa6315a91f729305e00f63"
 
