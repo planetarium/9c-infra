@@ -1,3 +1,4 @@
+#!/bin/bash
 set -exv
 
 function random_str() {
@@ -5,8 +6,8 @@ function random_str() {
 }
 
 regex='https?://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
-FILES=`find . -type f -name '*.json'`
-for file in "${FILES[@]}"; do
+while IFS=  read -r -d $'\0'; do
+  file="$REPLY"
   echo "Try $file"
   schema=`jq  -r '.["$schema"]' "$file"`
   if [[ "$schema" != "" ]]; then
@@ -21,4 +22,4 @@ for file in "${FILES[@]}"; do
   else
     echo "Skip $file"
   fi
-done
+done < <(find . -type f -name '*.json' -print0)
