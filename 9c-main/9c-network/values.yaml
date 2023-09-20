@@ -44,6 +44,9 @@ snapshot:
   partitionReset:
     enabled: true
 
+  partition:
+    enabled: true
+
   nodeSelector:
     node.kubernetes.io/instance-type: r6g.xlarge
 
