@@ -35,12 +35,14 @@ spec:
               secretKeyRef:
                 key: user
                 name: patrol-reward
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
           image: postgres:13.3
           name: patrol-reward-db
           ports:
             - containerPort: 5432
           volumeMounts:
-            - mountPath: /var/lib/postgresql
+            - mountPath: /var/lib/postgresql/data
               name: patrol-reward-db-data
       restartPolicy: Always
   updateStrategy:
