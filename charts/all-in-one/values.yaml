@@ -517,3 +517,6 @@ patrolRewardService:
     user: ""
     connectionString: ""
     size: 1Gi
+
+blockIntervalNotifier:
+  enabled: false
