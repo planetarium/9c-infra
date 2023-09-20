@@ -20,14 +20,12 @@ sudo ./aws/install
 
 HOME="/app"
 STORE_PATH="/data/headless"
-APP_PROTOCOL_VERSION=$1
-VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-SLACK_TOKEN=$2
+SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 
 function senderr() {
   echo "$1"
-  curl --data "[K8S] $1. Check snapshot-partition-$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $2
 }
 
 function make_and_upload_snapshot() {
@@ -37,7 +35,7 @@ function make_and_upload_snapshot() {
   STATE_DIR="/data/snapshots/state"
   METADATA_DIR="/data/snapshots/metadata"
   FULL_DIR="/data/snapshots/full"
-  URL="https://snapshots.nine-chronicles.com/main/partition/latest.json"
+  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
   mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
   if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -67,10 +65,12 @@ function make_and_upload_snapshot() {
   STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
   S3_BUCKET_NAME="9c-snapshots-v2"
-  S3_LATEST_SNAPSHOT_PATH="main/partition/$UPLOAD_SNAPSHOT_FILENAME"
-  S3_LATEST_METADATA_PATH="main/partition/$UPLOAD_METADATA_FILENAME"
+  S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_SNAPSHOT_FILENAME"
+  S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_METADATA_FILENAME"
+  {{- if eq $.Values.snapshot.path "main/partition" }}
   S3_LATEST_INTERNAL_SNAPSHOT_PATH="main/partition/internal/$UPLOAD_SNAPSHOT_FILENAME"
   S3_LATEST_INTERNAL_METADATA_PATH="main/partition/internal/$UPLOAD_METADATA_FILENAME"
+  {{- end }}
 
   AWS="/usr/local/bin/aws"
   AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
@@ -81,21 +81,24 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.output json
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
+  {{- if eq $.Values.snapshot.path "main/partition" }}
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
+  {{- end }}
 
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-  invalidate_cf "/main/partition/$SNAPSHOT_FILENAME.*"
-  invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
-  invalidate_cf "/main/partition/$STATE_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
+  {{- if eq $.Values.snapshot.path "main/partition" }}
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
@@ -120,12 +123,14 @@ function make_and_upload_snapshot() {
   invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
   invalidate_cf "/main/partition/$STATE_FILENAME.*"
 
-  rm "$LATEST_SNAPSHOT"
-  rm "$LATEST_STATE"
   rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
   rm "/data/snapshots/7z/partition/state_latest.7z"
   rm -r "$PARTITION_DIR/partition-snapshot"
   rm -r "$STATE_DIR/state-snapshot"
+  {{- end }}
+
+  rm "$LATEST_SNAPSHOT"
+  rm "$LATEST_STATE"
   rm -r "$METADATA_DIR"
 }
 

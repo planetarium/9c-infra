@@ -31,7 +31,7 @@ CF_DISTRIBUTION_ID=$4
 
 function senderr() {
   echo "$1"
-  curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+  curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in {{ $.Values.clusterName }} cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
 }
 
 function replace_snapshot() {

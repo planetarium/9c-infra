@@ -6,4 +6,4 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  download_snapshot.sh: |- {{ .Files.Get "scripts/download_snapshot.sh" | nindent 4 }}
+  download_snapshot.sh: |- {{ tpl (.Files.Get "scripts/download_snapshot.sh") . | nindent 4 }}
