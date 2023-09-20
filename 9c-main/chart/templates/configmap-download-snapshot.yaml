@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Chart.Name }}-download-snapshot-script
-  namespace: {{ $.Chart.Name }}
-  labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
-data:
-  download_snapshot.sh: |- {{ .Files.Get "scripts/download_snapshot.sh" | nindent 4 }}
