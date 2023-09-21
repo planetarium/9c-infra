@@ -29,6 +29,3 @@ loki:
 prometheus:
   server:
     nodeGroup: ""
-
-blockIntervalNotifier:
-  enabled: false
