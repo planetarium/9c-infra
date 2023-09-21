@@ -3,7 +3,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: block-interval-notifier
-  namespace: 9c-network
+  namespace: {{ $.Release.Name }}
 spec:
   schedule: "0 9 * * *"
   jobTemplate:
