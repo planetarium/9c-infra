@@ -384,3 +384,6 @@ remoteActionEvaluatorHeadless:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+
+blockIntervalNotifier:
+  enabled: true
