@@ -5,7 +5,7 @@ metadata:
   name: block-interval-notifier
   namespace: {{ $.Release.Name }}
 spec:
-  schedule: "0 9 * * *"
+  schedule: "0 0 * * *"
   jobTemplate:
     spec:
       template:
@@ -19,7 +19,7 @@ spec:
             - |
               apk add --no-cache jq
 
-              PROMETHEUS_RESPONSE=$(wget -qO- "${PROMETHEUS_URL}/api/v1/query?query=avg_over_time(ninechronicles_block_interval{group='validator'}[1d])")
+              PROMETHEUS_RESPONSE=$(wget -qO- "${PROMETHEUS_URL}/api/v1/query?query=round(avg_over_time(ninechronicles_block_interval{group='validator'}[1d]), 0.01)")
               AVERAGE_VALUE=$(echo $PROMETHEUS_RESPONSE | jq -r '.data.result[-1].value[-1]')
               PAYLOAD="{\"text\":\"블록 인터벌 평균값은 '$AVERAGE_VALUE' 입니다.\"}"
               echo $PAYLOAD
