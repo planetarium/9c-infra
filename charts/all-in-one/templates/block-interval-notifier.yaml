@@ -19,7 +19,7 @@ spec:
             - |
               apk add --no-cache jq
 
-              PROMETHEUS_RESPONSE=$(wget -qO- "${PROMETHEUS_URL}/api/v1/query?query=round(avg_over_time(ninechronicles_block_interval{group='validator'}[1d]), 0.01)")
+              PROMETHEUS_RESPONSE=$(wget -qO- "${PROMETHEUS_URL}/api/v1/query?query=round%28avg_over_time%28ninechronicles_block_interval%7Bgroup%3D%27validator%27%7D%5B1d%5D%29%2C%200.01%29")
               AVERAGE_VALUE=$(echo $PROMETHEUS_RESPONSE | jq -r '.data.result[-1].value[-1]')
               PAYLOAD="{\"text\":\"블록 인터벌 평균값은 '$AVERAGE_VALUE' 입니다.\"}"
               echo $PAYLOAD
@@ -33,4 +33,6 @@ spec:
                   name: slack
                   key: slack-webhook-url
           restartPolicy: OnFailure
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
 {{ end }}
