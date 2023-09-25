@@ -7,9 +7,9 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "41"
+    tag: "50"
 
-  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+  appProtocolVersion: "200080/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDEBstQIIriPFw1V9AtTimJ6oLqlK120xWj8KzNqKvdKwIgCdfGDdvw7xkaWJUfJY50jhc64Q6bWLYmxjM16BJVDEw=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTI1ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -113,7 +113,7 @@ validator:
     key: dedicated
     operator: Equal
     value: validator
-    
+
   nodeSelector:
     node.kubernetes.io/instance-type: c7g.4xlarge
 
@@ -172,7 +172,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: '41'
+    tag: '50'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
@@ -297,7 +297,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "41"
+    tag: "50"
 
   loggingEnabled: true
 
@@ -333,7 +333,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "41"
+    tag: "50"
 
   loggingEnabled: true
 
