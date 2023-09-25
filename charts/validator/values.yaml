@@ -21,6 +21,7 @@ networkType: Default
 consensusType: pbft
 
 resetSnapshot: false
+rollbackSnapshot: false
 
 useExternalSecret: false
 slackToken: ""
