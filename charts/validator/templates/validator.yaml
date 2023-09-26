@@ -1,5 +1,5 @@
 {{ range $idx := until (int .Values.count) }}
-{{ $index := add $idx 5 }}
+{{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
