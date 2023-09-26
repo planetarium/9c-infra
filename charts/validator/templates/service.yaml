@@ -1,4 +1,4 @@
-{{ range $idx := until (int .Values.validator.count) }}
+{{ range $idx := until (int .Values.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: v1
 kind: Service
@@ -19,17 +19,17 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
 spec:
   ports:
-  - port: {{ $.Values.validator.ports.headless }}
-    targetPort: {{ $.Values.validator.ports.headless }}
+  - port: {{ $.Values.ports.headless }}
+    targetPort: {{ $.Values.ports.headless }}
     name: headless
-  - port: {{ $.Values.validator.ports.graphql }}
-    targetPort: {{ $.Values.validator.ports.graphql }}
+  - port: {{ $.Values.ports.graphql }}
+    targetPort: {{ $.Values.ports.graphql }}
     name: gql
-  - port: {{ $.Values.validator.ports.gossip }}
-    targetPort: {{ $.Values.validator.ports.gossip }}
+  - port: {{ $.Values.ports.gossip }}
+    targetPort: {{ $.Values.ports.gossip }}
     name: gossip
   - port: 443
-    targetPort: {{ $.Values.validator.ports.graphql }}
+    targetPort: {{ $.Values.ports.graphql }}
     name: https
     protocol: TCP
   selector:
