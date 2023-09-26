@@ -118,4 +118,4 @@ validator:
       memory: 20Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
