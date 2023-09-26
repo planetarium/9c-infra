@@ -12,7 +12,7 @@ genesisBlockPath: "http://54.91.246.32:38080/genesis-block"
 trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
 peerStrings:
-- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,localhost,31234"
+- "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,31234"
 
 iceServers: []
 
@@ -41,10 +41,10 @@ image:
   tag: "git-2fc735ec02d4d4e9ea4abb2000d34f0a491412de"
 
 consensusSeedStrings:
-- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,localhost,6000"
+- "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,6000"
 
 hosts:
-- "9c-sample-validator-1.nine-chronicles.com"
+- "9c-single-validator-1.nine-chronicles.com"
 
 ports:
   headless: 31234
