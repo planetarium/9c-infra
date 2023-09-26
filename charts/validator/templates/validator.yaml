@@ -1,13 +1,15 @@
 {{ range $idx := until (int .Values.count) }}
-{{ $index := add $idx 1 }}
+{{ $index := add $idx 5 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
     app: validator-{{ $index }}
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: validator-{{ $index }}
-  namespace: {{ $.Values.namespace }}
+  namespace: {{ $.Release.Name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -22,34 +24,38 @@ spec:
       name: validator-{{ $index }}
     spec:
       initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/internal
-        - /data/validator
-        - $(RESET_SNAPSHOT_OPTION)
-        - validator-{{ $index }}
-        - $(SLACK_WEBHOOK_URL)
-        - $(SNAPSHOT_ROLLBACK_OPTION)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - mountPath: /bin/download_snapshot.sh
-          name: script-volume
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: validator-data-{{ $index }}
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.resetSnapshot }}"
-        - name: SNAPSHOT_ROLLBACK_OPTION
-          value: "{{ $.Values.global.rollbackSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
+        - args:
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
+          - /data/validator
+          - $(RESET_SNAPSHOT_OPTION)
+          - validator-{{ $index }}
+          - $(SLACK_WEBHOOK_URL)
+          - $(SNAPSHOT_ROLLBACK_OPTION)
+          command:
+          - /bin/download_snapshot.sh
+          env:
+          - name: RESET_SNAPSHOT_OPTION  
+            value: "{{ $.Values.snapshot.enabled }}"
+          - name: SNAPSHOT_ROLLBACK_OPTION
+            value: "{{ $.Values.rollbackSnapshot }}"
+          - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                key: slack-webhook-url
+                name: slack
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          imagePullPolicy: Always
+          name: reset-snapshot
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bin/download_snapshot.sh
+            name: download-snapshot-script
+            readOnly: true
+            subPath: download_snapshot.sh
+          - mountPath: /data
+            name: validator-data-{{ $index }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -98,6 +104,7 @@ spec:
               secretKeyRef:
                 key: validator-private-key-{{ $index }}
                 name: private-keys
+          {{- if $.Values.loggingEnabled }}
           - name: POD_NAME
             valueFrom:
               fieldRef:
@@ -108,6 +115,7 @@ spec:
                 fieldPath: metadata.namespace
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_validator-{{ $index }}.json
+          {{- end }}
           {{- with $.Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -139,24 +147,32 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
+        {{- end }}
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: c7g.4xlarge
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Chart.Name }}-probe-script
+          name: {{ $.Release.Name }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
         name: json-log
+      {{- end }}
+      imagePullSecrets:
+      - name: acr-regcred
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}

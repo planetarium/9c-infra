@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-download-snapshot-script
-  namespace: {{ $.Values.namespace }}
+  name: {{ .Release.Name }}-download-snapshot-script
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   download_snapshot.sh: |-
     #!/usr/bin/env bash
@@ -16,12 +16,12 @@ data:
       echo "Try again"
     done
 
-    until apt-get -y install jq wget aria2 sudo zip
+    until apt-get -y install curl jq wget aria2 sudo zip
     do
       echo "Try again"
     done
 
-    base_url=${1:-https://snapshots.nine-chronicles.com/main/partition}
+    base_url=${1:-https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
     service_name=$4
