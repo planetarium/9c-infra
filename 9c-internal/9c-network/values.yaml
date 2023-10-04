@@ -180,7 +180,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-e13e740776a34bb8fe6f8718bb9f185b4dd75730"
+    tag: "git-db9bc2448a062ab981838564091469a2e2c38980"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
