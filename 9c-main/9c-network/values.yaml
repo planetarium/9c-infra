@@ -387,3 +387,13 @@ remoteActionEvaluatorHeadless:
 
 blockIntervalNotifier:
   enabled: true
+
+patrolRewardService:
+  enabled: true
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-6036c32a43e4403923c40c156b9b3abdf1a72846"
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large
