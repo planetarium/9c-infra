@@ -77,7 +77,7 @@ validator:
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "false"
+    value: "true"
   - name: IpRateLimiting__GeneralRules__2__Endpoint
     value: "*:/graphql"
   - name: IpRateLimiting__GeneralRules__2__Period
