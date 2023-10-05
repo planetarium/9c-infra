@@ -74,6 +74,9 @@ validator:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
+  extraArgs:
+  - --tx-quota-per-signer=1
+
 remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
@@ -100,6 +103,8 @@ remoteHeadless:
 
   loggingEnabled: true
 
+  extraArgs:
+  - --tx-quota-per-signer=1
 
 dataProvider:
   enabled: true
@@ -148,6 +153,9 @@ explorer:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
+
+  extraArgs:
+  - --tx-quota-per-signer=1
 
 marketService:
   enabled: true
