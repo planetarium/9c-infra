@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   namespace: {{ $.Release.Name }}
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: empty-chronicle

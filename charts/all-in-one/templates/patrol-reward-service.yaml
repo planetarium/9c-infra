@@ -49,6 +49,11 @@ spec:
                 secretKeyRef:
                   key: genesis-hash
                   name: patrol-reward
+            - name: PatrolReward__ApiKey
+              valueFrom:
+                secretKeyRef:
+                  key: api-key
+                  name: patrol-reward
           {{- with $.Values.patrolRewardService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}

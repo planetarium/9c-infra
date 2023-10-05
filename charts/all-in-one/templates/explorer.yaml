@@ -9,7 +9,7 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 3
   selector:
     matchLabels:

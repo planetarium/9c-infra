@@ -445,6 +445,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
 spec:
+  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.validator.ports.headless }}
     targetPort: {{ $.Values.validator.ports.headless }}

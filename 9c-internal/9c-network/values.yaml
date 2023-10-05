@@ -28,7 +28,10 @@ global:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-c3669931b652f49b8b38e111c0f2c51619e436d4"
+  image: "planetariumhq/ninechronicles-snapshot:git-708a18d12e951f1c4275c5137eb577123dd81715"
+  partition:
+    enabled: true
+    suspend: true
   path: internal
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
@@ -74,6 +77,9 @@ validator:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
+  extraArgs:
+  - --tx-quota-per-signer=1
+
 remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
@@ -100,6 +106,8 @@ remoteHeadless:
 
   loggingEnabled: true
 
+  extraArgs:
+  - --tx-quota-per-signer=1
 
 dataProvider:
   enabled: true
@@ -149,6 +157,9 @@ explorer:
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
 
+  extraArgs:
+  - --tx-quota-per-signer=1
+
 marketService:
   enabled: true
   image:
@@ -180,7 +191,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-3d685cee2b6aff80ffd9122d008df564fcd2b0b9"
+    tag: "git-db9bc2448a062ab981838564091469a2e2c38980"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge

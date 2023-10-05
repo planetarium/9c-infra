@@ -90,6 +90,8 @@ validator:
     value: "::ffff:3.18.248.125"
   - name: IpRateLimiting__IpWhiteList__2
     value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
 
   loggingEnabled: true
 
@@ -112,10 +114,10 @@ validator:
   - effect: NoSchedule
     key: dedicated
     operator: Equal
-    value: validator
+    value: validator-test
 
   nodeSelector:
-    node.kubernetes.io/instance-type: c7g.4xlarge
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_validator
 
 remoteHeadless:
   count: 3
@@ -147,6 +149,12 @@ remoteHeadless:
     value: "10"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:3.18.248.125"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
 
   extraArgs:
   - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
@@ -172,7 +180,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: '50'
+    tag: '51'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
@@ -387,3 +395,13 @@ remoteActionEvaluatorHeadless:
 
 blockIntervalNotifier:
   enabled: true
+
+patrolRewardService:
+  enabled: true
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-f359def75d6b20313b67e2dfc3e1d024d558299a"
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large
