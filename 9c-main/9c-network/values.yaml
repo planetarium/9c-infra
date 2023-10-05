@@ -90,6 +90,8 @@ validator:
     value: "::ffff:3.18.248.125"
   - name: IpRateLimiting__IpWhiteList__2
     value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
 
   loggingEnabled: true
 
@@ -147,6 +149,12 @@ remoteHeadless:
     value: "10"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:3.18.248.125"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
 
   extraArgs:
   - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
