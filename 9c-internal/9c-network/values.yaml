@@ -28,7 +28,10 @@ global:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-c3669931b652f49b8b38e111c0f2c51619e436d4"
+  image: "planetariumhq/ninechronicles-snapshot:git-708a18d12e951f1c4275c5137eb577123dd81715"
+  partition:
+    enabled: true
+    suspend: true
   path: internal
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
