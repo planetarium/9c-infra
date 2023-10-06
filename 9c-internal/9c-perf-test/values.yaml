@@ -33,7 +33,7 @@ snapshot:
   resources:
     requests:
       cpu: 1300m
-      memory: 20Gi
+      memory: 12Gi
 
 seed:
   count: 1
@@ -83,10 +83,10 @@ remoteHeadless:
   resources:
     requests:
       cpu: 1
-      memory: 16Gi
+      memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 validator:
   count: 4
@@ -122,8 +122,8 @@ validator:
 
   resources:
     requests:
-      cpu: 2
-      memory: 20Gi
+      cpu: 1
+      memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
