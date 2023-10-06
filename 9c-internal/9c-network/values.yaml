@@ -8,7 +8,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-08e7ae4090e459ae16e72d7fa93abc4d5ea84456"
+    tag: "git-83a3fcf72d6cede699836b3c1711f4ecf77902cf"
 
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -119,7 +119,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: 'git-20f87a8ed1de01e37788b428700b5a2757393491'
+    tag: 'git-e396409ff128d5cc3f45555ff57dec669b455b1a'
 
   db:
     local: true
