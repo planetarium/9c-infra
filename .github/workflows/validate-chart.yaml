@@ -1,14 +1,14 @@
 name: validate-chart
 on: [push, pull_request]
 jobs:
-  validate-9c-main-chart:
+  validate-charts:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install kubeconform
-        run: wget https://github.com/yannh/kubeconform/releases/download/v0.6.1/kubeconform-linux-amd64.tar.gz && tar -xvzf kubeconform-linux-amd64.tar.gz
-        working-directory: 9c-main/chart
-      - run: helm lint
-        working-directory: 9c-main/chart
-      - run: helm template . | ./kubeconform -summary -skip "ExternalSecret,SecretStore"
-        working-directory: 9c-main/chart
+        run: |
+          wget https://github.com/yannh/kubeconform/releases/download/v0.6.1/kubeconform-linux-amd64.tar.gz
+          tar -xvzf kubeconform-linux-amd64.tar.gz
+      - name: Find and Validate Charts
+        run: |
+          sh .github/scripts/validate-charts.sh

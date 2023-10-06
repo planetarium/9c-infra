@@ -1,3 +1,5 @@
+rwmode: false
+
 image:
   repository: planetariumhq/market-service
   pullPolicy: Always

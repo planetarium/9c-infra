@@ -25,7 +25,7 @@ spec:
     spec:
       initContainers:
         - args:
-          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
           - /data/validator
           - $(RESET_SNAPSHOT_OPTION)
           - validator-{{ $index }}
@@ -34,7 +34,7 @@ spec:
           command:
           - /bin/download_snapshot.sh
           env:
-          - name: RESET_SNAPSHOT_OPTION  
+          - name: RESET_SNAPSHOT_OPTION
             value: "{{ $.Values.snapshot.enabled }}"
           - name: SNAPSHOT_ROLLBACK_OPTION
             value: "{{ $.Values.rollbackSnapshot }}"
