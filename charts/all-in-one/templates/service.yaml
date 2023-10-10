@@ -199,6 +199,9 @@ spec:
   - name: headless
     port: {{ $.Values.explorer.ports.headless }}
     targetPort: {{ $.Values.explorer.ports.headless }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.explorer.ports.graphql }}
   selector:
     app: explorer
   type: LoadBalancer
