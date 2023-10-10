@@ -63,7 +63,7 @@ validator:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
 
   hosts:
-  - "9c-internal-claim-items-validator.nine-chronicles.com"
+  - "9c-internal-claim-items-validator.planetarium.dev"
 
   storage:
     data: 500Gi
@@ -85,7 +85,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "9c-internal-claim-items-rpc-1.nine-chronicles.com"
+  - "9c-internal-claim-items-rpc-1.planetarium.dev"
 
   ports:
     headless: 31234
@@ -177,7 +177,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: 9c-internal-claim-items-rpc-1.nine-chronicles.com
+    value: 9c-internal-claim-items-rpc-1.planetarium.dev
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
