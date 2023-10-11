@@ -3,74 +3,195 @@
 # Declare variables to be passed into your templates.
 
 
-clusterName: "9c-internal-v2"
-logLevel: ""
-namespace: "9c-single"
+clusterName: "9c-sample"
+logLevel: "debug"
 
-appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
-genesisBlockPath: "http://54.91.246.32:38080/genesis-block"
-trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
 
-peerStrings:
-- "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,31234"
-
-iceServers: []
-
-networkType: Default
-consensusType: pbft
-
-slackToken: ""
-slackWebHookUrl: ""
-
-# if you want to delete PVC with the volume provisioned together, set this value "Delete"
-volumeReclaimPolicy: "Retain"
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+  genesisBlockPath: "http://54.91.246.32:38080/genesis-block"
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  
+  peerStrings:
+  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,31234"
+  
+  iceServers: []
+  
+  networkType: Default
+  consensusType: pbft
+  
+  resetSnapshot: false
+  useExternalSecret: false
+  slackToken: ""
+  slackWebHookUrl: ""
 
 snapshot:
-  enabled: false
-  path: "internal"
+  downloadSnapshot: false
+  fullSnapshot:
+    enabled: false
+    suspend: false
+  partitionReset:
+    enabled: false
+    suspend: false
+  partition:
+    enabled: false
+    suspend: false
+  slackChannel: "bot-test"
+  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
-externalSecret:
+  # aws information for uploading snapshot
+  # Do not upload values below filled
+  # recommended to obtain from ExternalSecret
+  cfDistributionId: ""
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
+
+  path: "9c-single"
+
+  resources:
+    requests:
+      cpu: 1300m
+      memory: 20Gi
+
+  nodeSelector: {}
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+seed:
+  count: 0
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+
+  hosts:
+  - "9c-main-tcp-seed-1.planetarium.dev"
+
+  ports:
+    node: 31234
+    gossip: 31235
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # enter private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+validator:
+  count: 1
+  image:
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  consensusSeedStrings:
+  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,6000"
+
+  hosts:
+  - "9c-single-validator-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    gossip: 6000
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  # private keys if not using External Secrets
+  privateKeys: []
+  # - "<private key>"
+
+  storage:
+    data: 1000Gi
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  loggingEnabled: false
+
+  nodeSelector: {}
+
+  tolerations: []
+  affinity: {}
+
+remoteHeadless:
+  count: 0
+
+dataProvider:
   enabled: true
-  prefix: "9c-single"
+  rwMode: false
+  render: true
 
-count: 1
-image:
-  repository: planetariumhq/ninechronicles-headless
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "git-2fc735ec02d4d4e9ea4abb2000d34f0a491412de"
+  storage:
+    data: 1000Gi
+    log: 10Gi
 
-consensusSeedStrings:
-- "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,6000"
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v200010-1"
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
 
-hosts:
-- "9c-single-validator-1.nine-chronicles.com"
+  resources: {}
 
-ports:
-  headless: 31234
-  graphql: 80
-  gossip: 6000
+  nodeSelector: {}
 
-# dotnet args
+worldBoss:
+  enabled: true
+  ports:
+    targetPort: 5000
 
-extraArgs: []
-# - --key=val
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
 
-# private keys if not using External Secrets
-privateKeys: []
-# - "<private key>"
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
 
-storage:
-  class: "9c-network-gp3"
-  data: 500Gi
+  nodeSelector: {}
 
-env: []
-
-resources:
-  requests:
-    cpu: 2
-    memory: 4Gi
-
-nodeSelector: {}
-tolerations: []
-affinity: {}
