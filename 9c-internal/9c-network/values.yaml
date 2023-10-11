@@ -113,6 +113,7 @@ remoteHeadless:
 
 dataProvider:
   enabled: true
+  migrateDatabase: true
 
   storage:
     data: 1000Gi

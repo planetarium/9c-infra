@@ -412,7 +412,7 @@ spec:
           echo Ready
       containers:
       - args:
-        - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(RESET_SNAPSHOT_OPTION)"
+        - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(MIGRATE_DB_OPTION)"
           && /app/NineChronicles.DataProvider.Executable
         command:
         - /bin/sh
@@ -472,6 +472,8 @@ spec:
               name: data-provider
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.global.resetSnapshot }}"
+        - name: MIGRATE_DB_OPTION
+          value: "{{ $.Values.dataProvider.migrateDatabase }}"
         image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
         livenessProbe:
