@@ -305,7 +305,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "60"
+    tag: "git-0f1d9dbe95d220f650c7fdd563de2b86596a6a79"
 
   loggingEnabled: true
 

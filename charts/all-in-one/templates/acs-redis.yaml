@@ -1,4 +1,4 @@
-{{ if .Values.acc.redis.enabled }}
+{{ if .Values.acc.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -23,13 +23,7 @@ spec:
         ports:
         - containerPort: {{ $.Values.acc.redis.port }}
           name: redis
-        env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: redis-password
-              name: acc-env
-        command: ["redis-server", "--requirepass", "$(REDIS_PASSWORD)"]
+        command: ["redis-server"]
         volumeMounts:
         - name: redis-data
           mountPath: /data
