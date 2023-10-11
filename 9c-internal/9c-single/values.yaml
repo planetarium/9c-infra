@@ -183,6 +183,10 @@ worldBoss:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
 
+  db:
+    local: true
+    size: 5Gi
+
   worldBossEnv:
     databaseUrl: ""
     redisHost: ""
