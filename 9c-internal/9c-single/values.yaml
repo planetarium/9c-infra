@@ -24,7 +24,7 @@ global:
   consensusType: pbft
   
   resetSnapshot: false
-  useExternalSecret: false
+  useExternalSecret: true
   slackToken: ""
   slackWebHookUrl: ""
 
