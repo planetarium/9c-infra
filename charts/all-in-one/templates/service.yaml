@@ -636,3 +636,41 @@ spec:
   type: LoadBalancer
 ---
 {{ end }}
+
+{{ if .Values.acc.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: acc-redis-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: acc-redis
+  selector:
+    app: acc-redis
+---
+{{ end }}
+
+{{ if .Values.acc.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: acc-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    name: acc
+  selector:
+    app: acc
+---
+{{ end }}

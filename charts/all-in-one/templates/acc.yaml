@@ -1,0 +1,45 @@
+
+{{ if .Values.acc.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: acc
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  namespace: {{ $.Release.Name }}
+spec:
+  serviceName: "acc-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acc
+  template:
+    metadata:
+      labels:
+        app: acc
+    spec:
+      containers:
+      - name: acc-container
+        image: {{ $.Values.acc.image.repository }}:{{ $.Values.acc.image.tag }}
+        ports:
+        - containerPort: 80
+        env:
+        - name: ACS_CONFIG_FILE
+          value: "appsettings.prod.json"
+        {{- with $.Values.acc.env }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: acc-appsettings
+          mountPath: /app/appsettings.prod.json
+          subPath: appsettings.prod.json
+      {{- with $.Values.remoteHeadless.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: acc-appsettings
+        configMap:
+          defaultMode: 0700
+          name: acc-appsettings
+{{ end }}

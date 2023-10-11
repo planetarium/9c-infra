@@ -520,3 +520,24 @@ patrolRewardService:
 
 blockIntervalNotifier:
   enabled: false
+
+acc:
+  enabled: true
+
+  redis:
+    enabled: true
+    port: 6379
+
+  sqlite:
+    enabled: false
+
+  image:
+    repository: planetariumhq/ninechronicles-headless-acc
+    pullPolicy: Always
+    tag: "git-d86b316bab2f80b1a96c09adb4f89fed7d4bd8c2"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  env: []
