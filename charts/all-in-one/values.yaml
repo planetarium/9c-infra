@@ -29,6 +29,10 @@ global:
   slackToken: ""
   slackWebHookUrl: ""
 
+externalSecret:
+  enabled: false
+  prefix: ""
+
 snapshot:
   downloadSnapshot: false
   fullSnapshot:
@@ -203,6 +207,7 @@ dataProvider:
     tag: "v200010-1"
   db:
     local: false
+    storage: 100Gi
     database: ""
     connectionString: ""
     host: ""

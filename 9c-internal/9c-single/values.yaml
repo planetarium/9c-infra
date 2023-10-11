@@ -9,14 +9,14 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: "git-2fc735ec02d4d4e9ea4abb2000d34f0a491412de"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
   genesisBlockPath: "http://54.91.246.32:38080/genesis-block"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
   
   peerStrings:
-  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,31234"
+  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,validator-5.9c-single.svc.cluster.local,31234"
   
   iceServers: []
   
@@ -24,9 +24,12 @@ global:
   consensusType: pbft
   
   resetSnapshot: false
-  useExternalSecret: true
   slackToken: ""
   slackWebHookUrl: ""
+
+externalSecret:
+  enabled: true
+  prefix: "9c-single"
 
 snapshot:
   downloadSnapshot: false
@@ -158,7 +161,7 @@ dataProvider:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
+    tag: "git-e396409ff128d5cc3f45555ff57dec669b455b1a"
   db:
     local: true
     database: ""
@@ -197,5 +200,6 @@ worldBoss:
     celeryResultBackend: ""
     slackSigningSecret: ""
 
-  nodeSelector: {}
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
 

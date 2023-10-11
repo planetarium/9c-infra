@@ -23,7 +23,9 @@ global:
 
   resetSnapshot: true
   rollbackSnapshot: false
-  useExternalSecret: true
+
+externalSecret:
+  enabled: true
 
 snapshot:
   downloadSnapshot: true
