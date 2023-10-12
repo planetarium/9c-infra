@@ -7,9 +7,9 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "60"
+    tag: "61"
 
-  appProtocolVersion: "200090/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDq8LsVGQqdTFnr7E6wVZYaYGBoYtITrm2CSPglPLEjOwIgMYKTwbR5uwkn+1xucHCffUnQicsTjkZbJH9GV23IjIs=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEwLTA2ZQ=="
+  appProtocolVersion: "200091/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQC5SXKqfmpX4l6k.nZCzokLiOaLqSGODoKxxmvoeYBDlAIgR.ejrM5XO2m9EWkbvRi8oIV.GcGbiUFz6ONSgFyikY8=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEwLTEyZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -180,7 +180,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: '60'
+    tag: '61'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
@@ -305,7 +305,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-0f1d9dbe95d220f650c7fdd563de2b86596a6a79"
+    tag: "61"
 
   loggingEnabled: true
 
@@ -341,7 +341,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "60"
+    tag: "61"
 
   loggingEnabled: true
 
