@@ -1,0 +1,12 @@
+{{ if .Values.acc.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acc-appsettings
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  appsettings.prod.json: |- {{ tpl (.Files.Get "scripts/common/appsettings-acc.json") . | nindent 4 }}
+{{ end }}

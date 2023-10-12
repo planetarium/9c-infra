@@ -148,4 +148,13 @@ node_groups = {
     min_size          = 0
     max_size          = 5
   }
+
+  "9c-main-t3_medium" = {
+    instance_types    = ["t3.medium"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "SPOT"
+    desired_size      = 1
+    min_size          = 0
+    max_size          = 1
+  }
 }
