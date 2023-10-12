@@ -86,7 +86,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
 
 validator:
   count: 4
@@ -126,4 +126,4 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
