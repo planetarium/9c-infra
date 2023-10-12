@@ -286,7 +286,7 @@ worldBoss:
   enabled: true
 
   image:
-    tag: "git-05ffdb0f2af019486b3213431031bca5e86a4a3d"
+    tag: "git-8e0ad33367fc8ef871981c95309325d3f7b3b6f2"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
