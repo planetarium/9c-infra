@@ -522,13 +522,10 @@ blockIntervalNotifier:
   enabled: false
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
     port: 6379
-
-  sqlite:
-    enabled: false
 
   image:
     repository: planetariumhq/ninechronicles-headless-acc
