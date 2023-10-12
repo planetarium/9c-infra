@@ -40,8 +40,8 @@ snapshot:
     enabled: false
     suspend: false
   partition:
-    enabled: false
-    suspend: false
+    enabled: true
+    suspend: true
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
