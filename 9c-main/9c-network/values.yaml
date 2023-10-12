@@ -405,3 +405,17 @@ patrolRewardService:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
+
+acc:
+  enabled: true
+
+  redis:
+    port: 6379
+
+  image:
+    repository: atralupus/ninechronicles-access-control-center
+    pullPolicy: Always
+    tag: "3"
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-t3_medium
