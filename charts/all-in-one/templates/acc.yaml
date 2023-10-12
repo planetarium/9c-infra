@@ -24,7 +24,7 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: ACS_CONFIG_FILE
+        - name: ACC_CONFIG_FILE
           value: "appsettings.prod.json"
         {{- with $.Values.acc.env }}
           {{- toYaml . | nindent 10 }}
