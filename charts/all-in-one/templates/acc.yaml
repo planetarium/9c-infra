@@ -33,7 +33,7 @@ spec:
         - name: acc-appsettings
           mountPath: /app/appsettings.prod.json
           subPath: appsettings.prod.json
-      {{- with $.Values.remoteHeadless.nodeSelector }}
+      {{- with $.Values.acc.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

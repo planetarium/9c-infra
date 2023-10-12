@@ -654,9 +654,7 @@ spec:
   selector:
     app: acc-redis
 ---
-{{ end }}
 
-{{ if .Values.acc.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
