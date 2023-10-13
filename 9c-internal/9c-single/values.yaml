@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 
-clusterName: "9c-sample"
+clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
