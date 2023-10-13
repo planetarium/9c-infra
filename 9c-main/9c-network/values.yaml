@@ -30,7 +30,9 @@ global:
 
   resetSnapshot: false
   rollbackSnapshot: false
-  useExternalSecret: true
+
+externalSecret:
+  enabled: true
 
 snapshot:
   slackChannel: "9c-mainnet"

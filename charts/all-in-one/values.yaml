@@ -29,6 +29,10 @@ global:
   slackToken: ""
   slackWebHookUrl: ""
 
+externalSecret:
+  enabled: false
+  prefix: ""
+
 snapshot:
   downloadSnapshot: false
   fullSnapshot:
@@ -191,6 +195,7 @@ dataProvider:
   enabled: false
   rwMode: false
   render: true
+  migrateDatabase: false
 
   storage:
     data: 1000Gi
@@ -203,6 +208,7 @@ dataProvider:
     tag: "v200010-1"
   db:
     local: false
+    storage: 100Gi
     database: ""
     connectionString: ""
     host: ""
@@ -298,6 +304,10 @@ worldBoss:
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
+
+  db:
+    local: false
+    size: 5Gi
 
   worldBossEnv:
     databaseUrl: ""

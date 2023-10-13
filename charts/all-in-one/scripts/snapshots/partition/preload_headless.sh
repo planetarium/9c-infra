@@ -43,6 +43,10 @@ function waitpid() {
 }
 
 function run_headless() {
+  if [ ! -d "$STORE_PATH" ]; then
+    mkdir -p "$STORE_PATH"
+  fi
+
   chmod 777 -R "$STORE_PATH"
 
   "$HEADLESS" \
