@@ -76,6 +76,8 @@ seed:
 
 validator:
   count: 4
+  image:
+    tag: "git-e968aa903334f30d2940e8b6b51c49786dc13bb5"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
