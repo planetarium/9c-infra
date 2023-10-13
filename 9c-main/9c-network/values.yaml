@@ -98,7 +98,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
   - --consensus-target-block-interval=8500
 
   consensusSeedStrings:
@@ -253,7 +253,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
