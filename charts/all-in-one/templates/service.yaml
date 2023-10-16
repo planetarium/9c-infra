@@ -26,6 +26,11 @@ spec:
   - port: {{ $.Values.seed.ports.graphql }}
     targetPort: {{ $.Values.seed.ports.graphql }}
     name: graphql
+  {{- if ne $.Values.global.networkType "Main" }}
+  - port: 443
+    targetPort: {{ $.Values.seed.ports.graphql }}
+    name: graphql
+  {{- end }}
   - port: {{ $.Values.seed.ports.gossip }}
     targetPort: {{ $.Values.seed.ports.gossip }}
     name: gossip
