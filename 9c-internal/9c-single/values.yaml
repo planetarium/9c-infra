@@ -16,7 +16,7 @@ global:
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
   
   peerStrings:
-  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,validator-5.9c-single.svc.cluster.local,31234"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.9c-single.svc.cluster.local,31234"
   
   iceServers: []
   
@@ -65,15 +65,15 @@ snapshot:
 volumeReclaimPolicy: "Delete"
 
 seed:
-  count: 0
+  count: 1
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "9c-main-tcp-seed-1.planetarium.dev"
+  - "tcp-seed-1.9c-single.svc.cluster.local"
 
   ports:
     node: 31234
@@ -96,7 +96,8 @@ seed:
     requests:
       cpu: 1
 
-  nodeSelector: {}
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
   tolerations: []
   affinity: {}
 
@@ -109,7 +110,7 @@ validator:
     pullPolicy: Always
 
   consensusSeedStrings:
-  - "0204e015dc185b0eb0b6bdbca5a5ca220525749353f303a343273a4812f53dc4ae,localhost,6000"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.9c-single.svc.cluster.local,31235"
 
   hosts:
   - "9c-single-validator-1.nine-chronicles.com"
@@ -146,7 +147,27 @@ validator:
   affinity: {}
 
 remoteHeadless:
-  count: 0
+  count: 1
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+
+  hosts:
+  - "remote-headless-1.9c-single.svc.cluster.local"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 500Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
 
 dataProvider:
   enabled: true
