@@ -29,7 +29,7 @@ spec:
   {{- if ne $.Values.global.networkType "Main" }}
   - port: 443
     targetPort: {{ $.Values.seed.ports.graphql }}
-    name: graphql
+    name: https
   {{- end }}
   - port: {{ $.Values.seed.ports.gossip }}
     targetPort: {{ $.Values.seed.ports.gossip }}
