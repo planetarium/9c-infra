@@ -113,7 +113,7 @@ validator:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
 
   hosts:
-  - "alfheim-validator-1.nine-chronicles.com"
+  - "alfheim-internal-validator-1.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -154,7 +154,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "remote-headless-1.alfheim.svc.cluster.local"
+  - "alfheim-internal-rpc-1.nine-chronicles.com"
 
   ports:
     headless: 31234
