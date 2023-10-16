@@ -16,7 +16,7 @@ global:
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
   
   peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.yggdrasill.svc.cluster.local,31234"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
   
   iceServers: []
   
@@ -29,7 +29,7 @@ global:
 
 externalSecret:
   enabled: true
-  prefix: "9c-internal-v2/yggdrasill"
+  prefix: "9c-internal-v2/alfheim"
 
 snapshot:
   downloadSnapshot: false
@@ -52,7 +52,7 @@ snapshot:
   aws_access_key_id: ""
   aws_secret_access_key: ""
 
-  path: "9c-internal-v2/yggdrasill"
+  path: "9c-internal-v2/alfheim"
 
   resources:
     requests:
@@ -73,7 +73,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "tcp-seed-1.yggdrasill.svc.cluster.local"
+  - "tcp-seed-1.alfheim.svc.cluster.local"
 
   ports:
     node: 31234
@@ -110,10 +110,10 @@ validator:
     pullPolicy: Always
 
   consensusSeedStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.yggdrasill.svc.cluster.local,31235"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
 
   hosts:
-  - "yggdrasill-validator-1.nine-chronicles.com"
+  - "alfheim-validator-1.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -154,7 +154,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "remote-headless-1.yggdrasill.svc.cluster.local"
+  - "remote-headless-1.alfheim.svc.cluster.local"
 
   ports:
     headless: 31234

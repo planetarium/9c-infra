@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: yggdrasill
+  name: alfheim
   namespace: argocd
 spec:
   project: default
@@ -11,7 +11,7 @@ spec:
     path: charts/all-in-one
     helm:
       valueFiles:
-        - ../../9c-internal/yggdrasill/values.yaml
+        - ../../9c-internal/alfheim/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: yggdrasill
+    namespace: alfheim
