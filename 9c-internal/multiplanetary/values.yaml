@@ -1,0 +1,180 @@
+clusterName: "9c-internal-v2"
+logLevel: "debug"
+
+heimdall:
+  enabled: false
+
+alfheim:
+  enabled: true
+
+  global:
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
+
+    trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+  snapshot:
+    resources:
+      requests:
+        cpu: 1300m
+        memory: 20Gi
+
+    nodeSelector: {}
+
+  seed:
+    hosts:
+    - "tcp-seed-1.alfheim.svc.cluster.local"
+
+    nodeSelector:
+      node.kubernetes.io/instance-type: m5d.xlarge
+
+  validator:
+    consensusSeedStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
+
+    hosts:
+    - "alfheim-internal-validator-1.nine-chronicles.com"
+
+    resources:
+      requests:
+        cpu: 2
+        memory: 20Gi
+    
+    nodeSelector: {}
+
+  remoteHeadless:
+    hosts:
+    - "alfheim-internal-rpc-1.nine-chronicles.com"
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 12Gi
+
+    nodeSelector:
+      eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-d1edd2ded2f26c93ad340dd9a7289230b7e4c61a"
+
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+
+  iceServers: []
+
+  networkType: Default
+  consensusType: pbft
+  
+  resetSnapshot: false
+  slackToken: ""
+  slackWebHookUrl: ""
+
+externalSecret:
+  enabled: true
+
+snapshot:
+  partition:
+    enabled: true
+    suspend: true
+  slackChannel: "bot-test"
+  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+
+seed:
+  count: 1
+
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+
+validator:
+  count: 1
+  image:
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+remoteHeadless:
+  count: 1
+
+dataProvider:
+  enabled: true
+  rwMode: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-e396409ff128d5cc3f45555ff57dec669b455b1a"
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+worldBoss:
+  enabled: true
+  ports:
+    targetPort: 5000
+
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
+
+  db:
+    local: true
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
+
+marketService:
+  enabled: true
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
+
+  db:
+    local: true
+    size: 1Gi
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: RpcConfig__Host
+    value: heimdall-internal-rpc-1.nine-chronicles.com
+  - name: RpcConfig__Port
+    value: "31238"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
