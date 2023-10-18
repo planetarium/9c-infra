@@ -1,25 +1,18 @@
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-d1edd2ded2f26c93ad340dd9a7289230b7e4c61a"
-
   peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.test-planet1.svc.cluster.local,31234"
 
 externalSecret:
   enabled: true
-  prefix: "9c-internal-v2/alfheim"
+  prefix: "9c-internal-v2/test-planet1"
 
 snapshot:
-  path: "9c-internal-v2/alfheim"
+  path: "9c-internal-v2/test-planet1"
 
 validator:
   consensusSeedStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
-
-  hosts:
-  - "alfheim-internal-validator-1.nine-chronicles.com"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.test-planet1.svc.cluster.local,31235"
 
 remoteHeadless:
   hosts:
-  - "alfheim-internal-rpc-1.nine-chronicles.com"
+  - "test-planet1-internal-rpc-1.nine-chronicles.com"

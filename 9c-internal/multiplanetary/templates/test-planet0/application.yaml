@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: alfheim
+  name: test-planet0
   namespace: argocd
 spec:
   project: default
@@ -14,4 +14,4 @@ spec:
         - ../../9c-internal/multiplanetary/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: alfheim
+    namespace: test-planet0
