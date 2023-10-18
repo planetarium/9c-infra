@@ -1,22 +1,3 @@
----
-apiVersion: argoproj.io/v1alpha1
-kind: AppProject
-metadata:
-  name: infra
-spec:
-  description: In-cluster applications managed by DevOps team
-  sourceRepos:
-  - '*'
-  destinations:
-  - namespace: '*'
-    server: https://kubernetes.default.svc
-  clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
-  namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -28,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra
     targetRevision: main
-    path: common/multiplanetary
+    path: 9c-internal/multiplanetary
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

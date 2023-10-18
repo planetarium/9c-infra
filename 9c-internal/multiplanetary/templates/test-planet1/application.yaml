@@ -11,7 +11,7 @@ spec:
     path: charts/all-in-one
     helm:
       valueFiles:
-        - ../../9c-internal/alfheim/values.yaml
+        - ../../9c-internal/multiplanetary/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: alfheim
