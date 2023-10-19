@@ -421,9 +421,9 @@ acc:
       node.kubernetes.io/instance-type: m5.large
 
   image:
-    repository: atralupus/ninechronicles-access-control-center
+    repository: planetariumhq/access-control-center
     pullPolicy: Always
-    tag: "4"
+    tag: "git-e44aa4c919fd181d06208ddc522a29d0c56faf7f"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-t3_medium
