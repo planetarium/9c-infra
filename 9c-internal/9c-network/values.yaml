@@ -8,7 +8,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-41a289568e991046b0644505ffa2d3b66f343922"
+    tag: "61"
 
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -168,7 +168,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-c2febce042c153b3f63975666472d410f3003757
+    tag: git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c
 
   db:
     local: true
@@ -194,7 +194,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-db9bc2448a062ab981838564091469a2e2c38980"
+    tag: "git-f26d63e433985058bb037974ceece136e0e5688e"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
