@@ -168,7 +168,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c
+    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
 
   db:
     local: true
