@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-e968aa903334f30d2940e8b6b51c49786dc13bb5"
+    tag: "git-68f1b33cb1445b2e2f24ce1dfa859c02d8733760"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -101,7 +101,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=10
   - --consensus-target-block-interval=8500
 
   consensusSeedStrings:
@@ -246,6 +246,9 @@ marketService:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
 fullState:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-68f1b33cb1445b2e2f24ce1dfa859c02d8733760"
   enabled: true
 
   loggingEnabled: true
@@ -256,7 +259,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=10
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
