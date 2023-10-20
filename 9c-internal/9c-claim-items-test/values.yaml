@@ -8,10 +8,10 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-8a2f6852e3a98406fbb500a4a150729df1a51539"
+    tag: "git-cade52b7bf01ef2e09fb52c703204a0df3f08468"
 
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
-  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  genesisBlockPath: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/rudolf-genesis-block"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-internal-claim-items-tcp.planetarium.dev,31234"
@@ -21,14 +21,14 @@ global:
   networkType: Internal
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 externalSecret:
   enabled: true
 
 snapshot:
-  downloadSnapshot: true
+  downloadSnapshot: false
   slackChannel: "9c-internal-claim-items"
   image: "planetariumhq/ninechronicles-snapshot:git-708a18d12e951f1c4275c5137eb577123dd81715"
   partition:
@@ -54,7 +54,7 @@ seed:
     node.kubernetes.io/instance-type: m5d.xlarge
 
 validator:
-  count: 4
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -63,10 +63,7 @@ validator:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
 
   hosts:
-  - "9c-internal-claim-items-validator-5.nine-chronicles.com"
-  - "9c-internal-claim-items-validator-6.nine-chronicles.com"
-  - "9c-internal-claim-items-validator-7.nine-chronicles.com"
-  - "9c-internal-claim-items-validator-8.nine-chronicles.com"
+  - "9c-internal-claim-items-validator.nine-chronicles.com"
 
   storage:
     data: 500Gi
