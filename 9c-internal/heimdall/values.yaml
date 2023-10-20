@@ -169,6 +169,9 @@ remoteHeadless:
       cpu: 1
       memory: 12Gi
 
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+
 dataProvider:
   enabled: true
   rwMode: false
