@@ -21,12 +21,10 @@ metadata:
   name: 9c-rudolf
   namespace: {{ $.Release.Name }}
 spec:
-  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
       app: 9c-rudolf
-  serviceName: 9c-rudolf
   template:
     metadata:
       labels:
@@ -62,8 +60,6 @@ spec:
       restartPolicy: Always
       serviceAccount: {{ $.Release.Name }}-9c-rudolf-iam-role
       serviceAccountName: {{ $.Release.Name }}-9c-rudolf-iam-role
-  updateStrategy:
-    type: RollingUpdate
 
 ---
 
