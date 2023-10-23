@@ -64,4 +64,18 @@ spec:
       serviceAccountName: {{ $.Chart.Name }}-9c-rudolf-iam-role
   updateStrategy:
     type: RollingUpdate
+
+---
+
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: {{ $.Chart.Name }}-rudolf-service-sg-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: 9c-rudolf
+  securityGroups:
+    groupIds:
+    - {{ $.Values.rudolfService.securityGroupId }}
 {{ end }}
