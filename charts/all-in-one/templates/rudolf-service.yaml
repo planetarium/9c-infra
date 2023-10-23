@@ -5,9 +5,9 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: {{ .Values.rudolfService.serviceAccount.roleArn }}
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: {{ $.Chart.Name }}-9c-rudolf-iam-role
-  namespace: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-9c-rudolf-iam-role
+  namespace: {{ $.Release.Name }}
 
 ---
 
@@ -17,9 +17,9 @@ kind: Deployment
 metadata:
   labels:
     app: 9c-rudolf
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: 9c-rudolf
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -60,8 +60,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
-      serviceAccount: {{ $.Chart.Name }}-9c-rudolf-iam-role
-      serviceAccountName: {{ $.Chart.Name }}-9c-rudolf-iam-role
+      serviceAccount: {{ $.Release.Name }}-9c-rudolf-iam-role
+      serviceAccountName: {{ $.Release.Name }}-9c-rudolf-iam-role
   updateStrategy:
     type: RollingUpdate
 
@@ -70,7 +70,7 @@ spec:
 apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
 metadata:
-  name: {{ $.Chart.Name }}-rudolf-service-sg-policy
+  name: {{ $.Release.Name }}-rudolf-service-sg-policy
 spec:
   podSelector:
     matchLabels:
