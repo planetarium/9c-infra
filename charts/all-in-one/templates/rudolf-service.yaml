@@ -1,0 +1,81 @@
+{{ if .Values.rudolfService.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.rudolfService.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-9c-rudolf-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: 9c-rudolf
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: 9c-rudolf
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: 9c-rudolf
+  serviceName: 9c-rudolf
+  template:
+    metadata:
+      labels:
+        app: 9c-rudolf
+    spec:
+      containers:
+        - name: 9c-rudolf
+          env:
+            - name: DATABASE_URL
+              valueFrom: 
+                secretKeyRef:
+                  key: database-url
+                  name: rudolf-service
+            - name: NCG_MINTER
+              value: {{ .Values.rudolfService.config.ncgMinter }}
+            - name: GQL_ENDPOINT
+              value: {{ .Values.rudolfService.config.graphqlEndpoint }}
+            - name: NC_GRAPHQL_ENDPOINT
+              value: {{ .Values.rudolfService.config.graphqlEndpoint }}
+            - name: AWS_KMS_KEY_ID
+              value: {{ .Values.rudolfService.kms.keyId }}
+            - name: AWS_KMS_PUBLIC_KEY
+              value: {{ .Values.rudolfService.kms.publicKey }}
+          image: {{ $.Values.rudolfService.image.repository }}:{{ $.Values.rudolfService.image.tag }}
+          ports:
+            - containerPort: 3000
+          resources:
+            {{- toYaml $.Values.rudolfService.resources | nindent 12 }}
+      {{- with $.Values.rudolfService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-9c-rudolf-iam-role
+      serviceAccountName: {{ $.Release.Name }}-9c-rudolf-iam-role
+  updateStrategy:
+    type: RollingUpdate
+
+---
+
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: {{ $.Release.Name }}-rudolf-service-sg-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: 9c-rudolf
+  securityGroups:
+    groupIds:
+    - {{ $.Values.rudolfService.securityGroupId }}
+{{ end }}
