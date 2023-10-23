@@ -101,7 +101,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=10
+  - --tx-quota-per-signer=4
   - --consensus-target-block-interval=8500
 
   consensusSeedStrings:
