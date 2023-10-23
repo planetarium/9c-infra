@@ -548,3 +548,25 @@ acc:
   resources: {}
 
   env: []
+
+rudolfService:
+  enabled: false
+  image:
+    repository: planetariumhq/9c-rudolf
+    pullPolicy: Always
+    tag: "TAG"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  config:
+    ncgMinter: "NCG_MINTER"
+    graphqlEndpoint: "ENDPOINT"
+  
+  kms:
+    keyId: "KEY_ID"
+    publicKey: "PUBLIC_KEY"
+
+  serviceAccount:
+    roleArn: "ROLE_ARN"
