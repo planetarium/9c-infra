@@ -199,6 +199,8 @@ patrolRewardService:
     local: true
 
 rudolfService:
+  enabled: true
+
   image:
     tag: "git-64ad20a7abb298b1b4e1fdeca00be20780c14e91"
 
