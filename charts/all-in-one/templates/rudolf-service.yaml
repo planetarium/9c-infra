@@ -39,7 +39,7 @@ spec:
               valueFrom: 
                 secretKeyRef:
                   key: database-url
-                  name: 9c-rudolf-env
+                  name: rudolf-service
             - name: NCG_MINTER
               value: {{ .Values.rudolfService.config.ncgMinter }}
             - name: GQL_ENDPOINT
