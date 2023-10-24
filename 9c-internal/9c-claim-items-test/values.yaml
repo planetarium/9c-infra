@@ -26,6 +26,7 @@ global:
 
 externalSecret:
   enabled: true
+  prefix: "9c-internal-v2/9c-claim-items-test"
 
 snapshot:
   downloadSnapshot: false
