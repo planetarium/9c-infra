@@ -67,6 +67,7 @@ apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
 metadata:
   name: {{ $.Release.Name }}-rudolf-service-sg-policy
+  namespace: {{ $.Release.Name }}
 spec:
   podSelector:
     matchLabels:
