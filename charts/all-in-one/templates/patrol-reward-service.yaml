@@ -54,6 +54,16 @@ spec:
                 secretKeyRef:
                   key: api-key
                   name: patrol-reward
+            - name: WorkerConfig__StageInterval
+              valueFrom:
+                secretKeyRef:
+                  key: stage-interval
+                  name: patrol-reward
+            - name: WorkerConfig__ResultInterval
+              valueFrom:
+                secretKeyRef:
+                  key: result-interval
+                  name: patrol-reward
           {{- with $.Values.patrolRewardService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
