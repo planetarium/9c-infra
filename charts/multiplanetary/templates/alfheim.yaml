@@ -61,116 +61,117 @@ spec:
           path: "{{ .Values.clusterName }}/alfheim"
 
           resources:
-            requests:
-              cpu: 1300m
-              memory: 20Gi
+            {{- toYaml $.Values.alfheim.snapshot.resources | nindent 12 }}
 
           nodeSelector:
-            {{- toYaml $.Values.alfheim.nodeSelector | nindent 10 }}
+            {{- toYaml $.Values.alfheim.snapshot.nodeSelector | nindent 12 }}
 
         # if you want to delete PVC with the volume provisioned together, set this value "Delete"
-        volumeReclaimPolicy: {{ .Values.snapshot.volumeReclaimPolicy }}
+        volumeReclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 
         seed:
           count: {{ .Values.seed.count }}
           useTurnServer: {{ .Values.seed.useTurnServer }}
           image:
-            {{- toYaml $.Values.seed.image | nindent 10 }}
+            {{- toYaml $.Values.seed.image | nindent 12 }}
 
           hosts:
-            {{- toYaml $.Values.alfheim.seed.hosts | nindent 10 }}
+            {{- toYaml $.Values.alfheim.seed.hosts | nindent 12 }}
 
           ports:
-            {{- toYaml $.Values.seed.ports | nindent 10 }}
+            {{- toYaml $.Values.seed.ports | nindent 12 }}
 
           # dotnet args
           workerCount: {{ .Values.seed.workerCount }}
 
           extraArgs:
-            {{- toYaml $.Values.seed.extraArgs | nindent 10 }}
+            {{- toYaml $.Values.seed.extraArgs | nindent 12 }}
 
           privateKeys: 
-            {{- toYaml $.Values.seed.privateKeys | nindent 10 }}
+            {{- toYaml $.Values.seed.privateKeys | nindent 12 }}
 
           env:
-            {{- toYaml $.Values.seed.env | nindent 10 }}
+            {{- toYaml $.Values.seed.env | nindent 12 }}
 
           resources:
-            {{- toYaml $.Values.alfheim.seed.resources | nindent 10 }}
+            {{- toYaml $.Values.alfheim.seed.resources | nindent 12 }}
 
           nodeSelector:
-            {{- toYaml $.Values.alfheim.seed.nodeSelector | nindent 10 }}
+            {{- toYaml $.Values.alfheim.seed.nodeSelector | nindent 12 }}
 
           tolerations:
-            {{- toYaml $.Values.seed.tolerations | nindent 10 }}
+            {{- toYaml $.Values.seed.tolerations | nindent 12 }}
 
           affinity:
-            {{- toYaml $.Values.seed.affinity | nindent 10 }}
+            {{- toYaml $.Values.seed.affinity | nindent 12 }}
 
         validator:
           count: {{ .Values.validator.count }}
+
           image:
-            {{- toYaml $.Values.validator | nindent 10 }}
+            {{- toYaml $.Values.validator.image | nindent 12 }}
 
           consensusSeedStrings:
-            {{- toYaml $.Values.alfheim.validator.consensusSeedStrings | nindent 10 }}
+            {{- toYaml $.Values.alfheim.validator.consensusSeedStrings | nindent 12 }}
 
           hosts:
-            {{- toYaml $.Values.alfheim.validator.hosts | nindent 10 }}
+            {{- toYaml $.Values.alfheim.validator.hosts | nindent 12 }}
 
           ports:
-            {{- toYaml $.Values.validator.ports | nindent 10 }}
+            {{- toYaml $.Values.validator.ports | nindent 12 }}
 
           extraArgs:
-            {{- toYaml $.Values.validator.extraArgs | nindent 10 }}
+            {{- toYaml $.Values.validator.extraArgs | nindent 12 }}
 
           privateKeys:
-            {{- toYaml $.Values.validator.privateKeys | nindent 10 }}
+            {{- toYaml $.Values.validator.privateKeys | nindent 12 }}
 
           storage:
             data: 1000Gi
 
           env:
-            {{- toYaml $.Values.validator.env | nindent 10 }}
+            {{- toYaml $.Values.validator.env | nindent 12 }}
 
           resources:
-            {{- toYaml $.Values.alfheim.validator.resources | nindent 10 }}
+            {{- toYaml $.Values.alfheim.validator.resources | nindent 12 }}
 
           loggingEnabled: {{ .Values.validator.loggingEnabled }}
 
           nodeSelector:
-            {{- toYaml $.Values.alfheim.validator.nodeSelector | nindent 10 }}
+            {{- toYaml $.Values.alfheim.validator.nodeSelector | nindent 12 }}
 
           tolerations:
-            {{- toYaml $.Values.validator.tolerations | nindent 10 }}
+            {{- toYaml $.Values.validator.tolerations | nindent 12 }}
 
           affinity:
-            {{- toYaml $.Values.validator.affinity | nindent 10 }}
+            {{- toYaml $.Values.validator.affinity | nindent 12 }}
 
         remoteHeadless:
           count: {{ .Values.remoteHeadless.count }}
 
           image:
-            {{- toYaml $.Values.remoteHeadless.image | nindent 10 }}
+            {{- toYaml $.Values.remoteHeadless.image | nindent 12 }}
 
           hosts:
-            {{- toYaml $.Values.alfheim.remoteHeadless.hosts | nindent 10 }}
+            {{- toYaml $.Values.alfheim.remoteHeadless.hosts | nindent 12 }}
 
           ports:
-            {{- toYaml $.Values.remoteHeadless.ports | nindent 10 }}
+            {{- toYaml $.Values.remoteHeadless.ports | nindent 12 }}
 
           storage:
             data: 500Gi
 
           resources:
-            {{- toYaml $.Values.alfheim.remoteHeadless.resources | nindent 10 }}
+            {{- toYaml $.Values.alfheim.remoteHeadless.resources | nindent 12 }}
 
           nodeSelector:
-            {{- toYaml $.Values.alfheim.remoteHeadless.nodeSelector | nindent 10 }}
+            {{- toYaml $.Values.alfheim.remoteHeadless.nodeSelector | nindent 12 }}
 
-        {{- toYaml $.Values.dataProvider | nindent 8 }}
+        dataProvider
+          {{- toYaml $.Values.dataProvider | nindent 10 }}
 
-        {{- toYaml $.Values.worldBoss | nindent 8 }}
+        worldBoss
+          {{- toYaml $.Values.worldBoss | nindent 10 }}
 
   destination:
     server: https://kubernetes.default.svc
