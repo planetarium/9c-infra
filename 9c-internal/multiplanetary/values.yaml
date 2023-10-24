@@ -2,4 +2,7 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 heimdall:
+  enabled: false
+
+alfheim:
   enabled: true
