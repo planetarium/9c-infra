@@ -1,0 +1,178 @@
+{{ if .Values.heimdall.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: heimdall
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/all-in-one
+    helm:
+      values: |-
+        clusterName: {{ .Values.clusterName }}
+        logLevel: {{ .Values.logLevel }}
+
+        global:
+          image:
+            {{- toYaml $.Values.global.image | nindent 10 }}
+
+          appProtocolVersion: {{ .Values.global.appProtocolVersion }}
+          genesisBlockPath: {{ .Values.global.genesisBlockPath }}
+          trustedAppProtocolVersionSigner: {{ .Values.global.trustedAppProtocolVersionSigner }}
+
+          peerStrings:
+            {{- toYaml $.Values.heimdall.peerStrings | nindent 12 }}
+
+          iceServers:
+            {{- toYaml $.Values.global.iceServers | nindent 12 }}
+          
+          networkType: {{ .Values.global.networkType }}
+          consensusType: {{ .Values.global.consensusType }}
+          
+          resetSnapshot: {{ .Values.global.resetSnapshot }}
+          slackToken: {{ .Values.global.slackToken }}
+          slackWebHookUrl: {{ .Values.global.slackWebHookUrl }}
+
+        externalSecret:
+          enabled: {{ .Values.externalSecret.enabled }}
+          prefix: "{{ .Values.clusterName }}/heimdall"
+
+        snapshot:
+          downloadSnapshot: {{ .Values.snapshot.downloadSnapshot }}
+          fullSnapshot:
+            {{- toYaml $.Values.snapshot.fullSnapshot | nindent 12 }}
+          partitionReset:
+            {{- toYaml $.Values.snapshot.partitionReset | nindent 12 }}
+          partition:
+            {{- toYaml $.Values.snapshot.partition | nindent 12 }}
+          slackChannel: {{ .Values.snapshot.slackChannel }}
+          image: "{{ .Values.snapshot.image }}"
+
+          # aws information for uploading snapshot
+          # Do not upload values below filled
+          # recommended to obtain from ExternalSecret
+          cfDistributionId: "{{ .Values.snapshot.cfDistributionId }}"
+          aws_access_key_id: "{{ .Values.snapshot.aws_access_key_id }}"
+          aws_secret_access_key: "{{ .Values.snapshot.aws_secret_access_key }}"
+
+          path: "{{ .Values.clusterName }}/heimdall"
+
+          resources:
+            requests:
+              cpu: 1300m
+              memory: 20Gi
+
+          nodeSelector:
+            {{- toYaml $.Values.heimdall.nodeSelector | nindent 10 }}
+
+        # if you want to delete PVC with the volume provisioned together, set this value "Delete"
+        volumeReclaimPolicy: {{ .Values.snapshot.volumeReclaimPolicy }}
+
+        seed:
+          count: {{ .Values.seed.count }}
+          useTurnServer: {{ .Values.seed.useTurnServer }}
+          image:
+            {{- toYaml $.Values.seed.image | nindent 10 }}
+
+          hosts:
+            {{- toYaml $.Values.heimdall.seed.hosts | nindent 10 }}
+
+          ports:
+            {{- toYaml $.Values.seed.ports | nindent 10 }}
+
+          # dotnet args
+          workerCount: {{ .Values.seed.workerCount }}
+
+          extraArgs:
+            {{- toYaml $.Values.seed.extraArgs | nindent 10 }}
+
+          privateKeys: 
+            {{- toYaml $.Values.seed.privateKeys | nindent 10 }}
+
+          env:
+            {{- toYaml $.Values.seed.env | nindent 10 }}
+
+          resources:
+            {{- toYaml $.Values.heimdall.seed.resources | nindent 10 }}
+
+          nodeSelector:
+            {{- toYaml $.Values.heimdall.seed.nodeSelector | nindent 10 }}
+
+          tolerations:
+            {{- toYaml $.Values.seed.tolerations | nindent 10 }}
+
+          affinity:
+            {{- toYaml $.Values.seed.affinity | nindent 10 }}
+
+        validator:
+          count: {{ .Values.validator.count }}
+          image:
+            {{- toYaml $.Values.validator | nindent 10 }}
+
+          consensusSeedStrings:
+            {{- toYaml $.Values.heimdall.validator.consensusSeedStrings | nindent 10 }}
+
+          hosts:
+            {{- toYaml $.Values.heimdall.validator.hosts | nindent 10 }}
+
+          ports:
+            {{- toYaml $.Values.validator.ports | nindent 10 }}
+
+          extraArgs:
+            {{- toYaml $.Values.validator.extraArgs | nindent 10 }}
+
+          privateKeys:
+            {{- toYaml $.Values.validator.privateKeys | nindent 10 }}
+
+          storage:
+            data: 1000Gi
+
+          env:
+            {{- toYaml $.Values.validator.env | nindent 10 }}
+
+          resources:
+            {{- toYaml $.Values.heimdall.validator.resources | nindent 10 }}
+
+          loggingEnabled: {{ .Values.validator.loggingEnabled }}
+
+          nodeSelector:
+            {{- toYaml $.Values.heimdall.validator.nodeSelector | nindent 10 }}
+
+          tolerations:
+            {{- toYaml $.Values.validator.tolerations | nindent 10 }}
+
+          affinity:
+            {{- toYaml $.Values.validator.affinity | nindent 10 }}
+
+        remoteHeadless:
+          count: {{ .Values.remoteHeadless.count }}
+
+          image:
+            {{- toYaml $.Values.remoteHeadless.image | nindent 10 }}
+
+          hosts:
+            {{- toYaml $.Values.heimdall.remoteHeadless.hosts | nindent 10 }}
+
+          ports:
+            {{- toYaml $.Values.remoteHeadless.ports | nindent 10 }}
+
+          storage:
+            data: 500Gi
+
+          resources:
+            {{- toYaml $.Values.heimdall.remoteHeadless.resources | nindent 10 }}
+
+          nodeSelector:
+            {{- toYaml $.Values.heimdall.remoteHeadless.nodeSelector | nindent 10 }}
+
+        {{- toYaml $.Values.dataProvider | nindent 8 }}
+
+        {{- toYaml $.Values.worldBoss | nindent 8 }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: heimdall
+{{ end }}
