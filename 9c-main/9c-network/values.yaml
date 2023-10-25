@@ -296,7 +296,7 @@ worldBoss:
   enabled: true
 
   image:
-    repository: planetariumhq/market-service
+    repository: planetariumhq/world-boss-service
     tag: "git-422222fe12d5e5860f23ab13581900c52e90b10a"
 
   nodeSelector:
