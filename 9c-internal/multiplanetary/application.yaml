@@ -8,8 +8,10 @@ spec:
   project: infra
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: main
+    targetRevision: test-multiplanetary
     path: 9c-internal/multiplanetary
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  syncPolicy:
+    automated: {}
