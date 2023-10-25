@@ -214,6 +214,7 @@ marketService:
   enabled: true
   rwMode: true
   image:
+    repository: planetariumhq/market-service
     tag: "git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c"
 
   env:
@@ -295,7 +296,8 @@ worldBoss:
   enabled: true
 
   image:
-    tag: "git-8e0ad33367fc8ef871981c95309325d3f7b3b6f2"
+    repository: planetariumhq/market-service
+    tag: "git-422222fe12d5e5860f23ab13581900c52e90b10a"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
