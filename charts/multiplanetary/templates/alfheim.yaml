@@ -16,15 +16,20 @@ spec:
         logLevel: {{ .Values.logLevel }}
 
         global:
+          {{- if $.Values.alfheim.global.image }}
+          image:
+            {{- toYaml $.Values.alfheim.global.image | nindent 12 }}
+          {{- else }}
           image:
             {{- toYaml $.Values.global.image | nindent 12 }}
+          {{- end }}
 
           appProtocolVersion: {{ .Values.global.appProtocolVersion }}
-          genesisBlockPath: {{ .Values.alfheim.genesisBlockPath }}
-          trustedAppProtocolVersionSigner: {{ .Values.global.trustedAppProtocolVersionSigner }}
+          genesisBlockPath: {{ .Values.alfheim.global.genesisBlockPath }}
+          trustedAppProtocolVersionSigner: {{ .Values.alfheim.global.trustedAppProtocolVersionSigner }}
 
           peerStrings:
-            {{- toYaml $.Values.alfheim.peerStrings | nindent 12 }}
+            {{- toYaml $.Values.alfheim.global.peerStrings | nindent 12 }}
 
           iceServers:
             {{- toYaml $.Values.global.iceServers | nindent 12 }}
@@ -49,7 +54,14 @@ spec:
           partition:
             {{- toYaml $.Values.snapshot.partition | nindent 12 }}
           slackChannel: {{ .Values.snapshot.slackChannel }}
-          image: "{{ .Values.snapshot.image }}"
+
+          {{- if $.Values.alfheim.snapshot.image }}
+          image:
+            {{- toYaml $.Values.alfheim.snapshot.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.snapshot.image | nindent 12 }}
+          {{- end }}
 
           # aws information for uploading snapshot
           # Do not upload values below filled
@@ -70,10 +82,16 @@ spec:
         volumeReclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 
         seed:
-          count: {{ .Values.seed.count }}
+          count: {{ .Values.alfheim.seed.count }}
           useTurnServer: {{ .Values.seed.useTurnServer }}
+
+          {{- if $.Values.alfheim.seed.image }}
+          image:
+            {{- toYaml $.Values.alfheim.seed.image | nindent 12 }}
+          {{- else }}
           image:
             {{- toYaml $.Values.seed.image | nindent 12 }}
+          {{- end }}
 
           hosts:
             {{- toYaml $.Values.alfheim.seed.hosts | nindent 12 }}
@@ -106,10 +124,15 @@ spec:
             {{- toYaml $.Values.seed.affinity | nindent 12 }}
 
         validator:
-          count: {{ .Values.validator.count }}
+          count: {{ .Values.alfheim.validator.count }}
 
+          {{- if $.Values.alfheim.validator.image }}
+          image:
+            {{- toYaml $.Values.alfheim.validator.image | nindent 12 }}
+          {{- else }}
           image:
             {{- toYaml $.Values.validator.image | nindent 12 }}
+          {{- end }}
 
           consensusSeedStrings:
             {{- toYaml $.Values.alfheim.validator.consensusSeedStrings | nindent 12 }}
@@ -147,10 +170,15 @@ spec:
             {{- toYaml $.Values.validator.affinity | nindent 12 }}
 
         remoteHeadless:
-          count: {{ .Values.remoteHeadless.count }}
+          count: {{ .Values.alfheim.remoteHeadless.count }}
 
+          {{- if $.Values.alfheim.remoteHeadless.image }}
+          image:
+            {{- toYaml $.Values.alfheim.remoteHeadless.image | nindent 12 }}
+          {{- else }}
           image:
             {{- toYaml $.Values.remoteHeadless.image | nindent 12 }}
+          {{- end }}
 
           hosts:
             {{- toYaml $.Values.alfheim.remoteHeadless.hosts | nindent 12 }}

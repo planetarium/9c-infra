@@ -8,15 +8,16 @@ logLevel: "debug"
 heimdall:
   enabled: true
 
-  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
-
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+  global:
+    image:
+      repository: planetariumhq/ninechronicles-headless
+      tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
     
-  peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
-  
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+    
   snapshot:
     resources:
       requests:
@@ -43,15 +44,16 @@ heimdall:
 alfheim:
   enabled: true
 
-  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  global:
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    image:
+      repository: planetariumhq/ninechronicles-headless
+      tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+      
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
     
-  peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
-  
   snapshot:
     resources:
       requests:
@@ -61,6 +63,8 @@ alfheim:
     nodeSelector: {}
 
   seed:
+    count: 1
+
     hosts:
     - "tcp-seed-1.alfheim.svc.cluster.local"
 
@@ -68,6 +72,8 @@ alfheim:
       node.kubernetes.io/instance-type: m5d.xlarge
 
   validator:
+    count: 1
+
     consensusSeedStrings:
     - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
 
@@ -82,6 +88,8 @@ alfheim:
     nodeSelector: {}
 
   remoteHeadless:
+    count: 1
+
     hosts:
     - "alfheim-internal-rpc-1.nine-chronicles.com"
 
@@ -139,18 +147,10 @@ snapshot:
 
   path: "internal"
 
-  resources:
-    requests:
-      cpu: 1300m
-      memory: 20Gi
-
-  nodeSelector: {}
-
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
 
 seed:
-  count: 1
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
@@ -183,7 +183,6 @@ seed:
   affinity: {}
 
 validator:
-  count: 4
   image:
     repository: ""
     # Overrides the image tag whose default is the chart appVersion.
@@ -222,7 +221,6 @@ validator:
   affinity: {}
 
 remoteHeadless:
-  count: 1
   image:
     # follow global image
     repository: ""
