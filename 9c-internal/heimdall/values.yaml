@@ -136,7 +136,7 @@ validator:
 
   resources:
     requests:
-      cpu: 2
+      cpu: 1800m
       memory: 12Gi
 
   loggingEnabled: false
