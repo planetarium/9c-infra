@@ -36,7 +36,7 @@ snapshot:
       memory: 20Gi
 
 seed:
-  count: 1
+  count: 0
   useTurnServer: false
   image:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
@@ -51,7 +51,7 @@ seed:
     eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
 
 remoteHeadless:
-  count: 1
+  count: 0
   image:
     # follow global image
     repository: ""
@@ -81,7 +81,7 @@ remoteHeadless:
     eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c_on_demand
 
 validator:
-  count: 4
+  count: 0
   image:
     repository: ""
     # Overrides the image tag whose default is the chart appVersion.
