@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-6a931307d2f146232baf7271ae93353bd3ea84df"
+    tag: "git-b592ff6f19681a772ff3a8a920409439f0c1e0a7"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -250,7 +250,7 @@ marketService:
 fullState:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-6a931307d2f146232baf7271ae93353bd3ea84df"
+    tag: "git-b592ff6f19681a772ff3a8a920409439f0c1e0a7"
   enabled: true
 
   loggingEnabled: true
