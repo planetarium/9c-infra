@@ -6,13 +6,12 @@ clusterName: "multiplanetary-sample"
 logLevel: "debug"
 
 heimdall:
-  enabled: true
+  enabled: false
 
-  global:
-    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
-    peerStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+  peerStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
     
   snapshot:
     resources:
@@ -38,13 +37,12 @@ heimdall:
     - "heimdall-internal-rpc-1.nine-chronicles.com"
 
 alfheim:
-  enabled: true
+  enabled: false
 
-  global:
-    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
-    peerStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
+  peerStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
     
   snapshot:
     resources:

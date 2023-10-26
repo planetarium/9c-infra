@@ -18,20 +18,20 @@ spec:
         logLevel: {{ .Values.logLevel }}
 
         global:
-          {{- if $.Values.alfheim.global.image }}
+          {{- if $.Values.alfheim.image }}
           image:
-            {{- toYaml $.Values.alfheim.global.image | nindent 12 }}
+            {{- toYaml $.Values.alfheim.image | nindent 12 }}
           {{- else }}
           image:
             {{- toYaml $.Values.global.image | nindent 12 }}
           {{- end }}
 
           appProtocolVersion: {{ .Values.global.appProtocolVersion }}
-          genesisBlockPath: {{ .Values.alfheim.global.genesisBlockPath }}
-          trustedAppProtocolVersionSigner: {{ .Values.alfheim.global.trustedAppProtocolVersionSigner }}
+          genesisBlockPath: {{ .Values.alfheim.genesisBlockPath }}
+          trustedAppProtocolVersionSigner: {{ .Values.alfheim.trustedAppProtocolVersionSigner }}
 
           peerStrings:
-            {{- toYaml $.Values.alfheim.global.peerStrings | nindent 12 }}
+            {{- toYaml $.Values.alfheim.peerStrings | nindent 12 }}
 
           iceServers:
             {{- toYaml $.Values.global.iceServers | nindent 12 }}

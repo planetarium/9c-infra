@@ -15,6 +15,14 @@ spec:
     path: charts/multiplanetary
     helm:
       valueFiles:
+        - ../../9c-internal/multiplanetary/alfheim.yaml
+        - ../../9c-internal/multiplanetary/validator.yaml
+        - ../../9c-internal/multiplanetary/seed.yaml
+        - ../../9c-internal/multiplanetary/remoteHeadless.yaml
+        - ../../9c-internal/multiplanetary/snapshot.yaml
+        - ../../9c-internal/multiplanetary/dataProvider.yaml
+        - ../../9c-internal/multiplanetary/marketService.yaml
+        - ../../9c-internal/multiplanetary/worldBoss.yaml
         - ../../9c-internal/multiplanetary/values.yaml
   destination:
     server: https://kubernetes.default.svc
