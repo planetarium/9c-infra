@@ -141,7 +141,8 @@ validator:
 
   loggingEnabled: false
 
-  nodeSelector: {}
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
   tolerations: []
   affinity: {}
