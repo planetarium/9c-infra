@@ -99,7 +99,7 @@ spec:
   securityGroups:
     groupIds:
 {{ if not .Values.rudolfService.db.local }}
-    - {{ $.Values.rudolfService.securityGroupIds.podToDb }}
+    - {{ $.Values.rudolfService.db.securityGroupId }}
 {{ end }}
     - {{ $.Values.rudolfService.securityGroupIds.podToService }}
     {{- toYaml $.Values.rudolfService.securityGroupIds.extra | nindent 4 }}

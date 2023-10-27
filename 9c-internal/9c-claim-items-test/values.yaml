@@ -205,6 +205,10 @@ rudolfService:
   image:
     tag: "git-64ad20a7abb298b1b4e1fdeca00be20780c14e91"
 
+  db:
+    local: false
+    securityGroupId: "sg-0fd42d699fe71759f"
+
   config:
     ncgMinter: "0x4fa78af2c9fb3391ef05f1f1f8fe9565137a00f9"
     graphqlEndpoint: "http://k8s-9cclaimi-remotehe-a491fa26e4-b6e7e66fcd3d3e9a.elb.us-east-2.amazonaws.com/graphql"
@@ -216,7 +220,6 @@ rudolfService:
     roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
 
   securityGroupIds:
-    podToDb: "sg-0fd42d699fe71759f"
     podToService: "sg-0f726b78db71de0b0"
     serviceToPod: "sg-0c865006315f5b9f0"
     extra:
