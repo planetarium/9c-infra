@@ -576,3 +576,6 @@ rudolfService:
     roleArn: "ROLE_ARN"
 
   securityGroupId: 1234
+  securityGroupIds:
+    serviceToPod: "sg-"
+    podToService: "sg-"

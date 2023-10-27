@@ -63,6 +63,30 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: rudolf-service
+  namespace: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-security-groups: {{ .Values.rudolfService.securityGroupIds.serviceToPod }}
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  selector:
+    app: 9c-rudolf
+
+---
+
 {{ if not .Values.rudolfService.db.local }}
 apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
@@ -76,5 +100,6 @@ spec:
   securityGroups:
     groupIds:
     - {{ $.Values.rudolfService.securityGroupId }}
+    - {{ $.Values.rudolfService.securityGroupIds.podToService }}
 {{ end }}
 {{ end }}
