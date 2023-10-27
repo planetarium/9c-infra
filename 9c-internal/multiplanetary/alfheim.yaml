@@ -1,13 +1,12 @@
 alfheim:
   enabled: true
 
-  global:
-    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
-    peerStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
+  peerStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
 
-    trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
   snapshot:
     resources:
