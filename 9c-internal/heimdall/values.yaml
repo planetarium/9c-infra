@@ -275,7 +275,7 @@ rudolfService:
     tag: "git-64ad20a7abb298b1b4e1fdeca00be20780c14e91"
 
   config:
-    ncgMinter: "0x4fa78af2c9fb3391ef05f1f1f8fe9565137a00f9"
+    ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
   db:
     local: true
 
