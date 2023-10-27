@@ -742,7 +742,7 @@ spec:
 ---
 {{ end }}
 
-{{- if .Values.rudolfService.db.local }}
+{{ if .Values.rudolfService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -758,4 +758,4 @@ spec:
   selector:
     app: rudolf-db
   type: ClusterIP
-{{- end }}
+{{ end }}
