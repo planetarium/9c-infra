@@ -1,0 +1,205 @@
+{{ if .Values.alfheim.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alfheim
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    automated: {}
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/all-in-one
+    helm:
+      values: |-
+        clusterName: {{ .Values.clusterName }}
+        logLevel: {{ .Values.logLevel }}
+
+        global:
+          {{- if $.Values.alfheim.image }}
+          image:
+            {{- toYaml $.Values.alfheim.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.global.image | nindent 12 }}
+          {{- end }}
+
+          appProtocolVersion: {{ .Values.global.appProtocolVersion }}
+          genesisBlockPath: {{ .Values.alfheim.genesisBlockPath }}
+          trustedAppProtocolVersionSigner: {{ .Values.alfheim.trustedAppProtocolVersionSigner }}
+
+          peerStrings:
+            {{- toYaml $.Values.alfheim.peerStrings | nindent 12 }}
+
+          iceServers:
+            {{- toYaml $.Values.global.iceServers | nindent 12 }}
+          
+          networkType: {{ .Values.global.networkType }}
+          consensusType: {{ .Values.global.consensusType }}
+          
+          resetSnapshot: {{ .Values.global.resetSnapshot }}
+          slackToken: {{ .Values.global.slackToken }}
+          slackWebHookUrl: {{ .Values.global.slackWebHookUrl }}
+
+        externalSecret:
+          enabled: {{ .Values.externalSecret.enabled }}
+          prefix: "{{ .Values.clusterName }}/alfheim"
+
+        snapshot:
+          downloadSnapshot: {{ .Values.snapshot.downloadSnapshot }}
+          fullSnapshot:
+            {{- toYaml $.Values.snapshot.fullSnapshot | nindent 12 }}
+          partitionReset:
+            {{- toYaml $.Values.snapshot.partitionReset | nindent 12 }}
+          partition:
+            {{- toYaml $.Values.snapshot.partition | nindent 12 }}
+          slackChannel: {{ .Values.snapshot.slackChannel }}
+
+          {{- if $.Values.alfheim.snapshot.image }}
+          image:
+            {{- toYaml $.Values.alfheim.snapshot.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.snapshot.image | nindent 12 }}
+          {{- end }}
+
+          cfDistributionId: "{{ .Values.snapshot.cfDistributionId }}"
+          aws_access_key_id: "{{ .Values.snapshot.aws_access_key_id }}"
+          aws_secret_access_key: "{{ .Values.snapshot.aws_secret_access_key }}"
+
+          path: "{{ .Values.clusterName }}/alfheim"
+
+          resources:
+            {{- toYaml $.Values.alfheim.snapshot.resources | nindent 12 }}
+
+          nodeSelector:
+            {{- toYaml $.Values.alfheim.snapshot.nodeSelector | nindent 12 }}
+
+        volumeReclaimPolicy: {{ .Values.volumeReclaimPolicy }}
+
+        seed:
+          count: {{ .Values.alfheim.seed.count }}
+          useTurnServer: {{ .Values.seed.useTurnServer }}
+
+          {{- if $.Values.alfheim.seed.image }}
+          image:
+            {{- toYaml $.Values.alfheim.seed.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.seed.image | nindent 12 }}
+          {{- end }}
+
+          hosts:
+            {{- toYaml $.Values.alfheim.seed.hosts | nindent 12 }}
+
+          ports:
+            {{- toYaml $.Values.seed.ports | nindent 12 }}
+
+          # dotnet args
+          workerCount: {{ .Values.seed.workerCount }}
+
+          extraArgs:
+            {{- toYaml $.Values.seed.extraArgs | nindent 12 }}
+
+          privateKeys: 
+            {{- toYaml $.Values.seed.privateKeys | nindent 12 }}
+
+          env:
+            {{- toYaml $.Values.seed.env | nindent 12 }}
+
+          resources:
+            {{- toYaml $.Values.alfheim.seed.resources | nindent 12 }}
+
+          nodeSelector:
+            {{- toYaml $.Values.alfheim.seed.nodeSelector | nindent 12 }}
+
+          tolerations:
+            {{- toYaml $.Values.seed.tolerations | nindent 12 }}
+
+          affinity:
+            {{- toYaml $.Values.seed.affinity | nindent 12 }}
+
+        validator:
+          count: {{ .Values.alfheim.validator.count }}
+
+          {{- if $.Values.alfheim.validator.image }}
+          image:
+            {{- toYaml $.Values.alfheim.validator.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.validator.image | nindent 12 }}
+          {{- end }}
+
+          consensusSeedStrings:
+            {{- toYaml $.Values.alfheim.validator.consensusSeedStrings | nindent 12 }}
+
+          hosts:
+            {{- toYaml $.Values.alfheim.validator.hosts | nindent 12 }}
+
+          ports:
+            {{- toYaml $.Values.validator.ports | nindent 12 }}
+
+          extraArgs:
+            {{- toYaml $.Values.validator.extraArgs | nindent 12 }}
+
+          privateKeys:
+            {{- toYaml $.Values.validator.privateKeys | nindent 12 }}
+
+          storage:
+            data: 1000Gi
+
+          env:
+            {{- toYaml $.Values.validator.env | nindent 12 }}
+
+          resources:
+            {{- toYaml $.Values.alfheim.validator.resources | nindent 12 }}
+
+          loggingEnabled: {{ .Values.validator.loggingEnabled }}
+
+          nodeSelector:
+            {{- toYaml $.Values.alfheim.validator.nodeSelector | nindent 12 }}
+
+          tolerations:
+            {{- toYaml $.Values.validator.tolerations | nindent 12 }}
+
+          affinity:
+            {{- toYaml $.Values.validator.affinity | nindent 12 }}
+
+        remoteHeadless:
+          count: {{ .Values.alfheim.remoteHeadless.count }}
+
+          {{- if $.Values.alfheim.remoteHeadless.image }}
+          image:
+            {{- toYaml $.Values.alfheim.remoteHeadless.image | nindent 12 }}
+          {{- else }}
+          image:
+            {{- toYaml $.Values.remoteHeadless.image | nindent 12 }}
+          {{- end }}
+
+          hosts:
+            {{- toYaml $.Values.alfheim.remoteHeadless.hosts | nindent 12 }}
+
+          ports:
+            {{- toYaml $.Values.remoteHeadless.ports | nindent 12 }}
+
+          storage:
+            data: 500Gi
+
+          resources:
+            {{- toYaml $.Values.alfheim.remoteHeadless.resources | nindent 12 }}
+
+          nodeSelector:
+            {{- toYaml $.Values.alfheim.remoteHeadless.nodeSelector | nindent 12 }}
+
+        dataProvider:
+          {{- toYaml $.Values.dataProvider | nindent 10 }}
+
+        worldBoss:
+          {{- toYaml $.Values.worldBoss | nindent 10 }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: alfheim
+{{ end }}

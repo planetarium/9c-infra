@@ -1,0 +1,7 @@
+validator:
+  count: 1
+  image:
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
