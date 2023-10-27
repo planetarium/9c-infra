@@ -215,4 +215,5 @@ rudolfService:
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
 
-  securityGroupId: "sg-0da48b995c583c6e8"
+  securityGroupIds:
+    podToDb: "sg-0da48b995c583c6e8"

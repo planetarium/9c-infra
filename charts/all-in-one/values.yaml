@@ -575,7 +575,7 @@ rudolfService:
   serviceAccount:
     roleArn: "ROLE_ARN"
 
-  securityGroupId: 1234
   securityGroupIds:
     serviceToPod: "sg-"
     podToService: "sg-"
+    podToDb: "sg-"

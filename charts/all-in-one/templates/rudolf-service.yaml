@@ -99,7 +99,7 @@ spec:
       app: 9c-rudolf
   securityGroups:
     groupIds:
-    - {{ $.Values.rudolfService.securityGroupId }}
+    - {{ $.Values.rudolfService.securityGroupIds.podToDb }}
     - {{ $.Values.rudolfService.securityGroupIds.podToService }}
 {{ end }}
 {{ end }}
