@@ -102,4 +102,5 @@ spec:
     - {{ $.Values.rudolfService.securityGroupIds.podToDb }}
 {{ end }}
     - {{ $.Values.rudolfService.securityGroupIds.podToService }}
+    {{- toYaml $.Values.rudolfService.securityGroupIds.extra | nindent 4 }}
 {{ end }}

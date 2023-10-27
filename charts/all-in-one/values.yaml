@@ -579,3 +579,5 @@ rudolfService:
     serviceToPod: "sg-"
     podToService: "sg-"
     podToDb: "sg-"
+    extra:
+    - "sg-"
