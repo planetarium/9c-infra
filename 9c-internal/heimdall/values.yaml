@@ -289,3 +289,5 @@ rudolfService:
 
   securityGroupIds:
     podToDb: "sg-0da48b995c583c6e8"
+    extra:
+    - "sg-0eba3380bbea0a2c7"  # AllowAllDNSAccess
