@@ -563,6 +563,10 @@ rudolfService:
   config:
     ncgMinter: "NCG_MINTER"
     graphqlEndpoint: "ENDPOINT"
+
+  db:
+    local: false
+    size: 20Gi
   
   kms:
     keyId: "KEY_ID"

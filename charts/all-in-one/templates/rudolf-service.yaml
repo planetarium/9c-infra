@@ -63,6 +63,7 @@ spec:
 
 ---
 
+{{ if not .Values.rudolfService.db.local }}
 apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
 metadata:
@@ -75,4 +76,5 @@ spec:
   securityGroups:
     groupIds:
     - {{ $.Values.rudolfService.securityGroupId }}
+{{ end }}
 {{ end }}
