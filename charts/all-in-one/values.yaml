@@ -560,23 +560,6 @@ rudolfService:
 
   resources: {}
 
-  config:
-    ncgMinter: "NCG_MINTER"
-    graphqlEndpoint: "ENDPOINT"
-
   db:
     local: false
     size: 20Gi
-  
-  kms:
-    keyId: "KEY_ID"
-    publicKey: "PUBLIC_KEY"
-
-  serviceAccount:
-    roleArn: "ROLE_ARN"
-
-  securityGroupIds:
-    serviceToPod: "sg-"
-    podToService: "sg-"
-    extra:
-    - "sg-"
