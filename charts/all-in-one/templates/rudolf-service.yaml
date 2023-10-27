@@ -87,7 +87,6 @@ spec:
 
 ---
 
-{{ if not .Values.rudolfService.db.local }}
 apiVersion: vpcresources.k8s.aws/v1beta1
 kind: SecurityGroupPolicy
 metadata:
@@ -99,7 +98,8 @@ spec:
       app: 9c-rudolf
   securityGroups:
     groupIds:
+{{ if not .Values.rudolfService.db.local }}
     - {{ $.Values.rudolfService.securityGroupIds.podToDb }}
-    - {{ $.Values.rudolfService.securityGroupIds.podToService }}
 {{ end }}
+    - {{ $.Values.rudolfService.securityGroupIds.podToService }}
 {{ end }}
