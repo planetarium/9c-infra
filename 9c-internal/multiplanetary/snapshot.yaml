@@ -4,3 +4,11 @@ snapshot:
     suspend: true
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+
+  resources:
+    requests:
+      cpu: 1300m
+      memory: 10Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c

@@ -1,0 +1,3196 @@
+---
+# Source: 9c-network/templates/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+---
+# Source: 9c-network/templates/rudolf-service.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/InternalRudolfSignerRole
+  labels:
+    app.kubernetes.io/instance: heimdall
+  name: heimdall-9c-rudolf-iam-role
+  namespace: heimdall
+---
+# Source: 9c-network/templates/worldboss.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-onboarding-eks
+  labels:
+    app.kubernetes.io/instance: heimdall
+  name: heimdall-onboarding-iam-role
+  namespace: heimdall
+---
+# Source: 9c-network/templates/configmap-appsettings.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appsettings
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  appsettings.json: |- 
+    {
+        "$schema": "https://raw.githubusercontent.com/planetarium/NineChronicles.Headless/main/NineChronicles.Headless.Executable/appsettings-schema.json",
+        "Serilog": {
+            "Using": [
+                "Serilog.Expressions",
+                "Serilog.Sinks.Console",
+                "Serilog.Sinks.RollingFile"
+            ],
+            "MinimumLevel": "Debug",
+            "WriteTo": [
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] [{Source}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByIncludingOnly",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "Name": "Logger",
+                    "Args": {
+                        "configureLogger": {
+                            "WriteTo": [
+                                {
+                                    "Name": "Console",
+                                    "Args": {
+                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                                    }
+                                }
+                            ],
+                            "Filter": [
+                                {
+                                    "Name": "ByExcluding",
+                                    "Args": {
+                                        "expression": "Source is not null"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "Filter": [
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Stun.TurnClient'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Net.Swarm'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Net.Transports.NetMQTransport'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "Source = 'TxCompletion'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "Source = 'TxFetchJob'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "Source = 'VolatileStagePolicy'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'NineChronicles.Headless.Middleware.HttpCaptureMiddleware'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'NineChronicles.Headless.Middleware.GrpcCaptureMiddleware'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "SourceContext = 'Libplanet.Net.Protocols.RoutingTable'"
+                    }
+                },
+                {
+                    "Name": "ByExcluding",
+                    "Args": {
+                        "expression": "Source = 'LoggedRenderer'"
+                    }
+                }
+            ]
+        },
+        "Headless": {
+            "AppProtocolVersionString": "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==",
+            "GenesisBlockPath": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
+            "StoreType": "rocksdb",
+            "StorePath": "",
+            "Port": 31234,
+            "IceServerStrings": [],
+            "PeerStrings": [],
+            "TrustedAppProtocolVersionSignerStrings": [
+                "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+            ],
+            "NoMiner": true,
+            "RpcServer": true,
+            "RpcListenHost": "",
+            "RpcListenPort": 31238,
+            "RpcRemoteServer": true,
+            "GraphQLServer": true,
+            "GraphQLHost": "127.0.0.1",
+            "GraphQLPort": 31280,
+            "NoCors": true,
+            "Confirmations": 0,
+            "ChainTipStaleBehaviorType": "reboot"
+        },
+        "Logging": {
+            "LogLevel": {
+                "Microsoft": "None"
+            }
+        },
+        "IpRateLimiting": {
+            "EnableEndpointRateLimiting": false,
+            "StackBlockedRequests": true,
+            "RealIpHeader": "X-Real-IP",
+            "HttpStatusCode": 429,
+            "IpWhitelist": [
+                "127.0.0.1"
+            ],
+            "GeneralRules": [
+                {
+                    "Endpoint": "*:/IBlockChainService/PutTransaction",
+                    "Period": "60s",
+                    "Limit": 12
+                },
+                {
+                    "Endpoint": "*:/graphql/stagetransaction",
+                    "Period": "60s",
+                    "Limit": 12
+                }
+            ],
+            "QuotaExceededResponse": {
+                "Content": "{ \"message\": \"Whoa! Calm down, cowboy!\", \"details\": \"Quota exceeded. Maximum allowed: {0} per {1}. Please try again in {2} second(s).\" }",
+                "ContentType": "application/json",
+                "StatusCode": 429
+            },
+            "IpBanThresholdCount": 10,
+            "IpBanMinute": 60,
+            "IpBanResponse": {
+                "Content": "{ \"message\": \"Your Ip has been banned.\" }",
+                "ContentType": "application/json",
+                "StatusCode": 403
+            }
+        },
+        "MultiAccountManaging": {
+            "EnableManaging": false,
+            "ManagementTimeMinutes": 10,
+            "TxIntervalMinutes": 10,
+            "ThresholdCount": 29
+        }
+    }
+---
+# Source: 9c-network/templates/configmap-data-provider.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-data-provider-script
+  namespace: heimdall 
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  check_chain_tip.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install jq
+    apt-get -y install default-mysql-client
+    
+    HOME="/app"
+    DP_HOST=$1
+    DP_USER=$2
+    DP_TOKEN=$3
+    DP_PORT=$4
+    DP_DATABASE=$5
+    RESET_SNAPSHOT_OPTION=$6
+    
+    if ! $RESET_SNAPSHOT_OPTION
+    then
+      FILE="/data/blockIndex.txt"
+      CHAIN_TIP_INDEX="$(($HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain tip "RocksDb" "/data/data-provider") | jq -r '.Index')"
+    
+      RENDERED_BLOCK_INDEX=$CHAIN_TIP_INDEX
+      if [ -f "$FILE" ]; then
+          RENDERED_BLOCK_INDEX="$(cat "/data/blockIndex.txt")"
+      else
+          echo $FILE does not exist. Get the latest block index from the database.
+          MYSQL_BLOCK_INDEX=$(mysql --host=$DP_HOST --user=$DP_USER --password=$DP_TOKEN --port=$DP_PORT --database=$DP_DATABASE --skip-column-names -e "SELECT \`Index\` FROM $DP_DATABASE.Blocks order by \`Index\` desc limit 1;")
+          RENDERED_BLOCK_INDEX=$MYSQL_BLOCK_INDEX
+      fi
+    
+      TIP_DIFF=$(( $CHAIN_TIP_INDEX - $RENDERED_BLOCK_INDEX ))
+      if (( $TIP_DIFF > 0 ))
+      then
+        echo Truncate chain tip by $TIP_DIFF.
+        $HOME/NineChronicles.Headless.Executable/NineChronicles.Headless.Executable chain truncate "RocksDb" "/data/data-provider" $TIP_DIFF
+      else
+        echo No need to truncate chain tip.
+      fi
+    fi
+  setup_internal_db.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install jq
+    apt-get -y install default-mysql-client
+    
+    HOME="/app"
+    NC_MySqlConnectionString="$1"
+    NC_MySqlConnectionString+="Allow User Variables=true"
+    MIGRATE_DB_OPTION=$2
+    
+    if $MIGRATE_DB_OPTION
+    then
+        /root/.dotnet/tools/dotnet-ef database update --project /app/NineChronicles.DataProvider/NineChronicles.DataProvider.Executable --connection "$NC_MySqlConnectionString"
+    fi
+---
+# Source: 9c-network/templates/configmap-download-snapshot.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-download-snapshot-script
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  download_snapshot.sh: |- 
+    #!/usr/bin/env bash
+    
+    cd /data
+    
+    until apt-get -y update
+    do
+      echo "Try again"
+    done
+    
+    until apt-get -y install curl jq wget aria2 sudo zip
+    do
+      echo "Try again"
+    done
+    
+    base_url=${1:-https://snapshots.nine-chronicles.com/9c-internal-v2/heimdall}
+    save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
+    download_option=$3
+    service_name=$4
+    SLACK_WEBHOOK=$5
+    rollback_snapshot=${6:-"false"}
+    complete_snapshot_reset=${7:-"false"}
+    mainnet_snapshot_json_filename="mainnet_latest.json"
+    
+    if [ $download_option = "true" ]
+    then
+      echo "Start download snapshot"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
+    
+      # strip tailing slash
+      base_url=${base_url%/}
+    
+      function get_snapshot_value() {
+          snapshot_json_url="$1"
+          snapshot_param="$2"
+    
+          snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param")
+          echo "$snapshot_param_return_value"
+      }
+    
+      function download_unzip_partial_snapshot() {
+        snapshot_json_filename="latest.json"
+        snapshot_zip_filename="state_latest.zip"
+        snapshot_zip_filename_array=("$snapshot_zip_filename")
+        mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
+        mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
+        mainnet_snapshot_blockEpoch=$(get_snapshot_value "$mainnet_snapshot_json_url" "BlockEpoch")
+    
+        if [ "$mainnet_snapshot_blockEpoch" -le $1 ]; then
+            if [ $rollback_snapshot = "false" ]; then
+              if [ "$mainnet_snapshot_blockIndex" -le $2 ]; then
+                  echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
+                  return
+              fi
+            fi
+        fi
+    
+        while :
+        do
+            snapshot_json_url="$base_url/$snapshot_json_filename"
+            BlockEpoch=$(get_snapshot_value "$snapshot_json_url" "BlockEpoch")
+            TxEpoch=$(get_snapshot_value "$snapshot_json_url" "TxEpoch")
+            PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
+            PreviousTxEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousTxEpoch")
+    
+            snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
+            snapshot_zip_filename_array+=("$snapshot_zip_filename")
+            rm -r $save_dir/block/epoch$BlockEpoch/*
+            rm -r $save_dir/tx/epoch$BlockEpoch/*
+    
+            if [ $(("$PreviousBlockEpoch"+2)) -lt $1 ]
+            then
+                break
+            fi
+    
+            snapshot_json_filename="snapshot-$PreviousBlockEpoch-$PreviousTxEpoch.json"
+        done
+    
+        if [[ ! -d "$save_dir" ]]
+        then
+            echo "[Info] The directory $save_dir does not exist and is created."
+            mkdir -p "$save_dir"
+        fi
+    
+        rm -r $save_dir/block/blockindex/*
+        rm -r $save_dir/tx/txindex/*
+        rm -r $save_dir/txbindex/*
+        rm -r $save_dir/blockcommit/*
+        rm -r $save_dir/txexec/*
+        rm -r $save_dir/states/*
+    
+        for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
+        do
+            snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
+            rm "$snapshot_zip_filename" 2>/dev/null
+    
+            snapshot_zip_url="$base_url/$snapshot_zip_filename"
+            echo "$snapshot_zip_url"
+    
+            aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+            echo "Unzipping $snapshot_zip_filename"
+            unzip -o "$snapshot_zip_filename" -d "$save_dir"
+            rm "$snapshot_zip_filename"
+        done
+    
+        if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
+          rm $save_dir/$mainnet_snapshot_json_filename
+        fi
+    
+        aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+      }
+    
+      function download_unzip_full_snapshot() {
+          snapshot_json_filename="latest.json"
+          snapshot_zip_filename="state_latest.zip"
+          snapshot_zip_filename_array=("$snapshot_zip_filename")
+    
+          while :
+          do
+              snapshot_json_url="$base_url/$snapshot_json_filename"
+              echo "$snapshot_json_url"
+    
+              BlockEpoch=$(get_snapshot_value "$snapshot_json_url" "BlockEpoch")
+              TxEpoch=$(get_snapshot_value "$snapshot_json_url" "TxEpoch")
+              PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
+              PreviousTxEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousTxEpoch")
+    
+              snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
+              snapshot_zip_filename_array+=("$snapshot_zip_filename")
+    
+              if [ "$PreviousBlockEpoch" -eq 0 ]
+              then
+                  break
+              fi
+    
+              snapshot_json_filename="snapshot-$PreviousBlockEpoch-$PreviousTxEpoch.json"
+          done
+    
+          if [[ ! -d "$save_dir" ]]
+          then
+              echo "[Info] The directory $save_dir does not exist and is created."
+              mkdir -p "$save_dir"
+          fi
+    
+          for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
+          do
+              snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
+              rm "$snapshot_zip_filename" 2>/dev/null
+    
+              snapshot_zip_url="$base_url/$snapshot_zip_filename"
+              echo "$snapshot_zip_url"
+    
+              aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+              echo "Unzipping $snapshot_zip_filename"
+              unzip -o "$snapshot_zip_filename" -d "$save_dir"
+              rm "$snapshot_zip_filename"
+          done
+    
+          aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+      }
+    
+      if [ -f $save_dir/$mainnet_snapshot_json_filename ]
+      then
+        if [ $complete_snapshot_reset = "true" ]
+        then
+          echo "Completely delete the existing store and download a new snapshot"
+          rm -r "$save_dir"
+          mkdir -p "$save_dir"
+          download_unzip_full_snapshot
+        else
+          local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+          if [ -f $save_dir/$mainnet_snapshot_json_filename ]
+          then
+            local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
+            download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
+          else
+            local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
+            epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
+            echo $epoch_seconds
+            local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
+            echo $local_chain_tip_blockEpoch
+            download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
+          fi
+        fi
+      else
+        download_unzip_full_snapshot
+      fi
+    
+      # The return value for the program that calls this script
+      echo "$save_dir"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
+    else
+      echo "Skip download snapshot"
+      if [ $service_name != "snapshot" ]
+      then
+        echo $service_name
+      fi
+    fi
+---
+# Source: 9c-network/templates/configmap-full.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-snapshot-script-full
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  preload_headless.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install zip
+    apt-get -y install curl
+    HOME="/app"
+    
+    APP_PROTOCOL_VERSION=$1
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_TOKEN=$2
+    
+    GENESIS_BLOCK_PATH=https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+    
+    STORE_PATH="/data/headless"
+    
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER=030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1
+    SEED1="029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+    
+    ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+    
+    HEADLESS="$HOME/NineChronicles.Headless.Executable"
+    HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
+    HEADLESS_LOG_DIR="/data/snapshot_logs"
+    HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
+    mkdir -p "$HEADLESS_LOG_DIR"
+    
+    PID_FILE="$HOME/headless_pid"
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check snapshot-full-v$VERSION_NUMBER in 9c-internal-v2 cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+    }
+    
+    function preload_complete() {
+      echo "$1"
+    }
+    
+    function waitpid() {
+      PID="$1"
+      while [ -e "/proc/$PID" ]; do
+        sleep 1
+      done
+    }
+    
+    function run_headless() {
+      chmod 777 -R "$STORE_PATH"
+    
+      "$HEADLESS" \
+          --no-miner \
+          --genesis-block-path="$GENESIS_BLOCK_PATH" \
+          --store-type=rocksdb \
+          --store-path="$STORE_PATH" \
+          --app-protocol-version="$APP_PROTOCOL_VERSION" \
+          --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
+          --ice-server="$ICE_SERVER" \
+          --peer "$SEED1" \
+          > "$HEADLESS_LOG" 2>&1 &
+    
+      PID="$!"
+    
+      echo "$PID" | tee "$PID_FILE"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+    }
+    
+    function wait_preloading() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+    
+      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
+        sleep 60
+      else
+        senderr "grep failed. Failed to preload."
+        kill "$PID"
+        exit 1
+      fi
+    }
+    
+    function kill_headless() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+      if ! kill -0 "$PID"; then
+        echo "$PID doesn't exist. Failed to kill headless"
+      else
+        kill -KILL "$PID"
+        waitpid "$PID" || true
+        chmod 777 -R "$STORE_PATH"
+      fi
+    }
+    
+    function rotate_log() {
+      cd "$HEADLESS_LOG_DIR"
+      if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
+        zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+        rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+      fi
+    }
+    
+    trap '' HUP
+    
+    run_headless
+    wait_preloading
+    preload_complete "Preloading completed"
+    kill_headless
+    rotate_log
+  upload_snapshot.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install curl
+    apt-get -y install zip
+    apt-get -y install unzip
+    apt-get -y install sudo
+    apt-get -y install p7zip
+    
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
+    unzip awscliv2.zip
+    sudo ./aws/install
+    
+    HOME="/app"
+    STORE_PATH="/data/headless"
+    APP_PROTOCOL_VERSION=$1
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_TOKEN=$2
+    CF_DISTRIBUTION_ID=$3
+    
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check snapshot-partition--$2 in 9c-internal-v2 cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+    }
+    
+    function make_and_upload_snapshot() {
+      SNAPSHOT="$HOME/NineChronicles.Snapshot"
+      OUTPUT_DIR="/data/snapshots"
+      PARTITION_DIR="/data/snapshots/partition"
+      STATE_DIR="/data/snapshots/state"
+      METADATA_DIR="/data/snapshots/metadata"
+      FULL_DIR="/data/snapshots/full"
+      URL="https://snapshots.nine-chronicles.com/main/partition/latest.json"
+    
+      mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
+      if curl --output /dev/null --silent --head --fail "$URL"; then
+        curl "$URL" -o "$METADATA_DIR/latest.json"
+      else
+        echo "URL does not exist: $URL"
+      fi
+    
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$1" --snapshot-type "full"; then
+        senderr "Snapshot creation failed."
+        exit 1
+      fi
+    
+      # shellcheck disable=SC2012
+      LATEST_FULL_SNAPSHOT=$(ls -t $FULL_DIR/*.zip | head -1)
+      UPLOAD_FULL_SNAPSHOT_FILENAME="9c-main-snapshot"
+      FULL_SNAPSHOT_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.zip"
+      FULL_SNAPSHOT_FILENAME_7Z="$UPLOAD_FULL_SNAPSHOT_FILENAME.7z"
+    
+      LATEST_METADATA=$(ls -t $METADATA_DIR/*.json | head -1)
+      LATEST_METADATA_FILENAME=$(basename "$LATEST_METADATA")
+      UPLOAD_METADATA_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.json"
+    
+      S3_BUCKET_NAME="9c-snapshots-v2"
+    
+      AWS="/usr/local/bin/aws"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
+      "$AWS" configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
+      "$AWS" configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
+      "$AWS" configure set default.region us-east-2
+      "$AWS" configure set default.output json
+      NOW=$(date '+%Y%m%d%H%M%S')
+    
+      "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+      invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME"
+      7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
+      "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
+      invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z"
+      rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
+      rm "$LATEST_FULL_SNAPSHOT"
+    }
+    
+    function invalidate_cf() {
+      if "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$1"; then
+        echo "CF invalidation successful"
+      else
+        echo "CF invalidation failed. Trying again."
+        invalidate_cf "$1"
+      fi
+    }
+    
+    trap '' HUP
+    make_and_upload_snapshot "$1"
+---
+# Source: 9c-network/templates/configmap-partition-reset.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-snapshot-script-partition-reset
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  preload_headless.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install zip
+    apt-get -y install curl
+    HOME="/app"
+    
+    APP_PROTOCOL_VERSION=$1
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_TOKEN=$2
+    
+    GENESIS_BLOCK_PATH="https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+    STORE_PATH="/data/headless"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    SEED1="029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+    
+    ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+    
+    HEADLESS="$HOME/NineChronicles.Headless.Executable"
+    HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
+    HEADLESS_LOG_DIR="/data/snapshot_logs"
+    HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
+    mkdir -p "$HEADLESS_LOG_DIR"
+    
+    PID_FILE="$HOME/headless_pid"
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-internal-v2 cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23bot-test"
+    }
+    
+    function preload_complete() {
+      echo "$1"
+    }
+    
+    function waitpid() {
+      PID="$1"
+      while [ -e "/proc/$PID" ]; do
+        sleep 1
+      done
+    }
+    
+    function run_headless() {
+      chmod 777 -R "$STORE_PATH"
+    
+      "$HEADLESS" \
+          --no-miner \
+          --genesis-block-path="$GENESIS_BLOCK_PATH" \
+          --store-type=rocksdb \
+          --store-path="$STORE_PATH" \
+          --app-protocol-version="$APP_PROTOCOL_VERSION" \
+          --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
+          --ice-server="$ICE_SERVER" \
+          --peer "$SEED1" \
+          > "$HEADLESS_LOG" 2>&1 &
+    
+      PID="$!"
+    
+      echo "$PID" | tee "$PID_FILE"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+    }
+    
+    function wait_preloading() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless"
+        exit 1
+      fi
+    
+      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
+        sleep 60
+      else
+        senderr "grep failed. Failed to preload."
+        kill "$PID"
+        exit 1
+      fi
+    }
+    
+    function kill_headless() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+      if ! kill -0 "$PID"; then
+        echo "$PID doesn't exist. Failed to kill headless"
+      else
+        kill -KILL "$PID"
+        waitpid "$PID" || true
+        chmod 777 -R "$STORE_PATH"
+      fi
+    }
+    
+    function rotate_log() {
+      cd "$HEADLESS_LOG_DIR"
+      if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
+        zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+        rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+      fi
+    }
+    trap '' HUP
+    
+    run_headless
+    wait_preloading
+    preload_complete "Preloading completed"
+    kill_headless
+    rotate_log
+    
+  replace_snapshot.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install curl
+    apt-get -y install zip
+    apt-get -y install unzip
+    apt-get -y install sudo
+    
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
+    unzip awscliv2.zip
+    sudo ./aws/install
+    
+    AWS="/usr/local/bin/aws"
+    AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+    AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
+    "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    "$AWS" configure set default.region us-east-2
+    "$AWS" configure set default.output json
+    APP_PROTOCOL_VERSION=$2
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_TOKEN=$3
+    CF_DISTRIBUTION_ID=$4
+    
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-internal-v2 cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23bot-test"
+    }
+    
+    function replace_snapshot() {
+      ARCHIVE="archive_"$(date '+%Y%m%d')
+      SNAPSHOT_PREFIX=$(echo $1 | awk '{gsub(/\//,"\\/");print}')
+      ARCHIVE_PATH=$1$ARCHIVE/
+      ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
+      TEMP_PREFIX=$(echo $2 | awk '{gsub(/\//,"\\/");print}')
+    
+      for f in $(aws s3 ls $1 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
+        aws s3 mv $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/")
+      done
+    
+      for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
+        aws s3 mv $(echo $f | sed "s/.*/$TEMP_PREFIX&/") $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX/")
+      done
+    
+      BUCKET="s3://9c-snapshots-v2"
+      BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
+      CF_PATH=$(echo $1 | sed -e "s/^$BUCKET_PREFIX//" | sed "s/.*/&*/")
+    
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$CF_PATH"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/temp/partition/*"
+    }
+    
+    trap '' HUP
+    
+    replace_snapshot $1 $2
+    
+  upload_snapshot.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install curl
+    apt-get -y install zip
+    apt-get -y install unzip
+    apt-get -y install sudo
+    apt-get -y install p7zip
+    
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
+    unzip awscliv2.zip
+    sudo ./aws/install
+    
+    HOME="/app"
+    STORE_PATH="/data/headless"
+    APP_PROTOCOL_VERSION=$2
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_TOKEN=$3
+    CF_DISTRIBUTION_ID=$4
+    
+    function senderr() {
+      echo "$1"
+      curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-internal-v2 cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+    }
+    
+    function make_and_upload_snapshot() {
+      SNAPSHOT="$HOME/NineChronicles.Snapshot"
+      OUTPUT_DIR="/data/snapshots"
+      PARTITION_DIR="/data/snapshots/partition"
+      STATE_DIR="/data/snapshots/state"
+      METADATA_DIR="/data/snapshots/metadata"
+      URL="https://snapshots.nine-chronicles.com/main/$1/partition/latest.json"
+    
+      mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
+      if curl --output /dev/null --silent --head --fail "$URL"; then
+        curl "$URL" -o "$METADATA_DIR/latest.json"
+      else
+        echo "URL does not exist: $URL"
+      fi
+    
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$2" --snapshot-type "partition"; then
+        senderr "Snapshot creation failed." $1
+        exit 1
+      fi
+    
+      # shellcheck disable=SC2012
+      LATEST_SNAPSHOT=$(ls -t $PARTITION_DIR/*.zip | head -1)
+      # shellcheck disable=SC2012
+      LATEST_METADATA=$(ls -t $METADATA_DIR/*.json | head -1)
+      LATEST_SNAPSHOT_FILENAME=$(basename "$LATEST_SNAPSHOT")
+      LATEST_METADATA_FILENAME=$(basename "$LATEST_METADATA")
+      UPLOAD_FILENAME="latest"
+      UPLOAD_SNAPSHOT_FILENAME="$UPLOAD_FILENAME.zip"
+      UPLOAD_METADATA_FILENAME="$UPLOAD_FILENAME.json"
+      SNAPSHOT_FILENAME=$(echo $LATEST_SNAPSHOT_FILENAME | cut -d'.' -f 1)
+      # shellcheck disable=SC2012
+      LATEST_STATE=$(ls -t $STATE_DIR/*.zip | head -1)
+      LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
+      STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
+    
+      S3_BUCKET_NAME="9c-snapshots-v2"
+      S3_LATEST_SNAPSHOT_PATH="main/$1/partition/$UPLOAD_SNAPSHOT_FILENAME"
+      S3_LATEST_METADATA_PATH="main/$1/partition/$UPLOAD_METADATA_FILENAME"
+    
+      AWS="/usr/local/bin/aws"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
+      "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+      "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      "$AWS" configure set default.region us-east-2
+      "$AWS" configure set default.output json
+    
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_STATE_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+    
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
+      
+      mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
+      unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
+      unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
+      7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+      7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+    
+      "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/latest.7z" --quiet --acl public-read
+      "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/state_latest.7z" --quiet --acl public-read
+    
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
+      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
+    
+      rm "$LATEST_SNAPSHOT"
+      rm "$LATEST_STATE"
+      rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+      rm "/data/snapshots/7z/partition/state_latest.7z"
+      rm -r "$PARTITION_DIR/partition-snapshot"
+      rm -r "$STATE_DIR/state-snapshot"
+      rm -r "$METADATA_DIR"
+    }
+    
+    trap '' HUP
+    
+    make_and_upload_snapshot $1 $2
+---
+# Source: 9c-network/templates/configmap-partition.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-snapshot-script-partition
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  preload_headless.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install zip
+    apt-get -y install curl
+    HOME="/app"
+    
+    APP_PROTOCOL_VERSION=$1
+    SLACK_WEBHOOK=$2
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    GENESIS_BLOCK_PATH="https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+    STORE_PATH="/data/headless"
+    TRUSTED_APP_PROTOCOL_VERSION_SIGNER="030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+    SEED1="029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+    
+    ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+    
+    HEADLESS="$HOME/NineChronicles.Headless.Executable"
+    HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
+    HEADLESS_LOG_DIR="/data/snapshot_logs"
+    HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
+    mkdir -p "$HEADLESS_LOG_DIR"
+    
+    PID_FILE="$HOME/headless_pid"
+    function senderr() {
+      echo "$1"
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-v'$VERSION_NUMBER' in 9c-internal cluster at preload_headless.sh."}' $SLACK_WEBHOOK
+    }
+    
+    function preload_complete() {
+      echo "$1"
+    }
+    
+    function waitpid() {
+      PID="$1"
+      while [ -e "/proc/$PID" ]; do
+        sleep 1
+      done
+    }
+    
+    function run_headless() {
+      if [ ! -d "$STORE_PATH" ]; then
+        mkdir -p "$STORE_PATH"
+      fi
+    
+      chmod 777 -R "$STORE_PATH"
+    
+      "$HEADLESS" \
+          --no-miner \
+          --genesis-block-path="$GENESIS_BLOCK_PATH" \
+          --store-type=rocksdb \
+          --store-path="$STORE_PATH" \
+          --app-protocol-version="$APP_PROTOCOL_VERSION" \
+          --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
+          --ice-server="$ICE_SERVER" \
+          --peer "$SEED1" \
+          --network-type=Default \
+          > "$HEADLESS_LOG" 2>&1 &
+    
+      PID="$!"
+    
+      echo "$PID" | tee "$PID_FILE"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless" $1
+        exit 1
+      fi
+    }
+    
+    function wait_preloading() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+    
+      if ! kill -0 "$PID"; then
+        senderr "$PID doesn't exist. Failed to run headless" $1
+        exit 1
+      fi
+    
+      if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
+        sleep 60
+      else
+        senderr "grep failed. Failed to preload." $1
+        kill "$PID"
+        exit 1
+      fi
+    }
+    
+    
+    function kill_headless() {
+      touch "$PID_FILE"
+      PID="$(cat "$PID_FILE")"
+      if ! kill -0 "$PID"; then
+        echo "$PID doesn't exist. Failed to kill headless"
+      else
+        kill "$PID"; sleep 60; kill -9 "$PID" || true
+        waitpid "$PID" || true
+        chmod 777 -R "$STORE_PATH"
+      fi
+    }
+    
+    function rotate_log() {
+      cd "$HEADLESS_LOG_DIR"
+      if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
+        zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+        rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
+      fi
+    }
+    trap '' HUP
+    
+    run_headless
+    wait_preloading
+    preload_complete "Preloading completed"
+    kill_headless
+    rotate_log
+    
+  upload_snapshot.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    apt-get -y update
+    apt-get -y install curl
+    apt-get -y install zip
+    apt-get -y install unzip
+    apt-get -y install sudo
+    apt-get -y install p7zip
+    
+    uname=$(uname -r)
+    arch=${uname##*.}
+    if [ "$arch" = "aarch64" ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+    else
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    fi
+    unzip awscliv2.zip
+    sudo ./aws/install
+    
+    HOME="/app"
+    STORE_PATH="/data/headless"
+    APP_PROTOCOL_VERSION=$1
+    VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+    SLACK_WEBHOOK=$2
+    CF_DISTRIBUTION_ID=$3
+    
+    function senderr() {
+      echo "$1"
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in 9c-internal-v2 cluster at upload_snapshot.sh."}' $2
+    }
+    
+    function make_and_upload_snapshot() {
+      SNAPSHOT="$HOME/NineChronicles.Snapshot"
+      OUTPUT_DIR="/data/snapshots"
+      PARTITION_DIR="/data/snapshots/partition"
+      STATE_DIR="/data/snapshots/state"
+      METADATA_DIR="/data/snapshots/metadata"
+      FULL_DIR="/data/snapshots/full"
+      URL="https://snapshots.nine-chronicles.com/9c-internal-v2/heimdall/latest.json"
+    
+      mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
+      if curl --output /dev/null --silent --head --fail "$URL"; then
+        curl "$URL" -o "$METADATA_DIR/latest.json"
+      else
+        echo "URL does not exist: $URL"
+      fi
+    
+      if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
+        senderr "Snapshot creation failed."
+        exit 1
+      fi
+    
+      # shellcheck disable=SC2012
+      LATEST_SNAPSHOT=$(ls -t $PARTITION_DIR/*.zip | head -1)
+      # shellcheck disable=SC2012
+      LATEST_METADATA=$(ls -t $METADATA_DIR/*.json | head -1)
+      LATEST_SNAPSHOT_FILENAME=$(basename "$LATEST_SNAPSHOT")
+      LATEST_METADATA_FILENAME=$(basename "$LATEST_METADATA")
+      UPLOAD_FILENAME="latest"
+      UPLOAD_SNAPSHOT_FILENAME="$UPLOAD_FILENAME.zip"
+      UPLOAD_METADATA_FILENAME="$UPLOAD_FILENAME.json"
+      SNAPSHOT_FILENAME=$(echo $LATEST_SNAPSHOT_FILENAME | cut -d'.' -f 1)
+      # shellcheck disable=SC2012
+      LATEST_STATE=$(ls -t $STATE_DIR/*.zip | head -1)
+      LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
+      STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
+    
+      S3_BUCKET_NAME="9c-snapshots-v2"
+      S3_LATEST_SNAPSHOT_PATH="9c-internal-v2/heimdall/$UPLOAD_SNAPSHOT_FILENAME"
+      S3_LATEST_METADATA_PATH="9c-internal-v2/heimdall/$UPLOAD_METADATA_FILENAME"
+    
+      AWS="/usr/local/bin/aws"
+      AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
+      AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
+      "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+      "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      "$AWS" configure set default.region us-east-2
+      "$AWS" configure set default.output json
+      NOW=$(date '+%Y%m%d%H%M%S')
+    
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/9c-internal-v2/heimdall/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/9c-internal-v2/heimdall/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/9c-internal-v2/heimdall/$LATEST_STATE_FILENAME" --quiet --acl public-read
+    
+      invalidate_cf "/9c-internal-v2/heimdall/$SNAPSHOT_FILENAME.*"
+      invalidate_cf "/9c-internal-v2/heimdall/$UPLOAD_FILENAME.*"
+      invalidate_cf "/9c-internal-v2/heimdall/$STATE_FILENAME.*"
+    
+      rm "$LATEST_SNAPSHOT"
+      rm "$LATEST_STATE"
+      rm -r "$METADATA_DIR"
+    }
+    
+    function invalidate_cf() {
+      if "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$1"; then
+        echo "CF invalidation successful"
+      else
+        echo "CF invalidation failed. Trying again."
+        invalidate_cf "$1"
+      fi
+    }
+    
+    trap '' HUP
+    
+    make_and_upload_snapshot $1
+---
+# Source: 9c-network/templates/configmap-probe.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-probe-script
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+data:
+  liveness_probe.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    preloaded="$(
+      curl \
+        -H 'Content-Type: application/json' \
+        --data '{"query":"query{nodeStatus{preloadEnded}}"}' \
+        http://localhost:80/graphql \
+      | jq .data.nodeStatus.preloadEnded
+    )"
+    
+    echo $preloaded
+    if [[ "$preloaded" = "true" ]]; then
+      echo "Preload finished. Check chain tip."
+      last_block="$(
+        curl \
+          -H 'Content-Type: application/json' \
+          --data '{"query":"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}"}' \
+          http://localhost:80/graphql \
+          | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'
+      )"
+      last_timestamp="$(date +%s -u --date="$last_block")"
+      now="$(date +%s -u)"	
+      [[ $(( now - last_timestamp )) -lt 400 ]]
+    fi
+    
+  liveness_probe_miner.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    stagedTxIdsCount="$(
+      curl \
+      -H 'Content-Type: application/json' \
+      --data '{"query":"query{nodeStatus{stagedTxIds}}"}' \
+      http://localhost:80/graphql | jq .data.nodeStatus | jq '.stagedTxIds | length'
+    )"
+    
+    if [[ $(( stagedTxIdsCount )) -gt 0 ]]; then
+      last_block="$(
+        curl \
+        -H 'Content-Type: application/json' \
+        --data '{"query":"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}"}' \
+        http://localhost:80/graphql | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp')"
+      last_timestamp="$(date +%s -u --date="$last_block")"
+      now="$(date +%s)"
+      [[ $(( now - last_timestamp )) -lt 100 ]]
+    else
+      [[ $(( stagedTxIdsCount )) -gt 0 ]]
+    fi
+    
+  readiness_probe.sh: |- 
+    #!/usr/bin/env bash
+    set -ex
+    
+    preloaded="$(
+      curl \
+        -H 'Content-Type: application/json' \
+        --data '{"query":"query{nodeStatus{preloadEnded}}"}' \
+        http://localhost:80/graphql \
+      | jq .data.nodeStatus.preloadEnded
+    )"
+    [[ "$preloaded" = "true" ]]
+---
+# Source: 9c-network/templates/gp2-extensible.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: heimdall-gp2
+  labels:
+    app.kubernetes.io/instance: heimdall
+parameters:
+  fsType: ext4
+  type: gp2
+provisioner: kubernetes.io/aws-ebs
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+---
+# Source: 9c-network/templates/gp3-extensible.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: heimdall-gp3
+  labels:
+    app.kubernetes.io/instance: heimdall
+parameters:
+  fsType: ext4
+  type: gp3
+provisioner: ebs.csi.aws.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+---
+# Source: 9c-network/templates/snapshot-volume.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: snapshot-volume-partition
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  storageClassName: heimdall-gp3
+  volumeMode: Filesystem
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcp-seed-1
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=tcp-seed-1
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - port: 31234
+    targetPort: 31234
+    name: node
+  - port: 31237
+    targetPort: 31237
+    name: graphql
+  - port: 443
+    targetPort: 31237
+    name: https
+  - port: 31235
+    targetPort: 31235
+    name: gossip
+  selector:
+    app: tcp-seed-1
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-headless-1
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=remote-headless-1
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: graphql
+    port: 80
+    targetPort: 80
+  - name: rpc
+    port: 31238
+    targetPort: 31238
+  - name: headless
+    port: 31234
+    targetPort: 31234
+  - name: https
+    port: 443
+    targetPort: 80
+  selector:
+    app: remote-headless-1
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-provider
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=kidon,Service=heimdall,Name=data-provider
+spec:
+  ports:
+  - name: graphql
+    port: 80
+    targetPort: 80
+  selector:
+    app: data-provider
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-provider-db
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=kidon,Service=heimdall,Name=data-provider-db
+spec:
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: data-provider-db
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+---
+
+
+
+
+
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=world-boss-service
+  name: world-boss-service
+  namespace: heimdall
+spec:
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 5000
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: world-boss-service
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+  name: world-boss-db
+  namespace: heimdall
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    app: world-boss-db
+  type: ClusterIP
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+  name: world-boss-redis
+  namespace: heimdall
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: world-boss-redis
+  type: ClusterIP
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-service
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=market-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: market-service
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-db
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=market-db
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: market-db
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: validator-5
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=validator-5
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - port: 31234
+    targetPort: 31234
+    name: headless
+  - port: 80
+    targetPort: 80
+    name: gql
+  - port: 6000
+    targetPort: 6000
+    name: gossip
+  - port: 443
+    targetPort: 80
+    name: https
+    protocol: TCP
+  selector:
+    app: validator-5
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: patrol-reward-service
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=patrol-reward-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: patrol-reward-service
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: patrol-reward-db
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jihyung,Service=heimdall,Name=patrol-reward-db
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: patrol-reward-db
+  type: LoadBalancer
+---
+# Source: 9c-network/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rudolf-db
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: rudolf-db
+  type: ClusterIP
+---
+# Source: 9c-network/templates/rudolf-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: 9c-rudolf
+    app.kubernetes.io/instance: heimdall
+  name: 9c-rudolf
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: 9c-rudolf
+  template:
+    metadata:
+      labels:
+        app: 9c-rudolf
+    spec:
+      containers:
+        - name: 9c-rudolf
+          env:
+            - name: DATABASE_URL
+              valueFrom: 
+                secretKeyRef:
+                  key: database-url
+                  name: rudolf-service
+            - name: NCG_MINTER
+              value: 0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9
+            - name: GQL_ENDPOINT
+              value: ENDPOINT
+            - name: NC_GRAPHQL_ENDPOINT
+              value: ENDPOINT
+            - name: AWS_KMS_KEY_ID
+              value: 54436222-3b06-4ddb-b661-f2cd54456893
+            - name: AWS_KMS_PUBLIC_KEY
+              value: 04ff006e2434dc04000971395e5e47012e4ec7570dfbbb87a02e4b12d33ec0c6ec329fdba089f7b5bfce7b8cbcdf3f9e662fade6a63066a9b1e17429687fbdb9de
+          image: planetariumhq/9c-rudolf:git-64ad20a7abb298b1b4e1fdeca00be20780c14e91
+          ports:
+            - containerPort: 3000
+          resources:
+            {}
+      restartPolicy: Always
+      serviceAccount: heimdall-9c-rudolf-iam-role
+      serviceAccountName: heimdall-9c-rudolf-iam-role
+---
+# Source: 9c-network/templates/seed.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tcp-seed-1
+    app.kubernetes.io/instance: heimdall
+  name: tcp-seed-1
+  namespace: heimdall
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: tcp-seed-1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tcp-seed-1
+      name: tcp-seed-1
+    spec:
+      containers:
+      - args:
+        - Libplanet.Seed.Executable.dll
+        - run
+        - --log-level=debug
+        - --app-protocol-version=200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+        - --host=tcp-seed-1.heimdall.svc.cluster.local
+        - --port=31234
+        - --private-key=$(PRIVATE_KEY)
+        - --graphql-host=0.0.0.0
+        - --graphql-port=31237
+        - --workers=1000
+        - --gossip-port=31235
+        command:
+        - dotnet
+        env:
+          - name: PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: seed-private-key-1
+                name: private-keys
+        image: "planetariumhq/libplanet-seed:git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+        imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 120
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 31234
+          timeoutSeconds: 1
+        name: tcp-seed-1
+        ports:
+          - containerPort: 31234
+            name: node
+            protocol: TCP
+          - containerPort: 31237
+            name: graphql
+            protocol: TCP
+          - containerPort: 31235
+            name: gossip
+            protocol: TCP
+        resources:
+          requests:
+            cpu: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        null
+---
+# Source: 9c-network/templates/data-provider-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: data-provider-db
+    app.kubernetes.io/instance: heimdall
+  name: data-provider-db
+  namespace: heimdall
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: data-provider-db
+  serviceName: data-provider-db
+  template:
+    metadata:
+      labels:
+        app: data-provider-db
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: data-provider
+          image: mysql:8.0.30
+          name: data-provider-db
+          ports:
+            - containerPort: 3306
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: data-provider-db-data
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        creationTimestamp: null
+        name: data-provider-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: heimdall-gp3
+        volumeMode: Filesystem
+---
+# Source: 9c-network/templates/data-provider.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: data-provider
+    app.kubernetes.io/instance: heimdall
+  name: data-provider
+  namespace: heimdall
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: data-provider
+  serviceName: data-provider
+  template:
+    metadata:
+      labels:
+        app: data-provider
+    spec:
+      initContainers:
+      - name: wait
+        image: alpine
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          apk --no-cache add curl
+          # Endpoint to check
+          ENDPOINT="http://validator-5.heimdall.svc.cluster.local/ui/playground"
+          echo Checking: ${ENDPOINT}
+          while [[ $(curl --silent --output /dev/null --request GET --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
+            echo "Not ready"
+            sleep 5s
+          done
+          echo Ready
+      containers:
+      - args:
+        - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(MIGRATE_DB_OPTION)"
+          && /app/NineChronicles.DataProvider.Executable
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: NC_StorePath
+          value: /data/data-provider
+        - name: NC_AppProtocolVersionToken
+          value: 200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+        - name: NC_Confirmations
+          value: '0'
+        
+        - name: NC_PeerStrings__0
+          value: 029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234
+        
+        - name: NC_Preload
+          value: 'true'
+        - name: NC_NoMiner
+          value: 'true'
+        - name: NC_Render
+          value: "true"
+        - name: NC_NetworkType
+          value: "Default"
+        - name: NC_TrustedAppProtocolVersionSigners__0
+          value: 030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1
+        - name: NC_GenesisBlockPath
+          value: https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+        - name: NC_MySqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              key: connectionString
+              name: data-provider
+        - name: DP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: host
+              name: data-provider
+        - name: DP_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: data-provider
+        - name: DP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: data-provider
+        - name: DP_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: data-provider
+        - name: DP_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: data-provider
+        - name: RESET_SNAPSHOT_OPTION
+          value: "false"
+        - name: MIGRATE_DB_OPTION
+          value: "false"
+        image: planetariumhq/ninechronicles-dataprovider:git-e396409ff128d5cc3f45555ff57dec669b455b1a
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "set -e\ntest=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
+              \ \\\n    --data '{\"query\":\"query{test}\"\
+              }' \\\n    http://localhost:80/graphql \\\n  | jq -r '.data.test'\n\
+              )\"\nif [[ -n $test ]]; then\n  echo \"DataProvider query successful!\"\
+              \nelse\n  echo \"DataProvider query unsuccessful!\"\nfi\n[[ -n $test\
+              \ ]]\n"
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          timeoutSeconds: 60
+        name: data-provider
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bin/check_chain_tip.sh
+          name: data-provider-script-volume
+          readOnly: true
+          subPath: check_chain_tip.sh
+        - mountPath: /bin/setup_internal_db.sh
+          name: data-provider-script-volume
+          readOnly: true
+          subPath: setup_internal_db.sh
+        - mountPath: /data
+          name: data-provider-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: reset-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: reset-snapshot-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: heimdall-download-snapshot-script
+      - name: data-provider-script-volume
+        configMap:
+          defaultMode: 488
+          name: heimdall-data-provider-script
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: data-provider-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1000Gi
+      storageClassName: heimdall-gp3
+      volumeMode: Filesystem
+---
+# Source: 9c-network/templates/market-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: market-db
+    app.kubernetes.io/instance: heimdall
+  name: market-db
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-db
+  serviceName: market-db
+  template:
+    metadata:
+      labels:
+        app: market-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: market-db
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: market-db
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: market-db
+          image: postgres:13.3
+          name: market-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: market-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate      
+  volumeClaimTemplates:
+    - metadata:
+        name: market-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: heimdall-gp3
+        volumeMode: Filesystem
+---
+# Source: 9c-network/templates/market-service.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: market-service
+    app.kubernetes.io/instance: heimdall
+  name: market-service
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-service
+  serviceName: market-service
+  template:
+    metadata:
+      labels:
+        app: market-service
+    spec:
+      containers:
+        - args:
+            - MarketService.dll
+          command:
+            - dotnet
+          env:
+            - name: ConnectionStrings__MARKET
+              valueFrom:
+                secretKeyRef:
+                  key: connection-string
+                  name: market-db
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: RpcConfig__Host
+              value: heimdall-internal-rpc-1.nine-chronicles.com
+            - name: RpcConfig__Port
+              value: "31238"
+            - name: WorkerConfig__SyncShop
+              value: "true"
+            - name: WorkerConfig__SyncProduct
+              value: "true"
+          image: planetariumhq/market-service:git-bed6517646e0e5b8ba44700406f714b9cf389782
+          name: market-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: 9c-network/templates/patrol-reward-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: patrol-reward-db
+    app.kubernetes.io/instance: heimdall
+  name: patrol-reward-db
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patrol-reward-db
+  serviceName: patrol-reward-db
+  template:
+    metadata:
+      labels:
+        app: patrol-reward-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: patrol-reward
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: patrol-reward
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: patrol-reward
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: patrol-reward-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: patrol-reward-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: patrol-reward-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: heimdall-gp3
+        volumeMode: Filesystem
+---
+# Source: 9c-network/templates/patrol-reward-service.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: patrol-reward-service
+    app.kubernetes.io/instance: heimdall
+  name: patrol-reward-service
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patrol-reward-service
+  serviceName: patrol-reward-service
+  template:
+    metadata:
+      labels:
+        app: patrol-reward-service
+    spec:
+      containers:
+        - args:
+            - PatrolRewardService.dll
+          command:
+            - dotnet
+          env:
+            - name: ConnectionStrings__PatrolReward
+              valueFrom:
+                secretKeyRef:
+                  key: connection-string
+                  name: patrol-reward
+            - name: GraphqlClientConfig__Host
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-host
+                  name: patrol-reward
+            - name: GraphqlClientConfig__Port
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-port
+                  name: patrol-reward
+            - name: SignerConfig__PrivateKey
+              valueFrom:
+                secretKeyRef:
+                  key: private-key
+                  name: patrol-reward
+            - name: SignerConfig__GenesisHash
+              valueFrom:
+                secretKeyRef:
+                  key: genesis-hash
+                  name: patrol-reward
+            - name: PatrolReward__ApiKey
+              valueFrom:
+                secretKeyRef:
+                  key: api-key
+                  name: patrol-reward
+            - name: WorkerConfig__StageInterval
+              valueFrom:
+                secretKeyRef:
+                  key: stage-interval
+                  name: patrol-reward
+            - name: WorkerConfig__ResultInterval
+              valueFrom:
+                secretKeyRef:
+                  key: result-interval
+                  name: patrol-reward
+          image: planetariumhq/patrol-reward-service:git-f26d63e433985058bb037974ceece136e0e5688e
+          name: patrol-reward-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: 9c-network/templates/remote-headless.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: remote-headless-1
+    app.kubernetes.io/instance: heimdall
+  name: remote-headless-1
+  namespace: heimdall
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: remote-headless-1
+  serviceName: remote-headless-1
+  template:
+    metadata:
+      labels:
+        app: remote-headless-1
+      name: remote-headless-1
+    spec:
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version=200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+        - --trusted-app-protocol-version-signer=030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1
+        - --genesis-block-path=https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+        - --port=31234
+        - --no-miner
+        - --store-type=rocksdb
+        - --store-path=/data/headless
+        - --host=heimdall-internal-rpc-1.nine-chronicles.com
+        - --peer=029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port=80
+        - --rpc-server
+        - --rpc-remote-server
+        - --rpc-listen-host=0.0.0.0
+        - --rpc-listen-port=31238
+        - --no-cors
+        - --chain-tip-stale-behavior-type=reboot
+        - --tx-life-time=10
+        - --network-type=Default
+        command:
+        - dotnet
+        image: longfin/9c-headless:multiplanetary-2023102601
+        imagePullPolicy: Always
+        name: remote-headless-1
+        ports:
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        - containerPort: 31238
+          name: rpc
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          requests:
+            cpu: 1
+            memory: 12Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: remote-headless-data-1
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+          subPath: appsettings.json
+        env:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: heimdall-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: heimdall-download-snapshot-script
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: remote-headless-data-1
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 500Gi
+      storageClassName: heimdall-gp3
+      volumeMode: Filesystem
+---
+# Source: 9c-network/templates/rudolf-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: rudolf-db
+    app.kubernetes.io/instance: heimdall
+  name: rudolf-db
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rudolf-db
+  serviceName: rudolf-db
+  template:
+    metadata:
+      labels:
+        app: rudolf-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: rudolf-service
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: rudolf-service
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: rudolf-service
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: rudolf-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: rudolf-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: rudolf-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+        storageClassName: heimdall-gp3
+        volumeMode: Filesystem
+---
+# Source: 9c-network/templates/validator.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: validator-5
+    app.kubernetes.io/instance: heimdall
+  name: validator-5
+  namespace: heimdall
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: validator-5
+  serviceName: validator-5
+  template:
+    metadata:
+      labels:
+        app: validator-5
+      name: validator-5
+    spec:
+      containers:
+      - args:
+        - NineChronicles.Headless.Executable.dll
+        - run
+        - --app-protocol-version=200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+        - --trusted-app-protocol-version-signer=030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1
+        - --genesis-block-path=https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+        - --host=heimdall-internal-validator-1.nine-chronicles.com
+        - --port=31234
+        - --store-path=/data/validator
+        - --store-type=rocksdb
+        - --peer=029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234
+        - --graphql-server
+        - --graphql-host=0.0.0.0
+        - --graphql-port=80
+        - --swarm-private-key
+        - $(PRIVATE_KEY)
+        - --miner-private-key
+        - $(PRIVATE_KEY)
+        - --consensus-private-key
+        - $(PRIVATE_KEY)
+        - --consensus-port=6000
+        - --consensus-seed=029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235
+        - --network-type=Default
+        - --tx-life-time=10
+        command:
+          - dotnet
+        env:
+          - name: PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: validator-private-key-5
+                name: private-keys
+        image: longfin/9c-headless:multiplanetary-2023102601
+        imagePullPolicy: Always
+        name: validator-5
+        ports:
+        - containerPort: 31234
+          name: headless
+          protocol: TCP
+        - containerPort: 80
+          name: graphql
+          protocol: TCP
+        - containerPort: 6000
+          name: gossip
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 1500m
+            memory: 12Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: validator-data-5
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+      dnsPolicy: ClusterFirst
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: heimdall-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: heimdall-download-snapshot-script
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
+      imagePullSecrets:
+      - name: acr-regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: validator-data-5
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1000Gi
+      storageClassName: heimdall-gp3
+      volumeMode: Filesystem
+---
+# Source: 9c-network/templates/worldboss-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-db
+    app.kubernetes.io/instance: heimdall
+  name: world-boss-db
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-db
+  serviceName: world-boss-db
+  template:
+    metadata:
+      labels:
+        app: world-boss-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: world-boss-env
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: world-boss-env
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: world-boss-env
+          image: postgres:13.3
+          name: world-boss-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: world-boss-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: world-boss-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: heimdall-gp3
+        volumeMode: Filesystem
+---
+# Source: 9c-network/templates/worldboss-db.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-redis
+    app.kubernetes.io/instance: heimdall
+  name: world-boss-redis
+  namespace: heimdall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-redis
+  serviceName: world-boss-redis
+  template:
+    metadata:
+      labels:
+        app: world-boss-redis
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --appendonly
+            - "yes"
+          image: redis:6.2
+          name: world-boss-redis
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: 9c-network/templates/worldboss.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-service
+    app.kubernetes.io/instance: heimdall
+  name: world-boss-service
+  namespace: heimdall
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-service
+  serviceName: world-boss-service
+  template:
+    metadata:
+      labels:
+        app: world-boss-service
+    spec:
+      containers:
+        - args:
+            - flask --app world_boss/wsgi.py db upgrade --directory world_boss/migrations && gunicorn world_boss.wsgi:app --workers 8 --timeout 600 --bind 0.0.0.0:5000
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database-url
+                  name: world-boss-env
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: redis-host
+                  name: world-boss-env
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: redis-port
+                  name: world-boss-env
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: world-boss-env
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: world-boss-env
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: celery-broker-url
+                  name: world-boss-env
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: celery-result-backend
+                  name: world-boss-env
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: slack-signing-secret
+                  name: world-boss-env
+          image: planetariumhq/world-boss-service:git-47519fb4623a6aac808dd24e3947c4b321df923c
+          name: world-boss-service
+          ports:
+            - containerPort: 5000
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+      restartPolicy: Always
+      serviceAccount: heimdall-onboarding-iam-role
+      serviceAccountName: heimdall-onboarding-iam-role
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: 9c-network/templates/worldboss.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-worker
+    app.kubernetes.io/instance: heimdall
+  name: world-boss-worker
+  namespace: heimdall
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-worker
+  serviceName: world-boss-worker
+  template:
+    metadata:
+      labels:
+        app: world-boss-worker
+    spec:
+      containers:
+        - args:
+            - celery -A world_boss.wsgi:cel worker -l DEBUG
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database-url
+                  name: world-boss-env
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: redis-host
+                  name: world-boss-env
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: redis-port
+                  name: world-boss-env
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: world-boss-env
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: world-boss-env
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: celery-broker-url
+                  name: world-boss-env
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: celery-result-backend
+                  name: world-boss-env
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: slack-signing-secret
+                  name: world-boss-env
+          image: planetariumhq/world-boss-service:git-47519fb4623a6aac808dd24e3947c4b321df923c
+          name: world-boss-worker
+          ports:
+            - containerPort: 5000
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+      restartPolicy: Always
+      serviceAccount: heimdall-onboarding-iam-role
+      serviceAccountName: heimdall-onboarding-iam-role
+  updateStrategy:
+    type: RollingUpdate
+---
+# Source: 9c-network/templates/snapshot-partition.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: snapshot-partition
+  namespace: heimdall
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - name: preload-headless
+            image: longfin/9c-headless:multiplanetary-2023102601
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            command:
+            - /bin/preload_headless.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: 200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/preload_headless.sh
+              readOnly: true
+              subPath: preload_headless.sh
+            - name: snapshot-volume-partition
+              mountPath: /data
+          containers:
+          - name: upload-snapshot
+            image: planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            - $(CF_DISTRIBUTION_ID)
+            - $(SLACK_TOKEN)
+            command:
+            - /bin/upload_snapshot.sh
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: 200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: CF_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-keys
+                  key: cf_distribution_id
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-token
+            resources:
+              requests:
+                cpu: 1300m
+                memory: 10Gi
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/upload_snapshot.sh
+              readOnly: true
+              subPath: upload_snapshot.sh
+            - name: download-snapshot-script
+              mountPath: /bin/download_snapshot.sh
+              readOnly: true
+              subPath: download_snapshot.sh
+            - name: snapshot-volume-partition
+              mountPath: /data
+            - name: aws-keys
+              mountPath: /secret
+              readOnly: true
+          restartPolicy: OnFailure
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+          volumes:
+          - name: script-volume
+            configMap:
+              defaultMode: 0700
+              name: heimdall-snapshot-script-partition
+          - name: download-snapshot-script
+            configMap:
+              defaultMode: 0700
+              name: heimdall-download-snapshot-script
+          - name: snapshot-volume-partition
+            persistentVolumeClaim:
+              claimName: snapshot-volume-partition
+          - name: aws-keys
+            secret:
+              secretName: aws-keys
+  schedule: 0 */12 * * *
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  suspend: true
+---
+# Source: 9c-network/templates/secret-aws-keys.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: aws-keys
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: aws-keys
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/aws-keys
+---
+# Source: 9c-network/templates/secret-data-provider.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: data-provider
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: data-provider
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/data-provider
+---
+# Source: 9c-network/templates/secret-market-db.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: market-db
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: market-db
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/market-db
+---
+# Source: 9c-network/templates/secret-patrol-reward.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: patrol-reward
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: patrol-reward
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/patrol-reward
+---
+# Source: 9c-network/templates/secret-private-keys.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: private-keys
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: private-keys
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/private-keys
+---
+# Source: 9c-network/templates/secret-rudolf-service.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: rudolf-service
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: rudolf-service
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/rudolf-service
+---
+# Source: 9c-network/templates/secret-slack-token.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: slack
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: slack
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/slack
+---
+# Source: 9c-network/templates/secret-world-boss.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: ExternalSecret
+metadata:
+  name: world-boss-env
+  namespace: heimdall
+  labels:
+    app.kubernetes.io/instance: heimdall
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: heimdall-secretsmanager
+    kind: SecretStore
+  target:
+    name: world-boss-env
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: 9c-internal-v2/heimdall/world-boss-env
+---
+# Source: 9c-network/templates/secret-store.yaml
+apiVersion: "external-secrets.io/v1beta1"
+kind: SecretStore
+metadata:
+  name: heimdall-secretsmanager
+  namespace: heimdall
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-east-2

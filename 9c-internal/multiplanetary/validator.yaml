@@ -5,3 +5,6 @@ validator:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
     pullPolicy: Always
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c

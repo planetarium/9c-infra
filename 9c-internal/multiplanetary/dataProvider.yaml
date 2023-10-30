@@ -21,3 +21,7 @@ dataProvider:
     port: 3306
     user: user
     password: ""
+
+  resources: {}
+
+  nodeSelector: {}
