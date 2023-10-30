@@ -6,15 +6,24 @@ rudolfService:
 
   config:
     ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
+    graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
+
   db:
     local: true
 
-    graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
   kms:
     keyId: "54436222-3b06-4ddb-b661-f2cd54456893"
     publicKey: "04ff006e2434dc04000971395e5e47012e4ec7570dfbbb87a02e4b12d33ec0c6ec329fdba089f7b5bfce7b8cbcdf3f9e662fade6a63066a9b1e17429687fbdb9de"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
+  
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
 
-  securityGroupId: "sg-0da48b995c583c6e8"
+  securityGroupIds:  # FIXME: Use different security ids with other networks.
+    podToService: "sg-0f726b78db71de0b0"
+    extra:
+    - "sg-0eba3380bbea0a2c7"  # AllowAllDNSAccess
