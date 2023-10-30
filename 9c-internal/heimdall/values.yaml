@@ -59,7 +59,8 @@ snapshot:
       cpu: 1300m
       memory: 10Gi
 
-  nodeSelector: {}
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
