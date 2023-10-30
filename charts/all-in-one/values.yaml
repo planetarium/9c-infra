@@ -556,23 +556,13 @@ rudolfService:
     pullPolicy: Always
     tag: "TAG"
 
+  service:
+    enabled: false
+
   nodeSelector: {}
 
   resources: {}
 
-  config:
-    ncgMinter: "NCG_MINTER"
-    graphqlEndpoint: "ENDPOINT"
-
   db:
     local: false
     size: 20Gi
-  
-  kms:
-    keyId: "KEY_ID"
-    publicKey: "PUBLIC_KEY"
-
-  serviceAccount:
-    roleArn: "ROLE_ARN"
-
-  securityGroupId: 1234

@@ -1,0 +1,147 @@
+{
+  "type": "object",
+  "properties": {
+    "rudolfService": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "if": {
+        "properties": {
+          "enabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "ncgMinter": {
+                "type": "string",
+                "description": "An address of NCG minter of the network connected by 'graphqlEndpoint'."
+              },
+              "graphqlEndpoint": {
+                "type": "string",
+                "description": "A GraphQL endpoint to query chain data and stage transactions"
+              }
+            },
+            "required": ["ncgMinter", "graphqlEndpoint"]
+          },
+          "db": {
+            "type": "object",
+            "properties": {
+              "local": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "if": {
+              "properties": {
+                "local": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "description": "Enable database with cluster-local database.",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "description": "Database's size. (e.g., 1000Gi)"
+                }
+              },
+              "required": ["size"]
+            },
+            "else": {
+              "description": "Enabled database with RDS connection.",
+              "properties": {
+                "securityGroupId": {
+                  "type": "string",
+                  "description": "SecurityGroup's id for RDS connection."
+                }
+              },
+              "required": ["securityGroupId"]
+            }
+          },
+          "service": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "const": false,
+                    "description": "Whether to create external endpoint."
+                  }
+                },
+                "additionalProperties": false,
+                "required": ["enabled"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "const": true,
+                    "description": "Whether to create external endpoint."
+                  },
+                  "securityGroupIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "uniqueItems": true,
+                    "description": "Security Group Ids array to assign to the ELB resource."
+                  }
+                },
+                "additionalProperties": false,
+                "required": ["enabled"]
+              }
+            ]
+          },
+          "securityGroupIds": {
+            "type": "object",
+            "properties": {
+              "extra": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "podToService": {
+                "type": "string"
+              }
+            },
+            "required": ["podToService"],
+            "additionalProperties": false
+          },
+          "serviceAccount": {
+            "type": "object",
+            "properties": {
+              "roleArn": {
+                "type": "string"
+              }
+            },
+            "required": ["roleArn"]
+          },
+          "kms": {
+            "type": "object",
+            "properties": {
+              "keyId": {
+                "type": "string"
+              },
+              "publicKey": {
+                "type": "string"
+              }
+            },
+            "required": ["keyId", "publicKey"]
+          }
+        },
+        "required": ["config", "securityGroupIds", "serviceAccount"]
+      }
+    }
+  }
+}
