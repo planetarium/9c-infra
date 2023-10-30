@@ -57,7 +57,7 @@ snapshot:
   resources:
     requests:
       cpu: 1300m
-      memory: 20Gi
+      memory: 10Gi
 
   nodeSelector: {}
 
