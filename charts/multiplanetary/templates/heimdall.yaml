@@ -131,6 +131,12 @@ spec:
         worldBoss:
           {{- toYaml (default .Values.worldBoss .Values.heimdall.worldBoss) | nindent 10 }}
 
+        patrolRewardService:
+          {{- toYaml (default .Values.patrolRewardService .Values.heimdall.patrolRewardService) | nindent 10 }}
+
+        rudolfService:
+          {{- toYaml (default .Values.rudolfService .Values.heimdall.rudolfService) | nindent 10 }}
+
   destination:
     server: https://kubernetes.default.svc
     namespace: heimdall

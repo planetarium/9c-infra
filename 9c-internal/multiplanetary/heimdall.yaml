@@ -9,11 +9,6 @@ heimdall:
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
   snapshot:
-    resources:
-      requests:
-        cpu: 1300m
-        memory: 20Gi
-
     nodeSelector: {}
 
   seed:
@@ -30,21 +25,11 @@ heimdall:
     hosts:
     - "heimdall-internal-validator-1.nine-chronicles.com"
 
-    resources:
-      requests:
-        cpu: 2
-        memory: 20Gi
-    
-    nodeSelector: {}
+    storage: {}
 
   remoteHeadless:
     hosts:
     - "heimdall-internal-rpc-1.nine-chronicles.com"
+    storage: {}
 
-    resources:
-      requests:
-        cpu: 1
-        memory: 12Gi
-
-    nodeSelector:
-      eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+  externalSecret: {}
