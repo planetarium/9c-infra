@@ -16,20 +16,20 @@ spec:
         logLevel: {{ .Values.logLevel }}
 
         global:
-          {{- if $.Values.heimdall.global.image }}
+          {{- if $.Values.heimdall.image }}
           image:
-            {{- toYaml $.Values.heimdall.global.image | nindent 12 }}
+            {{- toYaml $.Values.heimdall.image | nindent 12 }}
           {{- else }}
           image:
             {{- toYaml $.Values.global.image | nindent 12 }}
           {{- end }}
 
           appProtocolVersion: {{ .Values.global.appProtocolVersion }}
-          genesisBlockPath: {{ .Values.heimdall.global.genesisBlockPath }}
-          trustedAppProtocolVersionSigner: {{ .Values.heimdall.global.trustedAppProtocolVersionSigner }}
+          genesisBlockPath: {{ .Values.heimdall.genesisBlockPath }}
+          trustedAppProtocolVersionSigner: {{ .Values.heimdall.trustedAppProtocolVersionSigner }}
 
           peerStrings:
-            {{- toYaml $.Values.heimdall.global.peerStrings | nindent 12 }}
+            {{- toYaml $.Values.heimdall.peerStrings | nindent 12 }}
 
           iceServers:
             {{- toYaml $.Values.global.iceServers | nindent 12 }}
