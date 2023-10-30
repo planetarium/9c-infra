@@ -33,7 +33,7 @@ spec:
 
         externalSecret:
           enabled: {{ default .Values.externalSecret.enabled .Values.heimdall.externalSecret.enabled }}
-          prefix: "{{ .Values.heimdall.clusterName }}/heimdall"
+          prefix: "{{ .Values.clusterName }}/heimdall"
 
         snapshot:
           downloadSnapshot: {{ default .Values.snapshot.downloadSnapshot .Values.heimdall.snapshot.downloadSnapshot }}
@@ -130,6 +130,9 @@ spec:
 
         worldBoss:
           {{- toYaml (default .Values.worldBoss .Values.heimdall.worldBoss) | nindent 10 }}
+
+        marketService:
+          {{- toYaml (default .Values.marketService .Values.heimdall.marketService) | nindent 10 }}
 
         patrolRewardService:
           {{- toYaml (default .Values.patrolRewardService .Values.heimdall.patrolRewardService) | nindent 10 }}
