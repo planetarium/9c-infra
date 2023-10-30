@@ -1,10 +1,10 @@
-alfheim:
+heimdall:
   enabled: true
 
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
   peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -18,17 +18,17 @@ alfheim:
 
   seed:
     hosts:
-    - "tcp-seed-1.alfheim.svc.cluster.local"
+    - "tcp-seed-1.heimdall.svc.cluster.local"
 
     nodeSelector:
       node.kubernetes.io/instance-type: m5d.xlarge
 
   validator:
     consensusSeedStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
     hosts:
-    - "alfheim-internal-validator-1.nine-chronicles.com"
+    - "heimdall-internal-validator-1.nine-chronicles.com"
 
     resources:
       requests:
@@ -39,7 +39,7 @@ alfheim:
 
   remoteHeadless:
     hosts:
-    - "alfheim-internal-rpc-1.nine-chronicles.com"
+    - "heimdall-internal-rpc-1.nine-chronicles.com"
 
     resources:
       requests:
