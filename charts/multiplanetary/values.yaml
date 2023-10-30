@@ -135,6 +135,11 @@ snapshot:
   aws_access_key_id: ""
   aws_secret_access_key: ""
 
+  resources:
+    requests:
+      cpu: 1300m
+      memory: 10Gi
+
   path: "internal"
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
