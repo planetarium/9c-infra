@@ -64,6 +64,16 @@ spec:
                 secretKeyRef:
                   key: result-interval
                   name: patrol-reward
+            - name: Sentry__Dsn
+              valueFrom:
+                secretKeyRef:
+                  key: sentry-dsn
+                  name: patrol-reward
+            - name: Sentry__TracesSampleRate
+              valueFrom:
+                secretKeyRef:
+                  key: sentry-traces-sample-rate
+                  name: patrol-reward
           {{- with $.Values.patrolRewardService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
