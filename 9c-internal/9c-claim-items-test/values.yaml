@@ -219,8 +219,12 @@ rudolfService:
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
 
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+
   securityGroupIds:
     podToService: "sg-0f726b78db71de0b0"
-    serviceToPod: "sg-0c865006315f5b9f0"
     extra:
     - "sg-0eba3380bbea0a2c7"  # AllowAllDNSAccess

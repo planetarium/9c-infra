@@ -556,6 +556,9 @@ rudolfService:
     pullPolicy: Always
     tag: "TAG"
 
+  service:
+    enabled: false
+
   nodeSelector: {}
 
   resources: {}

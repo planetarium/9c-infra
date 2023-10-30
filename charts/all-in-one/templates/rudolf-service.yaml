@@ -63,6 +63,7 @@ spec:
 
 ---
 
+{{ if .Values.rudolfService.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -73,7 +74,7 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-security-groups: {{ .Values.rudolfService.securityGroupIds.serviceToPod }}
+    service.beta.kubernetes.io/aws-load-balancer-security-groups: {{ join "," .Values.rudolfService.service.securityGroupIds }}
     service.beta.kubernetes.io/aws-load-balancer-type: external
 spec:
   externalTrafficPolicy: Local
@@ -84,6 +85,7 @@ spec:
     name: http
   selector:
     app: 9c-rudolf
+{{ end }}
 
 ---
 

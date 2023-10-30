@@ -68,6 +68,40 @@
               "required": ["securityGroupId"]
             }
           },
+          "service": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "const": false,
+                    "description": "Whether to create external endpoint."
+                  }
+                },
+                "additionalProperties": false,
+                "required": ["enabled"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "const": true,
+                    "description": "Whether to create external endpoint."
+                  },
+                  "securityGroupIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "uniqueItems": true,
+                    "description": "Security Group Ids array to assign to the ELB resource."
+                  }
+                },
+                "additionalProperties": false,
+                "required": ["enabled"]
+              }
+            ]
+          },
           "securityGroupIds": {
             "type": "object",
             "properties": {
@@ -77,14 +111,11 @@
                   "type": "string"
                 }
               },
-              "serviceToPod": {
-                "type": "string"
-              },
               "podToService": {
                 "type": "string"
               }
             },
-            "required": ["podToService", "serviceToPod"],
+            "required": ["podToService"],
             "additionalProperties": false
           },
           "serviceAccount": {
