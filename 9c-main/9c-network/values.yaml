@@ -162,8 +162,6 @@ remoteHeadless:
     value: "::ffff:118.131.110.197"
 
   extraArgs:
-  - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
-  - --sentry-trace-sample-rate=0.5
   - --tx-quota-per-signer=1
   - --config=appsettings.configmap.json
 

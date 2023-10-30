@@ -51,8 +51,6 @@ spec:
         - --rpc-listen-port={{ $.Values.testHeadless1.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
-        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
-        - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.global.networkType }}
         {{- with $.Values.testHeadless1.extraArgs }}
