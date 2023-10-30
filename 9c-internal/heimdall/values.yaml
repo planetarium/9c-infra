@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 clusterName: "9c-internal-v2"
 logLevel: "debug"
 

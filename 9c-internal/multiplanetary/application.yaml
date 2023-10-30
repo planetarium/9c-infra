@@ -23,6 +23,8 @@ spec:
         - ../../9c-internal/multiplanetary/dataProvider.yaml
         - ../../9c-internal/multiplanetary/marketService.yaml
         - ../../9c-internal/multiplanetary/worldBoss.yaml
+        - ../../9c-internal/multiplanetary/patrolRewardService.yaml
+        - ../../9c-internal/multiplanetary/rudolfService.yaml
         - ../../9c-internal/multiplanetary/values.yaml
   destination:
     server: https://kubernetes.default.svc
