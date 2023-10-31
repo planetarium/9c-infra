@@ -201,3 +201,33 @@ patrolRewardService:
 
   db:
     local: true
+
+rudolfService:
+  enabled: true
+
+  image:
+    tag: "git-64ad20a7abb298b1b4e1fdeca00be20780c14e91"
+
+  config:
+    ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
+    graphqlEndpoint: "https://9c-internal-rpc-1.nine-chronicles.com/graphql"
+
+  db:
+    local: true
+
+  kms:
+    keyId: "54436222-3b06-4ddb-b661-f2cd54456893"
+    publicKey: "04ff006e2434dc04000971395e5e47012e4ec7570dfbbb87a02e4b12d33ec0c6ec329fdba089f7b5bfce7b8cbcdf3f9e662fade6a63066a9b1e17429687fbdb9de"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
+  
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+
+  securityGroupIds:  # FIXME: Use different security ids with other networks.
+    podToService: "sg-0f726b78db71de0b0"
+    extra:
+    - "sg-0eba3380bbea0a2c7"  # AllowAllDNSAccess
