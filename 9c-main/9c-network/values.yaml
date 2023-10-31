@@ -184,7 +184,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: 'git-cce78835ab4c4d4079197885479119c918c57848'
+    tag: 'git-6e53d79d46666f9f3997832bce72435c9c6827c6'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
