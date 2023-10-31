@@ -275,7 +275,7 @@ rudolfService:
     tag: "git-64ad20a7abb298b1b4e1fdeca00be20780c14e91"
 
   config:
-    ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
+    ncgMinter: "0x9b9566dB35D5eFF2f0B0758C5aC4c354Debaf118"
     graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
 
   db:
