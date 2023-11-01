@@ -9,6 +9,6 @@ snapshot:
     requests:
       cpu: 1300m
       memory: 10Gi
-
+      
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c

@@ -50,8 +50,10 @@ spec:
           aws_access_key_id: "{{ default $.Values.snapshot.aws_access_key_id .Values.heimdall.snapshot.aws_access_key_id }}"
           aws_secret_access_key: "{{ default $.Values.snapshot.aws_secret_access_key .Values.heimdall.snapshot.aws_secret_access_key }}"
           path: "{{ .Values.clusterName }}/heimdall"
+
           resources:
             {{- toYaml (default $.Values.snapshot.resources $.Values.heimdall.snapshot.resources) | nindent 12 }}
+
           nodeSelector:
             {{- toYaml (default $.Values.snapshot.nodeSelector $.Values.heimdall.snapshot.nodeSelector) | nindent 12 }}
 

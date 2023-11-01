@@ -13,13 +13,7 @@ heimdall:
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
     
-  snapshot:
-    resources:
-      requests:
-        cpu: 1300m
-        memory: 20Gi
-
-    nodeSelector: {}
+  snapshot: {}
 
   seed:
     hosts:
@@ -44,13 +38,7 @@ alfheim:
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
     
-  snapshot:
-    resources:
-      requests:
-        cpu: 1300m
-        memory: 20Gi
-
-    nodeSelector: {}
+  snapshot: {}
 
   seed:
     count: 1
@@ -134,11 +122,6 @@ snapshot:
   cfDistributionId: ""
   aws_access_key_id: ""
   aws_secret_access_key: ""
-
-  resources:
-    requests:
-      cpu: 1300m
-      memory: 10Gi
 
   path: "internal"
 

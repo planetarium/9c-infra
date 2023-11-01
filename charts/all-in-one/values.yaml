@@ -55,11 +55,6 @@ snapshot:
 
   path: "internal"
 
-  resources:
-    requests:
-      cpu: 1300m
-      memory: 20Gi
-
   nodeSelector: {}
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
