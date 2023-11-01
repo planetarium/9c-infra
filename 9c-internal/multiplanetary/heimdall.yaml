@@ -8,9 +8,6 @@ heimdall:
 
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
-  snapshot:
-    nodeSelector: {}
-
   seed:
     hosts:
     - "tcp-seed-1.heimdall.svc.cluster.local"
