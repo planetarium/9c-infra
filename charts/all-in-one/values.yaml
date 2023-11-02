@@ -297,7 +297,7 @@ worldBoss:
     repository: planetariumhq/world-boss-service
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
+    tag: "git-63b104fb476ca3ab8721f95cba9fec73d0ec9493"
 
   db:
     local: false
@@ -312,6 +312,7 @@ worldBoss:
     celeryBrokerUrl: ""
     celeryResultBackend: ""
     slackSigningSecret: ""
+    sentryDsn: ""
 
   nodeSelector: {}
 
