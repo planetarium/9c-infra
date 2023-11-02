@@ -126,6 +126,9 @@ validator:
 
 remoteHeadless:
   count: 3
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-git-060ed56266688d21646f1a690a2d9675de7dbabb"
 
   useTurnServer: false
 
