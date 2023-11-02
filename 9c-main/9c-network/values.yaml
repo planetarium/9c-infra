@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-b592ff6f19681a772ff3a8a920409439f0c1e0a7"
+    tag: "git-cd5210f8814f9578af6c91e1aed22fcb0909bbaa"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
