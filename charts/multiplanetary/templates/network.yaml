@@ -33,7 +33,7 @@ spec:
 
         externalSecret:
           enabled: {{ default $.Values.externalSecret.enabled .externalSecret.enabled }}
-          prefix: "{{ $.Values.clusterName }}/heimdall"
+          prefix: "{{ $.Values.clusterName }}/{{ .name }}"
 
         snapshot:
           downloadSnapshot: {{ default $.Values.snapshot.downloadSnapshot .snapshot.downloadSnapshot }}
@@ -49,7 +49,7 @@ spec:
           cfDistributionId: "{{ default $.Values.snapshot.cfDistributionId .snapshot.cfDistributionId }}"
           aws_access_key_id: "{{ default $.Values.snapshot.aws_access_key_id .snapshot.aws_access_key_id }}"
           aws_secret_access_key: "{{ default $.Values.snapshot.aws_secret_access_key .snapshot.aws_secret_access_key }}"
-          path: "{{ $.Values.clusterName }}/heimdall"
+          path: "{{ default $.Values.snapshot.path .snapshot.path }}"
 
           resources:
             {{- toYaml (default $.Values.snapshot.resources .snapshot.resources) | nindent 12 }}
@@ -144,6 +144,6 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: heimdall
+    namespace: {{ .name }}
 ---
 {{ end }}
