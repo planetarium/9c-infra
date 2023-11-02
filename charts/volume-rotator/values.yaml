@@ -1,0 +1,11 @@
+namespace: 9c-network
+
+serviceAccount:
+  roleArn: arn:aws:iam::319679068466:role/volume-rotator
+
+image:
+  repository: planetariumhq/ninechronicles-volumerotator
+  tag: "git-ac44723cb43239a936a493260ed664860740407a"
+
+nodeSelector:
+  node.kubernetes.io/instance-type: r6g.large
