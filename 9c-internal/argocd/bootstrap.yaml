@@ -61,6 +61,17 @@ spec:
                       group: rpc
                 tls_config:
                   insecure_skip_verify: true
+              - job_name: scrape-9c-rudolf
+                metrics_path: /metrics
+                scrape_interval: 5s
+                scrape_timeout: 4s
+                static_configs:
+                  - targets:
+                    - rudolf-service.9c-claim-items-test.svc.cluster.local:3000
+                    labels:
+                      group: 9c-rudolf
+                tls_config:
+                  insecure_skip_verify: true
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
