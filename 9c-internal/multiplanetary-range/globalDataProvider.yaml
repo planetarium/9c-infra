@@ -1,0 +1,27 @@
+dataProvider:
+  enabled: true
+  rwMode: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-e396409ff128d5cc3f45555ff57dec669b455b1a"
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+  resources: {}
+
+  nodeSelector: {}

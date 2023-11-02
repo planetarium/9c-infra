@@ -1,0 +1,280 @@
+---
+# Source: multiplanetary/templates/network.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: heimdall
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    automated: {}
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/all-in-one
+    helm:
+      values: |-
+        clusterName: 9c-internal-v2
+        logLevel: debug
+
+        global:
+          image:
+            repository: longfin/9c-headless
+            tag: multiplanetary-2023103101
+          appProtocolVersion: 200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==
+          genesisBlockPath: https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+          trustedAppProtocolVersionSigner: 030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1
+          peerStrings:
+            - 029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234
+          iceServers:
+            []
+          networkType: Default
+          consensusType: pbft
+          resetSnapshot: false
+          slackToken: 
+          slackWebHookUrl: 
+
+        externalSecret:
+          enabled: true
+          prefix: "9c-internal-v2/heimdall"
+
+        snapshot:
+          downloadSnapshot: false
+          fullSnapshot:
+            enabled: false
+            suspend: false
+          partitionReset:
+            enabled: false
+            suspend: false
+          partition:
+            enabled: true
+            suspend: true
+          slackChannel: bot-test
+          image:
+            planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6
+          cfDistributionId: ""
+          aws_access_key_id: ""
+          aws_secret_access_key: ""
+          path: "9c-internal-v2/heimdall"
+
+          resources:
+            requests:
+              cpu: 1300m
+              memory: 10Gi
+
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+
+        volumeReclaimPolicy: Delete
+
+        seed:
+          count: 1
+          useTurnServer: false
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/libplanet-seed
+            tag: git-22bed8ef41ab09258e6404462ec8e07cd038d089
+          hosts:
+            - tcp-seed-1.heimdall.svc.cluster.local
+          ports:
+            gossip: 31235
+            graphql: 31237
+            node: 31234
+          workerCount: 1000
+          extraArgs:
+            []
+          privateKeys:
+            []
+          env:
+            []
+          resources:
+            requests:
+              cpu: 1
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5d.xlarge
+          tolerations:
+            []
+          affinity:
+            {}
+
+        validator:
+          count: 1
+          image:
+            pullPolicy: Always
+            repository: ""
+            tag: ""
+          consensusSeedStrings:
+            - 029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235
+          hosts:
+            - heimdall-internal-validator-1.nine-chronicles.com
+          ports:
+            gossip: 6000
+            graphql: 80
+            headless: 31234
+          extraArgs:
+            []
+          privateKeys:
+            []
+          storage:
+            data: 1000Gi
+          env:
+            []
+          resources:
+            requests:
+              cpu: 1500m
+              memory: 12Gi
+          loggingEnabled: false
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+          tolerations:
+            []
+          affinity:
+            {}
+
+        remoteHeadless:
+          count: 1
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/ninechronicles-headless
+            tag: ""
+          hosts:
+            - heimdall-internal-rpc-1.nine-chronicles.com
+          ports:
+            graphql: 80
+            headless: 31234
+            rpc: 31238
+          storage:
+            data: 500Gi
+          resources:
+            requests:
+              cpu: 1
+              memory: 12Gi
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+
+        dataProvider:
+          db:
+            connectionString: ""
+            database: ""
+            host: ""
+            local: true
+            password: ""
+            port: 3306
+            storage: 100Gi
+            user: user
+          enabled: true
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/ninechronicles-dataprovider
+            tag: git-e396409ff128d5cc3f45555ff57dec669b455b1a
+          migrateDatabase: false
+          nodeSelector: {}
+          render: true
+          resources: {}
+          rwMode: false
+          storage:
+            data: 1000Gi
+            log: 10Gi
+
+        worldBoss:
+          db:
+            local: true
+            size: 5Gi
+          enabled: true
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/world-boss-service
+            tag: git-47519fb4623a6aac808dd24e3947c4b321df923c
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5d.xlarge
+          ports:
+            targetPort: 5000
+          worldBossEnv:
+            celeryBrokerUrl: ""
+            celeryResultBackend: ""
+            databaseUrl: ""
+            kmsKeyId: ""
+            redisHost: ""
+            redisPort: ""
+            slackSigningSecret: ""
+            slackToken: ""
+
+        marketService:
+          db:
+            connectionString: ""
+            database: ""
+            local: true
+            size: 1Gi
+            user: ""
+          enabled: true
+          env:
+          - name: DOTNET_gcServer
+            value: "1"
+          - name: RpcConfig__Host
+            value: heimdall-internal-rpc-1.nine-chronicles.com
+          - name: RpcConfig__Port
+            value: "31238"
+          - name: WorkerConfig__SyncShop
+            value: "true"
+          - name: WorkerConfig__SyncProduct
+            value: "true"
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/market-service
+            tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5d.large
+            read: {}
+            write: {}
+          resources: {}
+          rwMode: false
+
+        patrolRewardService:
+          db:
+            connectionString: ""
+            database: ""
+            local: true
+            size: 1Gi
+            user: ""
+          enabled: true
+          env: []
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/patrol-reward-service
+            tag: git-f26d63e433985058bb037974ceece136e0e5688e
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5d.xlarge
+          resources: {}
+
+        rudolfService:
+          config:
+            graphqlEndpoint: http://heimdall-internal-rpc-1.nine-chronicles.com/graphql
+            ncgMinter: 0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9
+          db:
+            local: true
+          enabled: true
+          image:
+            pullPolicy: Always
+            repository: planetariumhq/9c-rudolf
+            tag: git-64ad20a7abb298b1b4e1fdeca00be20780c14e91
+          kms:
+            keyId: 54436222-3b06-4ddb-b661-f2cd54456893
+            publicKey: 04ff006e2434dc04000971395e5e47012e4ec7570dfbbb87a02e4b12d33ec0c6ec329fdba089f7b5bfce7b8cbcdf3f9e662fade6a63066a9b1e17429687fbdb9de
+          nodeSelector: {}
+          resources: {}
+          securityGroupId: 1234
+          securityGroupIds:
+            extra:
+            - sg-0eba3380bbea0a2c7
+            podToService: sg-0f726b78db71de0b0
+          service:
+            enabled: true
+            securityGroupIds:
+            - sg-0c865006315f5b9f0
+          serviceAccount:
+            roleArn: arn:aws:iam::319679068466:role/InternalRudolfSignerRole
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: heimdall

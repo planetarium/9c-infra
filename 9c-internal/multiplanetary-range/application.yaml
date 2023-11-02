@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multiplanetary-range
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: bot-test
+spec:
+  project: default
+  syncPolicy:
+    automated: {}
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/multiplanetary-range
+    helm:
+      valueFiles:
+        - ../../9c-internal/multiplanetary/multiplanetary.yaml
+        - ../../9c-internal/multiplanetary/globalValidator.yaml
+        - ../../9c-internal/multiplanetary/globalSeed.yaml
+        - ../../9c-internal/multiplanetary/globalRemoteHeadless.yaml
+        - ../../9c-internal/multiplanetary/globalSnapshot.yaml
+        - ../../9c-internal/multiplanetary/globalDataProvider.yaml
+        - ../../9c-internal/multiplanetary/globalMarketService.yaml
+        - ../../9c-internal/multiplanetary/globalWorldBoss.yaml
+        - ../../9c-internal/multiplanetary/globalPatrolRewardService.yaml
+        - ../../9c-internal/multiplanetary/globalRudolfService.yaml
+        - ../../9c-internal/multiplanetary/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: 9c-network

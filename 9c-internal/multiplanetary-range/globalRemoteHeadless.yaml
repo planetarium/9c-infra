@@ -1,0 +1,15 @@
+remoteHeadless:
+  count: 1
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    

@@ -1,0 +1,25 @@
+marketService:
+  enabled: true
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
+
+  db:
+    local: true
+    size: 1Gi
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: RpcConfig__Host
+    value: heimdall-internal-rpc-1.nine-chronicles.com
+  - name: RpcConfig__Port
+    value: "31238"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
