@@ -102,22 +102,6 @@
               }
             ]
           },
-          "securityGroupIds": {
-            "type": "object",
-            "properties": {
-              "extra": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "podToService": {
-                "type": "string"
-              }
-            },
-            "required": ["podToService"],
-            "additionalProperties": false
-          },
           "serviceAccount": {
             "type": "object",
             "properties": {
@@ -140,7 +124,7 @@
             "required": ["keyId", "publicKey"]
           }
         },
-        "required": ["config", "securityGroupIds", "serviceAccount"]
+        "required": ["config", "serviceAccount"]
       }
     }
   }

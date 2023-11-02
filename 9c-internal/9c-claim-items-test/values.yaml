@@ -223,8 +223,3 @@ rudolfService:
     enabled: true
     securityGroupIds:
     - "sg-0c865006315f5b9f0"
-
-  securityGroupIds:
-    podToService: "sg-0f726b78db71de0b0"
-    extra:
-    - "sg-0eba3380bbea0a2c7"  # AllowAllDNSAccess
