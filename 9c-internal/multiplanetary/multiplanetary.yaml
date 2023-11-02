@@ -30,4 +30,5 @@ multiplanetary:
       storage: {}
 
     externalSecret: {}
-    snapshot: {}
+    snapshot:
+      path: 9c-internal-v2/heimdall
