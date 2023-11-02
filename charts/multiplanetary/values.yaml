@@ -5,79 +5,37 @@
 clusterName: "multiplanetary-sample"
 logLevel: "debug"
 
-heimdall:
-  enabled: false
+multiplanetary:
+  - name: "heimdall"
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+      
+    snapshot: {}
 
-  peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
-    
-  snapshot: {}
+    seed:
+      hosts:
+      - "tcp-seed-1.heimdall.svc.cluster.local"
 
-  seed:
-    hosts:
-    - "tcp-seed-1.heimdall.svc.cluster.local"
+    validator:
+      count: 1
 
-  validator:
-    consensusSeedStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
+      consensusSeedStrings:
+      - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
-    hosts:
-    - "heimdall-internal-validator-1.nine-chronicles.com"
+      hosts:
+      - "heimdall-internal-validator-1.nine-chronicles.com"
 
-  remoteHeadless:
-    hosts:
-    - "heimdall-internal-rpc-1.nine-chronicles.com"
+      storage: {}
 
-alfheim:
-  enabled: false
+    remoteHeadless:
+      hosts:
+      - "heimdall-internal-rpc-1.nine-chronicles.com"
 
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+      storage: {}
 
-  peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31234"
-    
-  snapshot: {}
-
-  seed:
-    count: 1
-
-    hosts:
-    - "tcp-seed-1.alfheim.svc.cluster.local"
-
-    nodeSelector:
-      node.kubernetes.io/instance-type: m5d.xlarge
-
-  validator:
-    count: 1
-
-    consensusSeedStrings:
-    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.alfheim.svc.cluster.local,31235"
-
-    hosts:
-    - "alfheim-internal-validator-1.nine-chronicles.com"
-
-    resources:
-      requests:
-        cpu: 2
-        memory: 20Gi
-    
-    nodeSelector: {}
-
-  remoteHeadless:
-    count: 1
-
-    hosts:
-    - "alfheim-internal-rpc-1.nine-chronicles.com"
-
-    resources:
-      requests:
-        cpu: 1
-        memory: 12Gi
-
-    nodeSelector:
-      eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    externalSecret: {}
 
 global:
   image:
