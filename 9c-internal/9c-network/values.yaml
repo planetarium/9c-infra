@@ -30,11 +30,13 @@ externalSecret:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-708a18d12e951f1c4275c5137eb577123dd81715"
+  image: "planetariumhq/ninechronicles-snapshot:git-e14cb15c049c5648752672571ea3864d50989de5"
   partition:
     enabled: true
     suspend: true
   path: internal
+  nodeSelector:
+    node.kubernetes.io/instance-type: r6g.xlarge
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
