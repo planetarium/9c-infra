@@ -7,9 +7,9 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "61"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
 
-  appProtocolVersion: "200091/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQC5SXKqfmpX4l6k.nZCzokLiOaLqSGODoKxxmvoeYBDlAIgR.ejrM5XO2m9EWkbvRi8oIV.GcGbiUFz6ONSgFyikY8=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEwLTEyZQ=="
+  appProtocolVersion: "200092/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIBCu+LH.l0kmyxDYKVp9SnyV2o.0er.Z55wdG8HDSSW7AiBBj1kxmLijMsDi5SDhZid8NkpbpbYZnZgum5IbYCU5dQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTAzZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-cd5210f8814f9578af6c91e1aed22fcb0909bbaa"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -128,7 +128,7 @@ remoteHeadless:
   count: 3
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-060ed56266688d21646f1a690a2d9675de7dbabb"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
 
   useTurnServer: false
 
@@ -187,7 +187,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: 'git-8dcfdb9ff0857ce88f659cfe5e606b837fb5b3dc'
+    tag: '62'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
@@ -251,7 +251,7 @@ marketService:
 fullState:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-b592ff6f19681a772ff3a8a920409439f0c1e0a7"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
   enabled: true
 
   loggingEnabled: true
@@ -317,7 +317,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "61"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
 
   loggingEnabled: true
 
@@ -353,7 +353,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "61"
+    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
 
   loggingEnabled: true
 
