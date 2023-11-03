@@ -48,6 +48,9 @@ spec:
       containers:
       - args:
         - /app/NineChronicles.DataProvider.Executable
+        {{- with $.Values.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         command:
         - /bin/sh
         - -c
