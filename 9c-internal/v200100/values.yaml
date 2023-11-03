@@ -80,7 +80,7 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config-path=https://9c-dev-cluster-configs.s3.ap-northeast-2.amazonaws.com/appsettings-headless.json
+  - --config=https://9c-dev-cluster-configs.s3.ap-northeast-2.amazonaws.com/appsettings-headless.json
 
 remoteHeadless:
   image:
@@ -110,7 +110,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config-path=https://9c-dev-cluster-configs.s3.ap-northeast-2.amazonaws.com/appsettings-headless.json
+  - --config=https://9c-dev-cluster-configs.s3.ap-northeast-2.amazonaws.com/appsettings-headless.json
 
 dataProvider:
   enabled: true
