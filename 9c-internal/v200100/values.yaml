@@ -20,7 +20,7 @@ global:
   networkType: Internal
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 externalSecret:
