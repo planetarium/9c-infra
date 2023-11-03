@@ -128,7 +128,7 @@ remoteHeadless:
   count: 3
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "git-597810a5e00266975809fcab9649f7145a15c50c"
 
   useTurnServer: false
 
