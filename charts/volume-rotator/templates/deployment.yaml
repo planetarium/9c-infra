@@ -17,7 +17,7 @@ spec:
       serviceAccountName: volume-rotator-controller
       containers:
       - name: volume-rotator-container
-        image: "{{ $.Values.image.repository }}/{{ $.Values.image.tag }}"
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
         imagePullPolicy: Always
         ports:
         - containerPort: 80
