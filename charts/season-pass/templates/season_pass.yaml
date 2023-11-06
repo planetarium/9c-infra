@@ -16,9 +16,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: world-boss-service
+    app: season-pass
     app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: world-boss-service
+  name: season-pass
   namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
