@@ -429,7 +429,7 @@ spec:
           value: {{ $peer }}
         {{ end }}
         - name: NC_Preload
-          value: 'true'
+          value: 'false'
         - name: NC_NoMiner
           value: 'true'
         - name: NC_Render
