@@ -33,24 +33,28 @@ spec:
         app: season-pass
     spec:
       containers:
-        env:
-          - name: STAGE
-            valueFrom:
-              secretKeyRef:
-                key: stage
-                name: season-pass-env
-          - name: REGION_NAME
-            valueFrom:
-              secretKeyRef:
-                key: region_name
-                name: season-pass-env
-          - name: SQS_URL
-            valueFrom:
-              secretKeyRef:
-                key: sqs_url
-                name: season-pass-env
-        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-        name: season-pass
+        - args:
+            - systemctl restart season_pass.service
+          command:
+            - /bin/sh
+          env:
+            - name: STAGE
+              valueFrom:
+                secretKeyRef:
+                  key: stage
+                  name: season-pass-env
+            - name: REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region_name
+                  name: season-pass-env
+            - name: SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: sqs_url
+                  name: season-pass-env
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          name: season-pass
       nodeSelector:
         node.kubernetes.io/instance-type: m5.large
       restartPolicy: Always
