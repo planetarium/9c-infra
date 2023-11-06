@@ -1,2 +1,5 @@
 .terraform
 .DS_Store
+
+# Jetbrains
+.idea/
