@@ -27,5 +27,8 @@ spec:
         headless:
           snapshotPath: {{ $.Values.snapshot.path }}
           nodeSelectorValue: {{ $.Values.volumeRotator.nodeSelectorValue }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
 ---
 {{- end }}
