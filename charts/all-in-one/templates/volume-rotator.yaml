@@ -1,0 +1,31 @@
+{{- if $.Values.volumeRotator.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: volume-rotator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/volume-rotator
+    helm:
+      values: |-
+        namespace: {{ $.Release.Name }}
+        serviceAccount:
+          roleArn: {{ $.Values.volumeRotator.serviceAccount.roleArn }}
+        
+        image:
+          repository: {{ $.Values.volumeRotator.image.repository }}
+          tag: {{ $.Values.volumeRotator.image.tag }}
+        
+        nodeSelector:
+          node.kubernetes.io/instance-type: "r6g.large" 
+        
+        headless:
+          snapshotPath: {{ $.Values.snapshot.path }}
+          nodeSelectorValue: {{ $.Values.volumeRotator.nodeSelectorValue }}
+---
+{{- end }}

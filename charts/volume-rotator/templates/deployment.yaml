@@ -21,6 +21,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        env:
+        - name: Headless:SnapshotPath
+          value: {{ $.Values.headless.snapshotPath }}
+        - name: Headless:NodeSelector
+          value: {{ $.Values.headless.nodeSelectorValue }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
