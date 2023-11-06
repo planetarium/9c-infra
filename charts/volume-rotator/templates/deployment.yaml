@@ -22,9 +22,9 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: Headless:SnapshotPath
+        - name: Headless_SnapshotPath
           value: {{ $.Values.headless.snapshotPath }}
-        - name: Headless:NodeSelector
+        - name: Headless_NodeSelector
           value: {{ $.Values.headless.nodeSelectorValue }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
