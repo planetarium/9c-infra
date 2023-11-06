@@ -174,3 +174,14 @@ marketService:
   - name: WorkerConfig__SyncProduct
     value: "true"
 
+seasonPass:
+  enabled: true
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-795a5b0bff9afc609da8d7ca8d360f866e37a5d8"
+
+  seasonPassEnv:
+    STAGE: ""
+    REGION_NAME: ""
+    SQS_URL: ""
