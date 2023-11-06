@@ -441,7 +441,7 @@ spec:
           value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
         - name: NC_GenesisBlockPath
           value: {{ $.Values.global.genesisBlockPath }}
-          - name: NC_BlockIndexFilePath
+        - name: NC_BlockIndexFilePath
           value: /data
         - name: NC_TxLifeTime
           value: '10'
