@@ -9,7 +9,7 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -81,8 +81,6 @@ spec:
         - --rpc-listen-port={{ $.Values.remoteActionEvaluatorHeadless.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
-        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
-        - --sentry-trace-sample-rate=0.5
         - --tx-life-time=10
         - --network-type={{ $.Values.global.networkType }}
         - --config=/bin/appsettings.json
@@ -146,12 +144,14 @@ spec:
               fieldPath: metadata.namespace
         - name: JSON_LOG_PATH
           value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-action-evaluator-headless.json
+        - name: JSON_AEV_LOG_PATH
+          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-action-evaluator-aev.json
         {{- end }}
         - name: IpRateLimiting__EnableRateLimiting
           value: "true"
         - name: IpRateLimiting__GeneralRules__0__Limit
           value: "15"
-      {{- with $.Values.remoteActionEvaluatorHeadless }}
+      {{- with $.Values.remoteActionEvaluatorHeadless.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -276,77 +276,135 @@ metadata:
 data:
   appsettings.json: |-
     {
-        "Serilog": {
-            "Using": [
-                "Serilog.Expressions",
-                "Serilog.Sinks.Console",
-                "Serilog.Sinks.RollingFile"
-            ],
-            "MinimumLevel": "Debug",
-            "WriteTo": [
-                {
-                    "Name": "Logger",
+      "Serilog": {
+        "Using": [
+          "Serilog.Expressions",
+          "Serilog.Sinks.Console",
+          "Serilog.Sinks.RollingFile"
+        ],
+        "MinimumLevel": "Debug",
+        "WriteTo": [
+          {
+            "Name": "Logger",
+            "Args": {
+              "configureLogger": {
+                "WriteTo": [
+                  {
+                    "Name": "Console",
                     "Args": {
-                        "configureLogger": {
-                            "WriteTo": [
-                                {
-                                    "Name": "Console",
-                                    "Args": {
-                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
-                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] [{Source}] {Message:lj}{NewLine}{Exception}"
-                                    }
-                                }
-                            ],
-                            "Filter": [
-                                {
-                                    "Name": "ByIncludingOnly",
-                                    "Args": {
-                                        "expression": "Source is not null"
-                                    }
-                                }
-                            ]
-                        }
+                      "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                      "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] [{Source}] {Message:lj}{NewLine}{Exception}"
                     }
-                },
-                {
-                    "Name": "Logger",
+                  }
+                ],
+                "Filter": [
+                  {
+                    "Name": "ByIncludingOnly",
                     "Args": {
-                        "configureLogger": {
-                            "WriteTo": [
-                                {
-                                    "Name": "Console",
-                                    "Args": {
-                                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
-                                        "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
-                                    }
-                                }
-                            ],
-                            "Filter": [
-                                {
-                                    "Name": "ByExcluding",
-                                    "Args": {
-                                        "expression": "Source is not null"
-                                    }
-                                }
-                            ]
-                        }
+                      "expression": "Source is not null"
                     }
-                }
-            ],
-            "Filter": [
-                {
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Name": "Logger",
+            "Args": {
+              "configureLogger": {
+                "WriteTo": [
+                  {
+                    "Name": "Console",
+                    "Args": {
+                      "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+                      "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                    }
+                  }
+                ],
+                "Filter": [
+                  {
                     "Name": "ByExcluding",
                     "Args": {
-                        "expression": "SourceContext = 'Libplanet.Stun.TurnClient'"
+                      "expression": "Source is not null"
                     }
-                }
-            ]
-        },
-        "Headless": {
-            "ActionEvaluator": {
-                "type": "RemoteActionEvaluator",
-                "stateServiceEndpoint": "http://lib9c-state-service.9c-network.svc.cluster.local:5157/evaluation"
+                  }
+                ]
+              }
             }
+          }
+        ],
+        "Filter": [
+          {
+            "Name": "ByExcluding",
+            "Args": {
+              "expression": "SourceContext = 'Libplanet.Stun.TurnClient'"
+            }
+          }
+        ]
+      },
+      "Headless": {
+        "ActionEvaluator": {
+          "type": "ForkableActionEvaluator",
+          "pairs": [
+            {
+              "actionEvaluator": {
+                "type": "RemoteActionEvaluator",
+                "stateServiceEndpoint": "http://localhost:11110/evaluation"
+              },
+              "range": {
+                "start": 0,
+                "end": 7512000
+              }
+            },
+            {
+              "actionEvaluator": {
+                "type": "RemoteActionEvaluator",
+                "stateServiceEndpoint": "http://localhost:11111/evaluation"
+              },
+              "range": {
+                "start": 7512001,
+                "end": 7520000
+              }
+            },
+            {
+              "actionEvaluator": {
+                "type": "RemoteActionEvaluator",
+                "stateServiceEndpoint": "http://localhost:11112/evaluation"
+              },
+              "range": {
+                "start": 7520001,
+                "end": 7521000,
+              }
+            },
+            {
+              "actionEvaluator": {
+                "type": "Default"
+              },
+              "range": {
+                "start": 7521001,
+                "end": 9223372036854775807
+              }
+            }
+          ]
+        },
+        "StateServiceManagerService": {
+          "StateServices": [
+            {
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/279166ddf7ae05967d8887a20179816712632d39/linux-arm64.zip",
+              "port": 11110
+            },
+            {
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/170da2660770f6dec9911ba174618a8c5b154dca/linux-arm64.zip",
+              "port": 11111
+            },
+            {
+              "path": "https://9c-dx.s3.ap-northeast-2.amazonaws.com/lib9c-stateservices/1a2887911c7ba4492fa9eb99564a58f0f461a42b/linux-arm64.zip",
+              "port": 11112
+            }
+          ],
+          "StateServicesDownloadPath": "/tmp/lib9c-stateservices",
+          "RemoteBlockChainStatesEndpoint": "http://localhost:80/graphql/explorer"
         }
+      }
     }
 {{- end }}

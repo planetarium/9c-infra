@@ -10,9 +10,13 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -22,6 +26,11 @@ spec:
   - port: {{ $.Values.seed.ports.graphql }}
     targetPort: {{ $.Values.seed.ports.graphql }}
     name: graphql
+  {{- if ne $.Values.global.networkType "Main" }}
+  - port: 443
+    targetPort: {{ $.Values.seed.ports.graphql }}
+    name: https
+  {{- end }}
   - port: {{ $.Values.seed.ports.gossip }}
     targetPort: {{ $.Values.seed.ports.gossip }}
     name: gossip
@@ -44,9 +53,13 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -81,6 +94,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
 spec:
   ports:
   - name: graphql
@@ -103,6 +117,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-read
 spec:
   ports:
   - name: graphql
@@ -126,6 +141,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
 spec:
   ports:
   - name: graphql
@@ -149,6 +165,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-db
 spec:
   ports:
   - name: tcp
@@ -171,9 +188,13 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=explorer
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -183,6 +204,9 @@ spec:
   - name: headless
     port: {{ $.Values.explorer.ports.headless }}
     targetPort: {{ $.Values.explorer.ports.headless }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.explorer.ports.graphql }}
   selector:
     app: explorer
   type: LoadBalancer
@@ -199,10 +223,14 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=main-full-state
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -212,6 +240,12 @@ spec:
   - name: headless
     port: {{ $.Values.fullState.ports.headless }}
     targetPort: {{ $.Values.fullState.ports.headless }}
+  - name: rpc
+    port: {{ $.Values.fullState.ports.rpc }}
+    targetPort: {{ $.Values.fullState.ports.rpc }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.fullState.ports.graphql }}
   selector:
     app: main-full-state
   type: LoadBalancer
@@ -230,11 +264,14 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-1
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -269,9 +306,13 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-2
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -302,8 +343,14 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    {{- if ne $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
   name: world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
@@ -328,6 +375,62 @@ spec:
 ---
 {{ end }}
 
+{{- if $.Values.worldBoss.db.local }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+  name: world-boss-db
+  namespace: {{ $.Release.Name }}
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    app: world-boss-db
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+  name: world-boss-redis
+  namespace: {{ $.Release.Name }}
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: world-boss-redis
+  type: ClusterIP
+---
+{{- end }}
+
 {{ if .Values.marketService.enabled }}
 apiVersion: v1
 kind: Service
@@ -340,9 +443,13 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
 spec:
   ports:
     - name: http
@@ -372,6 +479,10 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-db
 spec:
   ports:
     - name: "5432"
@@ -384,7 +495,7 @@ spec:
 {{ end }}
 
 {{ range $idx := until (int .Values.validator.count) }}
-{{ $index := add $idx 1 }}
+{{ $index := add $idx 5 }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -395,10 +506,15 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
 spec:
+  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.validator.ports.headless }}
     targetPort: {{ $.Values.validator.ports.headless }}
@@ -432,9 +548,13 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-action-evaluator-headless
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -466,6 +586,16 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=lib9c-state-service
 spec:
   ports:
   - name: http
@@ -476,4 +606,156 @@ spec:
   type: ClusterIP
 
 ---
+{{ end }}
+
+{{ if .Values.emptyChronicle.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: empty-chronicle
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=empty-chronicle
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: http
+    port: 80
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.emptyChronicle.ports.port }}
+  selector:
+    app: empty-chronicle
+  type: LoadBalancer
+
+---
+{{ end }}
+
+{{ if .Values.patrolRewardService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: patrol-reward-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: patrol-reward-service
+  type: LoadBalancer
+
+---
+{{ end }}
+
+{{ if .Values.patrolRewardService.db.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: patrol-reward-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- if eq $.Values.global.networkType "Main" }}
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-db
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: patrol-reward-db
+  type: LoadBalancer
+---
+{{ end }}
+
+{{ if .Values.acc.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: acc-redis-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: acc-redis
+  selector:
+    app: acc-redis
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acc-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    name: acc
+  selector:
+    app: acc
+---
+{{ end }}
+
+{{ if .Values.rudolfService.db.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: rudolf-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: rudolf-db
+  type: ClusterIP
 {{ end }}

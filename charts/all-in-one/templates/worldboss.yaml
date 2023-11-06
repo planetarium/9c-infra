@@ -5,9 +5,9 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-onboarding-eks
   labels:
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: {{ $.Chart.Name }}-onboarding-iam-role
-  namespace: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-onboarding-iam-role
+  namespace: {{ $.Release.Name }}
 
 ---
 
@@ -16,9 +16,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: world-boss-service
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: world-boss-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -78,6 +78,11 @@ spec:
                 secretKeyRef:
                   key: slack-signing-secret
                   name: world-boss-env
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: sentry-dsn
+                  name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-service
           ports:
@@ -85,11 +90,10 @@ spec:
       {{- with $.Values.worldBoss.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-        node.kubernetes.io/instance-type: m5.large
       {{- end }}
       restartPolicy: Always
-      serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
-      serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role
+      serviceAccount: {{ $.Release.Name }}-onboarding-iam-role
+      serviceAccountName: {{ $.Release.Name }}-onboarding-iam-role
   updateStrategy:
     type: RollingUpdate
 
@@ -100,9 +104,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: world-boss-worker
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   name: world-boss-worker
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -162,15 +166,22 @@ spec:
                 secretKeyRef:
                   key: slack-signing-secret
                   name: world-boss-env
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: sentry-dsn
+                  name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-worker
           ports:
             - containerPort: 5000
+      {{- with $.Values.worldBoss.nodeSelector }}
       nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
-      serviceAccount: {{ $.Chart.Name }}-onboarding-iam-role
-      serviceAccountName: {{ $.Chart.Name }}-onboarding-iam-role
+      serviceAccount: {{ $.Release.Name }}-onboarding-iam-role
+      serviceAccountName: {{ $.Release.Name }}-onboarding-iam-role
   updateStrategy:
     type: RollingUpdate
 {{ end }}

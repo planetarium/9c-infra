@@ -1,0 +1,61 @@
+{{ if .Values.rudolfService.db.local }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: rudolf-db
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: rudolf-db
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rudolf-db
+  serviceName: rudolf-db
+  template:
+    metadata:
+      labels:
+        app: rudolf-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: rudolf-service
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: rudolf-service
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: rudolf-service
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: rudolf-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: rudolf-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: rudolf-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.rudolfService.db.size }}
+        storageClassName: {{ $.Release.Name }}-gp3
+        volumeMode: Filesystem
+{{ end }}

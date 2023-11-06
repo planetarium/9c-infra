@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volume-rotator-controller
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volume-rotator-controller
+  template:
+    metadata:
+      labels:
+        app: volume-rotator-controller
+    spec:
+      serviceAccountName: volume-rotator-controller
+      containers:
+      - name: volume-rotator-container
+        image: "{{ $.Values.image.repository }}/{{ $.Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---

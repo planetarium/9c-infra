@@ -1,0 +1,24 @@
+rudolfService:
+  enabled: true
+
+  image:
+    tag: "git-91f5fd5b1e9d59c5fbd826263f878f7892c75ef5"
+
+  config:
+    ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
+    graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
+
+  db:
+    local: true
+
+  kms:
+    keyId: "54436222-3b06-4ddb-b661-f2cd54456893"
+    publicKey: "04ff006e2434dc04000971395e5e47012e4ec7570dfbbb87a02e4b12d33ec0c6ec329fdba089f7b5bfce7b8cbcdf3f9e662fade6a63066a9b1e17429687fbdb9de"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
+  
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"

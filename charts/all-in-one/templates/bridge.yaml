@@ -97,5 +97,6 @@ spec:
           {{- end }}
           restartPolicy: OnFailure
   schedule: 30 * * * *
+  suspend: true
   successfulJobsHistoryLimit: 1
 {{ end }}

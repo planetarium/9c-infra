@@ -1,0 +1,56 @@
+clusterName: "9c-internal-v2"
+logLevel: "debug"
+
+multiplanetary:
+  - name: "heimdall"
+
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+
+    trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+    seed:
+      hosts:
+      - "tcp-seed-1.heimdall.svc.cluster.local"
+
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+
+    validator:
+      consensusSeedStrings:
+      - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
+
+      hosts:
+      - "heimdall-internal-validator-1.nine-chronicles.com"
+
+      storage: {}
+
+    remoteHeadless:
+      hosts:
+      - "heimdall-internal-rpc-1.nine-chronicles.com"
+      storage: {}
+
+    externalSecret: {}
+    snapshot:
+      path: 9c-internal-v2/heimdall
+
+global:
+  image:
+    repository: longfin/9c-headless
+    tag: "multiplanetary-2023110301"
+
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+
+  iceServers: []
+
+  networkType: Default
+  consensusType: pbft
+  
+  resetSnapshot: false
+  slackToken: ""
+  slackWebHookUrl: ""
+
+externalSecret:
+  enabled: true

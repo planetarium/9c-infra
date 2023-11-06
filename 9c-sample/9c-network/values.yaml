@@ -19,9 +19,14 @@ global:
 
   resetSnapshot: false
   
-  useExternalSecret: true
   networkType: Default
   consensusType: pbft
+
+externalSecret:
+  enabled: true
+  # By default, all secrets are shared cluster widely from secretsmanager(ex. {clusterName}/private-keys).
+  # if you want to use your own private keys, enter prefix below to find {prefix}/private-keys from secretsmanager.
+  prefix: "9c-sample"
 
 snapshot:
   slackChannel: "bot-test"

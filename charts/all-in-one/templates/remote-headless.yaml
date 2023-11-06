@@ -8,8 +8,6 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: remote-headless-{{ $index }}
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -24,6 +22,7 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
@@ -31,11 +30,14 @@ spec:
           - $(RESET_SNAPSHOT_OPTION)
           - remote-headless-{{ $index }}
           - $(SLACK_WEBHOOK_URL)
+          - $(SNAPSHOT_ROLLBACK_OPTION)
           command:
           - /bin/download_snapshot.sh
           env:
           - name: RESET_SNAPSHOT_OPTION  
             value: "{{ $.Values.global.resetSnapshot }}"
+          - name: SNAPSHOT_ROLLBACK_OPTION
+            value: "{{ $.Values.global.rollbackSnapshot }}"
           - name: SLACK_WEBHOOK_URL
             valueFrom:
               secretKeyRef:
@@ -66,7 +68,7 @@ spec:
 
               # Endpoint to check
 
-              ENDPOINT="http://validator-1.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+              ENDPOINT="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
 
               echo Checking: ${ENDPOINT}
 
@@ -83,6 +85,7 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -113,10 +116,6 @@ spec:
         - --rpc-listen-port={{ $.Values.remoteHeadless.ports.rpc }}
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
-        {{- if $.Values.remoteHeadless.sentryEnabled }}
-        - --sentry-dsn=https://625a444555a547e8822ee86d4f38f046@o195672.ingest.sentry.io/6197051
-        - --sentry-trace-sample-rate=0.5
-        {{- end }}
         - --tx-life-time=10
         - --network-type={{ $.Values.global.networkType }}
         {{- with $.Values.remoteHeadless.extraArgs }}
@@ -175,6 +174,9 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+          subPath: appsettings.json
         env:
           {{- if $.Values.remoteHeadless.loggingEnabled }}
           - name: POD_NAME
@@ -188,16 +190,15 @@ spec:
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
           {{- end }}
-        {{- if $.Values.rateLimitEnabled }}
-        - name: IpRateLimiting__EnableEndpointRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Period
-          value: "5s"
-        - name: IpRateLimiting__GeneralRules__1__Period
-          value: "5s"
+        {{- with $.Values.remoteHeadless.env }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       {{- with $.Values.remoteHeadless.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.remoteHeadless.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
@@ -219,6 +220,10 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

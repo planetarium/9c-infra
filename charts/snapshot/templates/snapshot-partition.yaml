@@ -38,7 +38,7 @@ spec:
               mountPath: /data
           containers:
           - name: upload-snapshot
-            image: {{ $.Values.image }}
+            image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)

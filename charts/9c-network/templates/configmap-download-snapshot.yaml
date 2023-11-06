@@ -11,15 +11,23 @@ data:
 
     cd /data
 
-    apk update
-    apk add jq curl wget aria2 sudo zip
+    until apt-get -y update
+    do
+      echo "Try again"
+    done
+
+    until apt-get -y install curl jq wget aria2 sudo zip
+    do
+      echo "Try again"
+    done
 
     base_url=${1:-https://snapshots.nine-chronicles.com/internal}
     save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
     download_option=$3
     service_name=$4
     SLACK_WEBHOOK=$5
-    complete_snapshot_reset=${6:-"false"}
+    rollback_snapshot=${6:-"false"}
+    complete_snapshot_reset=${7:-"false"}
     mainnet_snapshot_json_filename="mainnet_latest.json"
 
     if [ $download_option = "true" ]
@@ -47,11 +55,15 @@ data:
         snapshot_zip_filename_array=("$snapshot_zip_filename")
         mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
         mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
+        mainnet_snapshot_blockEpoch=$(get_snapshot_value "$mainnet_snapshot_json_url" "BlockEpoch")
 
-        if [ "$mainnet_snapshot_blockIndex" -lt $2 ]
-        then
-            echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
-            return
+        if [ "$mainnet_snapshot_blockEpoch" -le $1 ]; then
+            if [ $rollback_snapshot = "false" ]; then
+              if [ "$mainnet_snapshot_blockIndex" -le $2 ]; then
+                  echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
+                  return
+              fi
+            fi
         fi
 
         while :
@@ -64,8 +76,10 @@ data:
 
             snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
             snapshot_zip_filename_array+=("$snapshot_zip_filename")
+            rm -r $save_dir/block/epoch$BlockEpoch/*
+            rm -r $save_dir/tx/epoch$BlockEpoch/*
 
-            if [ $(("$PreviousBlockEpoch"+1)) -lt $1 ]
+            if [ $(("$PreviousBlockEpoch"+2)) -lt $1 ]
             then
                 break
             fi
@@ -78,6 +92,13 @@ data:
             echo "[Info] The directory $save_dir does not exist and is created."
             mkdir -p "$save_dir"
         fi
+
+        rm -r $save_dir/block/blockindex/*
+        rm -r $save_dir/tx/txindex/*
+        rm -r $save_dir/txbindex/*
+        rm -r $save_dir/blockcommit/*
+        rm -r $save_dir/txexec/*
+        rm -r $save_dir/states/*
 
         for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
         do
@@ -92,6 +113,10 @@ data:
             unzip -o "$snapshot_zip_filename" -d "$save_dir"
             rm "$snapshot_zip_filename"
         done
+
+        if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
+            rm $save_dir/$mainnet_snapshot_json_filename
+        fi
 
         aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
       }

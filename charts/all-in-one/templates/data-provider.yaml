@@ -7,11 +7,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: data-provider-read
   namespace: {{ $.Release.Name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 2
+  replicas: 0
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -22,6 +20,7 @@ spec:
       labels:
         app: data-provider-read
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
@@ -31,11 +30,7 @@ spec:
         - $(SLACK_WEBHOOK_URL)
         command:
         - /bin/download_snapshot.sh
-        {{- if and $.Values.dataProvider.image.repository $.Values.dataProvider.image.tag }}
-        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
-        {{- else }}
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
-        {{- end }}
         volumeMounts:
         - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
@@ -52,6 +47,7 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+      {{- end }}
       containers:
       - args:
         - /app/NineChronicles.DataProvider.Executable
@@ -70,7 +66,7 @@ spec:
           value: {{ $peer }}
         {{ end }}
         - name: NC_Preload
-          value: 'false'
+          value: 'true'
         - name: NC_NoMiner
           value: 'true'
         - name: NC_Render
@@ -99,7 +95,7 @@ spec:
               \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
               }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
               )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 300 ]]\n"
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 360 ]]\n"
           initialDelaySeconds: 600
           periodSeconds: 60
           timeoutSeconds: 60
@@ -180,6 +176,7 @@ spec:
       labels:
         app: data-provider-write
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
@@ -210,6 +207,7 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+      {{- end }}
       containers:
       - args:
         - /bin/check_chain_tip.sh $(DP_HOST) $(DP_USER) $(DP_TOKEN) $(DP_PORT) $(DP_DATABASE) $(RESET_SNAPSHOT_OPTION)
@@ -287,7 +285,7 @@ spec:
               \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
               }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
               )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 300 ]]\n"
+              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 360 ]]\n"
           initialDelaySeconds: 600
           periodSeconds: 60
           timeoutSeconds: 60
@@ -366,19 +364,17 @@ spec:
         app: data-provider
     spec:
       initContainers:
+      {{- if $.Values.global.resetSnapshot }}
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
         - /data/data-provider
         - $(RESET_SNAPSHOT_OPTION)
         - data-provider
         - $(SLACK_WEBHOOK_URL)
+        - $(SNAPSHOT_ROLLBACK_OPTION)
         command:
         - /bin/download_snapshot.sh
-        {{- if and $.Values.dataProvider.image.repository $.Values.dataProvider.image.tag }}
-        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
-        {{- else }}
         image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
-        {{- end }}
         volumeMounts:
         - name: download-snapshot-script
           mountPath: /bin/download_snapshot.sh
@@ -390,11 +386,14 @@ spec:
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.global.resetSnapshot }}"
+        - name: SNAPSHOT_ROLLBACK_OPTION
+          value: "{{ $.Values.global.rollbackSnapshot }}"
         - name: SLACK_WEBHOOK_URL
           valueFrom:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+      {{- end }}
       - name: wait
         image: alpine
         imagePullPolicy: Always
@@ -404,7 +403,7 @@ spec:
         - |
           apk --no-cache add curl
           # Endpoint to check
-          ENDPOINT="http://validator-1.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+          ENDPOINT="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
           echo Checking: ${ENDPOINT}
           while [[ $(curl --silent --output /dev/null --request GET --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
             echo "Not ready"
@@ -413,7 +412,7 @@ spec:
           echo Ready
       containers:
       - args:
-        - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(RESET_SNAPSHOT_OPTION)"
+        - /bin/setup_internal_db.sh "$(NC_MySqlConnectionString)" "$(MIGRATE_DB_OPTION)"
           && /app/NineChronicles.DataProvider.Executable
         command:
         - /bin/sh
@@ -473,6 +472,8 @@ spec:
               name: data-provider
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.global.resetSnapshot }}"
+        - name: MIGRATE_DB_OPTION
+          value: "{{ $.Values.dataProvider.migrateDatabase }}"
         image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
         livenessProbe:

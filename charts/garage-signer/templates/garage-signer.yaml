@@ -1,0 +1,155 @@
+{{- if $.Values.serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ $.Values.serviceAccount.iamRole }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: {{ $.Values.serviceAccount.name }}
+  namespace: {{ $.Values.namespace }}
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: garage-signer
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: garage-signer
+  namespace: {{ $.Values.namespace }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: garage-signer
+  serviceName: garage-signer
+  template:
+    metadata:
+      labels:
+        app: garage-signer
+    spec:
+      containers:
+        - args:
+            - alembic upgrade head && uvicorn src.main:app --workers 8 --timeout-keep-alive 600 --host 0.0.0.0 --port 5000
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database-url
+                  name: garage-signer
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: garage-signer
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: garage-signer
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: celery-broker-url
+                  name: garage-signer
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: celery-result-backend
+                  name: garage-signer
+            - name: HEADLESS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: headless-url
+                  name: garage-signer
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          name: garage-signer
+          ports:
+            - containerPort: 5000
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.large
+      restartPolicy: Always
+      serviceAccount: {{ $.Values.serviceAccount.name }}
+      serviceAccountName: {{ $.Values.serviceAccount.name }}
+  updateStrategy:
+    type: RollingUpdate
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: garage-signer-worker
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: garage-signer-worker
+  namespace: {{ $.Values.namespace }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: garage-signer-worker
+  serviceName: garage-signer-worker
+  template:
+    metadata:
+      labels:
+        app: garage-signer-worker
+    spec:
+      containers:
+        - args:
+            - celery -A src.tasks:celery worker -l DEBUG
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database-url
+                  name: garage-signer
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: garage-signer
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: garage-signer
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: celery-broker-url
+                  name: garage-signer
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: celery-result-backend
+                  name: garage-signer
+            - name: HEADLESS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: headless-url
+                  name: garage-signer
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          name: garage-signer-worker
+          ports:
+            - containerPort: 5000
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Values.serviceAccount.name }}
+      serviceAccountName: {{ $.Values.serviceAccount.name }}
+  updateStrategy:
+    type: RollingUpdate

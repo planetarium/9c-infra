@@ -25,6 +25,7 @@ networkType: Default
 consensusType: pbft
 
 resetSnapshot: false
+rollbackSnapshot: false
 
 useExternalSecret: false
 slackToken: ""
@@ -39,6 +40,9 @@ image:
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "git-ed113c0838261d12a6ed716fc427d948b6da30f2"
+
+snapshot:
+  path: internal
 
 # dotnet args
 extraArgs: []

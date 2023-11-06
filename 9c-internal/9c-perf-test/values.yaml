@@ -8,7 +8,7 @@ logLevel: "debug"
 
 global:
   image:
-    tag: "test-200tx-3"
+    tag: "avatar-list"
 
   appProtocolVersion: "200040/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCICx20hKZH0vOgd5L.uPS.m8IB3AL.gaqajch.tidbjpFAiASY9xDsXU3vmGUJdhgNdhfb3imBENuYUXRBqTz46IfLA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA3LTIwZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -17,11 +17,14 @@ global:
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,9c-perf-test-tcp-seed-1.planetarium.dev,31234"
 
-  resetSnapshot: false
+  resetSnapshot: true
+  rollbackSnapshot: false
   
-  useExternalSecret: true
-  networkType: Default
+  networkType: Internal
   consensusType: pbft
+
+externalSecret:
+  enabled: true
 
 snapshot:
   slackChannel: "bot-test"
@@ -30,7 +33,7 @@ snapshot:
   resources:
     requests:
       cpu: 1300m
-      memory: 20Gi
+      memory: 12Gi
 
 seed:
   count: 1
@@ -80,10 +83,10 @@ remoteHeadless:
   resources:
     requests:
       cpu: 1
-      memory: 16Gi
+      memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
 
 validator:
   count: 4
@@ -119,8 +122,8 @@ validator:
 
   resources:
     requests:
-      cpu: 2
-      memory: 20Gi
+      cpu: 1
+      memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-c7g_4xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c

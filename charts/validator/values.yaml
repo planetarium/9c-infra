@@ -20,14 +20,19 @@ iceServers:
 networkType: Default
 consensusType: pbft
 
-resetSnapshot: false
-
-useExternalSecret: false
 slackToken: ""
 slackWebHookUrl: ""
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
+
+snapshot:
+  enabled: false
+  path: internal
+
+externalSecret:
+  enabled: false
+  prefix: ""
 
 count: 4
 image:

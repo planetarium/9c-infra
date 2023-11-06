@@ -28,9 +28,10 @@ spec:
         - $(RESET_SNAPSHOT_OPTION)
         - validator-{{ $index }}
         - $(SLACK_WEBHOOK_URL)
+        - $(SNAPSHOT_ROLLBACK_OPTION)
         command:
         - /bin/download_snapshot.sh
-        image: bash:latest
+        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
         name: reset-snapshot
         volumeMounts:
         - name: download-snapshot-script
@@ -42,11 +43,15 @@ spec:
         env:
         - name: RESET_SNAPSHOT_OPTION
           value: "{{ $.Values.global.resetSnapshot }}"
+        - name: SNAPSHOT_ROLLBACK_OPTION
+          value: "{{ $.Values.global.rollbackSnapshot }}"
         - name: SLACK_WEBHOOK_URL
           valueFrom:
             secretKeyRef:
               name: slack
               key: slack-webhook-url
+        resources:
+          {{- toYaml $.Values.validator.resources | nindent 10 }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll

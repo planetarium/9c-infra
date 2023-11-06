@@ -1,0 +1,42 @@
+{{ if .Values.acc.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  namespace: {{ $.Release.Name }}
+  name: acc-redis
+spec:
+  serviceName: "acc-redis-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acc-redis
+  template:
+    metadata:
+      labels:
+        app: acc-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: {{ $.Values.acc.redis.port }}
+          name: redis
+        command: ["redis-server"]
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      {{- with $.Values.acc.redis.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+{{ end }}
