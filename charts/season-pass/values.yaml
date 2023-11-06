@@ -20,6 +20,6 @@ serviceAccount:
   iamRole: arn:aws:iam::319679068466:role/internal-9c-season_pass-block_tracker-role
 
 seasonPassEnv:
-  STAGE: ""
-  REGION_NAME: ""
+  STAGE: "internal"
+  REGION_NAME: "us-east-2"
   SQS_URL: ""
