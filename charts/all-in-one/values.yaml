@@ -583,3 +583,5 @@ bridgeService:
 
   storage:
     size: "50Gi"
+
+  nodeSelector: {}

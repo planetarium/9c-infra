@@ -72,6 +72,10 @@ spec:
           volumeMounts:
             - mountPath: /app/data
               name: bridge-service-data
+      {{- with $.Values.bridgeService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
       serviceAccount: {{ $.Release.Name }}-bridge-service
       serviceAccountName: {{ $.Release.Name }}-bridge-service
