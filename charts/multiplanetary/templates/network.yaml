@@ -142,6 +142,9 @@ spec:
         rudolfService:
           {{- toYaml (default $.Values.rudolfService .rudolfService) | nindent 10 }}
 
+        bridgeService:
+          {{- toYaml (default $.Values.bridgeService .bridgeService) | nindent 10 }}
+
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .name }}
