@@ -107,6 +107,7 @@ spec:
           subPath: readiness_probe.sh
         - mountPath: /app/appsettings.configmap.json
           name: appsettings
+          subPath: appsettings.json
         {{- if $.Values.fullState.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
