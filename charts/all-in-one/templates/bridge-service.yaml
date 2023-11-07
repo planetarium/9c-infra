@@ -1,0 +1,92 @@
+{{ if .Values.bridgeService.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.bridgeService.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-bridge-service
+  namespace: {{ $.Release.Name }}
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: bridge-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: bridge-service
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge-service
+  serviceName: bridge-service
+  template:
+    metadata:
+      labels:
+        app: bridge-service
+    spec:
+      containers:
+        - env:
+          - name: NC_UPSTREAM_GQL_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                key: NC_UPSTREAM_GQL_ENDPOINT
+                name: bridge-env
+          - name: NC_DOWNSTREAM_GQL_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                key: NC_DOWNSTREAM_GQL_ENDPOINT
+                name: bridge-env
+          - name: MONITOR_STATE_STORE_PATH
+            valueFrom:
+              secretKeyRef:
+                key: MONITOR_STATE_STORE_PATH
+                name: bridge-env
+          - name: NC_VAULT_ADDRESS
+            valueFrom:
+              secretKeyRef:
+                key: NC_VAULT_ADDRESS
+                name: bridge-env
+          - name: NC_VAULT_AVATAR_ADDRESS
+            valueFrom:
+              secretKeyRef:
+                key: NC_VAULT_AVATAR_ADDRESS
+                name: bridge-env
+          - name: NC_UPSTREAM_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: NC_UPSTREAM_PRIVATE_KEY
+                name: bridge-env
+          - name: NC_DOWNSTREAM_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: NC_DOWNSTREAM_PRIVATE_KEY
+                name: bridge-env
+          image: {{ $.Values.bridgeService.image.repository }}:{{ $.Values.bridgeService.image.tag }}
+          name: bridge-service
+          volumeMounts:
+            - mountPath: /app/data
+              name: bridge-service-data
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-bridge-service
+      serviceAccountName: {{ $.Release.Name }}-bridge-service
+  updateStrategy:
+    type: RollingUpdate      
+  volumeClaimTemplates:
+    - metadata:
+        name: bridge-service-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.bridgeService.storage.size }}
+        storageClassName: {{ $.Release.Name }}-gp3
+        volumeMode: Filesystem
+---
+{{ end }}
