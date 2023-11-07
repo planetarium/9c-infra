@@ -70,7 +70,7 @@ spec:
           image: {{ $.Values.bridgeService.image.repository }}:{{ $.Values.bridgeService.image.tag }}
           name: bridge-service
           volumeMounts:
-            - mountPath: /app/data
+            - mountPath: /data
               name: bridge-service-data
       {{- with $.Values.bridgeService.nodeSelector }}
       nodeSelector:
