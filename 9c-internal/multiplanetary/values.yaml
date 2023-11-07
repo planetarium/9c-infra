@@ -36,6 +36,14 @@ multiplanetary:
     snapshot:
       path: 9c-internal-v2/heimdall
 
+    bridgeService:
+      enabled: true
+      serviceAccount:
+        roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+      image:
+        repository: "longfin/araya"
+        tag: "2023110201"
+
 global:
   image:
     repository: longfin/9c-headless
