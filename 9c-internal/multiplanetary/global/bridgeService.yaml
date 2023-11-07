@@ -1,0 +1,11 @@
+bridgeService:
+  enabled: false
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+
+  image:
+    repository: "longfin/araya"
+    tag: "2023110201"
+
+  storage:
+    size: "20Gi"
