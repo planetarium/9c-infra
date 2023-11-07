@@ -7,9 +7,9 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "70"
 
-  appProtocolVersion: "200092/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIBCu+LH.l0kmyxDYKVp9SnyV2o.0er.Z55wdG8HDSSW7AiBBj1kxmLijMsDi5SDhZid8NkpbpbYZnZgum5IbYCU5dQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTAzZQ=="
+  appProtocolVersion: "200100/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFrSIu5hDF+iBBRn7kGn20PJCu0v6jpMZkE9fRcKbtgGAiBnzLjwlJtNUQgoI+4HGhdKFvSEQT.iSkqUS458ppZJOQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTA3ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "70"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -129,7 +129,7 @@ remoteHeadless:
   count: 3
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-597810a5e00266975809fcab9649f7145a15c50c"
+    tag: "70"
 
   useTurnServer: false
 
@@ -188,7 +188,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: '62'
+    tag: '70'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
@@ -217,7 +217,7 @@ marketService:
   rwMode: true
   image:
     repository: planetariumhq/market-service
-    tag: "git-68e6bc82786506b6c89e71f78bafc8d9bed3f23c"
+    tag: "git-185f10e539124d4e15436919c66621dd298ac9a1"
 
   env:
   - name: DOTNET_gcServer
@@ -252,7 +252,7 @@ marketService:
 fullState:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "70"
   enabled: true
 
   loggingEnabled: true
@@ -319,7 +319,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "70"
 
   loggingEnabled: true
 
@@ -355,7 +355,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-a7fb61a660a62b00c0b072f9383da4b06dc119c3"
+    tag: "70"
 
   loggingEnabled: true
 
@@ -415,7 +415,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-8223aa6950526046c143879f3344860ddd8a9cc3"
+    tag: "git-39de7db54c7dab4efc30763a1c36fa34de235fe1"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
