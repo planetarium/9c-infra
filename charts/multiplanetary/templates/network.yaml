@@ -33,7 +33,7 @@ spec:
 
         externalSecret:
           enabled: {{ default $.Values.externalSecret.enabled .externalSecret.enabled }}
-          prefix: "{{ $.Values.clusterName }}/{{ .name }}"
+          prefix: {{ default $.Values.clusterName .externalSecret.prefix }}
 
         snapshot:
           downloadSnapshot: {{ default $.Values.snapshot.downloadSnapshot .snapshot.downloadSnapshot }}
