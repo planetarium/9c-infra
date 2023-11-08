@@ -47,9 +47,9 @@ multiplanetary:
         node.kubernetes.io/instance-type: m5d.xlarge
 
 global:
-  image:    
+  image:
     repository: longfin/9c-headless
-    tag: "multiplanetary-2023110701"
+    tag: "multiplanetary-2023110801"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
