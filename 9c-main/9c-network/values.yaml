@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
 
   appProtocolVersion: "200100/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFrSIu5hDF+iBBRn7kGn20PJCu0v6jpMZkE9fRcKbtgGAiBnzLjwlJtNUQgoI+4HGhdKFvSEQT.iSkqUS458ppZJOQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTA3ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -78,7 +78,7 @@ validator:
   count: 4
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -129,7 +129,7 @@ remoteHeadless:
   count: 3
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
 
   useTurnServer: false
 
@@ -252,7 +252,7 @@ marketService:
 fullState:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
   enabled: true
 
   loggingEnabled: true
@@ -321,7 +321,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
 
   loggingEnabled: true
 
@@ -357,7 +357,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "70"
+    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
 
   loggingEnabled: true
 
