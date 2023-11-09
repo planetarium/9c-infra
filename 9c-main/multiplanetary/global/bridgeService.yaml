@@ -1,0 +1,8 @@
+bridge:
+  enabled: true
+  bridgeObserverImage:
+    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
+  bridgeStatusBotImage:
+    tag: "20210913-01"
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large
