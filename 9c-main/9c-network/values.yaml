@@ -438,3 +438,7 @@ acc:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-t3_medium
+
+volumeRotator:
+  enabled: true
+  nodeSelectorValue: "9c-main-r7g_xl_2c"
