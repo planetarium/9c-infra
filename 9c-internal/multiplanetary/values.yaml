@@ -32,7 +32,9 @@ multiplanetary:
       - "heimdall-internal-rpc-1.nine-chronicles.com"
       storage: {}
 
-    externalSecret: {}
+    externalSecret:
+      prefix: "9c-internal-v2/heimdall"
+
     snapshot:
       path: 9c-internal-v2/heimdall
 
@@ -43,6 +45,52 @@ multiplanetary:
       image:
         repository: "longfin/araya"
         tag: "2023110901"
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+
+  - name: "idun"
+
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000002/genesis"
+
+    peerStrings:
+    - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31234"
+
+    trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+    seed:
+      hosts:
+      - "tcp-seed-1.idun.svc.cluster.local"
+
+      nodeSelector:
+        node.kubernetes.io/instance-type: m5d.xlarge
+
+    validator:
+      consensusSeedStrings:
+      - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31235"
+
+      hosts:
+      - "idun-internal-validator-1.nine-chronicles.com"
+
+      storage: {}
+
+    remoteHeadless:
+      hosts:
+      - "idun-internal-rpc-1.nine-chronicles.com"
+      storage: {}
+
+    externalSecret:
+      prefix: "9c-internal-v2/idun"
+
+    snapshot:
+      path: 9c-internal-v2/idun
+
+    bridgeService:
+      enabled: true
+      serviceAccount:
+        roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+      image:
+        repository: "longfin/araya"
+        tag: "2023110201"
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
 
