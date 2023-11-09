@@ -36,7 +36,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-c3669931b652f49b8b38e111c0f2c51619e436d4"
+  image: "planetariumhq/ninechronicles-snapshot:git-e14cb15c049c5648752672571ea3864d50989de5"
   path: "main/partition"
 
   fullSnapshot:
