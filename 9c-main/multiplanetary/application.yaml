@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multiplanetary
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: bot-test
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/multiplanetary
+    helm:
+      valueFiles:
+        - ../../9c-main/multiplanetary/values.yaml
+        - ../../9c-main/multiplanetary/global/acc.yaml
+        - ../../9c-main/multiplanetary/global/bridgeService.yaml
+        - ../../9c-main/multiplanetary/global/dataProvider.yaml
+        - ../../9c-main/multiplanetary/global/emptyChronicle.yaml
+        - ../../9c-main/multiplanetary/global/explorer.yaml
+        - ../../9c-main/multiplanetary/global/fullState.yaml
+        - ../../9c-main/multiplanetary/global/marketService.yaml
+        - ../../9c-main/multiplanetary/global/patrolRewardService.yaml
+        - ../../9c-main/multiplanetary/global/remoteActionEvaluatorHeadless.yaml
+        - ../../9c-main/multiplanetary/global/remoteHeadless.yaml
+        - ../../9c-main/multiplanetary/global/seed.yaml
+        - ../../9c-main/multiplanetary/global/snapshot.yaml
+        - ../../9c-main/multiplanetary/global/testHeadless1.yaml
+        - ../../9c-main/multiplanetary/global/testHeadless2.yaml
+        - ../../9c-main/multiplanetary/global/validator.yaml
+        - ../../9c-main/multiplanetary/global/worldBoss.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: multiplanetary

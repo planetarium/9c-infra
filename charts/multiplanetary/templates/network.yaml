@@ -99,7 +99,7 @@ spec:
           privateKeys:
             {{- toYaml (default $.Values.validator.privateKeys .validator.privateKeys) | nindent 12 }}
           storage:
-            data: {{ default "1000Gi" .validator.storage.data }}
+            {{- toYaml (default $.Values.validator.storage .validator.storage) | nindent 12 }}
           env:
             {{- toYaml (default $.Values.validator.env .validator.env) | nindent 12 }}
           resources:
@@ -121,29 +121,235 @@ spec:
           ports:
             {{- toYaml (default $.Values.remoteHeadless.ports .remoteHeadless.ports) | nindent 12 }}
           storage:
-            data: {{ default "500Gi" .remoteHeadless.storage.data }}
+            {{- toYaml (default $.Values.remoteHeadless.storage .remoteHeadless.storage) | nindent 12 }}
           resources:
             {{- toYaml (default $.Values.remoteHeadless.resources .remoteHeadless.resources) | nindent 12 }}
           nodeSelector:
             {{- toYaml (default $.Values.remoteHeadless.nodeSelector .remoteHeadless.nodeSelector) | nindent 12 }}
 
         dataProvider:
-          {{- toYaml (default $.Values.dataProvider .dataProvider) | nindent 10 }}
+          enabled: {{ default $.Values.dataProvider.enabled .dataProvider.enabled }}
+          rwMode: {{ default $.Values.dataProvider.rwMode .dataProvider.rwMode }}
+          render: {{ default $.Values.dataProvider.render .dataProvider.render }}
+          migrateDatabase: {{ default $.Values.dataProvider.migrateDatabase .dataProvider.migrateDatabase }}
+          storage:
+            {{- toYaml (default $.Values.dataProvider.storage .dataProvider.storage) | nindent 12 }}
+          image:
+            {{- toYaml (default $.Values.dataProvider.image .dataProvider.image) | nindent 12 }}
+          db:
+            {{- toYaml (default $.Values.dataProvider.db .dataProvider.db) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.dataProvider.resources .dataProvider.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.dataProvider.nodeSelector .dataProvider.nodeSelector) | nindent 12 }}
 
         worldBoss:
-          {{- toYaml (default $.Values.worldBoss .worldBoss) | nindent 10 }}
+          enabled: {{ default $.Values.worldBoss.enabled .worldBoss.enabled }}
+          ports:
+            {{- toYaml (default $.Values.worldBoss.ports .worldBoss.ports) | nindent 12 }}
+          image:
+            {{- toYaml (default $.Values.worldBoss.image .worldBoss.image) | nindent 12 }}
+          db:
+            {{- toYaml (default $.Values.worldBoss.db .worldBoss.db) | nindent 12 }}
+          worldBossEnv:
+            {{- toYaml (default $.Values.worldBoss.worldBossEnv .worldBoss.worldBossEnv) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.worldBoss.nodeSelector .worldBoss.nodeSelector) | nindent 12 }}
 
         marketService:
-          {{- toYaml (default $.Values.marketService .marketService) | nindent 10 }}
+          enabled: {{ default $.Values.marketService.enabled .marketService.enabled }}
+          rwMode: {{ default $.Values.marketService.rwMode .marketService.rwMode }}
+          image:
+            {{- toYaml (default $.Values.marketService.image .marketService.image) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.marketService.nodeSelector .marketService.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.marketService.resources .marketService.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.marketService.env .marketService.env) | nindent 12 }}
+          db:
+            {{- toYaml (default $.Values.marketService.db .marketService.db) | nindent 12 }}
 
         patrolRewardService:
-          {{- toYaml (default $.Values.patrolRewardService .patrolRewardService) | nindent 10 }}
-
+          enabled: {{ default $.Values.patrolRewardService.enabled .patrolRewardService.enabled }}
+          image:
+            {{- toYaml (default $.Values.patrolRewardService.image .patrolRewardService.image) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.patrolRewardService.nodeSelector .patrolRewardService.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.patrolRewardService.resources .patrolRewardService.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.patrolRewardService.env .patrolRewardService.env) | nindent 12 }}
+          db:
+            {{- toYaml (default $.Values.patrolRewardService.db .patrolRewardService.db) | nindent 12 }}
+  
         rudolfService:
-          {{- toYaml (default $.Values.rudolfService .rudolfService) | nindent 10 }}
-
+          enabled: {{ default $.Values.rudolfService.enabled .rudolfService.enabled }}
+          image:
+            {{- toYaml (default $.Values.rudolfService.image .rudolfService.image) | nindent 12 }}
+          service:
+            {{- toYaml (default $.Values.rudolfService.service .rudolfService.service) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.rudolfService.nodeSelector .rudolfService.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.rudolfService.resources .rudolfService.resources) | nindent 12 }}
+          db:
+            {{- toYaml (default $.Values.rudolfService.db .rudolfService.db) | nindent 12 }}
+        
         bridgeService:
-          {{- toYaml (default $.Values.bridgeService .bridgeService) | nindent 10 }}
+          enabled: {{ default $.Values.bridgeService.enabled .bridgeService.enabled }}
+          serviceAccount:
+            {{- toYaml (default $.Values.bridgeService.serviceAccount .bridgeService.serviceAccount) | nindent 12 }}
+          image:
+            {{- toYaml (default $.Values.bridgeService.image .bridgeService.image) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.bridgeService.storage .bridgeService.storage) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.bridgeService.nodeSelector .bridgeService.nodeSelector) | nindent 12 }}
+
+        volumeRotator:
+          enabled: {{ default $.Values.volumeRotator.enabled .volumeRotator.enabled }}
+          serviceAccount:
+            {{- toYaml (default $.Values.volumeRotator.serviceAccount .volumeRotator.serviceAccount) | nindent 12 }}
+          image:
+            {{- toYaml (default $.Values.volumeRotator.image .volumeRotator.image) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.volumeRotator.nodeSelector .volumeRotator.nodeSelector) | nindent 12 }}
+
+        acc:
+          enabled: {{ default $.Values.acc.enabled .acc.enabled }}
+          redis:
+            port: {{ default $.Values.acc.redis.port .acc.redis.port }}
+            nodeSelector:
+              {{- toYaml (default $.Values.acc.redis.nodeSelector .acc.redis.nodeSelector) | nindent 14 }}
+          image:
+            {{- toYaml (default $.Values.acc.image .acc.image) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.acc.nodeSelector .acc.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.acc.resources .acc.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.acc.env .acc.env) | nindent 12 }}
+
+        emptyChronicle:
+          enabled: {{ default $.Values.emptyChronicle.enabled .emptyChronicle.enabled }}
+          image:
+            {{- toYaml (default $.Values.emptyChronicle.image .emptyChronicle.image) | nindent 12 }}
+          ports:
+            {{- toYaml (default $.Values.emptyChronicle.ports .emptyChronicle.ports) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.emptyChronicle.resources .emptyChronicle.resources) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.emptyChronicle.storage .emptyChronicle.storage) | nindent 12 }}
+
+        lib9cStateService:
+          enabled: {{ default $.Values.lib9cStateService.enabled .lib9cStateService.enabled }}
+          image:
+            {{- toYaml (default $.Values.lib9cStateService.image .lib9cStateService.image) | nindent 12 }}
+          ports:
+            {{- toYaml (default $.Values.lib9cStateService.ports .lib9cStateService.ports) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.lib9cStateService.resources .lib9cStateService.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.lib9cStateService.nodeSelector .lib9cStateService.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.lib9cStateService.tolerations .lib9cStateService.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.lib9cStateService.affinity .lib9cStateService.affinity) | nindent 12 }}
+
+        remoteActionEvaluatorHeadless:
+          enabled: {{ default $.Values.remoteActionEvaluatorHeadless.enabled .remoteActionEvaluatorHeadless.enabled }}
+          image:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.image .remoteActionEvaluatorHeadless.image) | nindent 12 }}
+          loggingEnabled: {{ default $.Values.remoteActionEvaluatorHeadless.loggingEnabled .remoteActionEvaluatorHeadless.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.extraArgs .remoteActionEvaluatorHeadless.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.remoteActionEvaluatorHeadless.useTurnServer .remoteActionEvaluatorHeadless.useTurnServer }}
+          host: {{ default $.Values.remoteActionEvaluatorHeadless.host .remoteActionEvaluatorHeadless.host }}
+          ports:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.ports .remoteActionEvaluatorHeadless.ports) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.storage .remoteActionEvaluatorHeadless.storage) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.resources .remoteActionEvaluatorHeadless.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.nodeSelector .remoteActionEvaluatorHeadless.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.tolerations .remoteActionEvaluatorHeadless.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.affinity .remoteActionEvaluatorHeadless.affinity) | nindent 12 }}
+        
+        testHeadless2:
+          enabled: {{ default $.Values.testHeadless2.enabled .testHeadless2.enabled }}
+          image:
+            {{- toYaml (default $.Values.testHeadless2.image .testHeadless2.image) | nindent 12 }}
+          loggingEnabled: {{ default $.Values.testHeadless2.loggingEnabled .testHeadless2.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.testHeadless2.extraArgs .testHeadless2.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.testHeadless2.useTurnServer .testHeadless2.useTurnServer }}
+          env:
+            {{- toYaml (default $.Values.testHeadless2.env .testHeadless2.env) | nindent 12 }}
+          host: {{ default $.Values.testHeadless2.host .testHeadless2.host }}
+          ports:
+            {{- toYaml (default $.Values.testHeadless2.ports .testHeadless2.ports) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.testHeadless2.storage .testHeadless2.storage) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.testHeadless2.resources .testHeadless2.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.testHeadless2.nodeSelector .testHeadless2.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.testHeadless2.tolerations .testHeadless2.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.testHeadless2.affinity .testHeadless2.affinity) | nindent 12 }}
+
+        testHeadless1:
+          enabled: {{ default $.Values.testHeadless1.enabled .testHeadless1.enabled }}
+          image:
+            {{- toYaml (default $.Values.testHeadless1.image .testHeadless1.image) | nindent 12 }}
+          loggingEnabled: {{ default $.Values.testHeadless1.loggingEnabled .testHeadless1.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.testHeadless1.extraArgs .testHeadless1.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.testHeadless1.useTurnServer .testHeadless1.useTurnServer }}
+          env:
+            {{- toYaml (default $.Values.testHeadless1.env .testHeadless1.env) | nindent 12 }}
+          host: {{ default $.Values.testHeadless1.host .testHeadless1.host }}
+          ports:
+            {{- toYaml (default $.Values.testHeadless1.ports .testHeadless1.ports) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.testHeadless1.storage .testHeadless1.storage) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.testHeadless1.resources .testHeadless1.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.testHeadless1.nodeSelector .testHeadless1.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.testHeadless1.tolerations .testHeadless1.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.testHeadless1.affinity .testHeadless1.affinity) | nindent 12 }}
+
+        explorer:
+          enabled: {{ default $.Values.explorer.enabled .explorer.enabled }}
+          image:
+            {{- toYaml (default $.Values.explorer.image .explorer.image) | nindent 12 }}
+          extraArgs:
+            {{- toYaml (default $.Values.explorer.extraArgs .explorer.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default true .explorer.useTurnServer }}
+          host: {{ default "" .explorer.host }}
+          ports:
+            {{- toYaml (default $.Values.explorer.ports .explorer.ports) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.explorer.storage .explorer.storage) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.explorer.resources .explorer.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.explorer.nodeSelector .explorer.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.explorer.tolerations .explorer.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.explorer.affinity .explorer.affinity) | nindent 12 }}
+
+        blockIntervalNotifier:
+          enabled: {{ default $.Values.blockIntervalNotifier.enabled .blockIntervalNotifier.enabled }}
 
   destination:
     server: https://kubernetes.default.svc

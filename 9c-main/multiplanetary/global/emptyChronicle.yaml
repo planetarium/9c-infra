@@ -1,0 +1,5 @@
+emptyChronicle:
+  enabled: true
+
+  image:
+    tag: "git-7bef02eb0105de7c14741e45282c63c7b40c70fb"

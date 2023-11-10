@@ -1,0 +1,36 @@
+marketService:
+  enabled: true
+  rwMode: true
+  image:
+    repository: planetariumhq/market-service
+    tag: "git-185f10e539124d4e15436919c66621dd298ac9a1"
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: RpcConfig__Host
+    value: 9c-main-rpc-3.nine-chronicles.com
+  - name: RpcConfig__Port
+    value: "31238"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "false"
+
+  envForWrite:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: RpcConfig__Host
+    value: 9c-main-rpc-3.nine-chronicles.com
+  - name: RpcConfig__Port
+    value: "31238"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
+
+  nodeSelector:
+    read:
+      node.kubernetes.io/instance-type: m5.large
+    write:
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c

@@ -27,8 +27,6 @@ multiplanetary:
       hosts:
       - "heimdall-internal-validator-1.nine-chronicles.com"
 
-      storage: {}
-
     remoteHeadless:
       hosts:
       - "heimdall-internal-rpc-1.nine-chronicles.com"
@@ -36,6 +34,22 @@ multiplanetary:
       storage: {}
 
     externalSecret: {}
+    dataProvider: {}
+    worldBoss: {}
+    bridgeService: {}
+    marketService: {}
+    patrolRewardService: {}
+    rudolfService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
 
 global:
   image:
@@ -155,6 +169,20 @@ validator:
 
   tolerations: []
   affinity: {}
+
+bridgeService:
+  enabled: false
+  serviceAccount:
+    roleArn: ""
+
+  image:
+    repository: ""
+    tag: ""
+
+  storage:
+    size: "50Gi"
+
+  nodeSelector: {}
 
 remoteHeadless:
   image:
@@ -470,6 +498,15 @@ remoteActionEvaluatorHeadless:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+volumeRotator:
+  enabled: false
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/volume-rotator"
+  image:
+    repository: "planetariumhq/ninechronicles-volumerotator"
+    tag: "git-bed7f2b80e1ffd31f952411fb8d7d092daafdaa1"
+  nodeSelectorValue: "9c-internal-r6g_l_2c"
 
 lib9cStateService:
   enabled: false
