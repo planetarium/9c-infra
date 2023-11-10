@@ -59,7 +59,6 @@ multiplanetary:
     worldBoss: {}
     marketService: {}
     patrolRewardService: {}
-    rudolfService: {}
     volumeRotator: {}
     acc:
       redis: {}
@@ -70,6 +69,16 @@ multiplanetary:
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
+    rudolfService:
+      config:
+        graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
+
+      kms:
+        keyId: "3a301c8e-96c5-4b13-8dee-16575ba637c6"
+        publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+
+      serviceAccount:
+        roleArn: "arn:aws:iam::319679068466:role/heimdall-internal-9c-rudolf-signer"
 
   - name: "idun"
 
@@ -121,7 +130,6 @@ multiplanetary:
     worldBoss: {}
     marketService: {}
     patrolRewardService: {}
-    rudolfService: {}
     volumeRotator: {}
     acc:
       redis: {}
@@ -132,6 +140,16 @@ multiplanetary:
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
+    rudolfService:
+      config:
+        graphqlEndpoint: "https://idun-internal-rpc-1.nine-chronicles.com/graphql"
+
+      kms:
+        keyId: "bdf0874e-8ef7-4106-ae62-a721a25af2b9"
+        publicKey: "047d28bd576deccc465adcb4d4a82b36d417243c6c11cda9124934e7e41e84c4fa68bb749d2952e949cdd038a73d427367f0cfcb14f85e4c138f78a620a9b6b3e5"
+
+      serviceAccount:
+        roleArn: "arn:aws:iam::319679068466:role/idun-internal-9c-rudolf-signer"
 
 global:
   image:
