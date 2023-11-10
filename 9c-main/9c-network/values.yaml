@@ -36,7 +36,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-e14cb15c049c5648752672571ea3864d50989de5"
+  image: "planetariumhq/ninechronicles-snapshot:git-545d119245326ba083a408c900f94039fe586c7f"
   path: "main/partition"
 
   fullSnapshot:
@@ -48,6 +48,11 @@ snapshot:
 
   partition:
     enabled: true
+
+  resources:
+    requests:
+      cpu: '2'
+      memory: 20Gi
 
   nodeSelector:
     node.kubernetes.io/instance-type: r6g.xlarge
