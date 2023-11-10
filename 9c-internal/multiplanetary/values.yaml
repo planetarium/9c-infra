@@ -36,6 +36,10 @@ multiplanetary:
       nodeSelector:
         eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
+    dataProvider:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+
     externalSecret:
       prefix: "9c-internal-v2/heimdall"
 
