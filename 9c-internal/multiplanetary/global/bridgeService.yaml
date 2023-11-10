@@ -8,5 +8,5 @@ bridgeService:
     tag: "2023110201"
 
   storage:
-    size: "20Gi"
+    size: "50Gi"
   nodeSelector: {}
