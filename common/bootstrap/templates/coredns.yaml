@@ -8,7 +8,7 @@ data:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
         }
-        {{- if eq $.Values.global.networkType "Main" }}
+        {{- if eq $.Values.clusterName "9c-main-v2" }}
         rewrite name 9c-main-tcp-seed-1.planetarium.dev tcp-seed-1.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-2.planetarium.dev tcp-seed-2.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-3.planetarium.dev tcp-seed-3.9c-network.svc.cluster.local
