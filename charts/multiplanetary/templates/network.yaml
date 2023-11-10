@@ -128,22 +128,299 @@ spec:
             {{- toYaml (default $.Values.remoteHeadless.nodeSelector .remoteHeadless.nodeSelector) | nindent 12 }}
 
         dataProvider:
-          {{- toYaml (default $.Values.dataProvider .dataProvider) | nindent 10 }}
+          enabled: {{ default $.Values.dataProvider.enabled .dataProvider.enabled }}
+          rwMode: {{ default $.Values.dataProvider.rwMode .dataProvider.rwMode }}
+          render: {{ default $.Values.dataProvider.render .dataProvider.render }}
+          migrateDatabase: {{ default $.Values.dataProvider.migrateDatabase .dataProvider.migrateDatabase }}
+          storage:
+            data: {{ default $.Values.dataProvider.storage.data .dataProvider.storage.data }}
+            log: {{ default $.Values.dataProvider.storage.log .dataProvider.storage.log }}
+          image:
+            repository: {{ default $.Values.dataProvider.image.repository .dataProvider.image.repository }}
+            pullPolicy: {{ default $.Values.dataProvider.image.pullPolicy .dataProvider.image.pullPolicy }}
+            tag: {{ default $.Values.dataProvider.image.tag .dataProvider.image.tag }}
+          db:
+            local: {{ default $.Values.dataProvider.db.local .dataProvider.db.local }}
+            storage: {{ default $.Values.dataProvider.db.storage .dataProvider.db.storage }}
+            database: {{ default $.Values.dataProvider.db.database .dataProvider.db.database }}
+            connectionString: {{ default $.Values.dataProvider.db.connectionString .dataProvider.db.connectionString }}
+            host: {{ default $.Values.dataProvider.db.host .dataProvider.db.host }}
+            port: {{ default $.Values.dataProvider.db.port .dataProvider.db.port }}
+            user: {{ default $.Values.dataProvider.db.user .dataProvider.db.user }}
+            password: {{ default $.Values.dataProvider.db.password .dataProvider.db.password }}
+          resources:
+            {{- toYaml (default $.Values.dataProvider.resources .dataProvider.resources) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.dataProvider.nodeSelector .dataProvider.nodeSelector) | nindent 12 }}
 
         worldBoss:
-          {{- toYaml (default $.Values.worldBoss .worldBoss) | nindent 10 }}
+          enabled: {{ default $.Values.worldBoss.enabled .worldBoss.enabled }}
+          ports:
+            targetPort: {{ default $.Values.worldBoss.ports.targetPort .worldBoss.ports.targetPort }}
+          image:
+            repository: {{ default $.Values.worldBoss.image.repository .worldBoss.image.repository }}
+            pullPolicy: {{ default $.Values.worldBoss.image.pullPolicy .worldBoss.image.pullPolicy }}
+            tag: {{ default $.Values.worldBoss.image.tag .worldBoss.image.tag }}
+          db:
+            local: {{ default $.Values.worldBoss.db.local .worldBoss.db.local }}
+            size: {{ default $.Values.worldBoss.db.size .worldBoss.db.size }}
+          worldBossEnv:
+            databaseUrl: {{ default $.Values.worldBoss.worldBossEnv.databaseUrl .worldBoss.worldBossEnv.databaseUrl }}
+            redisHost: {{ default $.Values.worldBoss.worldBossEnv.redisHost .worldBoss.worldBossEnv.redisHost }}
+            redisPort: {{ default $.Values.worldBoss.worldBossEnv.redisPort .worldBoss.worldBossEnv.redisPort }}
+            kmsKeyId: {{ default $.Values.worldBoss.worldBossEnv.kmsKeyId .worldBoss.worldBossEnv.kmsKeyId }}
+            slackToken: {{ default $.Values.worldBoss.worldBossEnv.slackToken .worldBoss.worldBossEnv.slackToken }}
+            celeryBrokerUrl: {{ default $.Values.worldBoss.worldBossEnv.celeryBrokerUrl .worldBoss.worldBossEnv.celeryBrokerUrl }}
+            celeryResultBackend: {{ default $.Values.worldBoss.worldBossEnv.celeryResultBackend .worldBoss.worldBossEnv.celeryResultBackend }}
+            slackSigningSecret: {{ default $.Values.worldBoss.worldBossEnv.slackSigningSecret .worldBoss.worldBossEnv.slackSigningSecret }}
+            sentryDsn: {{ default $.Values.worldBoss.worldBossEnv.sentryDsn .worldBoss.worldBossEnv.sentryDsn }}
+          nodeSelector:
+            {{- toYaml (default $.Values.worldBoss.nodeSelector .worldBoss.nodeSelector) | nindent 12 }}
 
         marketService:
-          {{- toYaml (default $.Values.marketService .marketService) | nindent 10 }}
+          enabled: {{ default $.Values.marketService.enabled .marketService.enabled }}
+          rwMode: {{ default $.Values.marketService.rwMode .marketService.rwMode }}
+          image:
+            repository: {{ default $.Values.marketService.image.repository .marketService.image.repository }}
+            pullPolicy: {{ default $.Values.marketService.image.pullPolicy .marketService.image.pullPolicy }}
+            tag: {{ default $.Values.marketService.image.tag .marketService.image.tag }}
+          nodeSelector:
+            read: {{ default $.Values.marketService.nodeSelector.read .marketService.nodeSelector.read }}
+            write: {{ default $.Values.marketService.nodeSelector.write .marketService.nodeSelector.write }}
+          resources:
+            {{- toYaml (default $.Values.marketService.resources .marketService.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.marketService.env .marketService.env) | nindent 12 }}
+          db:
+            local: {{ default $.Values.marketService.db.local .marketService.db.local }}
+            database: {{ default $.Values.marketService.db.database .marketService.db.database }}
+            user: {{ default $.Values.marketService.db.user .marketService.db.user }}
+            connectionString: {{ default $.Values.marketService.db.connectionString .marketService.db.connectionString }}
 
         patrolRewardService:
-          {{- toYaml (default $.Values.patrolRewardService .patrolRewardService) | nindent 10 }}
-
+          enabled: {{ default $.Values.patrolRewardService.enabled .patrolRewardService.enabled }}
+          image:
+            repository: {{ default $.Values.patrolRewardService.image.repository .patrolRewardService.image.repository }}
+            pullPolicy: {{ default $.Values.patrolRewardService.image.pullPolicy .patrolRewardService.image.pullPolicy }}
+            tag: {{ default $.Values.patrolRewardService.image.tag .patrolRewardService.image.tag }}
+          nodeSelector:
+            {{- toYaml (default $.Values.patrolRewardService.nodeSelector .patrolRewardService.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.patrolRewardService.resources .patrolRewardService.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.patrolRewardService.env .patrolRewardService.env) | nindent 12 }}
+          db:
+            local: {{ default $.Values.patrolRewardService.db.local .patrolRewardService.db.local }}
+            database: {{ default $.Values.patrolRewardService.db.database .patrolRewardService.db.database }}
+            user: {{ default $.Values.patrolRewardService.db.user .patrolRewardService.db.user }}
+            connectionString: {{ default $.Values.patrolRewardService.db.connectionString .patrolRewardService.db.connectionString }}
+            size: {{ default $.Values.patrolRewardService.db.size .patrolRewardService.db.size }}
+  
         rudolfService:
-          {{- toYaml (default $.Values.rudolfService .rudolfService) | nindent 10 }}
-
+          enabled: {{ default $.Values.rudolfService.enabled .rudolfService.enabled }}
+          image:
+            repository: {{ default $.Values.rudolfService.image.repository .rudolfService.image.repository }}
+            pullPolicy: {{ default $.Values.rudolfService.image.pullPolicy .rudolfService.image.pullPolicy }}
+            tag: {{ default $.Values.rudolfService.image.tag .rudolfService.image.tag }}
+          service:
+            enabled: {{ default $.Values.rudolfService.service.enabled .rudolfService.service.enabled }}
+          nodeSelector:
+            {{- toYaml (default $.Values.rudolfService.nodeSelector .rudolfService.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.rudolfService.resources .rudolfService.resources) | nindent 12 }}
+          db:
+            local: {{ default $.Values.rudolfService.db.local .rudolfService.db.local }}
+            size: {{ default $.Values.rudolfService.db.size .rudolfService.db.size }}
+        
         bridgeService:
-          {{- toYaml (default $.Values.bridgeService .bridgeService) | nindent 10 }}
+          enabled: {{ default $.Values.bridgeService.enabled .bridgeService.enabled }}
+          serviceAccount:
+            roleArn: {{ default $.Values.bridgeService.serviceAccount.roleArn .bridgeService.serviceAccount.roleArn }}
+          image:
+            repository: {{ default $.Values.bridgeService.image.repository .bridgeService.image.repository }}
+            tag: {{ default $.Values.bridgeService.image.tag .bridgeService.image.tag }}
+          storage:
+            size: {{ default $.Values.bridgeService.storage.size .bridgeService.storage.size }}
+          nodeSelector:
+            {{- toYaml (default $.Values.bridgeService.nodeSelector .bridgeService.nodeSelector) | nindent 12 }}
+
+        volumeRotator:
+          enabled: {{ default $.Values.volumeRotator.enabled .volumeRotator.enabled }}
+          serviceAccount:
+            roleArn: {{ default $.Values.volumeRotator.serviceAccount.roleArn .volumeRotator.serviceAccount.roleArn }}
+          image:
+            repository: {{ default $.Values.volumeRotator.image.repository .volumeRotator.image.repository }}
+            tag: {{ default $.Values.volumeRotator.image.tag .volumeRotator.image.tag }}
+          nodeSelector:
+            {{- default $.Values.volumeRotator.nodeSelectorValue .volumeRotator.nodeSelectorValue | toYaml | nindent 12 }}
+
+        acc:
+          enabled: {{ default $.Values.acc.enabled .acc.enabled }}
+          redis:
+            port: {{ default $.Values.acc.redis.port .acc.redis.port }}
+            nodeSelector:
+              {{- toYaml (default $.Values.acc.redis.nodeSelector .acc.redis.nodeSelector) | nindent 14 }}
+          image:
+            repository: {{ default $.Values.acc.image.repository .acc.image.repository }}
+            pullPolicy: {{ default $.Values.acc.image.pullPolicy .acc.image.pullPolicy }}
+            tag: {{ default $.Values.acc.image.tag .acc.image.tag }}
+          nodeSelector:
+            {{- toYaml (default $.Values.acc.nodeSelector .acc.nodeSelector) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.acc.resources .acc.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.acc.env .acc.env) | nindent 12 }}
+
+        emptyChronicle:
+          enabled: {{ default $.Values.emptyChronicle.enabled .emptyChronicle.enabled }}
+          image:
+            repository: {{ default $.Values.emptyChronicle.image.repository .emptyChronicle.image.repository }}
+            pullPolicy: {{ default $.Values.emptyChronicle.image.pullPolicy .emptyChronicle.image.pullPolicy }}
+            tag: {{ default $.Values.emptyChronicle.image.tag .emptyChronicle.image.tag }}
+          ports:
+            port: {{ default $.Values.emptyChronicle.ports.port .emptyChronicle.ports.port }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.emptyChronicle.resources.requests.cpu .emptyChronicle.resources.requests.cpu }}
+              memory: {{ default $.Values.emptyChronicle.resources.requests.memory .emptyChronicle.resources.requests.memory }}
+          storage:
+            data: {{ default $.Values.emptyChronicle.storage.data .emptyChronicle.storage.data }}
+
+        lib9cStateService:
+          enabled: {{ default $.Values.lib9cStateService.enabled .lib9cStateService.enabled }}
+          image:
+            repository: {{ default $.Values.lib9cStateService.image.repository .lib9cStateService.image.repository }}
+            pullPolicy: {{ default $.Values.lib9cStateService.image.pullPolicy .lib9cStateService.image.pullPolicy }}
+            tag: {{ default $.Values.lib9cStateService.image.tag .lib9cStateService.image.tag }}
+          ports:
+            http: {{ default $.Values.lib9cStateService.ports.http .lib9cStateService.ports.http }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.lib9cStateService.resources.requests.cpu .lib9cStateService.resources.requests.cpu }}
+          nodeSelector:
+            {{- toYaml (default $.Values.lib9cStateService.nodeSelector .lib9cStateService.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.lib9cStateService.tolerations .lib9cStateService.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.lib9cStateService.affinity .lib9cStateService.affinity) | nindent 12 }}
+
+        remoteActionEvaluatorHeadless:
+          enabled: {{ default $.Values.remoteActionEvaluatorHeadless.enabled .remoteActionEvaluatorHeadless.enabled }}
+          image:
+            repository: {{ default $.Values.remoteActionEvaluatorHeadless.image.repository .remoteActionEvaluatorHeadless.image.repository }}
+            pullPolicy: {{ default $.Values.remoteActionEvaluatorHeadless.image.pullPolicy .remoteActionEvaluatorHeadless.image.pullPolicy }}
+            tag: {{ default $.Values.remoteActionEvaluatorHeadless.image.tag .remoteActionEvaluatorHeadless.image.tag }}
+          loggingEnabled: {{ default $.Values.remoteActionEvaluatorHeadless.loggingEnabled .remoteActionEvaluatorHeadless.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.extraArgs .remoteActionEvaluatorHeadless.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.remoteActionEvaluatorHeadless.useTurnServer .remoteActionEvaluatorHeadless.useTurnServer }}
+          host: {{ default $.Values.remoteActionEvaluatorHeadless.host .remoteActionEvaluatorHeadless.host }}
+          ports:
+            headless: {{ default $.Values.remoteActionEvaluatorHeadless.ports.headless .remoteActionEvaluatorHeadless.ports.headless }}
+            graphql: {{ default $.Values.remoteActionEvaluatorHeadless.ports.graphql .remoteActionEvaluatorHeadless.ports.graphql }}
+            rpc: {{ default $.Values.remoteActionEvaluatorHeadless.ports.rpc .remoteActionEvaluatorHeadless.ports.rpc }}
+          storage:
+            data: {{ default $.Values.remoteActionEvaluatorHeadless.storage.data .remoteActionEvaluatorHeadless.storage.data }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.remoteActionEvaluatorHeadless.resources.requests.cpu .remoteActionEvaluatorHeadless.resources.requests.cpu }}
+              memory: {{ default $.Values.remoteActionEvaluatorHeadless.resources.requests.memory .remoteActionEvaluatorHeadless.resources.requests.memory }}
+          nodeSelector:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.nodeSelector .remoteActionEvaluatorHeadless.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.tolerations .remoteActionEvaluatorHeadless.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.remoteActionEvaluatorHeadless.affinity .remoteActionEvaluatorHeadless.affinity) | nindent 12 }}
+        
+        testHeadless2:
+          enabled: {{ default $.Values.testHeadless2.enabled .testHeadless2.enabled }}
+          image:
+            repository: {{ default $.Values.testHeadless2.image.repository .testHeadless2.image.repository }}
+            pullPolicy: {{ default $.Values.testHeadless2.image.pullPolicy .testHeadless2.image.pullPolicy }}
+            tag: {{ default $.Values.testHeadless2.image.tag .testHeadless2.image.tag }}
+          loggingEnabled: {{ default $.Values.testHeadless2.loggingEnabled .testHeadless2.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.testHeadless2.extraArgs .testHeadless2.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.testHeadless2.useTurnServer .testHeadless2.useTurnServer }}
+          env:
+            {{- toYaml (default $.Values.testHeadless2.env .testHeadless2.env) | nindent 12 }}
+          host: {{ default $.Values.testHeadless2.host .testHeadless2.host }}
+          ports:
+            headless: {{ default $.Values.testHeadless2.ports.headless .testHeadless2.ports.headless }}
+            graphql: {{ default $.Values.testHeadless2.ports.graphql .testHeadless2.ports.graphql }}
+            rpc: {{ default $.Values.testHeadless2.ports.rpc .testHeadless2.ports.rpc }}
+          storage:
+            data: {{ default $.Values.testHeadless2.storage.data .testHeadless2.storage.data }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.testHeadless2.resources.requests.cpu .testHeadless2.resources.requests.cpu }}
+              memory: {{ default $.Values.testHeadless2.resources.requests.memory .testHeadless2.resources.requests.memory }}
+          nodeSelector:
+            {{- toYaml (default $.Values.testHeadless2.nodeSelector .testHeadless2.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.testHeadless2.tolerations .testHeadless2.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.testHeadless2.affinity .testHeadless2.affinity) | nindent 12 }}
+
+        testHeadless1:
+          enabled: {{ default $.Values.testHeadless1.enabled .testHeadless1.enabled }}
+          image:
+            repository: {{ default $.Values.testHeadless1.image.repository .testHeadless1.image.repository }}
+            pullPolicy: {{ default $.Values.testHeadless1.image.pullPolicy .testHeadless1.image.pullPolicy }}
+            tag: {{ default $.Values.testHeadless1.image.tag .testHeadless1.image.tag }}
+          loggingEnabled: {{ default $.Values.testHeadless1.loggingEnabled .testHeadless1.loggingEnabled }}
+          extraArgs:
+            {{- toYaml (default $.Values.testHeadless1.extraArgs .testHeadless1.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.testHeadless1.useTurnServer .testHeadless1.useTurnServer }}
+          env:
+            {{- toYaml (default $.Values.testHeadless1.env .testHeadless1.env) | nindent 12 }}
+          host: {{ default $.Values.testHeadless1.host .testHeadless1.host }}
+          ports:
+            headless: {{ default $.Values.testHeadless1.ports.headless .testHeadless1.ports.headless }}
+            graphql: {{ default $.Values.testHeadless1.ports.graphql .testHeadless1.ports.graphql }}
+            rpc: {{ default $.Values.testHeadless1.ports.rpc .testHeadless1.ports.rpc }}
+          storage:
+            data: {{ default $.Values.testHeadless1.storage.data .testHeadless1.storage.data }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.testHeadless1.resources.requests.cpu .testHeadless1.resources.requests.cpu }}
+              memory: {{ default $.Values.testHeadless1.resources.requests.memory .testHeadless1.resources.requests.memory }}
+          nodeSelector:
+            {{- toYaml (default $.Values.testHeadless1.nodeSelector .testHeadless1.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.testHeadless1.tolerations .testHeadless1.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.testHeadless1.affinity .testHeadless1.affinity) | nindent 12 }}
+
+        explorer:
+          enabled: {{ default $.Values.explorer.enabled .explorer.enabled }}
+          image:
+            repository: {{ default $.Values.global.image.repository .explorer.image.repository }}
+            tag: {{ default $.Values.global.image.tag .explorer.image.tag }}
+            pullPolicy: {{ default "Always" .explorer.image.pullPolicy }}
+          extraArgs:
+            {{- toYaml (default $.Values.explorer.extraArgs .explorer.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default true .explorer.useTurnServer }}
+          host: {{ default "" .explorer.host }}
+          ports:
+            headless: {{ default $.Values.explorer.ports.headless .explorer.ports.headless }}
+            graphql: {{ default $.Values.explorer.ports.graphql .explorer.ports.graphql }}
+          storage:
+            data: {{ default $.Values.explorer.storage.data .explorer.storage.data }}
+            log: {{ default $.Values.explorer.storage.log .explorer.storage.log }}
+          resources:
+            requests:
+              cpu: {{ default $.Values.explorer.resources.requests.cpu .explorer.resources.requests.cpu }}
+              memory: {{ default $.Values.explorer.resources.requests.memory .explorer.resources.requests.memory }}
+          nodeSelector:
+            {{- toYaml (default $.Values.explorer.nodeSelector .explorer.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.explorer.tolerations .explorer.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.explorer.affinity .explorer.affinity) | nindent 12 }}
+
+        blockIntervalNotifier:
+          enabled: {{ default $.Values.blockIntervalNotifier.enabled .blockIntervalNotifier.enabled }}
 
   destination:
     server: https://kubernetes.default.svc
