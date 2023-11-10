@@ -79,7 +79,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -106,7 +106,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
 
   loggingEnabled: true
 

@@ -7,7 +7,7 @@ validator:
     pullPolicy: Always
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
 
   resources:
     requests:
