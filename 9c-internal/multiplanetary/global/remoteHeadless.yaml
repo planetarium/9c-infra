@@ -11,5 +11,5 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
     
