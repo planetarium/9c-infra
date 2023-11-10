@@ -36,7 +36,7 @@ snapshot:
     suspend: true
   path: internal
   nodeSelector:
-    node.kubernetes.io/instance-type: r6g.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand_r7g_l_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -79,7 +79,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand_r7g_l_2c
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -106,7 +106,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand_r7g_l_2c
 
   loggingEnabled: true
 

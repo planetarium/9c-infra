@@ -95,8 +95,8 @@ node_groups = {
     ami_type          = "AL2_ARM_64"
   }
 
-  "9c-internal-ondemand-r6g_l_2c" = {
-    instance_types    = ["r6g.large"]
+  "9c-internal-ondemand-r7g_l_2c" = {
+    instance_types    = ["r7g.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
     desired_size      = 5
