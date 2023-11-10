@@ -1,4 +1,3 @@
-{{- if eq $.Values.global.networkType "Main" }}
 apiVersion: v1
 data:
   Corefile: |
@@ -9,6 +8,7 @@ data:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
         }
+        {{- if eq $.Values.global.networkType "Main" }}
         rewrite name 9c-main-tcp-seed-1.planetarium.dev tcp-seed-1.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-2.planetarium.dev tcp-seed-2.9c-network.svc.cluster.local
         rewrite name 9c-main-tcp-seed-3.planetarium.dev tcp-seed-3.9c-network.svc.cluster.local
@@ -28,6 +28,7 @@ data:
         rewrite name 9c-main-validator-8.nine-chronicles.com validator-8.9c-network.svc.cluster.local
         rewrite name 9c-main-test-1.nine-chronicles.com test-headless-1.9c-network.svc.cluster.local
         rewrite name 9c-main-test-2.nine-chronicles.com test-headless-2.9c-network.svc.cluster.local
+        {{- end }}
         prometheus :9153
         forward . /etc/resolv.conf
         cache 30
@@ -42,4 +43,3 @@ metadata:
     k8s-app: kube-dns
   name: coredns
   namespace: kube-system
-{{- end }}
