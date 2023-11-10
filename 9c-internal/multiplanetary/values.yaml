@@ -25,14 +25,12 @@ multiplanetary:
       hosts:
       - "heimdall-internal-validator-1.nine-chronicles.com"
 
-      storage: {}
       nodeSelector:
         eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
     remoteHeadless:
       hosts:
       - "heimdall-internal-rpc-1.nine-chronicles.com"
-      storage: {}
       nodeSelector:
         eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
@@ -57,6 +55,21 @@ multiplanetary:
         tag: "2023110902"
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
+
+    worldBoss: {}
+    marketService: {}
+    patrolRewardService: {}
+    rudolfService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
 
   - name: "idun"
 
@@ -103,6 +116,22 @@ multiplanetary:
         tag: "2023110902"
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
+
+    dataProvider: {}
+    worldBoss: {}
+    marketService: {}
+    patrolRewardService: {}
+    rudolfService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
 
 global:
   image:
