@@ -26,17 +26,23 @@ multiplanetary:
       - "heimdall-internal-validator-1.nine-chronicles.com"
 
       storage: {}
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
     remoteHeadless:
       hosts:
       - "heimdall-internal-rpc-1.nine-chronicles.com"
       storage: {}
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
     externalSecret:
       prefix: "9c-internal-v2/heimdall"
 
     snapshot:
       path: 9c-internal-v2/heimdall
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
     bridgeService:
       enabled: true
