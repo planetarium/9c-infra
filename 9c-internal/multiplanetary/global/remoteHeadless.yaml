@@ -10,6 +10,9 @@ remoteHeadless:
       cpu: 1
       memory: 12Gi
 
+  storage:
+    data: 500Gi
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-r6g_xl_2c
     
