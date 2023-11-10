@@ -27,8 +27,6 @@ multiplanetary:
       hosts:
       - "heimdall-internal-validator-1.nine-chronicles.com"
 
-      storage: {}
-
     remoteHeadless:
       hosts:
       - "heimdall-internal-rpc-1.nine-chronicles.com"
@@ -36,6 +34,22 @@ multiplanetary:
       storage: {}
 
     externalSecret: {}
+    dataProvider: {}
+    worldBoss: {}
+    bridgeService: {}
+    marketService: {}
+    patrolRewardService: {}
+    rudolfService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
 
 global:
   image:
@@ -155,6 +169,20 @@ validator:
 
   tolerations: []
   affinity: {}
+
+bridgeService:
+  enabled: false
+  serviceAccount:
+    roleArn: ""
+
+  image:
+    repository: ""
+    tag: ""
+
+  storage:
+    size: "50Gi"
+
+  nodeSelector: {}
 
 remoteHeadless:
   image:

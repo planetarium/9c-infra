@@ -23,6 +23,7 @@ spec:
         - ../../9c-internal/multiplanetary/global/worldBoss.yaml
         - ../../9c-internal/multiplanetary/global/patrolRewardService.yaml
         - ../../9c-internal/multiplanetary/global/rudolfService.yaml
+        - ../../9c-internal/multiplanetary/global/bridgeService.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: 9c-network
