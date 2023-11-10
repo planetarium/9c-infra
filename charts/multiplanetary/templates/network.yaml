@@ -187,6 +187,12 @@ spec:
           enabled: {{ default $.Values.rudolfService.enabled .rudolfService.enabled }}
           image:
             {{- toYaml (default $.Values.rudolfService.image .rudolfService.image) | nindent 12 }}
+          config:
+            {{- toYaml (default $.Values.rudolfService.config .rudolfService.config) | nindent 12 }}
+          kms:
+            {{- toYaml (default $.Values.rudolfService.kms .rudolfService.kms) | nindent 12 }}
+          serviceAccount:
+            {{- toYaml (default $.Values.rudolfService.serviceAccount .rudolfService.serviceAccount) | nindent 12 }}
           service:
             {{- toYaml (default $.Values.rudolfService.service .rudolfService.service) | nindent 12 }}
           nodeSelector:
