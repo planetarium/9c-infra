@@ -32,8 +32,6 @@ multiplanetary:
       - "9c-main-validator-7.nine-chronicles.com"
       - "9c-main-validator-8.nine-chronicles.com"
 
-      storage: {}
-
     remoteHeadless:
       hosts:
       - "9c-main-rpc-1.nine-chronicles.com"
@@ -46,10 +44,6 @@ multiplanetary:
       - "9c-main-rpc-8.nine-chronicles.com"
       - "9c-main-rpc-9.nine-chronicles.com"
       - "9c-main-rpc-10.nine-chronicles.com"
-      storage: {}
-
-    externalSecret:
-      prefix: "9c-main-v2/9c-network"
 
     snapshot:
       path: 9c-main-v2/9c-network
@@ -59,6 +53,22 @@ multiplanetary:
 
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
+
+    dataProvider: {}
+    worldBoss: {}
+    marketService: {}
+    patrolRewardService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
+    rudolfService: {}
 
 global:
   image:

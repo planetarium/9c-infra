@@ -13,5 +13,7 @@ snapshot:
   partition:
     enabled: true
 
+  resources: {}
+
   nodeSelector:
     node.kubernetes.io/instance-type: r6g.xlarge
