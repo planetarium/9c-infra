@@ -70,6 +70,10 @@ multiplanetary:
     explorer: {}
     blockIntervalNotifier: {}
     rudolfService:
+      enabled: true
+      image:
+        tag: "git-956eaac9e5742d8eb237fb133b841f7d2d91621e"
+
       config:
         ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
         graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
@@ -80,6 +84,12 @@ multiplanetary:
 
       serviceAccount:
         roleArn: "arn:aws:iam::319679068466:role/heimdall-internal-9c-rudolf-signer"
+
+      service:
+        enabled: true
+
+      db:
+        local: true
 
   - name: "idun"
 
@@ -142,6 +152,10 @@ multiplanetary:
     explorer: {}
     blockIntervalNotifier: {}
     rudolfService:
+      enabled: true
+      image:
+        tag: "git-956eaac9e5742d8eb237fb133b841f7d2d91621e"
+
       config:
         ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
         graphqlEndpoint: "https://idun-internal-rpc-1.nine-chronicles.com/graphql"
@@ -152,6 +166,13 @@ multiplanetary:
 
       serviceAccount:
         roleArn: "arn:aws:iam::319679068466:role/idun-internal-9c-rudolf-signer"
+
+      service:
+        enabled: true
+
+      db:
+        local: true
+
 
 global:
   image:
