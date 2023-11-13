@@ -8,6 +8,20 @@ metadata:
     k8s-app: fluent-bit
 data:
   fluent-bit.conf: |
+      [SERVICE]
+        Flush                     5
+        Log_Level                 info
+        Daemon                    off
+        Parsers_File              parsers.conf
+        HTTP_Server               On
+        HTTP_Listen               0.0.0.0
+        HTTP_Port                 2020
+        storage.path              /var/fluent-bit/state/flb-storage/
+        storage.sync              normal
+        storage.checksum          off
+        storage.backlog.mem_limit 5M
+    @INCLUDE application-log.conf
+  application-log.conf: |
     [INPUT]
         Name                         tail
         Tag                          application.*
