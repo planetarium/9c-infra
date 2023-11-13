@@ -4,6 +4,8 @@ logLevel: "debug"
 multiplanetary:
   - name: "heimdall"
 
+    autosync: true
+
     genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
     peerStrings:
@@ -87,6 +89,8 @@ multiplanetary:
         local: true
 
   - name: "idun"
+
+    autosync: true
 
     genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
 

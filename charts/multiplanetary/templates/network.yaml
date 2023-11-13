@@ -5,6 +5,10 @@ metadata:
   name: {{ .name }}
   namespace: argocd
 spec:
+  {{ if .autosync }}
+  syncPolicy:
+    automated: {}
+  {{ end }}
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
