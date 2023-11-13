@@ -52,7 +52,7 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
-        Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['container_name'].$TAG true
+        Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['namespace_name']_$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_s3
     [OUTPUT]
         Name                         s3
@@ -97,14 +97,14 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        loki.*
-        Rule                         $kubernetes['container_name'] ^.*$ s3json.$kubernetes['container_name'].$Source.$TAG true
+        Rule                         $kubernetes['container_name'] ^.*$ s3json.$kubernetes['namespace_name']_$kubernetes['container_name'].$Source.$TAG true
         Emitter_Name                 for_s3_json
     [OUTPUT]
         Name                         loki
         Match                        loki_application.*
         host                         loki-gateway.monitoring.svc.cluster.local
         port                         80
-        labels                       job=fluentbit, tag=$Tag, subtag=$Subtag, container=$kubernetes['container_name']
+        labels                       job=fluentbit, tag=$Tag, subtag=$Subtag, alias=$kubernetes['namespace_name']_$kubernetes['container_name'], container=$kubernetes['container_name'], namespace=$kubernetes['namespace_name']
         auto_kubernetes_labels       on
         line_format                  json
         workers                      32
@@ -124,7 +124,7 @@ data:
         Bucket                       fluent-bit.planetariumhq.com
         compression                  gzip
         Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/json/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format                /${CLUSTER_NAME}/json/$kubernetes['namespace_name']/glue/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
 
     [INPUT]
