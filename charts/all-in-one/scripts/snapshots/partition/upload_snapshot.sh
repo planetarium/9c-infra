@@ -91,10 +91,10 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
+  {{- end }}
 
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
-  {{- end }}
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
