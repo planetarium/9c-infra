@@ -225,6 +225,9 @@ rudolfService:
     roleArn: "arn:aws:iam::319679068466:role/InternalRudolfSignerRole"
   service:
     enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+    - "sg-0343e5c4514681670"
 
 volumeRotator:
   enabled: true
