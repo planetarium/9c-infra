@@ -8,3 +8,6 @@ seed:
 
   # dotnet args
   workerCount: 1000
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large

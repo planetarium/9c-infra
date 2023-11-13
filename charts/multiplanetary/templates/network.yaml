@@ -32,6 +32,7 @@ spec:
           networkType: {{ default $.Values.global.networkType .networkType }}
           consensusType: {{ default $.Values.global.consensusType .consensusType }}
           resetSnapshot: {{ default $.Values.global.resetSnapshot .resetSnapshot }}
+          rollbackSnapshot: {{ default $.Values.global.rollbackSnapshot .rollbackSnapshot }}
           slackToken: {{ default $.Values.global.slackToken .slackToken }}
           slackWebHookUrl: {{ default $.Values.global.slackWebHookUrl .slackWebHookUrl }}
 
