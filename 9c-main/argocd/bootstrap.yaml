@@ -42,23 +42,23 @@ spec:
                 scrape_timeout: 6s
                 static_configs:
                   - targets:
-                    - 9c-network.validator-5.svc.cluster.local:80
-                    - 9c-network.validator-6.svc.cluster.local:80
-                    - 9c-network.validator-7.svc.cluster.local:80
-                    - 9c-network.validator-8.svc.cluster.local:80
+                    - validator-5.9c-network.svc.cluster.local:80
+                    - validator-6.9c-network.svc.cluster.local:80
+                    - validator-7.9c-network.svc.cluster.local:80
+                    - validator-8.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-validator
                   - targets:
-                    - 9c-network.remote-headless-1.svc.cluster.local:80
-                    - 9c-network.remote-headless-2.svc.cluster.local:80
-                    - 9c-network.remote-headless-3.svc.cluster.local:80
-                    - 9c-network.remote-headless-4.svc.cluster.local:80
-                    - 9c-network.remote-headless-5.svc.cluster.local:80
+                    - remote-headless-1.9c-network.svc.cluster.local:80
+                    - remote-headless-2.9c-network.svc.cluster.local:80
+                    - remote-headless-3.9c-network.svc.cluster.local:80
+                    - remote-headless-4.9c-network.svc.cluster.local:80
+                    - remote-headless-5.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-rpc
                   - targets:
-                    - 9c-network.test-headless-1.svc.cluster.local:80
-                    - 9c-network.test-headless-2.svc.cluster.local:80
+                    - test-headless-1.9c-network.svc.cluster.local:80
+                    - test-headless-2.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-test-rpc
                   - targets:
@@ -70,16 +70,16 @@ spec:
                     labels:
                       group: nodeinfra-rpc
                   - targets:
-                    - 9c-network.main-full-state.svc.cluster.local:80
+                    - main-full-state.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-full-state
                   - targets:
-                    - 9c-network.data-provider-db.svc.cluster.local:80
-                    - 9c-network.data-provider-read.svc.cluster.local:80
+                    - data-provider-db.9c-network.svc.cluster.local:80
+                    - data-provider-read.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-data-provider
                   - targets:
-                    - 9c-network.explorer.svc.cluster.local:80
+                    - explorer.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-explorer
                 tls_config:
