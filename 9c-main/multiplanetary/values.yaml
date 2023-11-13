@@ -46,7 +46,7 @@ multiplanetary:
       - "9c-main-rpc-10.nine-chronicles.com"
 
     snapshot:
-      path: 9c-main-v2/9c-network
+      path: 9c-main-v2/main/partition
 
     bridgeService:
       enabled: true
