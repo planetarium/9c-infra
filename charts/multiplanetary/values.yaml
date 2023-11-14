@@ -37,7 +37,9 @@ multiplanetary:
     dataProvider: {}
     worldBoss: {}
     bridgeService: {}
+    bridge: {}
     marketService: {}
+    fullState: {}
     patrolRewardService: {}
     rudolfService: {}
     volumeRotator: {}

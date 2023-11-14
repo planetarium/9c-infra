@@ -119,18 +119,26 @@ spec:
 
         remoteHeadless:
           count: {{ default $.Values.remoteHeadless.count .remoteHeadless.count }}
+          useTurnServer: {{ default $.Values.remoteHeadless.useTurnServer .remoteHeadless.useTurnServer }}
           image:
             {{- toYaml (default $.Values.remoteHeadless.image .remoteHeadless.image) | nindent 12 }}
           hosts:
             {{- toYaml (default $.Values.remoteHeadless.hosts .remoteHeadless.hosts) | nindent 12 }}
           ports:
             {{- toYaml (default $.Values.remoteHeadless.ports .remoteHeadless.ports) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.remoteHeadless.env .remoteHeadless.env) | nindent 12 }}
+          extraArgs:
+            {{- toYaml (default $.Values.remoteHeadless.extraArgs .remoteHeadless.extraArgs) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.remoteHeadless.tolerations .remoteHeadless.tolerations) | nindent 12 }}
           storage:
             {{- toYaml (default $.Values.remoteHeadless.storage .remoteHeadless.storage) | nindent 12 }}
           resources:
             {{- toYaml (default $.Values.remoteHeadless.resources .remoteHeadless.resources) | nindent 12 }}
           nodeSelector:
             {{- toYaml (default $.Values.remoteHeadless.nodeSelector .remoteHeadless.nodeSelector) | nindent 12 }}
+          loggingEnabled: {{ default $.Values.remoteHeadless.loggingEnabled .remoteHeadless.loggingEnabled }}
 
         dataProvider:
           enabled: {{ default $.Values.dataProvider.enabled .dataProvider.enabled }}
@@ -172,8 +180,35 @@ spec:
             {{- toYaml (default $.Values.marketService.resources .marketService.resources) | nindent 12 }}
           env:
             {{- toYaml (default $.Values.marketService.env .marketService.env) | nindent 12 }}
+          envForWrite:
+            {{- toYaml (default $.Values.marketService.envForWrite .marketService.envForWrite) | nindent 12 }}
           db:
             {{- toYaml (default $.Values.marketService.db .marketService.db) | nindent 12 }}
+
+        fullState:
+          enabled: {{ default $.Values.fullState.enabled .fullState.enabled }}
+          image:
+            {{- toYaml (default $.Values.fullState.image .fullState.image) | nindent 12 }}
+          extraArgs:
+            {{- toYaml (default $.Values.fullState.extraArgs .fullState.extraArgs) | nindent 12 }}
+          useTurnServer: {{ default $.Values.fullState.useTurnServer .fullState.useTurnServer }}
+          host: 
+            {{- toYaml (default $.Values.fullState.host .fullState.host) | nindent 12 }}
+          ports:
+            {{- toYaml (default $.Values.fullState.ports .fullState.ports) | nindent 12 }}
+          storage:
+            {{- toYaml (default $.Values.fullState.storage .fullState.storage) | nindent 12 }}
+          resources:
+            {{- toYaml (default $.Values.fullState.resources .fullState.resources) | nindent 12 }}
+          env:
+            {{- toYaml (default $.Values.fullState.env .fullState.env) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.fullState.nodeSelector .fullState.nodeSelector) | nindent 12 }}
+          tolerations:
+            {{- toYaml (default $.Values.fullState.tolerations .fullState.tolerations) | nindent 12 }}
+          affinity:
+            {{- toYaml (default $.Values.fullState.affinity .fullState.affinity) | nindent 12 }}
+          loggingEnabled: {{ default $.Values.fullState.loggingEnabled .fullState.loggingEnabled }}
 
         patrolRewardService:
           enabled: {{ default $.Values.patrolRewardService.enabled .patrolRewardService.enabled }}
@@ -217,6 +252,15 @@ spec:
             {{- toYaml (default $.Values.bridgeService.storage .bridgeService.storage) | nindent 12 }}
           nodeSelector:
             {{- toYaml (default $.Values.bridgeService.nodeSelector .bridgeService.nodeSelector) | nindent 12 }}
+        
+        bridge:
+          enabled: {{ default $.Values.bridge.enabled .bridge.enabled }}
+          bridgeObserverImage:
+            {{- toYaml (default $.Values.bridge.bridgeObserverImage .bridge.bridgeObserverImage) | nindent 12 }}
+          bridgeStatusBotImage:
+            {{- toYaml (default $.Values.bridge.bridgeStatusBotImage .bridge.bridgeStatusBotImage) | nindent 12 }}
+          nodeSelector:
+            {{- toYaml (default $.Values.bridge.nodeSelector .bridge.nodeSelector) | nindent 12 }}
 
         volumeRotator:
           enabled: {{ default $.Values.volumeRotator.enabled .volumeRotator.enabled }}

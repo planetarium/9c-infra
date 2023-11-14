@@ -18,7 +18,7 @@ multiplanetary:
       - "9c-main-tcp-seed-3.planetarium.dev"
 
       nodeSelector:
-        node.kubernetes.io/instance-type: m5d.xlarge
+        node.kubernetes.io/instance-type: m5.large
 
     validator:
       consensusSeedStrings:
@@ -46,7 +46,7 @@ multiplanetary:
       - "9c-main-rpc-10.nine-chronicles.com"
 
     snapshot:
-      path: 9c-main-v2/main/partition
+      path: main/partition
 
     bridgeService:
       enabled: false
@@ -60,6 +60,8 @@ multiplanetary:
     marketService: {}
     patrolRewardService: {}
     volumeRotator: {}
+    fullState: {}
+    bridge: {}
     acc:
       redis: {}
     emptyChronicle: {}

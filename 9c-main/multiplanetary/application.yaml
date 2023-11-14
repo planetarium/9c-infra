@@ -15,7 +15,7 @@ spec:
       valueFiles:
         - ../../9c-main/multiplanetary/values.yaml
         - ../../9c-main/multiplanetary/global/acc.yaml
-        - ../../9c-main/multiplanetary/global/bridgeService.yaml
+        - ../../9c-main/multiplanetary/global/bridge.yaml
         - ../../9c-main/multiplanetary/global/dataProvider.yaml
         - ../../9c-main/multiplanetary/global/emptyChronicle.yaml
         - ../../9c-main/multiplanetary/global/explorer.yaml
@@ -24,6 +24,7 @@ spec:
         - ../../9c-main/multiplanetary/global/patrolRewardService.yaml
         - ../../9c-main/multiplanetary/global/remoteActionEvaluatorHeadless.yaml
         - ../../9c-main/multiplanetary/global/remoteHeadless.yaml
+        - ../../9c-main/multiplanetary/global/rudolfService.yaml
         - ../../9c-main/multiplanetary/global/seed.yaml
         - ../../9c-main/multiplanetary/global/snapshot.yaml
         - ../../9c-main/multiplanetary/global/testHeadless1.yaml
