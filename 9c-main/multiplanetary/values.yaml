@@ -49,7 +49,7 @@ multiplanetary:
       path: 9c-main-v2/main/partition
 
     bridgeService:
-      enabled: true
+      enabled: false
 
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
