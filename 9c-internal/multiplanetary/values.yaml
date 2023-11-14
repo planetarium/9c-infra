@@ -114,11 +114,17 @@ multiplanetary:
       - "idun-internal-validator-1.nine-chronicles.com"
 
       storage: {}
+      image:
+        repository: longfin/9c-headless
+        tag: "multiplanetary-2023111401"
 
     remoteHeadless:
       hosts:
       - "idun-internal-rpc-1.nine-chronicles.com"
       storage: {}
+      image:
+        repository: longfin/9c-headless
+        tag: "multiplanetary-2023111401"
 
     externalSecret:
       prefix: "9c-internal-v2/idun"
