@@ -38,8 +38,10 @@ spec:
                 secretKeyRef:
                   key: database-url
                   name: rudolf-service
+{{- if .Values.rudolfService.config.ncgMinter }}
             - name: NCG_MINTER
               value: {{ .Values.rudolfService.config.ncgMinter }}
+{{- end }}
             - name: GQL_ENDPOINT
               value: {{ .Values.rudolfService.config.graphqlEndpoint }}
             - name: NC_GRAPHQL_ENDPOINT

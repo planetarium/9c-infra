@@ -30,7 +30,7 @@
                 "description": "A GraphQL endpoint to query chain data and stage transactions"
               }
             },
-            "required": ["ncgMinter", "graphqlEndpoint"]
+            "required": ["graphqlEndpoint"]
           },
           "db": {
             "type": "object",

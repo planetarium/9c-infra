@@ -75,7 +75,6 @@ multiplanetary:
       enabled: true
 
       config:
-        ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
         graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
 
       kms:
@@ -154,7 +153,6 @@ multiplanetary:
       enabled: true
 
       config:
-        ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
         graphqlEndpoint: "https://idun-internal-rpc-1.nine-chronicles.com/graphql"
 
       kms:
