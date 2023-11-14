@@ -17,9 +17,6 @@ multiplanetary:
       - "9c-main-tcp-seed-2.planetarium.dev"
       - "9c-main-tcp-seed-3.planetarium.dev"
 
-      nodeSelector:
-        node.kubernetes.io/instance-type: m5.large
-
     validator:
       consensusSeedStrings:
       - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
@@ -69,6 +66,62 @@ multiplanetary:
     remoteActionEvaluatorHeadless: {}
     testHeadless2: {}
     testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
+    rudolfService:
+      db: {}
+
+  - name: "heimdall"
+
+    peerStrings:
+    - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-heimdall-tcp-seed-1.planetarium.dev,31234"
+
+    trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+    seed:
+      count: 1
+
+      hosts:
+      - "9c-heimdall-tcp-seed-1.planetarium.dev"
+
+    validator:
+      count: 1
+
+      consensusSeedStrings:
+      - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-heimdall-tcp-seed-1.planetarium.dev,31235"
+
+      hosts:
+      - "9c-heimdall-validator-5.nine-chronicles.com"
+
+    remoteHeadless:
+      count: 1
+
+      hosts:
+      - "9c-heimdall-rpc-1.nine-chronicles.com"
+
+    snapshot:
+      path: main/partition
+
+    bridgeService:
+      enabled: false
+
+    externalSecret: {}
+    dataProvider: {}
+    worldBoss: {}
+    marketService: {}
+    patrolRewardService: {}
+    volumeRotator: {}
+    fullState: {}
+    bridge: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2:
+      enabled: false
+    testHeadless1:
+      enabled: false
     explorer: {}
     blockIntervalNotifier: {}
     rudolfService:
