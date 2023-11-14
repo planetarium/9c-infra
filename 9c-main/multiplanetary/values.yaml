@@ -69,7 +69,8 @@ multiplanetary:
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
-    rudolfService: {}
+    rudolfService:
+      db: {}
 
 global:
   image:

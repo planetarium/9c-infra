@@ -598,6 +598,12 @@ rudolfService:
 
   resources: {}
 
+  db:
+    local: false
+
+  service:
+    enabled: false
+
   config:
     ncgMinter: "NCG_MINTER"
     graphqlEndpoint: "ENDPOINT"
