@@ -4,8 +4,8 @@ bridgeService:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
 
   image:
-    repository: "longfin/araya"
-    tag: "2023110201"
+    repository: "planetariumhq/9c-bridge"
+    tag: "git-e3649c6919cf5d234bc95957720fbd5735882eaa"
 
   storage:
     size: "50Gi"
