@@ -18,7 +18,7 @@ multiplanetary:
       - "9c-main-tcp-seed-3.planetarium.dev"
 
       nodeSelector:
-        node.kubernetes.io/instance-type: m5d.xlarge
+        node.kubernetes.io/instance-type: m5.large
 
     validator:
       consensusSeedStrings:
@@ -46,19 +46,22 @@ multiplanetary:
       - "9c-main-rpc-10.nine-chronicles.com"
 
     snapshot:
-      path: 9c-main-v2/main/partition
+      path: main/partition
 
     bridgeService:
-      enabled: true
+      enabled: false
 
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
 
+    externalSecret: {}
     dataProvider: {}
     worldBoss: {}
     marketService: {}
     patrolRewardService: {}
     volumeRotator: {}
+    fullState: {}
+    bridge: {}
     acc:
       redis: {}
     emptyChronicle: {}
@@ -68,12 +71,13 @@ multiplanetary:
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
-    rudolfService: {}
+    rudolfService:
+      db: {}
 
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-4b277eddee27e61cd9fd348805cd90c37719a273"
+    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
 
   appProtocolVersion: "200100/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFrSIu5hDF+iBBRn7kGn20PJCu0v6jpMZkE9fRcKbtgGAiBnzLjwlJtNUQgoI+4HGhdKFvSEQT.iSkqUS458ppZJOQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTA3ZQ=="
 

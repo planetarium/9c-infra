@@ -37,7 +37,9 @@ multiplanetary:
     dataProvider: {}
     worldBoss: {}
     bridgeService: {}
+    bridge: {}
     marketService: {}
+    fullState: {}
     patrolRewardService: {}
     rudolfService: {}
     volumeRotator: {}
@@ -597,6 +599,12 @@ rudolfService:
   nodeSelector: {}
 
   resources: {}
+
+  db:
+    local: false
+
+  service:
+    enabled: false
 
   config:
     ncgMinter: "NCG_MINTER"

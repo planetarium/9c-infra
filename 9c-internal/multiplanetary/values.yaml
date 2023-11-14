@@ -65,6 +65,8 @@ multiplanetary:
     lib9cStateService: {}
     remoteActionEvaluatorHeadless: {}
     testHeadless2: {}
+    bridge: {}
+    fullState: {}
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
@@ -140,6 +142,8 @@ multiplanetary:
     lib9cStateService: {}
     remoteActionEvaluatorHeadless: {}
     testHeadless2: {}
+    bridge: {}
+    fullState: {}
     testHeadless1: {}
     explorer: {}
     blockIntervalNotifier: {}
