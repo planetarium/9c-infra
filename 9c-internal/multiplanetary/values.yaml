@@ -169,7 +169,7 @@ multiplanetary:
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-52608234bfe17a4f105946f41d0d9f703dd77980"
+    tag: "git-5b8a8402d06148e3ecdeaf6cf40c06b6fce5db3b"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
