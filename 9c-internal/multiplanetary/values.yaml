@@ -52,9 +52,6 @@ multiplanetary:
       enabled: true
       serviceAccount:
         roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
-      image:
-        repository: "planetariumhq/9c-bridge"
-        tag: "git-89a6819ccf2f3caddb5f43a4244414b188d3b546"
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
 
@@ -135,9 +132,6 @@ multiplanetary:
       enabled: true
       serviceAccount:
         roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
-      image:
-        repository: "planetariumhq/9c-bridge"
-        tag: "git-89a6819ccf2f3caddb5f43a4244414b188d3b546"
       nodeSelector:
         node.kubernetes.io/instance-type: m5d.xlarge
 
