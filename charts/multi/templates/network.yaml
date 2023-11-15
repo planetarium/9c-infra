@@ -11,24 +11,8 @@ spec:
     targetRevision: test/multi
     path: charts/all-in-one
     helm:
-      values: |-
-        global:
-          image: 
-            {{- toYaml $.Values.global.image | nindent 12 }}
-          appProtocolVersion: {{ $.Values.global.appProtocolVersion }}
-        seed:
-          image:
-            {{- toYaml $.Values.seed.image | nindent 12 }}
-        dataProvider:
-          image:
-            {{- toYaml $.Values.dataProvider.image | nindent 12 }}
-        worldBoss:
-          image:
-            {{- toYaml $.Values.worldBoss.image | nindent 12 }}
-        marketService:
-          image:
-            {{- toYaml $.Values.marketService.image | nindent 12 }}
       valueFiles:
+        - "../../{{ $.Values.clusterName }}/multi/network/general.yaml"
         - "../../{{ $.Values.clusterName }}/multi/network/{{ . }}.yaml"
 
   destination:
