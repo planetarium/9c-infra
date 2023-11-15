@@ -11,8 +11,6 @@ spec:
     targetRevision: main
     path: charts/all-in-one
     helm:
-      valueFiles:
-        - "../../{{ $.Values.clusterName }}/multiplanetary/network/{{ . }}.yaml"
       values: |-
         global:
           image: 
@@ -30,6 +28,8 @@ spec:
         marketService:
           image:
             {{- toYaml $.Values.marketService.image | nindent 12 }}
+      valueFiles:
+        - "../../{{ $.Values.clusterName }}/multi/network/{{ . }}.yaml"
 
   destination:
     server: https://kubernetes.default.svc
