@@ -2,7 +2,7 @@ rudolfService:
   enabled: true
 
   image:
-    tag: "git-e12f0131f9061bd90c0230867363573b96aae5f7"
+    tag: "git-ba3b8f8a6b2bc9983c31438197cec4fedee461bb"
 
   config:
     ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
