@@ -5,7 +5,7 @@ bridgeService:
 
   image:
     repository: "planetariumhq/9c-bridge"
-    tag: "git-e3649c6919cf5d234bc95957720fbd5735882eaa"
+    tag: "git-231c534ce1a023dcb36a471085f4607d95ca35a0"
 
   storage:
     size: "50Gi"
