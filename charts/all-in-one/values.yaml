@@ -525,6 +525,7 @@ patrolRewardService:
 
 blockIntervalNotifier:
   enabled: false
+  group: odin-validator
 
 acc:
   enabled: false
