@@ -1,2 +1,4 @@
+clusterName: "9c-internal-v2"
+
 network:
   - "sample1"
