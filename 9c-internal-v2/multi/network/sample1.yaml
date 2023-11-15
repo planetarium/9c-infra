@@ -20,5 +20,9 @@ validator:
   - "heimdall-internal-validator-1.nine-chronicles.com"
 
 remoteHeadless:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-test"
+
   hosts:
   - "heimdall-internal-rpc-1.nine-chronicles.com"
