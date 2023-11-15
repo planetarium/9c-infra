@@ -11,7 +11,7 @@ spec:
     path: charts/multi
     helm:
       valueFiles:
-        - ../../9c-internal/multi/values.yaml
+        - ../../9c-internal-v2/multi/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: multi
