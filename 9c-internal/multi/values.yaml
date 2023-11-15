@@ -1,0 +1,26 @@
+clusterName: "9c-internal-v2"
+logLevel: "debug"
+
+network:
+  - "9c-network"
+  - "heimdall"
+  - "idun"
+
+global:
+  image:
+    repository: longfin/9c-headless
+    tag: "git-187ab1d0025773afbd926390de4982413780e9c1"
+
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+
+  iceServers: []
+
+  networkType: Default
+  consensusType: pbft
+  
+  resetSnapshot: false
+  slackToken: ""
+  slackWebHookUrl: ""
+
+externalSecret:
+  enabled: true

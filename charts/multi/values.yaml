@@ -1,0 +1,612 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+clusterName: "9c-internal-v2"
+logLevel: "debug"
+
+multiplanetary:
+  - name: "heimdall"
+    genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+
+    peerStrings:
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+      
+    snapshot: {}
+
+    seed:
+      hosts:
+      - "tcp-seed-1.heimdall.svc.cluster.local"
+
+    validator:
+      count: 1
+
+      consensusSeedStrings:
+      - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
+
+      hosts:
+      - "heimdall-internal-validator-1.nine-chronicles.com"
+
+    remoteHeadless:
+      hosts:
+      - "heimdall-internal-rpc-1.nine-chronicles.com"
+
+      storage: {}
+
+    externalSecret: {}
+    dataProvider: {}
+    worldBoss: {}
+    bridgeService: {}
+    marketService: {}
+    patrolRewardService: {}
+    rudolfService: {}
+    volumeRotator: {}
+    acc:
+      redis: {}
+    emptyChronicle: {}
+    lib9cStateService: {}
+    remoteActionEvaluatorHeadless: {}
+    testHeadless2: {}
+    testHeadless1: {}
+    explorer: {}
+    blockIntervalNotifier: {}
+
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+
+  appProtocolVersion: "200010/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIAUCNU9yTZk4onxrkT8uxdfB3XFRfpxEyGzbj9BZTBlpAiBT987Kgqxnbg7yvyRn86w2c3j6.KtNsWwGKveBxMgTzw==/ZHU4OmxhdW5jaGVydTQyOjEvZGZkNTI1MDQ3Yjc4ZWY4NjNmOGFkMzJkMDIzZjk0ZjBhZTU5YmI3ZXU2OnBsYXllcnU0MjoyL2Q3MjA2OGEwODEwZjcyYzg5MDE2MzQ0N2I5YjRkYjg2NjMzYWE0ZTJ1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNS0wNGU="
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+  iceServers:
+    - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+
+  networkType: Default
+  consensusType: pbft
+
+  resetSnapshot: false
+  useExternalSecret: false
+  slackToken: ""
+  slackWebHookUrl: ""
+
+externalSecret:
+  enabled: false
+  prefix: ""
+
+snapshot:
+  downloadSnapshot: false
+  fullSnapshot:
+    enabled: false
+    suspend: false
+  partitionReset:
+    enabled: false
+    suspend: false
+  partition:
+    enabled: false
+    suspend: false
+  slackChannel: "bot-test"
+  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+
+  # aws information for uploading snapshot
+  # Do not upload values below filled
+  # recommended to obtain from ExternalSecret
+  cfDistributionId: ""
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
+
+  path: "internal"
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+seed:
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+
+  ports:
+    node: 31234
+    gossip: 31235
+    graphql: 31237
+
+  # dotnet args
+  workerCount: 1000
+
+  extraArgs: []
+  # - --key=val
+
+  # enter private keys if not using External Secrets
+  privateKeys: []
+  # - "private key"
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+validator:
+  image:
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  ports:
+    headless: 31234
+    graphql: 80
+    gossip: 6000
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  # private keys if not using External Secrets
+  privateKeys: []
+  # - "<private key>"
+
+  storage:
+    data: 1000Gi
+
+  env: []
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  loggingEnabled: false
+
+  nodeSelector: {}
+
+  tolerations: []
+  affinity: {}
+
+bridgeService:
+  enabled: false
+  serviceAccount:
+    roleArn: ""
+
+  image:
+    repository: ""
+    tag: ""
+
+  storage:
+    size: "50Gi"
+
+  nodeSelector: {}
+
+remoteHeadless:
+  image:
+    # follow global image
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  loggingEnabled: false
+  rateLimitEnabled: false
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+dataProvider:
+  enabled: false
+  rwMode: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v200010-1"
+  db:
+    local: false
+    storage: 100Gi
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+  resources: {}
+
+  nodeSelector: {}
+
+explorer:
+  enabled: false
+  image:
+    # follow global image
+    repository: ""
+    tag: ""
+    pullPolicy: Always
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  host: ""
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 6Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+fullState:
+  enabled: false
+  image:
+    # follow global image
+    repository: ""
+    tag: ""
+    pullPolicy: Always
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  host: ""
+  #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
+  #  - "ab8d1f8ad3c1645a98c57fd27a62531a-728118819.us-east-2.elb.amazonaws.com"
+
+  ports:
+    headless: 31234
+    rpc: 31238
+    graphql: 80
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  env: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  loggingEnabled: false
+
+worldBoss:
+  enabled: false
+  ports:
+    targetPort: 5000
+
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
+
+  db:
+    local: false
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector: {}
+
+bridge:
+  enabled: false
+  bridgeObserverImage:
+    repository: planetariumhq/nine-chronicles-bridge-observer
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
+  bridgeStatusBotImage:
+    repository: moreal/bridge-status-bot-alpine
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "20210913-01"
+
+  bridgeEnv:
+    privateKey: ""
+    mnemonic: ""
+    slackBridgeObserverToken: ""
+    slackWebToken: ""
+    etherscanToken: ""
+
+  nodeSelector: {}
+
+testHeadless1:
+  enabled: false
+  image:
+    repository: longfin/9c-headless
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v200020-perf-tune-13"
+
+  loggingEnabled: false
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  env: []
+
+  host: "9c-main-test-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+testHeadless2:
+  enabled: false
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v200010-1"
+
+  loggingEnabled: false
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  env: []
+
+  host: "9c-main-test-2.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 6Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+marketService:
+  enabled: false
+  rwMode: false
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: "git-833c0b3b932f158a4bbb5c4d522049102883a897"
+
+  nodeSelector:
+    read: {}
+    write: {}
+
+  resources: {}
+
+  env: []
+
+  db:
+    local: false
+    database: ""
+    user: ""
+    connectionString: ""
+
+remoteActionEvaluatorHeadless:
+  enabled: false
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4f5c5d2978acaf04771849ad74c5ea15d5dbab97"
+
+  loggingEnabled: false
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  host: "9c-sample-remote-aev-test.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+volumeRotator:
+  enabled: false
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/volume-rotator"
+  image:
+    repository: "planetariumhq/ninechronicles-volumerotator"
+    tag: "git-bed7f2b80e1ffd31f952411fb8d7d092daafdaa1"
+  nodeSelectorValue: "9c-internal-r6g_l_2c"
+
+lib9cStateService:
+  enabled: false
+  image:
+    repository: planetariumhq/lib9c-stateservice
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4f5c5d2978acaf04771849ad74c5ea15d5dbab97"
+
+  ports:
+    http: 5157
+
+  resources:
+    requests:
+      cpu: 1
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+emptyChronicle:
+  enabled: false
+
+  image:
+    repository: planetariumhq/emptychronicle-headless
+    pullPolicy: Always
+    tag: "git-2a76d3c2352243d8e1aa6315a91f729305e00f63"
+
+  ports:
+    port: 5050
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 8Gi
+
+  storage:
+    data: 1000Gi
+
+patrolRewardService:
+  enabled: false
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-d86b316bab2f80b1a96c09adb4f89fed7d4bd8c2"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  env: []
+
+  db:
+    local: false
+    database: ""
+    user: ""
+    connectionString: ""
+    size: 1Gi
+
+blockIntervalNotifier:
+  enabled: false
+
+acc:
+  enabled: false
+
+  redis:
+    port: 6379
+
+    nodeSelector: {}
+
+  image:
+    repository: planetariumhq/ninechronicles-headless-acc
+    pullPolicy: Always
+    tag: "git-d86b316bab2f80b1a96c09adb4f89fed7d4bd8c2"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  env: []
+
+rudolfService:
+  enabled: false
+  image:
+    repository: planetariumhq/9c-rudolf
+    pullPolicy: Always
+    tag: "TAG"
+
+  nodeSelector: {}
+
+  resources: {}
+
+  config:
+    ncgMinter: "NCG_MINTER"
+    graphqlEndpoint: "ENDPOINT"
+  
+  kms:
+    keyId: "KEY_ID"
+    publicKey: "PUBLIC_KEY"
+
+  serviceAccount:
+    roleArn: "ROLE_ARN"
+
+  securityGroupId: 1234
