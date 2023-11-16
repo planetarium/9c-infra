@@ -21,6 +21,10 @@ multiplanetary:
         node.kubernetes.io/instance-type: m5.large
 
     validator:
+      image:
+        repository: planetariumhq/ninechronicles-headless
+        tag: "git-1834ac35817c75017cde0d3a775b095b024a578c"
+
       consensusSeedStrings:
       - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
       - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31235"
