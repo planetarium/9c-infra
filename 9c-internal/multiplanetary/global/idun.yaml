@@ -1,0 +1,191 @@
+global:
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000002/genesis"
+
+  peerStrings:
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31234"
+
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+externalSecret:
+  enabled: true
+  prefix: "9c-internal-v2/idun"
+
+bridgeService:
+  enabled: true
+
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+dataProvider:
+  enabled: true
+  rwMode: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+marketService:
+  enabled: true
+
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+
+  db:
+    local: true
+    size: 1Gi
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: RpcConfig__Host
+    value: idun-internal-rpc-1.nine-chronicles.com
+  - name: RpcConfig__Port
+    value: "31238"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
+
+patrolRewardService:
+  enabled: true
+
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+
+  db:
+    local: true
+
+remoteHeadless:
+  count: 1
+
+  image:
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  storage:
+    data: 500Gi
+
+  hosts:
+  - "idun-internal-rpc-1.nine-chronicles.com"
+
+rudolfService:
+  enabled: true
+
+  image:
+    repository: planetariumhq/9c-rudolf
+    tag: "git-ba3b8f8a6b2bc9983c31438197cec4fedee461bb"
+
+  config:
+    ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
+    graphqlEndpoint: "http://idun-internal-rpc-1.nine-chronicles.com/graphql"
+
+  db:
+    local: true
+
+  kms:
+    keyId: "3a301c8e-96c5-4b13-8dee-16575ba637c6"
+    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/idun-internal-9c-rudolf-signer"
+
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+    - "sg-0343e5c4514681670"
+
+seed:
+  count: 1
+
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+
+  hosts:
+  - "tcp-seed-1.idun.svc.cluster.local"
+
+snapshot:
+  partition:
+    enabled: true
+    suspend: true
+  slackChannel: "bot-test"
+
+  image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
+
+  path: 9c-internal-v2/idun
+
+  resources:
+    requests:
+      cpu: 1300m
+      memory: 10Gi
+
+validator:
+  count: 1
+  image:
+    pullPolicy: Always
+
+  consensusSeedStrings:
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31235"
+
+  hosts:
+  - "idun-internal-validator-1.nine-chronicles.com"
+
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 12Gi
+
+worldBoss:
+  enabled: true
+  ports:
+    targetPort: 5000
+
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+
+  db:
+    local: true
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
