@@ -55,5 +55,4 @@ fi
 echo $sources
 
 cd scripts
-. .venv/bin/activate
 python cli.py update-values $file_path $sources

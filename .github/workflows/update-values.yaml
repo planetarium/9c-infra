@@ -56,6 +56,6 @@ jobs:
       - name: Update values
         id: update-values
         run: |
-          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.patrol-reward-service }}" "${{ github.event.inputs.rudolf-service }}""
+          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.patrol-reward-service }}" "${{ github.event.inputs.rudolf-service }}"
         env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
