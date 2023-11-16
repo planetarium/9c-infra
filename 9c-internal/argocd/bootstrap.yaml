@@ -48,17 +48,39 @@ spec:
                     - 9c-internal-validator-6.nine-chronicles.com:80
                     - 9c-internal-validator-7.nine-chronicles.com:80
                     - 9c-internal-validator-8.nine-chronicles.com:80
+                    labels:
+                      group: odin-validator
+                  - targets:
+                    - validator-5.heimdall.svc.cluster.local:80
+                    labels:
+                      group: heimdall-validator
+                  - targets:
+                    - validator-5.idun.svc.cluster.local:80
+                    labels:
+                      group: idun-validator
+                  - targets:
                     - 9c-perf-test-validator-1.planetarium.dev:80
                     - 9c-perf-test-validator-2.planetarium.dev:80
                     - 9c-perf-test-validator-3.planetarium.dev:80
                     - 9c-perf-test-validator-4.planetarium.dev:80
                     labels:
-                      group: validator
+                      group: perf-test-validator
                   - targets:
                     - 9c-internal-rpc-1.nine-chronicles.com:80
+                    labels:
+                      group: odin-rpc
+                  - targets:
                     - 9c-perf-test-rpc-1.planetarium.dev:80
                     labels:
-                      group: rpc
+                      group: perf-test-rpc
+                  - targets:
+                    - remote-headless-1.heimdall.svc.cluster.local:80
+                    labels:
+                      group: heimdall-rpc
+                  - targets:
+                    - remote-headless-1.idun.svc.cluster.local:80
+                    labels:
+                      group: idun-rpc
                 tls_config:
                   insecure_skip_verify: true
               - job_name: scrape-9c-rudolf
