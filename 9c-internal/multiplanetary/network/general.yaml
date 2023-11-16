@@ -1,7 +1,7 @@
 global:
   image:
-    repository: longfin/9c-headless
-    tag: "multiplanetary-2023111601"
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: "70"
 
 seed:
   image:
