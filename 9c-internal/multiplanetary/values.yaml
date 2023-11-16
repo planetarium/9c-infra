@@ -166,8 +166,8 @@ multiplanetary:
 
 global:
   image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-9aa46cd4af1c5fcef28ceac62f1c934fcffb3cf6"
+    repository: longfin/9c-headless
+    tag: "multiplanetary-2023111601"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
