@@ -21,7 +21,7 @@ on:
         - heimdall
         - idun
       headless:
-        description: 'Dockerhub tag (e.g. 30, git-5db812731f7fef1156b00a90ff0267e95dd31820)'
+        description: 'Dockerhub tag for headless (e.g. 30, git-5db812731f7fef1156b00a90ff0267e95dd31820)'
       seed:
         description: 'Same, for seed'
       bridge-service:
@@ -36,8 +36,6 @@ on:
         description: 'Same, for patrol-reward-service'
       rudolf-service:
         description: 'Same, for rudolf-service'
-      manual-args:
-        description: 'Manual arguments e.g. "ninechronicles-dataprovider/from tag 1", delimiter is "|"'
 
 jobs:
   update-values-file:
