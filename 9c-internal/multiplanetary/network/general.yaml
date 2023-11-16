@@ -11,9 +11,9 @@ seed:
 
 bridgeService:
   image:
-    repository: longfin/9c-bridge
+    repository: planetariumhq/9c-bridge
     pullPolicy: Always
-    tag: "2023111602"
+    tag: "git-6feff0900c4d1fccf6f5157d6afef633a5a4e327"
 
 dataProvider:
   image:
