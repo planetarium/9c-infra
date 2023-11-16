@@ -1,0 +1,21 @@
+{
+    "folders": [
+        {
+            "path": "../",
+            "name": "root"
+        },
+        {
+            "path": "../9c-internal",
+            "name": "9c-internal-v2"
+        },
+        {
+            "path": "../9c-main",
+            "name": "9c-main-v2"
+        },
+        {
+            "path": "../scripts",
+            "name": "python script"
+        }
+    ],
+    "settings": {}
+}
