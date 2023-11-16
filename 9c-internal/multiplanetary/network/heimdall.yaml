@@ -1,6 +1,11 @@
+clusterName: "9c-internal-v2"
+logLevel: "debug"
+
 global:
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
 
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ==",
+  
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
@@ -12,10 +17,6 @@ externalSecret:
 
 bridgeService:
   enabled: true
-
-  image:
-    repository: planetariumhq/9c-bridge
-    pullPolicy: Always
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
@@ -36,10 +37,6 @@ dataProvider:
     data: 1000Gi
     log: 10Gi
 
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-
   db:
     local: true
     database: ""
@@ -54,10 +51,6 @@ dataProvider:
 
 marketService:
   enabled: true
-
-  image:
-    repository: planetariumhq/market-service
-    pullPolicy: Always
 
   db:
     local: true
@@ -81,10 +74,6 @@ marketService:
 patrolRewardService:
   enabled: true
 
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
 
@@ -93,9 +82,6 @@ patrolRewardService:
 
 remoteHeadless:
   count: 1
-
-  image:
-    pullPolicy: Always
 
   resources:
     requests:
@@ -114,12 +100,7 @@ remoteHeadless:
 rudolfService:
   enabled: true
 
-  image:
-    repository: planetariumhq/9c-rudolf
-    tag: "git-ba3b8f8a6b2bc9983c31438197cec4fedee461bb"
-
   config:
-    ncgMinter: "0x4fa78AF2C9FB3391ef05F1F1F8FE9565137a00f9"
     graphqlEndpoint: "http://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
 
   db:
@@ -141,12 +122,11 @@ rudolfService:
 seed:
   count: 1
 
-  image:
-    repository: planetariumhq/libplanet-seed
-    pullPolicy: Always
-
   hosts:
   - "tcp-seed-1.heimdall.svc.cluster.local"
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
 
 snapshot:
   partition:
@@ -168,8 +148,6 @@ snapshot:
 
 validator:
   count: 1
-  image:
-    pullPolicy: Always
 
   consensusSeedStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
@@ -189,10 +167,6 @@ worldBoss:
   enabled: true
   ports:
     targetPort: 5000
-
-  image:
-    repository: planetariumhq/world-boss-service
-    pullPolicy: Always
 
   db:
     local: true
