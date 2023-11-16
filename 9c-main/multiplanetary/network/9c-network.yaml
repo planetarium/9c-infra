@@ -5,10 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
-
   appProtocolVersion: "200100/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFrSIu5hDF+iBBRn7kGn20PJCu0v6jpMZkE9fRcKbtgGAiBnzLjwlJtNUQgoI+4HGhdKFvSEQT.iSkqUS458ppZJOQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTA3ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
@@ -63,8 +59,6 @@ volumeReclaimPolicy: "Retain"
 seed:
   count: 3
   useTurnServer: false
-  image:
-    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
   - "9c-main-tcp-seed-1.planetarium.dev"
@@ -81,9 +75,6 @@ seed:
 
 validator:
   count: 4
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-1834ac35817c75017cde0d3a775b095b024a578c"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -132,9 +123,6 @@ validator:
 
 remoteHeadless:
   count: 3
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
 
   useTurnServer: false
 
@@ -190,11 +178,6 @@ dataProvider:
   rwMode: true
   render: true
 
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: '70'
-
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
@@ -205,9 +188,6 @@ dataProvider:
 
 explorer:
   enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
 
   loggingEnabled: true
 
@@ -220,10 +200,6 @@ explorer:
 marketService:
   enabled: true
   rwMode: true
-  image:
-    repository: planetariumhq/market-service
-    tag: "git-185f10e539124d4e15436919c66621dd298ac9a1"
-
   env:
   - name: DOTNET_gcServer
     value: "1"
@@ -255,9 +231,6 @@ marketService:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
 fullState:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
   enabled: true
 
   loggingEnabled: true
@@ -304,10 +277,6 @@ fullState:
 
 worldBoss:
   enabled: true
-
-  image:
-    repository: planetariumhq/world-boss-service
-    tag: "git-422222fe12d5e5860f23ab13581900c52e90b10a"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
@@ -394,13 +363,8 @@ testHeadless2:
 emptyChronicle:
   enabled: true
 
-  image:
-    tag: "git-7bef02eb0105de7c14741e45282c63c7b40c70fb"
-
 remoteActionEvaluatorHeadless:
   enabled: true
-  image:
-    tag: "41"
 
   loggingEnabled: true
 
@@ -416,13 +380,10 @@ remoteActionEvaluatorHeadless:
 
 blockIntervalNotifier:
   enabled: true
+  group: odin-validator
 
 patrolRewardService:
   enabled: true
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-dd318d41186bc099855fd440c302a07d66f1ba37"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
@@ -435,11 +396,6 @@ acc:
 
     nodeSelector:
       node.kubernetes.io/instance-type: m5.large
-
-  image:
-    repository: planetariumhq/access-control-center
-    pullPolicy: Always
-    tag: "git-e44aa4c919fd181d06208ddc522a29d0c56faf7f"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-t3_medium

@@ -1,0 +1,54 @@
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
+
+seed:
+  image:
+    repository: planetariumhq/libplanet-seed
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+
+dataProvider:
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: '70'
+
+worldBoss:
+  image:
+    repository: planetariumhq/world-boss-service
+    tag: "git-422222fe12d5e5860f23ab13581900c52e90b10a"
+
+marketService:
+  image:
+    repository: planetariumhq/market-service
+    tag: "git-185f10e539124d4e15436919c66621dd298ac9a1"
+
+patrolRewardService:
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-dd318d41186bc099855fd440c302a07d66f1ba37"
+
+acc:
+  image:
+    repository: planetariumhq/access-control-center
+    pullPolicy: Always
+    tag: "git-e44aa4c919fd181d06208ddc522a29d0c56faf7f"
+
+remoteActionEvaluatorHeadless:
+  image:
+    tag: "41"
+
+emptyChronicle:
+  image:
+    tag: "git-7bef02eb0105de7c14741e45282c63c7b40c70fb"
+
+fullState:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
+
+explorer:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
