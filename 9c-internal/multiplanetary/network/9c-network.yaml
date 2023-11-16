@@ -1,7 +1,3 @@
-# Default values for 9c-internal cluster.
-# This is a YAML-formatted file.
-
-
 clusterName: "9c-internal-v2"
 logLevel: "debug"
 
