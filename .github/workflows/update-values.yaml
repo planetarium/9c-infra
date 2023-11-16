@@ -43,9 +43,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.10.13
+
+      - run: |
+          python -m pip install -r requirements.txt
+          flit install
+        name: install dependencies
+        working-directory: ./scripts
+
       - name: Update values
         id: update-values
         run: |
-          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.patrol-reward-service }}" "${{ github.event.inputs.rudolf-service }}" "${{ github.event.inputs.manual-args }}"
+          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.patrol-reward-service }}" "${{ github.event.inputs.rudolf-service }}"
         env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}

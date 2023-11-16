@@ -10,7 +10,7 @@ DATA_PROVIDER=$6
 WORLD_BOSS=$7
 MARKET_SERVICE=$8
 PATROL_REWARD_SERVICE=$9
-RUDOLF_SERVICE=$10
+RUDOLF_SERVICE=${10}
 
 file_path="$DIR/multiplanetary/network/$FILE_NAME.yaml"
 
@@ -55,5 +55,4 @@ fi
 echo $sources
 
 cd scripts
-. .venv/bin/activate
 python cli.py update-values $file_path $sources

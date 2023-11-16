@@ -8,7 +8,6 @@ from app.exceptions import PlanetError
 from .apv import Apv
 
 PLANET_CLI_PATH = shutil.which("planet")
-assert PLANET_CLI_PATH is not None
 
 
 class Planet:
@@ -25,6 +24,7 @@ class Planet:
         :type apv: str
         :return: parsed Apv
         """
+        assert PLANET_CLI_PATH is not None
 
         raw_command = f"planet apv analyze {apv}"
         result = subprocess.run(
@@ -62,6 +62,7 @@ class Planet:
         :type version: int
         :return: The apv_analyze function is being called on the output of the apv_sign function.
         """
+        assert PLANET_CLI_PATH is not None
 
         key_id = self.key(self.address)
         raw_command = (
@@ -83,6 +84,7 @@ class Planet:
 
         :return: [(key_id, address), ...]
         """
+        assert PLANET_CLI_PATH is not None
 
         raw_command = "planet key"
         output = subprocess.run(raw_command, capture_output=True, text=True, shell=True)
