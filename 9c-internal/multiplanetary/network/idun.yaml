@@ -4,7 +4,7 @@ logLevel: "debug"
 global:
   image:
     repository: "planetariumhq/ninechronicles-headless"
-    tag: "ed84ed83c701cff73838722c18853d039d0f200f-200tx"
+    tag: "git-9aa46cd4af1c5fcef28ceac62f1c934fcffb3cf6-200tx"
 
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
 
