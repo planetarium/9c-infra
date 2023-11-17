@@ -3,8 +3,8 @@ logLevel: "debug"
 
 global:
   image:
-    repository: "planetariumhq/ninechronicles-headless"
-    tag: "git-9aa46cd4af1c5fcef28ceac62f1c934fcffb3cf6-200tx"
+    repository: "longfin/9c-headless"
+    tag: "multiplanetary-2023111801"
 
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
 
