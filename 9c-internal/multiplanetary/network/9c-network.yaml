@@ -2,9 +2,6 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-e678c2f5a3f3a067453c2ec7cfaa5a292a9acb81"
 
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -116,11 +113,6 @@ dataProvider:
   storage:
     data: 1000Gi
     log: 4Gi
-
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: 'git-96c9b82b90abf8560554e906d6baa78966cc1a91'
 
   db:
     local: true
