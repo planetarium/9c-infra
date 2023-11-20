@@ -1,4 +1,6 @@
 global:
+  appProtocolVersion: "200100/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFrSIu5hDF+iBBRn7kGn20PJCu0v6jpMZkE9fRcKbtgGAiBnzLjwlJtNUQgoI+4HGhdKFvSEQT.iSkqUS458ppZJOQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTA3ZQ=="
+
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-dd67824d1170c056b57858f9823f71ff40cbd491"
