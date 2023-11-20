@@ -61,6 +61,11 @@ seed:
   count: 1
   useTurnServer: false
 
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+
   hosts:
   - "heimdall-tcp-seed-1.planetarium.dev"
 
@@ -208,6 +213,11 @@ dataProvider:
   rwMode: true
   render: true
 
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    tag: "git-467fbf565d67f08552ee69ca8ce157e8b2656839"
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
@@ -230,6 +240,12 @@ explorer:
 marketService:
   enabled: true
   rwMode: true
+
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
+
   env:
   - name: DOTNET_gcServer
     value: "1"
@@ -261,16 +277,80 @@ marketService:
       eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
 fullState:
-  enabled: false
+  enabled: true
+
+  loggingEnabled: true
+
+  useTurnServer: false
+
+  host: "heimdall-main-full-state.nine-chronicles.com"
+
+  extraArgs:
+  - --no-reduce-store
+  - --tx-quota-per-signer=1
+  - --config=appsettings.configmap.json
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "120"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:157.245.68.243"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::1"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:172.70.126.138"
+  - name: IpRateLimiting__IpWhiteList__4
+    value: "::ffff:3.18.248.125"
+  - name: MultiAccountManaging__EnableManaging
+    value: "true"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
 worldBoss:
   enabled: true
+
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
 
 bridge:
   enabled: false
+
+bridgeService:
+  enabled: true
+
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-6feff0900c4d1fccf6f5157d6afef633a5a4e327"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
 
 testHeadless1:
   enabled: false
@@ -303,6 +383,11 @@ blockIntervalNotifier:
 patrolRewardService:
   enabled: true
 
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-27ad53400070096c0672707f52465be9b126869d"
+
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
 
@@ -321,3 +406,25 @@ acc:
 volumeRotator:
   enabled: false
   nodeSelectorValue: "heimdall-r7g_xl_2c"
+
+rudolfService:
+  enabled: true
+
+  config:
+    graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
+
+  db:
+    local: false
+
+  kms:
+    keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
+    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/heimdall-main-9c-rudolf-signer"
+
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+    - "sg-0343e5c4514681670"
