@@ -78,7 +78,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/liveness_probe.sh
+            - /bin/liveness_probe.sh {{ $.Values.global.validatorPath }}
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 30
