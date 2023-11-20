@@ -25,7 +25,7 @@ if [[ "$preloaded" = "true" ]]; then
     curl \
       -H 'Content-Type: application/json' \
       --data '{"query":"query{chainQuery{blockQuery{blocks(desc:true,limit:1){index}}}}"}' \
-      http://9c-main-validator-1.nine-chronicles.com/graphql \
+      $1/graphql \
     | jq -r '.data.chainQuery.blockQuery.blocks[0].index'
   )"
   echo $miner_tip
