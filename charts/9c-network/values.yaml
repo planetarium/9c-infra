@@ -7,6 +7,7 @@ clusterName: "9c-sample"
 logLevel: "debug"
 
 global:
+  validatorPath: "validator-5.9c-network.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
