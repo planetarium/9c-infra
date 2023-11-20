@@ -408,7 +408,7 @@ volumeRotator:
   nodeSelectorValue: "heimdall-r7g_xl_2c"
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
