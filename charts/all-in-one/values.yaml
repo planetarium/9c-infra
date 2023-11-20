@@ -575,6 +575,10 @@ volumeRotator:
 
 bridgeService:
   enabled: false
+
+  account:
+    type: "raw"
+
   serviceAccount:
     roleArn: ""
 
