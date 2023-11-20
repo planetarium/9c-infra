@@ -2,7 +2,7 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
-
+  validatorPath: "validator-5.9c-network.svc.cluster.local"
   appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
