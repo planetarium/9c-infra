@@ -5,20 +5,22 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  image:
+    repository: "longfin/9c-headless"
+    tag: "multiplanetary-2023111801"
+
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
   peerStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
 
   iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.nine-chronicles.com:3478"
 
   networkType: Main
   consensusType: pbft
@@ -32,7 +34,7 @@ externalSecret:
 snapshot:
   slackChannel: "9c-mainnet"
   image: "planetariumhq/ninechronicles-snapshot:git-545d119245326ba083a408c900f94039fe586c7f"
-  path: "main/partition"
+  path: "main/heimdall/partition"
 
   fullSnapshot:
     enabled: true
@@ -56,13 +58,16 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
-  count: 3
+  count: 1
   useTurnServer: false
 
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+
   hosts:
-  - "9c-main-tcp-seed-1.planetarium.dev"
-  - "9c-main-tcp-seed-2.planetarium.dev"
-  - "9c-main-tcp-seed-3.planetarium.dev"
+  - "heimdall-seed-1.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -72,8 +77,53 @@ seed:
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
 
+fullState:
+  enabled: true
+
+  loggingEnabled: true
+
+  useTurnServer: false
+
+  host: "heimdall-full-state.nine-chronicles.com"
+
+  extraArgs:
+  - --no-reduce-store
+  - --tx-quota-per-signer=1
+  - --config=appsettings.configmap.json
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "120"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:157.245.68.243"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::1"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:172.70.126.138"
+  - name: IpRateLimiting__IpWhiteList__4
+    value: "::ffff:3.18.248.125"
+  - name: MultiAccountManaging__EnableManaging
+    value: "true"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+
 validator:
-  count: 4
+  count: 1
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -101,15 +151,10 @@ validator:
   - --config=appsettings.configmap.json
 
   consensusSeedStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
-  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31235"
-  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31235"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
 
   hosts:
-  - "9c-main-validator-5.nine-chronicles.com"
-  - "9c-main-validator-6.nine-chronicles.com"
-  - "9c-main-validator-7.nine-chronicles.com"
-  - "9c-main-validator-8.nine-chronicles.com"
+  - "heimdall-validator-1.nine-chronicles.com"
 
   tolerations:
   - effect: NoSchedule
@@ -118,24 +163,15 @@ validator:
     value: validator-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_validator
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
 
 remoteHeadless:
-  count: 3
+  count: 1
 
   useTurnServer: false
 
   hosts:
-  - "9c-main-rpc-1.nine-chronicles.com"
-  - "9c-main-rpc-2.nine-chronicles.com"
-  - "9c-main-rpc-3.nine-chronicles.com"
-  - "9c-main-rpc-4.nine-chronicles.com"
-  - "9c-main-rpc-5.nine-chronicles.com"
-  - "9c-main-rpc-6.nine-chronicles.com"
-  - "9c-main-rpc-7.nine-chronicles.com"
-  - "9c-main-rpc-8.nine-chronicles.com"
-  - "9c-main-rpc-9.nine-chronicles.com"
-  - "9c-main-rpc-10.nine-chronicles.com"
+  - "heimdall-rpc-1.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -162,7 +198,7 @@ remoteHeadless:
   - --config=appsettings.configmap.json
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
   tolerations:
   - effect: NoSchedule
@@ -177,8 +213,13 @@ dataProvider:
   rwMode: true
   render: true
 
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    tag: "git-467fbf565d67f08552ee69ca8ce157e8b2656839"
+
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
+    eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
   resources:
     requests:
@@ -199,11 +240,17 @@ explorer:
 marketService:
   enabled: true
   rwMode: true
+
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
+
   env:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: 9c-main-full-state.nine-chronicles.com
+    value: heimdall-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -215,7 +262,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: 9c-main-full-state.nine-chronicles.com
+    value: heimdall-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -227,7 +274,7 @@ marketService:
     read:
       node.kubernetes.io/instance-type: m5.large
     write:
-      eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
+      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
 fullState:
   enabled: true
@@ -236,7 +283,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "9c-main-full-state.nine-chronicles.com"
+  host: "heimdall-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
@@ -277,112 +324,69 @@ fullState:
 worldBoss:
   enabled: true
 
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
+
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
 
 bridge:
-  enabled: true
-  bridgeObserverImage:
-    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
-  bridgeStatusBotImage:
-    tag: "20210913-01"
+  enabled: false
+
+bridgeService:
+  enabled: false
+
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-6feff0900c4d1fccf6f5157d6afef633a5a4e327"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    node.kubernetes.io/instance-type: m5d.xlarge
 
 testHeadless1:
-  enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
-
-  loggingEnabled: true
-
-  host: "9c-main-test-1.nine-chronicles.com"
-
-  env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-  - --config=appsettings.configmap.json
-
-  tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+  enabled: false
 
 testHeadless2:
-  enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
-
-  loggingEnabled: true
-
-  env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  host: "9c-main-test-2.nine-chronicles.com"
-
-  resources:
-    requests:
-      cpu: 2
-      memory: 20Gi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r6g_xl_2c
+  enabled: false
 
 emptyChronicle:
-  enabled: true
+  enabled: false
 
 remoteActionEvaluatorHeadless:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
   useTurnServer: true
 
-  host: "9c-main-remote-aev-test.nine-chronicles.com"
+  host: "heimdall-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
 
 blockIntervalNotifier:
-  enabled: true
-  group: odin-validator
+  enabled: false
+  group: heimdall-validator
 
 patrolRewardService:
   enabled: true
+
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-27ad53400070096c0672707f52465be9b126869d"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
@@ -397,8 +401,30 @@ acc:
       node.kubernetes.io/instance-type: m5.large
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-t3_medium
+    eks.amazonaws.com/nodegroup: general-t3_medium
 
 volumeRotator:
+  enabled: false
+  nodeSelectorValue: "heimdall-r7g_xl_2c"
+
+rudolfService:
   enabled: true
-  nodeSelectorValue: "9c-main-r7g_xl_2c"
+
+  config:
+    graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
+
+  db:
+    local: false
+
+  kms:
+    keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
+    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/heimdall-main-9c-rudolf-signer"
+
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0c865006315f5b9f0"
+    - "sg-0343e5c4514681670"
