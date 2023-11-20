@@ -2,6 +2,7 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
+  validatorPath: "validator-5.idun.svc.cluster.local"
   image:
     repository: "planetariumhq/ninechronicles-headless"
     tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
