@@ -47,7 +47,7 @@ spec:
             value: {{ $.Values.bridgeService.notification.slack.bot.username }}
           - name: SLACK__CHANNEL
             value: {{ $.Values.bridgeService.notification.slack.channel }}
-          {{- if or $.Values.bridgeService.account.type (eq $.Values.bridgeService.account.type "raw") }}
+          {{- if eq $.Values.bridgeService.account.type "raw" }}
           - name: NC_UPSTREAM_ACCOUNT_TYPE
             value: "RAW"
           - name: NC_UPSTREAM_PRIVATE_KEY
