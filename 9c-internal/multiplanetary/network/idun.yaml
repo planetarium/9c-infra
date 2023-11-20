@@ -22,6 +22,11 @@ externalSecret:
 bridgeService:
   enabled: true
 
+  multiplanetary:
+    registryEndpoint: "https://planets-internal.nine-chronicles.com/planets/"
+    upstream: "0x100000000000"
+    downstream: "0x100000000002"
+
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
 
@@ -30,6 +35,12 @@ bridgeService:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge Test (Odin ↔ Idun)"
+      channel: "9c-relay-bridge-bot-tmp-test"
 
 dataProvider:
   enabled: true
