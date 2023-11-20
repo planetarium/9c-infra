@@ -27,6 +27,7 @@ global:
 
 externalSecret:
   enabled: true
+  prefix: "9c-main-v2/heimdall"
 
 snapshot:
   slackChannel: "9c-mainnet"
