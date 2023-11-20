@@ -5,9 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: "longfin/9c-headless"
-    tag: "multiplanetary-2023111801"
 
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
@@ -123,6 +120,9 @@ fullState:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
 validator:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
   count: 1
 
   env:
@@ -166,6 +166,9 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
 
 remoteHeadless:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
   count: 3
 
   useTurnServer: false
@@ -211,6 +214,9 @@ remoteHeadless:
   loggingEnabled: true
 
 dataProvider:
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: "git-13b985657a2f6491bb87a62a540006808fea26b7"
   enabled: true
   rwMode: true
   render: true
@@ -279,6 +285,9 @@ marketService:
       eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
 fullState:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
   enabled: true
 
   loggingEnabled: true
