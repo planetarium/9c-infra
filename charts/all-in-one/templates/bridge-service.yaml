@@ -35,9 +35,9 @@ spec:
           - name: NC_REGISTRY_ENDPOINT
             value: {{ $.Values.bridgeService.multiplanetary.registryEndpoint }}
           - name: NC_UPSTREAM_PLANET
-            value: {{ $.Values.bridgeService.multiplanetary.upstream }}
+            value: {{ quote $.Values.bridgeService.multiplanetary.upstream }}
           - name: NC_DOWNSTREAM_PLANET
-            value: {{ $.Values.bridgeService.multiplanetary.downstream }}
+            value: {{ quote $.Values.bridgeService.multiplanetary.downstream }}
           - name: SLACK__BOT_TOKEN
             valueFrom:
               secretKeyRef:
