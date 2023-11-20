@@ -336,7 +336,7 @@ bridge:
   enabled: false
 
 bridgeService:
-  enabled: true
+  enabled: false
 
   image:
     repository: planetariumhq/9c-bridge
