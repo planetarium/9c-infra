@@ -13,14 +13,14 @@ global:
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
   peerStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-tcp-seed-1.planetarium.dev,31234"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
 
   iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.nine-chronicles.com:3478"
 
   networkType: Main
   consensusType: pbft
@@ -67,7 +67,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "heimdall-tcp-seed-1.planetarium.dev"
+  - "heimdall-seed-1.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -84,7 +84,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "heimdall-main-full-state.nine-chronicles.com"
+  host: "heimdall-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
@@ -151,7 +151,7 @@ validator:
   - --config=appsettings.configmap.json
 
   consensusSeedStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-tcp-seed-1.planetarium.dev,31235"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
 
   hosts:
   - "heimdall-validator-1.nine-chronicles.com"
@@ -250,7 +250,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-main-full-state.nine-chronicles.com
+    value: heimdall-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -262,7 +262,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-main-full-state.nine-chronicles.com
+    value: heimdall-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -283,7 +283,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "heimdall-main-full-state.nine-chronicles.com"
+  host: "heimdall-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
