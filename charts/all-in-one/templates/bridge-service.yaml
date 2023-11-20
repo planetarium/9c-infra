@@ -32,16 +32,52 @@ spec:
     spec:
       containers:
         - env:
-          - name: NC_UPSTREAM_GQL_ENDPOINT
+          - name: NC_REGISTRY_ENDPOINT
+            value: {{ $.Values.bridgeService.multiplanetary.registryEndpoint }}
+          - name: NC_UPSTREAM_PLANET
+            value: {{ $.Values.bridgeService.multiplanetary.upstream }}
+          - name: NC_DOWNSTREAM_PLANET
+            value: {{ $.Values.bridgeService.multiplanetary.downstream }}
+          - name: SLACK__BOT_TOKEN
             valueFrom:
               secretKeyRef:
-                key: NC_UPSTREAM_GQL_ENDPOINT
+                key: SLACK__BOT_TOKEN
                 name: bridge-env
-          - name: NC_DOWNSTREAM_GQL_ENDPOINT
+          - name: SLACK__BOT_USERNAME
+            value: {{ $.Values.bridgeService.notification.slack.bot.username }}
+          - name: SLACK__CHANNEL
+            value: {{ $.Values.bridgeService.notification.slack.channel }}
+          {{- if or $.Values.bridgeService.account.type (eq $.Values.bridgeService.account.type "raw") }}
+          - name: NC_UPSTREAM_ACCOUNT_TYPE
+            value: "RAW"
+          - name: NC_UPSTREAM_PRIVATE_KEY
             valueFrom:
               secretKeyRef:
-                key: NC_DOWNSTREAM_GQL_ENDPOINT
+                key: NC_UPSTREAM_PRIVATE_KEY
                 name: bridge-env
+          - name: NC_DOWNSTREAM_ACCOUNT_TYPE
+            value: "RAW"
+          - name: NC_DOWNSTREAM_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: NC_DOWNSTREAM_PRIVATE_KEY
+                name: bridge-env
+          {{- else if eq $.Values.bridgeService.account.type "kms" }}
+          - name: NC_UPSTREAM_ACCOUNT_TYPE
+            value: "KMS"
+          - name: NC_UPSTREAM__KMS__KEY_ID
+            value: {{ $.Values.bridgeService.account.keyId }}
+          - name: NC_UPSTREAM__KMS__PUBLIC_KEY
+            value: {{ $.Values.bridgeService.account.publicKey }}
+          - name: NC_DOWNSTREAM_ACCOUNT_TYPE
+            value: "KMS"
+          - name: NC_DOWNSTREAM__KMS__KEY_ID
+            value: {{ $.Values.bridgeService.account.keyId }}
+          - name: NC_DOWNSTREAM__KMS__PUBLIC_KEY
+            value: {{ $.Values.bridgeService.account.publicKey }}
+          {{- else }}
+          {{- fail "bridgeService.account.type must be either raw or kms" }}
+          {{- end }}
           - name: MONITOR_STATE_STORE_PATH
             valueFrom:
               secretKeyRef:
@@ -56,16 +92,6 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: NC_VAULT_AVATAR_ADDRESS
-                name: bridge-env
-          - name: NC_UPSTREAM_PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                key: NC_UPSTREAM_PRIVATE_KEY
-                name: bridge-env
-          - name: NC_DOWNSTREAM_PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                key: NC_DOWNSTREAM_PRIVATE_KEY
                 name: bridge-env
           image: {{ $.Values.bridgeService.image.repository }}:{{ $.Values.bridgeService.image.tag }}
           name: bridge-service
