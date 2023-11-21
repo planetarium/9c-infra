@@ -104,6 +104,7 @@ spec:
     app: data-provider-write
   type: LoadBalancer
 
+{{ if eq $.Values.dataProvider.disableReadMode "false" }}
 ---
 
 apiVersion: v1
@@ -127,6 +128,7 @@ spec:
     app: data-provider-read
   type: LoadBalancer
 
+{{ end }}
 {{ else }}
 ---
 
