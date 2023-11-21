@@ -139,8 +139,12 @@ def update_image_tag(contents: str, *, manifest_key: str, repo_to_change: str, t
         if isinstance(data, dict):
             for key, value in data.items():
                 if key == manifest_key:
-                    data[manifest_key]["image"]["repository"] = repo_to_change
-                    data[manifest_key]["image"]["tag"] = tag_to_change
+                    if data[manifest_key].get("image"):
+                        data[manifest_key]["image"]["repository"] = repo_to_change
+                        data[manifest_key]["image"]["tag"] = tag_to_change
+                    else:
+                        d = dict(repository=repo_to_change, tag=tag_to_change)
+                        data[manifest_key].insert(1, "image", d)
                 else:
                     update_tag_recursively(value)
         elif isinstance(data, list):
