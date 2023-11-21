@@ -359,9 +359,6 @@ bridgeService:
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
 
-  db:
-    local: false
-
 testHeadless1:
   enabled: false
 

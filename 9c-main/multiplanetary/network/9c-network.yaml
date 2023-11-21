@@ -289,8 +289,6 @@ bridge:
     tag: "20210913-01"
   nodeSelector:
     node.kubernetes.io/instance-type: m5.large
-  db:
-    local: false
 
 testHeadless1:
   enabled: true
