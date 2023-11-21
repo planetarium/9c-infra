@@ -758,6 +758,7 @@ spec:
   selector:
     app: rudolf-db
   type: ClusterIP
+---
 {{ end }}
 
 {{ if .Values.bridgeService.db.local }}
@@ -770,10 +771,11 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   ports:
-    - name: "5432"
+    - name: "postgres"
       port: 5432
       targetPort: 5432
   selector:
     app: bridge-service-db
   type: ClusterIP
+---
 {{ end }}

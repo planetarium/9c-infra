@@ -1,4 +1,4 @@
-{{ if .Values.bridge.db.local }}
+{{ if .Values.bridgeService.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
