@@ -98,7 +98,7 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --consensus-target-block-interval=7000
+  - --consensus-target-block-interval=5500
   - --config=appsettings.configmap.json
 
   consensusSeedStrings:
