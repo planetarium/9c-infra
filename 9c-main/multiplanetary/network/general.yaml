@@ -64,3 +64,7 @@ explorer:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
+
+rudolfService:
+  image:
+    tag: "git-b2eec60aa0771222103f8598a3aaaf6ed5c36102"
