@@ -336,6 +336,11 @@ bridge:
 bridgeService:
   enabled: false
 
+  multiplanetary:
+    registryEndpoint: "https://planets.nine-chronicles.com/planets/"
+    upstream: "0x000000000000"
+    downstream: "0x000000000001"
+
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
 
@@ -344,6 +349,17 @@ bridgeService:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+
+  account:
+    type: "kms"
+    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
+    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge (Odin ↔ Heimdall)"
+      channel: "9c-relay-bridge-bot"
 
 testHeadless1:
   enabled: false

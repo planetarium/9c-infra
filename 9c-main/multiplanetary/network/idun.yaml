@@ -336,6 +336,11 @@ bridge:
 bridgeService:
   enabled: false
 
+  multiplanetary:
+    registryEndpoint: "https://planets.nine-chronicles.com/planets/"
+    upstream: "0x000000000000"
+    downstream: "0x000000000002"
+
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
 
@@ -344,6 +349,17 @@ bridgeService:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: idun-m5_l_2c
+
+  account:
+    type: "kms"
+    keyId: "722200cf-4f40-44e9-b227-9b82977a8ca2"
+    publicKey: "042dac446982ff1320be59fd516c128bbfb9b87c9ed71a30b7d3d6ea550fe912198a909558ae5ff132bc66199ed057922b3d76fdce18db1ed96af44e9969fe8846"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge (Odin ↔ Idun)"
+      channel: "9c-relay-bridge-bot"
 
 testHeadless1:
   enabled: false
