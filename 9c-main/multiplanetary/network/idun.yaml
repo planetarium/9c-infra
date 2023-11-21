@@ -30,7 +30,7 @@ global:
   rollbackSnapshot: false
 
 externalSecret:
-  enabled: true
+  enabled: false
   prefix: "9c-main-v2/idun"
 
 snapshot:
@@ -39,14 +39,14 @@ snapshot:
   path: "main/idun/partition"
 
   fullSnapshot:
-    enabled: true
+    enabled: false
     suspend: false
 
   partitionReset:
-    enabled: true
+    enabled: false
 
   partition:
-    enabled: true
+    enabled: false
 
   resources:
     requests:
@@ -60,24 +60,24 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
-  count: 1
+  count: 0
   useTurnServer: false
 
   hosts:
   - "idun-seed-1.nine-chronicles.com"
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   # dotnet args
-  workerCount: 1000
+  workerCount: 0000
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 fullState:
-  enabled: true
+  enabled: false
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   useTurnServer: false
 
@@ -120,7 +120,7 @@ fullState:
     eks.amazonaws.com/nodegroup: idun-m7g_2xl_2c_test
 
 validator:
-  count: 1
+  count: 0
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -140,7 +140,7 @@ validator:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -163,7 +163,7 @@ validator:
     eks.amazonaws.com/nodegroup: idun-m7g_2xl_2c_validator
 
 remoteHeadless:
-  count: 3
+  count: 0
 
   useTurnServer: false
 
@@ -205,10 +205,10 @@ remoteHeadless:
     operator: Equal
     value: remote-headless-test
 
-  loggingEnabled: true
+  loggingEnabled: false
 
 dataProvider:
-  enabled: true
+  enabled: false
   rwMode: true
   render: true
 
@@ -227,7 +227,7 @@ dataProvider:
 explorer:
   enabled: false
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -236,7 +236,7 @@ explorer:
     eks.amazonaws.com/nodegroup: idun-r7g_xl_2c
 
 marketService:
-  enabled: true
+  enabled: false
   rwMode: true
 
   image:
@@ -275,9 +275,9 @@ marketService:
       eks.amazonaws.com/nodegroup: idun-m7g_xl_2c
 
 fullState:
-  enabled: true
+  enabled: false
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   useTurnServer: false
 
@@ -320,7 +320,7 @@ fullState:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
 worldBoss:
-  enabled: true
+  enabled: false
 
   image:
     repository: planetariumhq/world-boss-service
@@ -362,7 +362,7 @@ emptyChronicle:
 remoteActionEvaluatorHeadless:
   enabled: false
 
-  loggingEnabled: true
+  loggingEnabled: false
 
   useTurnServer: true
 
@@ -379,7 +379,7 @@ blockIntervalNotifier:
   group: idun-validator
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   image:
     repository: planetariumhq/patrol-reward-service
@@ -390,7 +390,7 @@ patrolRewardService:
     eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
     port: 6379
@@ -422,7 +422,7 @@ rudolfService:
     roleArn: "arn:aws:iam::319679068466:role/idun-main-9c-rudolf-signer"
 
   service:
-    enabled: true
+    enabled: false
     securityGroupIds:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
