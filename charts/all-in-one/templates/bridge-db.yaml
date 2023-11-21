@@ -1,0 +1,61 @@
+{{ if .Values.bridge.db.local }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: bridge-service-db
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: bridge-service-db
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge-service-db
+  serviceName: bridge-service-db
+  template:
+    metadata:
+      labels:
+        app: bridge-service-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: bridge-service
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: bridge-service
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: bridge-service
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: bridge-service-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: bridge-service-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: bridge-service-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.bridgeService.db.size }}
+        storageClassName: {{ $.Release.Name }}-gp3
+        volumeMode: Filesystem
+{{ end }}
