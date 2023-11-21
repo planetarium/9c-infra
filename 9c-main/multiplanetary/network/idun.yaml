@@ -409,20 +409,20 @@ rudolfService:
   enabled: false
 
   config:
-    graphqlEndpoint: "http://idun-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://idun-rpc-1.nine-chronicles.com/graphql"
 
   db:
     local: false
 
   kms:
-    keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
-    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+    keyId: "b9ff8478-a8fe-44af-bf4d-a450978cbb50"
+    publicKey: "04ed8adebec625e464f8fff1f81ae84aa70117d73608ce48522372e7a08176ed672eaf9a9bfbae7ee7d782ebb601354b8f14d07e7f9d3ab7b164d2bb15ca95f1d6"
 
   serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/idun-main-9c-rudolf-signer"
+    roleArn: "arn:aws:iam::319679068466:role/idun-mainnet-9c-rudolf-signer"
 
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0c865006315f5b9f0"
-    - "sg-0343e5c4514681670"
+    - "sg-0f0bf654f2ff02289"
+    - "sg-033602a010bce902e"

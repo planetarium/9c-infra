@@ -409,7 +409,7 @@ rudolfService:
   enabled: true
 
   config:
-    graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://heimdall-rpc-1.nine-chronicles.com/graphql"
 
   db:
     local: false
@@ -417,7 +417,7 @@ rudolfService:
 
   kms:
     keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
-    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
+    publicKey: "0441319181d5e47bce52402f46502dacf5ba63ee7e3f81271c2e266e3086c31a5e56d999857f69b9db132810f69ede7cc2b3e832ff61759ce101e2e5d86c702938"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/heimdall-main-9c-rudolf-signer"
