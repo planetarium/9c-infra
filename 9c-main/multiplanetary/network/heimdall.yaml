@@ -221,7 +221,6 @@ dataProvider:
   enabled: true
   rwMode: true
   render: true
-  disableReadMode: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
