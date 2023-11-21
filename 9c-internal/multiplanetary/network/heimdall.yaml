@@ -206,7 +206,7 @@ worldBoss:
     node.kubernetes.io/instance-type: m5d.xlarge
 
 testHeadless1:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
