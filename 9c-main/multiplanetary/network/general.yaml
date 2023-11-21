@@ -48,3 +48,9 @@ emptyChronicle:
 rudolfService:
   image:
     tag: "git-b2eec60aa0771222103f8598a3aaaf6ed5c36102"
+
+bridgeService:
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-6feff0900c4d1fccf6f5157d6afef633a5a4e327"

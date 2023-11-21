@@ -336,11 +336,6 @@ bridge:
 bridgeService:
   enabled: false
 
-  image:
-    repository: planetariumhq/9c-bridge
-    pullPolicy: Always
-    tag: "git-6feff0900c4d1fccf6f5157d6afef633a5a4e327"
-
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
 
