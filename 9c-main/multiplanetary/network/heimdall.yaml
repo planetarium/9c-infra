@@ -381,6 +381,11 @@ blockIntervalNotifier:
 patrolRewardService:
   enabled: true
 
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: "git-27ad53400070096c0672707f52465be9b126869d"
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
@@ -402,11 +407,6 @@ volumeRotator:
 
 rudolfService:
   enabled: true
-
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-27ad53400070096c0672707f52465be9b126869d"
 
   config:
     graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
