@@ -210,7 +210,7 @@ testHeadless1:
     tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
 
   hosts:
-    - "test-headless-1"
+    - "heimdall-internal-test-1.nine-chronicles.com"
 
   ports:
     headless: 31234
