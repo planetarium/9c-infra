@@ -336,7 +336,7 @@ bridge:
   enabled: false
 
 bridgeService:
-  enabled: false
+  enabled: true
 
   multiplanetary:
     registryEndpoint: "https://planets.nine-chronicles.com/planets/"
@@ -419,7 +419,7 @@ volumeRotator:
   nodeSelectorValue: "heimdall-r7g_xl_2c"
 
 rudolfService:
-  enabled: false
+  enabled: true
 
   config:
     graphqlEndpoint: "https://heimdall-rpc-1.nine-chronicles.com/graphql"
