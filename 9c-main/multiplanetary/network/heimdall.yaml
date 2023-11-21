@@ -336,7 +336,7 @@ bridge:
   enabled: false
 
 bridgeService:
-  enabled: false
+  enabled: true
 
   multiplanetary:
     registryEndpoint: "https://planets.nine-chronicles.com/planets/"
