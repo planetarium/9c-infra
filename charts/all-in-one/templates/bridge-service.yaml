@@ -35,7 +35,7 @@ spec:
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
-                key: DATABASE_URL
+                key: database-url
                 name: bridge-env
           - name: NC_REGISTRY_ENDPOINT
             value: {{ $.Values.bridgeService.multiplanetary.registryEndpoint }}
