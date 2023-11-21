@@ -1,5 +1,4 @@
 {{ if $.Values.dataProvider.rwMode }}
-{{ if eq $.Values.dataProvider.disableReadMode "false" }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -156,7 +155,6 @@ spec:
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
-{{ end }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

@@ -190,7 +190,6 @@ dataProvider:
   rwMode: false
   render: true
   migrateDatabase: false
-  disableReadMode: true
 
   storage:
     data: 1000Gi
