@@ -94,7 +94,7 @@ spec:
                       group: odin-data-provider
                   - targets:
                     - data-provider-db.heimdall.svc.cluster.local:80
-                    - data-provider-read.9heimdall.svc.cluster.local:80
+                    - data-provider-read.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-data-provider
                   - targets:
