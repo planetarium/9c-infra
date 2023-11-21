@@ -38,6 +38,8 @@ spec:
                 secretKeyRef:
                   key: database-url
                   name: rudolf-service
+            - name: GENESIS_BLOCK_HASH
+              value: {{ quote .Values.rudolfService.config.genesisBlockHash }}
 {{- if .Values.rudolfService.config.ncgMinter }}
             - name: NCG_MINTER
               value: {{ .Values.rudolfService.config.ncgMinter }}
