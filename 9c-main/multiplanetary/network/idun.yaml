@@ -231,7 +231,7 @@ dataProvider:
       memory: 12Gi
 
 explorer:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
