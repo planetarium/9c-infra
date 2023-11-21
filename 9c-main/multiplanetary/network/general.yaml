@@ -41,29 +41,9 @@ remoteActionEvaluatorHeadless:
   image:
     tag: "41"
 
-validator:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-1834ac35817c75017cde0d3a775b095b024a578c"
-
-remoteHeadless:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-dd67824d1170c056b57858f9823f71ff40cbd491"
-
 emptyChronicle:
   image:
     tag: "git-7bef02eb0105de7c14741e45282c63c7b40c70fb"
-
-fullState:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-dd67824d1170c056b57858f9823f71ff40cbd491"
-
-explorer:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
 
 rudolfService:
   image:
