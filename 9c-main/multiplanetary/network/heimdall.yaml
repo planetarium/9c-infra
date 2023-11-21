@@ -415,7 +415,7 @@ volumeRotator:
   nodeSelectorValue: "heimdall-r7g_xl_2c"
 
 rudolfService:
-  enabled: false
+  enabled: true
 
   config:
     graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
@@ -433,5 +433,5 @@ rudolfService:
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0c865006315f5b9f0"
-    - "sg-0343e5c4514681670"
+    - "sg-0cff626aa3a3ad37e"
+    - "sg-0ea768254602fd0c0"
