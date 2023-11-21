@@ -403,3 +403,26 @@ acc:
 volumeRotator:
   enabled: true
   nodeSelectorValue: "9c-main-r7g_xl_2c"
+
+rudolfService:
+  enabled: true
+
+  config:
+    graphqlEndpoint: "http://9c-main-rpc-1.nine-chronicles.com/graphql"
+  
+  db:
+    local: false
+    securityGroupId: "sg-0fd42d699fe71759f"
+
+  kms:
+    keyId: "edebbede-fbc9-4200-bb64-8c040a3c2f75"
+    publicKey: "0480999c83c0d11635de058df9c573afb12d6af377078bc83913fdcf66f44f2df0454491aa304f6ef0529386ae42117b1712a697bb552f6f296cea11f6df1ade2b"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/odin-mainnet-9c-rudolf-signer"
+
+  service:
+    enabled: true
+    securityGroupIds:
+    - "sg-0f0bf654f2ff02289"
+    - "sg-033602a010bce902e"
