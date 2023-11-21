@@ -58,14 +58,7 @@
               "required": ["size"]
             },
             "else": {
-              "description": "Enabled database with RDS connection.",
-              "properties": {
-                "securityGroupId": {
-                  "type": "string",
-                  "description": "SecurityGroup's id for RDS connection."
-                }
-              },
-              "required": ["securityGroupId"]
+              "description": "Enabled database with RDS connection."
             }
           },
           "service": {
