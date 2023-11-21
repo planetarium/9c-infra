@@ -44,6 +44,9 @@ bridgeService:
         username: "Relay Bridge Test (Odin ↔ Heimdall)"
       channel: "9c-relay-bridge-bot-tmp-test"
 
+  db:
+    local: true
+
 dataProvider:
   enabled: true
   rwMode: false
