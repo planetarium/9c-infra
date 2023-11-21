@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
+    tag: "72"
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
@@ -216,7 +216,7 @@ dataProvider:
 
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: "git-ea834c26b24bf66212f1acfb5d9940f564c7191e"
+    tag: "72"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
