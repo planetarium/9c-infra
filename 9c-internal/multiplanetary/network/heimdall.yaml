@@ -32,7 +32,12 @@ bridgeService:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
-  
+
+  account:
+    type: "kms"
+    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
+    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
+
   notification:
     slack:
       bot:
