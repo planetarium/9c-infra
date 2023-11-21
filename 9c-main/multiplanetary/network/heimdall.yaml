@@ -434,5 +434,5 @@ rudolfService:
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0cff626aa3a3ad37e"
-    - "sg-0ea768254602fd0c0"
+    - "sg-0f0bf654f2ff02289"
+    - "sg-033602a010bce902e"
