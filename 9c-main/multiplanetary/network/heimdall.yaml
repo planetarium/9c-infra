@@ -50,7 +50,7 @@ snapshot:
       memory: 20Gi
 
   nodeSelector:
-    node.kubernetes.io/instance-type: r6g.xlarge
+    eks.amazonaws.com/nodegroup: heimdall-r6g_xl_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -73,7 +73,7 @@ seed:
   workerCount: 1000
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 fullState:
   enabled: true
@@ -239,7 +239,7 @@ explorer:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    node.kubernetes.io/instance-type: r7g.xlarge
+    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
 
 marketService:
   enabled: true
@@ -276,7 +276,7 @@ marketService:
 
   nodeSelector:
     read:
-      node.kubernetes.io/instance-type: m5.large
+      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
     write:
       eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
@@ -337,7 +337,7 @@ worldBoss:
     tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 bridge:
   enabled: false
@@ -357,7 +357,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 testHeadless1:
   enabled: false
@@ -396,7 +396,7 @@ patrolRewardService:
     tag: "git-27ad53400070096c0672707f52465be9b126869d"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 acc:
   enabled: true
@@ -405,7 +405,7 @@ acc:
     port: 6379
 
     nodeSelector:
-      node.kubernetes.io/instance-type: m5.large
+      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-t3_medium
