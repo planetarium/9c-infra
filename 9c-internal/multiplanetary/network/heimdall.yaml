@@ -45,7 +45,7 @@ bridgeService:
       channel: "9c-relay-bridge-bot-tmp-test"
 
   db:
-    local: false
+    local: true
 
 dataProvider:
   enabled: true
