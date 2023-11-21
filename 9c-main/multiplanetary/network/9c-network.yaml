@@ -408,7 +408,7 @@ rudolfService:
   enabled: true
 
   config:
-    graphqlEndpoint: "http://9c-main-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "http://9c-main-full-state.nine-chronicles.com/graphql"
   
   db:
     local: false
