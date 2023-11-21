@@ -112,9 +112,9 @@ node_groups = {
     instance_types    = ["r7g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
-    desired_size      = 1
+    desired_size      = 4
     min_size          = 0
-    max_size          = 2
+    max_size          = 10
     ami_type          = "AL2_ARM_64"
   }
 
@@ -160,14 +160,65 @@ node_groups = {
     }]
   }
 
-  "heimdall-r6g_xl_2c" = {
-    instance_types    = ["r6g.xlarge"]
+  "idun-m5_l_2c" = {
+    instance_types    = ["m5.large"]
     availability_zone = "us-east-2c"
     capacity_type     = "ON_DEMAND"
     desired_size      = 3
     min_size          = 0
-    max_size          = 20
+    max_size          = 12
+  }
+
+  "idun-r7g_xl_2c" = {
+    instance_types    = ["r7g.xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 4
+    min_size          = 0
+    max_size          = 10
     ami_type          = "AL2_ARM_64"
+  }
+
+  "idun-m7g_xl_2c" = {
+    instance_types    = ["m7g.xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 1
+    min_size          = 0
+    max_size          = 6
+    ami_type          = "AL2_ARM_64"
+  }
+
+  "idun-m7g_2xl_2c_test" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 4
+    min_size          = 4
+    max_size          = 15
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "remote-headless-test"
+      effect = "NO_SCHEDULE"
+    }]
+  }
+
+  "idun-m7g_2xl_2c_validator" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 1
+    min_size          = 1
+    max_size          = 6
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "validator-test"
+      effect = "NO_SCHEDULE"
+    }]
   }
 
   "general-t3_medium" = {

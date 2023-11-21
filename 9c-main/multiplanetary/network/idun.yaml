@@ -5,12 +5,12 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  validatorPath: "validator-5.heimdall.svc.cluster.local"
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  validatorPath: "validator-5.idun.svc.cluster.local"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000002/genesis"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
   peerStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,idun-seed-1.nine-chronicles.com,31234"
 
   iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
@@ -27,12 +27,12 @@ global:
 
 externalSecret:
   enabled: true
-  prefix: "9c-main-v2/heimdall"
+  prefix: "9c-main-v2/idun"
 
 snapshot:
   slackChannel: "9c-mainnet"
   image: "planetariumhq/ninechronicles-snapshot:git-545d119245326ba083a408c900f94039fe586c7f"
-  path: "main/heimdall/partition"
+  path: "main/idun/partition"
 
   fullSnapshot:
     enabled: true
@@ -50,7 +50,7 @@ snapshot:
       memory: 20Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: idun-r7g_xl_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -65,7 +65,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "heimdall-seed-1.nine-chronicles.com"
+  - "idun-seed-1.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -73,7 +73,7 @@ seed:
   workerCount: 1000
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 fullState:
   enabled: true
@@ -82,7 +82,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "heimdall-full-state.nine-chronicles.com"
+  host: "idun-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
@@ -118,7 +118,7 @@ fullState:
     value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: idun-m7g_2xl_2c_test
 
 validator:
   image:
@@ -152,10 +152,10 @@ validator:
   - --config=appsettings.configmap.json
 
   consensusSeedStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,idun-seed-1.nine-chronicles.com,31235"
 
   hosts:
-  - "heimdall-validator-1.nine-chronicles.com"
+  - "idun-validator-1.nine-chronicles.com"
 
   tolerations:
   - effect: NoSchedule
@@ -164,7 +164,7 @@ validator:
     value: validator-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
+    eks.amazonaws.com/nodegroup: idun-m7g_2xl_2c_validator
 
 remoteHeadless:
   image:
@@ -175,9 +175,9 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-  - "heimdall-rpc-1.nine-chronicles.com"
-  - "heimdall-rpc-2.nine-chronicles.com"
-  - "heimdall-rpc-3.nine-chronicles.com"
+  - "idun-rpc-1.nine-chronicles.com"
+  - "idun-rpc-2.nine-chronicles.com"
+  - "idun-rpc-3.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -204,7 +204,7 @@ remoteHeadless:
   - --config=appsettings.configmap.json
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: idun-m7g_2xl_2c_test
 
   tolerations:
   - effect: NoSchedule
@@ -223,7 +223,7 @@ dataProvider:
   render: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
+    eks.amazonaws.com/nodegroup: idun-m7g_xl_2c
 
   resources:
     requests:
@@ -239,7 +239,7 @@ explorer:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: idun-r7g_xl_2c
 
 marketService:
   enabled: true
@@ -254,7 +254,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-full-state.nine-chronicles.com
+    value: idun-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -266,7 +266,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-full-state.nine-chronicles.com
+    value: idun-full-state.nine-chronicles.com
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -276,9 +276,9 @@ marketService:
 
   nodeSelector:
     read:
-      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+      eks.amazonaws.com/nodegroup: idun-m5_l_2c
     write:
-      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
+      eks.amazonaws.com/nodegroup: idun-m7g_xl_2c
 
 fullState:
   image:
@@ -290,7 +290,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "heimdall-full-state.nine-chronicles.com"
+  host: "idun-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
@@ -337,7 +337,7 @@ worldBoss:
     tag: "git-47519fb4623a6aac808dd24e3947c4b321df923c"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 bridge:
   enabled: false
@@ -357,7 +357,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 testHeadless1:
   enabled: false
@@ -375,17 +375,17 @@ remoteActionEvaluatorHeadless:
 
   useTurnServer: true
 
-  host: "heimdall-main-remote-aev-test.nine-chronicles.com"
+  host: "idun-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: idun-r7g_xl_2c
 
 blockIntervalNotifier:
   enabled: false
-  group: heimdall-validator
+  group: idun-validator
 
 patrolRewardService:
   enabled: true
@@ -396,7 +396,7 @@ patrolRewardService:
     tag: "git-27ad53400070096c0672707f52465be9b126869d"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
 acc:
   enabled: true
@@ -405,34 +405,33 @@ acc:
     port: 6379
 
     nodeSelector:
-      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+      eks.amazonaws.com/nodegroup: idun-m5_l_2c
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-t3_medium
 
 volumeRotator:
   enabled: false
-  nodeSelectorValue: "heimdall-r7g_xl_2c"
+  nodeSelectorValue: "idun-r7g_xl_2c"
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
-    graphqlEndpoint: "http://heimdall-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "http://idun-rpc-1.nine-chronicles.com/graphql"
 
   db:
     local: false
-    securityGroupId: "sg-0fd42d699fe71759f"
 
   kms:
     keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
     publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
 
   serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/heimdall-main-9c-rudolf-signer"
+    roleArn: "arn:aws:iam::319679068466:role/idun-main-9c-rudolf-signer"
 
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0cff626aa3a3ad37e"
-    - "sg-0ea768254602fd0c0"
+    - "sg-0c865006315f5b9f0"
+    - "sg-0343e5c4514681670"
