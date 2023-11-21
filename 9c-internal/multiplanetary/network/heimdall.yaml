@@ -3,10 +3,13 @@ logLevel: "debug"
 
 global:
   validatorPath: "validator-5.heimdall.svc.cluster.local"
+  image:
+    image:
+      repository: planetariumhq/ninechronicles-headless
+      tag: '70'
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
-  
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
@@ -46,6 +49,10 @@ bridgeService:
 
 dataProvider:
   enabled: true
+  image:
+    image:
+      repository: planetariumhq/ninechronicles-dataprovider
+      tag: '70'
   rwMode: false
   render: true
   migrateDatabase: false
@@ -160,7 +167,7 @@ snapshot:
     requests:
       cpu: 1300m
       memory: 10Gi
-      
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
@@ -211,7 +218,7 @@ testHeadless1:
     tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b"
 
   hosts:
-    - "heimdall-internal-test-1.nine-chronicles.com"
+  - "heimdall-internal-test-1.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -232,4 +239,4 @@ testHeadless1:
   loggingEnabled: true
 
   extraArgs:
-    - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=1
