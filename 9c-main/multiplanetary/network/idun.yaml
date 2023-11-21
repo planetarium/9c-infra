@@ -221,6 +221,7 @@ dataProvider:
   enabled: true
   rwMode: true
   render: true
+  disableReadMode: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: idun-m7g_xl_2c
