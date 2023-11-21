@@ -42,9 +42,6 @@ bridgeService:
       bot:
         username: "Relay Bridge Test (Odin ↔ Idun)"
       channel: "9c-relay-bridge-bot-tmp-test"
-  
-  db:
-    local: true
 
 dataProvider:
   enabled: true

@@ -586,10 +586,6 @@ bridgeService:
     repository: ""
     tag: ""
 
-  db:
-    local: false
-    size: "10Gi"
-
   storage:
     size: "50Gi"
 
