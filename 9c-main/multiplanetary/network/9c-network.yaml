@@ -412,7 +412,6 @@ rudolfService:
   
   db:
     local: false
-    securityGroupId: "sg-0fd42d699fe71759f"
 
   kms:
     keyId: "edebbede-fbc9-4200-bb64-8c040a3c2f75"

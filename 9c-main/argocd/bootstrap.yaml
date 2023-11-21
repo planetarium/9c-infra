@@ -107,6 +107,19 @@ spec:
                       group: heimdall-explorer
                 tls_config:
                   insecure_skip_verify: true
+              - job_name: scrape-9c-rudolf
+                metrics_path: /metrics
+                scrape_interval: 5s
+                scrape_timeout: 4s
+                static_configs:
+                  - targets:
+                    - rudolf-service.9c-network.svc.cluster.local:3000
+                    - rudolf-service.heimdall.svc.cluster.local:3000
+                    - rudolf-service.idun.svc.cluster.local:3000
+                    labels:
+                      group: 9c-rudolf
+                tls_config:
+                  insecure_skip_verify: true
         loki:
           enabled: true
           bucketName: loki.planetariumhq.com
