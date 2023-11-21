@@ -109,7 +109,11 @@ spec:
         livenessProbe:
           exec:
             command:
+            {{- if eq $.Values.global.networkType "Main"  }}
             - /bin/liveness_probe.sh {{ $.Values.global.validatorPath }}
+            {{- else }}
+            - /bin/liveness_probe.sh
+            {{- end }}
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 30
