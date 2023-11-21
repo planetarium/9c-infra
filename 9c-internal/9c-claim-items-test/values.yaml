@@ -140,7 +140,7 @@ dataProvider:
       memory: 4Gi
 
 explorer:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
