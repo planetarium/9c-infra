@@ -37,7 +37,8 @@ data:
         rewrite name heimdall-rpc-6.nine-chronicles.com remote-headless-6.heimdall.svc.cluster.local
         rewrite name heimdall-rpc-7.nine-chronicles.com remote-headless-7.heimdall.svc.cluster.local
         rewrite name heimdall-rpc-8.nine-chronicles.com remote-headless-8.heimdall.svc.cluster.local
-        rewrite name heimdall-validator-5.nine-chronicles.com validator-5.heimdall.svc.cluster.local
+        rewrite name heimdall-full-state.nine-chronicles.com remote-headless-1.heimdall.svc.cluster.local
+        rewrite name heimdall-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local
         rewrite name heimdall-test-1.nine-chronicles.com test-headless-1.heimdall.svc.cluster.local
         {{- end }}
         prometheus :9153
