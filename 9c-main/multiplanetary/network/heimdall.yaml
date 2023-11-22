@@ -455,3 +455,9 @@ testHeadless1:
 
   extraArgs:
     - --tx-quota-per-signer=4
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
