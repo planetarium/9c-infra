@@ -292,10 +292,6 @@ bridge:
 
 testHeadless1:
   enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
 
   loggingEnabled: true
 
@@ -328,10 +324,6 @@ testHeadless1:
 
 testHeadless2:
   enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-28f4aafee9c8b126b3485f17ee7133232711c6a8"
 
   loggingEnabled: true
 

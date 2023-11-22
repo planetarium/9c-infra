@@ -18,7 +18,7 @@ dataProvider:
 worldBoss:
   image:
     repository: planetariumhq/world-boss-service
-    tag: "git-422222fe12d5e5860f23ab13581900c52e90b10a"
+    tag: "git-5b42810d461784104adbd83bc7dcddb6ce6880b0"
 
 marketService:
   image:
@@ -29,7 +29,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-b7552a8af15c3d4774c62ed6185c9fbb066aa4e6"
+    tag: "git-3200fd9844eb13a643c1ab57d05135dfe3945bdf"
 
 acc:
   image:
