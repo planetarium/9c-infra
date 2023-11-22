@@ -85,7 +85,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
   - --config=appsettings.configmap.json
 
   env:
@@ -124,7 +124,7 @@ validator:
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
+    value: "false"
   - name: IpRateLimiting__GeneralRules__2__Endpoint
     value: "*:/graphql"
   - name: IpRateLimiting__GeneralRules__2__Period
@@ -143,8 +143,8 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
-  - --consensus-target-block-interval=4500
+  - --tx-quota-per-signer=4
+  - --consensus-target-block-interval=3500
   - --config=appsettings.configmap.json
 
   consensusSeedStrings:
@@ -163,7 +163,7 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
 
 remoteHeadless:
-  count: 5
+  count: 8
 
   useTurnServer: false
 
@@ -173,6 +173,9 @@ remoteHeadless:
   - "heimdall-rpc-3.nine-chronicles.com"
   - "heimdall-rpc-4.nine-chronicles.com"
   - "heimdall-rpc-5.nine-chronicles.com"
+  - "heimdall-rpc-6.nine-chronicles.com"
+  - "heimdall-rpc-7.nine-chronicles.com"
+  - "heimdall-rpc-8.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -195,7 +198,7 @@ remoteHeadless:
     value: "::ffff:118.131.110.197"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
   - --config=appsettings.configmap.json
 
   nodeSelector:
@@ -228,7 +231,7 @@ explorer:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
@@ -278,7 +281,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
   - --config=appsettings.configmap.json
 
   env:
@@ -368,7 +371,7 @@ remoteActionEvaluatorHeadless:
   host: "heimdall-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=4
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
