@@ -5,6 +5,9 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
+  image:
+    repository: longfin/9c-headless
+    tag: "2023112201"
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
