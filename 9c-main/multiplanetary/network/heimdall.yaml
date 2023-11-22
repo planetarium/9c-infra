@@ -6,8 +6,8 @@ logLevel: "debug"
 
 global:
   image:
-    repository: longfin/9c-headless
-    tag: "2023112201"
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-ffc22fc4b53679423dd83a8aea8201e5aca5d8da"
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
