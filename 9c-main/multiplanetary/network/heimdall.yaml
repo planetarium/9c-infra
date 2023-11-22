@@ -217,6 +217,10 @@ dataProvider:
   rwMode: true
   render: true
 
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: 'git-a4757f8aaf15644f3f0c59db092ffcdbf92069a8'
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
