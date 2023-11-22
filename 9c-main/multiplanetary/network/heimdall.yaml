@@ -86,7 +86,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=4
-  - --config=appsettings.configmap.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -145,7 +144,6 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=4
   - --consensus-target-block-interval=3500
-  - --config=appsettings.configmap.json
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
@@ -199,7 +197,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=4
-  - --config=appsettings.configmap.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
@@ -286,7 +283,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=4
-  - --config=appsettings.configmap.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
