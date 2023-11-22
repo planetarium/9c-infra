@@ -29,7 +29,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-3200fd9844eb13a643c1ab57d05135dfe3945bdf"
+    tag: "git-157d42023b6774e8b46a5050f41d86058c24d09a"
 
 acc:
   image:
