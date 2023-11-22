@@ -6,8 +6,8 @@ logLevel: "debug"
 
 global:
   image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-ffc22fc4b53679423dd83a8aea8201e5aca5d8da"
+    repository: longfin/9c-headless
+    tag: "2023112201"
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
@@ -85,7 +85,8 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
+  - --config=appsettings.configmap.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -142,8 +143,9 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
   - --consensus-target-block-interval=4500
+  - --config=appsettings.configmap.json
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
@@ -193,7 +195,8 @@ remoteHeadless:
     value: "::ffff:118.131.110.197"
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
+  - --config=appsettings.configmap.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
@@ -225,7 +228,7 @@ explorer:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
@@ -275,7 +278,8 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
+  - --config=appsettings.configmap.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -364,7 +368,7 @@ remoteActionEvaluatorHeadless:
   host: "heimdall-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
