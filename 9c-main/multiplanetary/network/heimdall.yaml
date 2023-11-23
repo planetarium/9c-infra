@@ -349,7 +349,7 @@ bridgeService:
     publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
 
   txpool:
-    type: "headless"
+    type: "local"
 
   notification:
     slack:
