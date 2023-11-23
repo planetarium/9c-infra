@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-71d0cc5b47293ecbfe95a2ad62bda465957c56ab"
+    tag: "git-29c02b6a7dbec7e0c61c3980f71985a5d4bfe5a0"
 
   appProtocolVersion: "200110/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCEBSSeYaHr4+RmntCpLy+QL9kWohZygYNQyhsPvtNBJgIgSZqLJrl6qAwGelbcGY4RsbLRDFkbQaX6wusZ2xScHYY=/ZHU5OnRpbWVzdGFtcHUxMDoxNzAwNzExNTMxZQ=="
 
@@ -362,7 +362,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-71d0cc5b47293ecbfe95a2ad62bda465957c56ab"
+    tag: "git-29c02b6a7dbec7e0c61c3980f71985a5d4bfe5a0"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
