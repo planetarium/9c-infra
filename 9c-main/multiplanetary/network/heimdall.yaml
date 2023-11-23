@@ -353,7 +353,40 @@ bridgeService:
       channel: "9c-relay-bridge-bot"
 
 testHeadless1:
-  enabled: false
+  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    tag: "git-3bc6ab2d6d6a3bc9b709dfa12c409b93a43fa38c"
+
+  host: "heimdall-test-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 500Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+
+  loggingEnabled: true
+
+  extraArgs:
+    - --tx-quota-per-signer=4
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 testHeadless2:
   enabled: false
@@ -428,40 +461,3 @@ rudolfService:
     securityGroupIds:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"
-
-testHeadless1:
-  enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-3bc6ab2d6d6a3bc9b709dfa12c409b93a43fa38c"
-
-  hosts:
-    - "heimdall-test-1.nine-chronicles.com"
-
-  ports:
-    headless: 31234
-    graphql: 80
-    rpc: 31238
-
-  storage:
-    data: 500Gi
-
-  resources:
-    requests:
-      cpu: 1
-      memory: 12Gi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
-
-  loggingEnabled: true
-
-  extraArgs:
-    - --tx-quota-per-signer=4
-
-  tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
