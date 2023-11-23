@@ -299,6 +299,10 @@ bridge:
 testHeadless1:
   enabled: true
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-188d70008199f6e3c537dac39cf9757371824389"
+
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
@@ -330,6 +334,10 @@ testHeadless1:
 
 testHeadless2:
   enabled: true
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-188d70008199f6e3c537dac39cf9757371824389"
 
   loggingEnabled: true
 
