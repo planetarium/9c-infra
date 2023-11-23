@@ -9,9 +9,11 @@ global:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-3bc6ab2d6d6a3bc9b709dfa12c409b93a43fa38c"
 
+  appProtocolVersion: "200110/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCEBSSeYaHr4+RmntCpLy+QL9kWohZygYNQyhsPvtNBJgIgSZqLJrl6qAwGelbcGY4RsbLRDFkbQaX6wusZ2xScHYY=/ZHU5OnRpbWVzdGFtcHUxMDoxNzAwNzExNTMxZQ=="
+
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
-  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
 
   peerStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
