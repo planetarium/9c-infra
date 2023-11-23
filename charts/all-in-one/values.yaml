@@ -588,6 +588,13 @@ bridgeService:
     repository: ""
     tag: ""
 
+  txpool:
+    type: "headless"
+    upstream:
+      path: "/data/upstream-txpool-journal"
+    downstream:
+      path: "/data/downstream-txpool-journal"
+
   storage:
     size: "50Gi"
 

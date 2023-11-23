@@ -78,6 +78,23 @@ spec:
           {{- else }}
           {{- fail "bridgeService.account.type must be either raw or kms" }}
           {{- end }}
+          {{- if eq $.Values.bridgeService.txpool.type "headless" }}
+          - name: NC_UPSTREAM__TXPOOL__TYPE
+            value: "HEADLESS"
+          - name: NC_DOWNSTREAM__TXPOOL__TYPE
+            value: "HEADLESS"
+          {{- else if eq $.Values.bridgeService.txpool.type "local" }}
+          - name: NC_UPSTREAM__TXPOOL__TYPE
+            value: "LOCAL"
+          - name: NC_DOWNSTREAM__TXPOOL__TYPE
+            value: "LOCAL"
+          - name: NC_UPSTREAM__LOCAL_TXPOOL__PATH
+            value: {{ .Values.bridgeService.txpool.upstream.path }}
+          - name: NC_DOWNSTREAM__LOCAL_TXPOOL__TYPE
+            value: {{ .Values.bridgeService.txpool.downstream.path }}
+          {{- else }}
+          {{- fail "bridgeService.txpool.type must be either headless or local" }}
+          {{- end }}
           - name: MONITOR_STATE_STORE_PATH
             valueFrom:
               secretKeyRef:
