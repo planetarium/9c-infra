@@ -47,7 +47,7 @@ emptyChronicle:
 
 rudolfService:
   image:
-    tag: "git-c517412cae3335e6f38bf9d475103c27793c54aa"
+    tag: "git-175e0db239f1a848657fc0175b4429d26cd500fb"
 
 bridgeService:
   image:
