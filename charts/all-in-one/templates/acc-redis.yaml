@@ -27,12 +27,12 @@ spec:
         volumeMounts:
         - name: redis-data
           mountPath: /data
+        resources:
+        {{- toYaml $.Values.acc.redis.resources | nindent 10 }}
       {{- with $.Values.acc.redis.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      resources:
-      {{- toYaml $.Values.acc.redis.resources | nindent 10 }}
   volumeClaimTemplates:
   - metadata:
       name: redis-data
