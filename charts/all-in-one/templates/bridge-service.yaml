@@ -90,7 +90,7 @@ spec:
             value: "LOCAL"
           - name: NC_UPSTREAM__LOCAL_TXPOOL__PATH
             value: {{ .Values.bridgeService.txpool.upstream.path }}
-          - name: NC_DOWNSTREAM__LOCAL_TXPOOL__TYPE
+          - name: NC_DOWNSTREAM__LOCAL_TXPOOL__PATH
             value: {{ .Values.bridgeService.txpool.downstream.path }}
           {{- else }}
           {{- fail "bridgeService.txpool.type must be either headless or local" }}
