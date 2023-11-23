@@ -13,7 +13,7 @@ bridgeService:
   image:
     repository: planetariumhq/9c-bridge
     pullPolicy: Always
-    tag: "git-99dddb25679d7a729921bfa8f1555a43a72256c7"
+    tag: "git-034ca4c7747663315fa03b593843621297ff9b3b"
 
 dataProvider:
   image:
