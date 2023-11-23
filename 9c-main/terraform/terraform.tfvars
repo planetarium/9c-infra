@@ -144,6 +144,22 @@ node_groups = {
     }]
   }
 
+  "heimdall-r7g_2xl_2c_test" = {
+    instance_types    = ["r7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 7
+    min_size          = 7
+    max_size          = 15
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "remote-headless-test"
+      effect = "NO_SCHEDULE"
+    }]
+  }
+
   "heimdall-m7g_2xl_2c_validator" = {
     instance_types    = ["m7g.2xlarge"]
     availability_zone = "us-east-2c"
