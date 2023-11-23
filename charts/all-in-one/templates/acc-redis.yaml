@@ -31,6 +31,8 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      resources:
+      {{- toYaml $.Values.acc.redis.resources | nindent 10 }}
   volumeClaimTemplates:
   - metadata:
       name: redis-data

@@ -395,6 +395,10 @@ acc:
     nodeSelector:
       eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
+    resources:
+      requests:
+        memory: 4Gi
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-t3_medium
 
