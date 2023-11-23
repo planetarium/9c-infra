@@ -535,6 +535,8 @@ acc:
 
     nodeSelector: {}
 
+    resources: {}
+
   image:
     repository: planetariumhq/ninechronicles-headless-acc
     pullPolicy: Always

@@ -393,6 +393,10 @@ acc:
     nodeSelector:
       node.kubernetes.io/instance-type: m5.large
 
+    resources:
+      requests:
+        memory: 4Gi
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-t3_medium
 
