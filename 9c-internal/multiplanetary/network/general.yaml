@@ -37,7 +37,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-27ad53400070096c0672707f52465be9b126869d"
+    tag: "git-d69dda4f517a192f1b6387fb33e3e9905acfd191"
 
 rudolfService:
   image:
