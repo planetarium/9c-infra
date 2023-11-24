@@ -84,7 +84,7 @@ validator:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-ec54741-hotfix"
+    tag: "ec54741-hotfix"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
