@@ -21,8 +21,10 @@ spec:
           repository: {{ $.Values.volumeRotator.image.repository }}
           tag: {{ $.Values.volumeRotator.image.tag }}
         
+        {{- with $.Values.volumeRotator.nodeSelector }}
         nodeSelector:
-          node.kubernetes.io/instance-type: "r6g.large" 
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         
         headless:
           snapshotPath: {{ $.Values.snapshot.path }}
