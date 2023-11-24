@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-3bc6ab2d6d6a3bc9b709dfa12c409b93a43fa38c"
+    tag: "git-1747a921af14f8849b7a5b912b9662fe4188852b"
 
   appProtocolVersion: "200110/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCEBSSeYaHr4+RmntCpLy+QL9kWohZygYNQyhsPvtNBJgIgSZqLJrl6qAwGelbcGY4RsbLRDFkbQaX6wusZ2xScHYY=/ZHU5OnRpbWVzdGFtcHUxMDoxNzAwNzExNTMxZQ=="
 
@@ -167,7 +167,7 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
 
 remoteHeadless:
-  count: 8
+  count: 7
 
   useTurnServer: false
 
@@ -205,7 +205,7 @@ remoteHeadless:
   - --tx-quota-per-signer=4
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
 
   tolerations:
   - effect: NoSchedule
@@ -322,7 +322,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-3bc6ab2d6d6a3bc9b709dfa12c409b93a43fa38c"
+    tag: "git-1747a921af14f8849b7a5b912b9662fe4188852b"
 
   host: "heimdall-test-1.nine-chronicles.com"
 

@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-188d70008199f6e3c537dac39cf9757371824389"
+    tag: "git-ec5474149e29051511b9d468b823c852544f95c5"
 
   appProtocolVersion: "200110/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCnkMilH6x6+Pf3Ud0wF54ZdH7P.30PZfZzOc75hq6TggIgfbaK6p3XNAGrFi1+3uOxXd.heWP.SfgX9NvM9mvgh44=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTIxZQ=="
 
@@ -305,7 +305,7 @@ testHeadless1:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-188d70008199f6e3c537dac39cf9757371824389"
+    tag: "git-ec5474149e29051511b9d468b823c852544f95c5"
 
   loggingEnabled: true
 
@@ -341,7 +341,7 @@ testHeadless2:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-188d70008199f6e3c537dac39cf9757371824389"
+    tag: "git-ec5474149e29051511b9d468b823c852544f95c5"
 
   loggingEnabled: true
 
