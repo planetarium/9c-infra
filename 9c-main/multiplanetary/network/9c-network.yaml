@@ -412,6 +412,9 @@ acc:
 
 volumeRotator:
   enabled: true
+  nodeSelector:
+    node.kubernetes.io/instance-type: r6g.xlarge
+
   nodeSelectorValue: "9c-main-r7g_xl_2c"
 
 rudolfService:
