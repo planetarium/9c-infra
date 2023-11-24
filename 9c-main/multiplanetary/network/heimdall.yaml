@@ -145,7 +145,7 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=4
-  - --consensus-target-block-interval=3500
+  - --consensus-target-block-interval=5500
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
