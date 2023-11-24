@@ -77,6 +77,10 @@ seed:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 fullState:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-2e79a9ef0fbe926e55862a88266802f71e59d9d5"
+
   enabled: true
 
   loggingEnabled: true

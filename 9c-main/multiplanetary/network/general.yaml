@@ -52,8 +52,3 @@ bridgeService:
     repository: planetariumhq/9c-bridge
     pullPolicy: Always
     tag: "git-034ca4c7747663315fa03b593843621297ff9b3b"
-
-fullState:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-301320f75a3c8c926e94a593f377bb551e343ac0"

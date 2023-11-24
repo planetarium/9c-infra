@@ -237,7 +237,11 @@ marketService:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
 fullState:
-  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-ad6414cb21ef4275d69f1b2f7b3cea84be8a6add"
+
+  enabled: truen
 
   loggingEnabled: true
 
