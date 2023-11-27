@@ -110,7 +110,7 @@ spec:
           exec:
             command:
             {{- if eq $.Values.global.networkType "Main"  }}
-            - /bin/liveness_probe.sh {{ $.Values.global.validatorPath }}
+            - /bin/liveness_probe.sh
             {{- else }}
             - /bin/liveness_probe.sh
             {{- end }}
