@@ -37,7 +37,7 @@ function make_and_upload_snapshot() {
   STATE_DIR="/data/snapshots/state"
   METADATA_DIR="/data/snapshots/metadata"
   FULL_DIR="/data/snapshots/full"
-  URL="https://snapshots.nine-chronicles.com/main/partition/latest.json"
+  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
   mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
   if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -72,13 +72,13 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.output json
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
-  invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME"
+  "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+  invalidate_cf "/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME"
   7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
-  "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
-  invalidate_cf "/main/partition/full/$FULL_SNAPSHOT_FILENAME_7Z"
+  "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
+  invalidate_cf "/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME_7Z"
   rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
   rm "$LATEST_FULL_SNAPSHOT"
 }
