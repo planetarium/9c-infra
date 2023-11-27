@@ -205,7 +205,7 @@ remoteHeadless:
   - --tx-quota-per-signer=4
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
   tolerations:
   - effect: NoSchedule
