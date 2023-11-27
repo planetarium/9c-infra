@@ -82,6 +82,10 @@ seed:
 validator:
   count: 4
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "ec54741-hotfix"
+
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "true"
