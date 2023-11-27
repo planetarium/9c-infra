@@ -36,7 +36,7 @@ function make_and_upload_snapshot() {
   PARTITION_DIR="/data/snapshots/partition"
   STATE_DIR="/data/snapshots/state"
   METADATA_DIR="/data/snapshots/metadata"
-  URL="https://snapshots.nine-chronicles.com/main/$1/partition/latest.json"
+  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/$1/latest.json"
 
   mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
   if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -66,8 +66,8 @@ function make_and_upload_snapshot() {
   STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
   S3_BUCKET_NAME="9c-snapshots-v2"
-  S3_LATEST_SNAPSHOT_PATH="main/$1/partition/$UPLOAD_SNAPSHOT_FILENAME"
-  S3_LATEST_METADATA_PATH="main/$1/partition/$UPLOAD_METADATA_FILENAME"
+  S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/$1/$UPLOAD_SNAPSHOT_FILENAME"
+  S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.path }}/$1/$UPLOAD_METADATA_FILENAME"
 
   AWS="/usr/local/bin/aws"
   AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
@@ -77,15 +77,15 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.region us-east-2
   "$AWS" configure set default.output json
 
-  "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_STATE_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$LATEST_STATE_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$SNAPSHOT_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$UPLOAD_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$STATE_FILENAME.*"
   
   mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
   unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
@@ -93,13 +93,13 @@ function make_and_upload_snapshot() {
   7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
   7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
 
-  "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/latest.7z" --quiet --acl public-read
-  "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/$1/partition/state_latest.7z" --quiet --acl public-read
+  "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/latest.7z" --quiet --acl public-read
+  "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$1/state_latest.7z" --quiet --acl public-read
 
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$SNAPSHOT_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$UPLOAD_FILENAME.*"
+  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/{{ $.Values.snapshot.path }}/$1/$STATE_FILENAME.*"
 
   rm "$LATEST_SNAPSHOT"
   rm "$LATEST_STATE"
