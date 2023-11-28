@@ -69,7 +69,7 @@ function make_and_upload_snapshot() {
   S3_BUCKET_NAME="9c-snapshots-v2"
   S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_SNAPSHOT_FILENAME"
   S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_METADATA_FILENAME"
-  {{- if $.Values.snapshot.isMainnet }}
+  {{- if eq $.Values.global.networkType "Main" }}
   S3_LATEST_INTERNAL_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/internal/$UPLOAD_SNAPSHOT_FILENAME"
   S3_LATEST_INTERNAL_METADATA_PATH="{{ $.Values.snapshot.path }}/internal/$UPLOAD_METADATA_FILENAME"
   {{- end }}
@@ -87,7 +87,7 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
-  {{- if $.Values.snapshot.isMainnet }}
+  {{- if eq $.Values.global.networkType "Main" }}
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
@@ -100,7 +100,7 @@ function make_and_upload_snapshot() {
   invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
-  {{- if $.Values.snapshot.isMainnet }}
+  {{- if eq $.Values.global.networkType "Main" }}
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
