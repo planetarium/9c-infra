@@ -42,3 +42,6 @@ patrolRewardService:
 rudolfService:
   image:
     tag: "git-b2eec60aa0771222103f8598a3aaaf6ed5c36102"
+
+snapshot:
+  isMainnet: false

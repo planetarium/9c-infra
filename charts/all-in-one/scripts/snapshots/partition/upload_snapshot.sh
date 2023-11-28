@@ -69,9 +69,9 @@ function make_and_upload_snapshot() {
   S3_BUCKET_NAME="9c-snapshots-v2"
   S3_LATEST_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_SNAPSHOT_FILENAME"
   S3_LATEST_METADATA_PATH="{{ $.Values.snapshot.path }}/$UPLOAD_METADATA_FILENAME"
-  {{- if eq $.Values.snapshot.path "main/partition" }}
-  S3_LATEST_INTERNAL_SNAPSHOT_PATH="main/partition/internal/$UPLOAD_SNAPSHOT_FILENAME"
-  S3_LATEST_INTERNAL_METADATA_PATH="main/partition/internal/$UPLOAD_METADATA_FILENAME"
+  {{- if $.Values.snapshot.isMainnet }}
+  S3_LATEST_INTERNAL_SNAPSHOT_PATH="{{ $.Values.snapshot.path }}/internal/$UPLOAD_SNAPSHOT_FILENAME"
+  S3_LATEST_INTERNAL_METADATA_PATH="{{ $.Values.snapshot.path }}/internal/$UPLOAD_METADATA_FILENAME"
   {{- end }}
 
   AWS="/usr/local/bin/aws"
@@ -87,10 +87,10 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
-  {{- if eq $.Values.snapshot.path "main/partition" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
+  {{- if $.Values.snapshot.isMainnet }}
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
 
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
@@ -100,16 +100,16 @@ function make_and_upload_snapshot() {
   invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
-  {{- if eq $.Values.snapshot.path "main/partition" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --quiet --acl public-read
+  {{- if $.Values.snapshot.isMainnet }}
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --quiet --acl public-read
 
-  invalidate_cf "/main/partition/internal/$SNAPSHOT_FILENAME.*"
-  invalidate_cf "/main/partition/internal/$UPLOAD_FILENAME.*"
-  invalidate_cf "/main/partition/internal/$STATE_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$SNAPSHOT_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$UPLOAD_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$STATE_FILENAME.*"
 
   mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
   unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
@@ -117,13 +117,13 @@ function make_and_upload_snapshot() {
   7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
   7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
 
-  "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/main/partition/latest.7z" --quiet --acl public-read
-  "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/main/partition/state_latest.7z" --quiet --acl public-read
+  "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/latest.7z" --quiet --acl public-read
+  "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/state_latest.7z" --quiet --acl public-read
 
-  invalidate_cf "/main/partition/$SNAPSHOT_FILENAME.*"
-  invalidate_cf "/main/partition/$UPLOAD_FILENAME.*"
-  invalidate_cf "/main/partition/$STATE_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
+  invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
   rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
   rm "/data/snapshots/7z/partition/state_latest.7z"

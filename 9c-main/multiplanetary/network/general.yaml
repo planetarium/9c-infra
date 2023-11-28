@@ -52,3 +52,6 @@ bridgeService:
     repository: planetariumhq/9c-bridge
     pullPolicy: Always
     tag: "git-034ca4c7747663315fa03b593843621297ff9b3b"
+
+snapshot:
+  isMainnet: true
