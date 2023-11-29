@@ -8,8 +8,6 @@ from ruamel.yaml import YAML
 from app.client import GithubClient
 from app.config import config
 from app.dockerhub.image import check_image_exists
-from app.manager import APVHistoryManager
-from app.utils.converter import infra_dir2network
 
 class IntegrationMetadata(NamedTuple):
     manifest_key: str
@@ -114,17 +112,6 @@ class ValuesFileUpdater:
             draft=False,
         )
 
-    def _get_latest_apv(self, infra_dir: str):
-        config_manager = APVHistoryManager()
-        network = infra_dir2network(infra_dir)
-
-        apv_history = config_manager.get_apv_history(network)
-        keys = apv_history.keys()
-        sorted_keys = sorted(keys, reverse=True)
-
-        return apv_history[sorted_keys[0]]["raw"]
-
-
 def extract_metadata(image_source: str, delimiter: str = "|") -> IntegrationMetadata:
     # Example input: remoteHeadless|planetariumhq/ninechronicles-snapshot:git-e14cb15c049c5648752672571ea3864d50989de5
 
@@ -155,31 +142,6 @@ def update_image_tag(contents: str, *, manifest_key: str, repo_to_change: str, t
     yaml.preserve_quotes = True  # type:ignore
     doc = yaml.load(contents)
     update_tag_recursively(doc)
-
-    with TemporaryFile(mode="w+") as fp:
-        yaml.dump(doc, fp)
-        fp.seek(0)
-        new_doc = fp.read()
-
-    return new_doc
-
-
-def update_apv(contents: str, apv: str):
-    def update_apv_recursively(data):
-        if isinstance(data, dict):
-            for key, value in data.items():
-                if key == "appProtocolVersion":
-                    data["appProtocolVersion"] = apv
-                else:
-                    update_apv_recursively(value)
-        elif isinstance(data, list):
-            for item in data:
-                update_apv_recursively(item)
-
-    yaml = YAML()
-    yaml.preserve_quotes = True  # type:ignore
-    doc = yaml.load(contents)
-    update_apv_recursively(doc)
 
     with TemporaryFile(mode="w+") as fp:
         yaml.dump(doc, fp)

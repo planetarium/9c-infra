@@ -2,43 +2,67 @@ name: Manage Apv
 on:
   workflow_dispatch:
     inputs:
-      network:
+      key:
         required: true
-        description: 'Network environment'
+        description: 'Key env name'
         default: 'main'
         type: choice
         options:
-        - main
-        - internal
+        - main-heimdall
+        - main-odin
+        - internal-heimdall
+        - internal-odin
       number:
         required: true
         description: 'Apv number (e.g. 100310)'
-      mode:
+      dir-name:
         required: true
-        description: 'Mode'
-        default: 'append-apv'
+        description: 'Dir name'
+        default: '9c-main'
         type: choice
         options:
-        - append-apv
-        - remove-apv
-      
+        - 9c-internal
+        - 9c-main
+      file-name:
+        required: true
+        description: 'Network environment'
+        default: 'heimdall'
+        type: choice
+        options:
+        - general
+        - 9c-network
+        - heimdall
 
 jobs:
   manage-apv:
     runs-on: ubuntu-20.04
     environment:
-      name: ${{ github.event.inputs.network }}
+      name: ${{ github.event.inputs.key }}
     steps:
       - uses: actions/checkout@v3
 
-      - name: Apv
-        uses: planetarium/9c-toolbelt@main
+      - uses: actions/setup-python@v2.2.2
+      - uses: actions/setup-dotnet@v2
         with:
-          COMMAND_LIST: "update|${{ github.event.inputs.mode }}|${{ github.event.inputs.number }}|${{ github.event.inputs.network }}"
-          ENV: production
+          python-version: 3.10.13
+          dotnet-version: "6.0.x"
+
+      - run: dotnet tool install -g Libplanet.Tools
+
+      - run: |
+          python -m pip install -r requirements.txt
+          flit install
+        name: install dependencies
+        working-directory: ./scripts
+
+      - run: planet key import --passphrase ${{ secrets.KEY_PASSPHRASE }} ${{ secrets.KEY_PRIVATE }}
+        name: Import pk
+
+      - name: Update Apv
+        run: |
+          python cli.py update-apv ${{ github.event.inputs.number }} ${{ github.event.inputs.dir-name }} ${{ github.event.inputs.file-name }}
+        working-directory: ./scripts
+        env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           KEY_PASSPHRASE: ${{ secrets.KEY_PASSPHRASE }}
           KEY_ADDRESS: ${{ secrets.KEY_ADDRESS }}
-          KEY_PRIVATE: ${{ secrets.KEY_PRIVATE }}

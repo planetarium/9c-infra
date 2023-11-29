@@ -3,7 +3,7 @@ from typing import List
 import typer
 
 from app.update_values import ValuesFileUpdater
-from app.update_apv import append_apv
+from app.update_apv import ApvUpdater
 
 k8s_app = typer.Typer()
 
@@ -27,20 +27,20 @@ def update_values(
 @k8s_app.command()
 def update_apv(
     number: int,
-    cluster_name: str = typer.Argument(
+    dir_name: str = typer.Argument(
         ...,
         help="9c-internal or 9c-main",
     ),
-    network: str = typer.Argument(
+    file_name: str = typer.Argument(
         ...,
-        help="all, odin, heimdall, ...",
+        help="general, odin, heimdall, ...",
     ),
 ):
     """
     Run post deploy script
     """
 
-    append_apv(number, cluster_name, network)  # type:ignore
+    ApvUpdater().update(number, dir_name, file_name)  # type:ignore
 
 if __name__ == "__main__":
     k8s_app()
