@@ -104,9 +104,9 @@ spec:
                 key: DATABASE_URL
                 name: bridge-env
           - name: NC_UPSTREAM__RDB__START_BLOCK_INDEX
-            value: {{ .Values.bridgeService.rdb.defaultStartBlockIndex.upstream }}
+            value: {{ quote .Values.bridgeService.rdb.defaultStartBlockIndex.upstream }}
           - name: NC_DOWNSTREAM__RDB__START_BLOCK_INDEX
-            value: {{ .Values.bridgeService.rdb.defaultStartBlockIndex.downstream }}
+            value: {{ quote .Values.bridgeService.rdb.defaultStartBlockIndex.downstream }}
           {{- end }}
           - name: MONITOR_STATE_STORE_PATH
             valueFrom:
