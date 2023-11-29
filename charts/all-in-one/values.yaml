@@ -599,3 +599,10 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector: {}
+
+  rdb:
+    enabled: false
+
+  db:
+    enabled: false
+    size: "10Gi"

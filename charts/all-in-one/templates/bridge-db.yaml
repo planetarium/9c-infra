@@ -1,0 +1,77 @@
+{{ if .Values.bridgeService.db.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: bridge-service-db
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: bridge-service-db
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge-service-db
+  serviceName: bridge-service-db
+  template:
+    metadata:
+      labels:
+        app: bridge-service-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: bridge-env
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: bridge-env
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: bridge-env
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: bridge-service-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: bridge-service-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: bridge-service-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.bridgeService.db.size }}
+        storageClassName: {{ $.Release.Name }}-gp3
+        volumeMode: Filesystem
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bridge-service-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: bridge-service-db
+  type: ClusterIP
+{{ end }}

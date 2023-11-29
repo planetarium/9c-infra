@@ -95,6 +95,19 @@ spec:
           {{- else }}
           {{- fail "bridgeService.txpool.type must be either headless or local" }}
           {{- end }}
+          {{- if .Values.bridgeService.rdb.enabled }}
+          - name: USE_RDB
+            value: "true"
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: DATABASE_URL
+                name: bridge-env
+          - name: NC_UPSTREAM__RDB__START_BLOCK_INDEX
+            value: {{ .Values.bridgeService.rdb.defaultStartBlockIndex.upstream }}
+          - name: NC_DOWNSTREAM__RDB__START_BLOCK_INDEX
+            value: {{ .Values.bridgeService.rdb.defaultStartBlockIndex.downstream }}
+          {{- end }}
           - name: MONITOR_STATE_STORE_PATH
             valueFrom:
               secretKeyRef:

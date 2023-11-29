@@ -48,6 +48,16 @@ bridgeService:
         username: "Relay Bridge Test (Odin ↔ Heimdall)"
       channel: "9c-relay-bridge-bot-tmp-test"
 
+  db:
+    enabled: true
+    size: "10Gi"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "8474190"
+      downstream: "105195"
+
 dataProvider:
   enabled: true
   rwMode: false
