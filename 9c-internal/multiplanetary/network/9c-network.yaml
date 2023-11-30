@@ -220,7 +220,28 @@ volumeRotator:
 
 worldBoss:
   enabled: true
+
   image:
     repository: planetariumhq/world-boss-service
     pullPolicy: Always
     tag: "git-f6e5276bd073a4372b4c05e3f7af77499f1ec664"
+
+  ports:
+    targetPort: 5000
+
+  db:
+    local: true
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
