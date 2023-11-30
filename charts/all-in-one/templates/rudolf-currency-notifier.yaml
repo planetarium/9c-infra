@@ -1,0 +1,38 @@
+{{ if $.Values.rudolfCurrencyNotifier.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rudolf-currency-notifier
+  namespace: {{ $.Release.Name }}
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: slack-notifier
+            image: node:20-alpine
+            command:
+            - node /bin/rudolf-currency-notifier.js
+            env:
+            - name: GQL_ENDPOINT
+              value: {{ .Values.rudolfCurrencyNotifier.config.graphqlEndpoint }}
+            - name: TARGET_ADDRESS
+              value: {{ .Values.rudolfCurrencyNotifier.config.targetAddress }}
+            - name: SERVER_NAME
+              value: {{ .Values.rudolfCurrencyNotifier.config.serverName }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+          restartPolicy: OnFailure
+          volumes:
+          - name: rudolf-currency-notifier
+            configMap:
+              defaultMode: 0700
+              name: rudolf-currency-notifier
+{{ end }}
