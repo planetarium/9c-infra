@@ -217,3 +217,10 @@ rudolfService:
 
 volumeRotator:
   enabled: true
+
+worldBoss:
+  enabled: true
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    tag: "git-f6e5276bd073a4372b4c05e3f7af77499f1ec664"
