@@ -222,7 +222,7 @@ dataProvider:
 
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: 'git-a4757f8aaf15644f3f0c59db092ffcdbf92069a8'
+    tag: 'git-effa2745684575c61fc85b52bb00d07a2daabb9b'
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
