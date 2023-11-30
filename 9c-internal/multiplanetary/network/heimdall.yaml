@@ -53,10 +53,10 @@ bridgeService:
     size: "10Gi"
 
   rdb:
-    enabled: false
+    enabled: true
     defaultStartBlockIndex:
-      upstream: "8474190"
-      downstream: "105195"
+      upstream: "8489421"
+      downstream: "120601"
 
 dataProvider:
   enabled: true
