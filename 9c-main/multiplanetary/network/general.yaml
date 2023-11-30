@@ -11,7 +11,7 @@ seed:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: '72'
+    tag: 'git-d9e36f8012a40effaa654e52d8eb426adfa99d42'
 
 worldBoss:
   image:
