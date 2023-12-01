@@ -43,8 +43,8 @@ spec:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: DATABASE_URL
-              key: bridge-env
+              name: bridge-env
+              key: DATABASE_URL
       containers:
         - env:
           - name: NC_REGISTRY_ENDPOINT
