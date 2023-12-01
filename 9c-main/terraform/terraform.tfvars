@@ -160,6 +160,22 @@ node_groups = {
     }]
   }
 
+  "heimdall-m7g_2xl_2c_validator" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "ON_DEMAND"
+    desired_size      = 1
+    min_size          = 1
+    max_size          = 6
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "validator-test"
+      effect = "NO_SCHEDULE"
+    }]
+  }
+
   "heimdall-2c_spot" = {
     instance_types    = ["r7g.xlarge", "m7g.2xlarge", "r6g.xlarge"]
     availability_zone = "us-east-2c"
