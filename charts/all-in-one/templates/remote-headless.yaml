@@ -10,7 +10,11 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
+  {{- if $.Values.remoteHeadless.replicas }}
+  replicas: {{ $.Values.remoteHeadless.replicas }}
+  {{- else }}
   replicas: 1
+  {{- end }}
   revisionHistoryLimit: 3
   selector:
     matchLabels:

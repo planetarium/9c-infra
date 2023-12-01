@@ -167,7 +167,8 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_validator
 
 remoteHeadless:
-  count: 7
+  count: 3
+  replicas: 2
 
   useTurnServer: false
 
