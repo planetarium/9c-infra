@@ -320,6 +320,7 @@ bridgeService:
 
 testHeadless1:
   enabled: true
+  replicas: 2
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -341,7 +342,7 @@ testHeadless1:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_spot
 
   loggingEnabled: true
 

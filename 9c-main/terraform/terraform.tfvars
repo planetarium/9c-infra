@@ -176,6 +176,22 @@ node_groups = {
     }]
   }
 
+  "heimdall-m7g_2xl_2c_spot" = {
+    instance_types    = ["m7g.2xlarge"]
+    availability_zone = "us-east-2c"
+    capacity_type     = "SPOT"
+    desired_size      = 0
+    min_size          = 0
+    max_size          = 15
+    ami_type          = "AL2_ARM_64"
+    disk_size         = 50
+    taints = [{
+      key    = "dedicated"
+      value  = "remote-headless-test"
+      effect = "NO_SCHEDULE"
+    }]
+  }
+
   "idun-m5_l_2c" = {
     instance_types    = ["m5.large"]
     availability_zone = "us-east-2c"
