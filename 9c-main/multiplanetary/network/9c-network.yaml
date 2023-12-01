@@ -375,10 +375,10 @@ testHeadless2:
     eks.amazonaws.com/nodegroup: 9c-main-r6g_xl_2c
 
 emptyChronicle:
-  enabled: true
+  enabled: false
 
 remoteActionEvaluatorHeadless:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
