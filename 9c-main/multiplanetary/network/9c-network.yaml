@@ -450,7 +450,7 @@ rudolfService:
     - "sg-033602a010bce902e"
 
 testWorldBoss:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
