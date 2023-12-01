@@ -606,3 +606,32 @@ bridgeService:
   db:
     enabled: false
     size: "10Gi"
+
+
+testWorldBoss:
+  enabled: false
+  ports:
+    targetPort: 5000
+
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-dd5703d668ec92960b1f7bb303e234d1b9f37cf8"
+
+  db:
+    local: false
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+    sentryDsn: ""
+
+  nodeSelector: {}
