@@ -324,7 +324,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-1747a921af14f8849b7a5b912b9662fe4188852b"
+    tag: "git-2e79a9ef0fbe926e55862a88266802f71e59d9d5"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -342,7 +342,7 @@ testHeadless1:
       memory: 25Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_spot
+    eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
   loggingEnabled: true
 
