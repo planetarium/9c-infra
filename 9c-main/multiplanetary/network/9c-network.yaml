@@ -453,4 +453,4 @@ testWorldBoss:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
