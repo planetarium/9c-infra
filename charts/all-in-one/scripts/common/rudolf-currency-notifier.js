@@ -40,7 +40,7 @@ const webhookBody = {
   blocks: [
     {
       type: 'header',
-      text: { type: 'plain_text', text: ':sled: 9c-rudolf 재화 보니터링 :sled:', emoji: true },
+      text: { type: 'plain_text', text: ':sled: 9c-rudolf 재화 모니터링 :sled:', emoji: true },
     },
     { type: 'section', fields: fields.map((text) => ({ type: 'mrkdwn', text })) },
     {
