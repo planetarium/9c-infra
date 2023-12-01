@@ -9,7 +9,11 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
+  {{- if $.Values.testHeadless1.replicas }}
+  replicas: {{ $.Values.testHeadless1.replicas }}
+  {{- else }}
   replicas: 1
+  {{- end }}
   revisionHistoryLimit: 3
   selector:
     matchLabels:
