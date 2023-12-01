@@ -30,6 +30,21 @@ spec:
       labels:
         app: bridge-service
     spec:
+      initContainers:
+      - args:
+        - prisma
+        - migrate
+        - deploy
+        command:
+        - /usr/local/bin/yarn
+        image: {{ $.Values.bridgeService.image.repository }}:{{ $.Values.bridgeService.image.tag }}
+        name: run-prisma-migrate-deploy
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: DATABASE_URL
+              key: bridge-env
       containers:
         - env:
           - name: NC_REGISTRY_ENDPOINT

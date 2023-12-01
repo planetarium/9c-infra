@@ -46,17 +46,17 @@ bridgeService:
     slack:
       bot:
         username: "Relay Bridge Test (Odin ↔ Heimdall)"
-      channel: "9c-relay-bridge-bot-tmp-test"
+      channel: "9c-relay-bridge-bot-test-rdb"
 
   db:
     enabled: true
     size: "10Gi"
 
   rdb:
-    enabled: false
+    enabled: true
     defaultStartBlockIndex:
-      upstream: "8474190"
-      downstream: "105195"
+      upstream: "8501520"
+      downstream: "132831"
 
 dataProvider:
   enabled: true
