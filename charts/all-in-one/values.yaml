@@ -566,6 +566,11 @@ rudolfService:
     local: false
     size: 20Gi
 
+rudolfCurrencyNotifier:
+  enabled: false
+  config:
+    schedule: "0 0 * * *"
+
 volumeRotator:
   enabled: false
   serviceAccount:

@@ -215,5 +215,14 @@ rudolfService:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
 
+rudolfCurrencyNotifier:
+  enabled: true
+
+  config:
+    schedule: "0 0 0/1 * *"
+    graphqlEndpoint: "https://9c-internal-rpc-1.nine-chronicles.com/graphql"
+    targetAddress: "0xB5AF28837b28A9C768e9849d90646E3D6078311c"
+    serverName: "9c-internal"
+
 volumeRotator:
   enabled: true
