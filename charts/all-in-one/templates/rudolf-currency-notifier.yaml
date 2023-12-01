@@ -5,7 +5,7 @@ metadata:
   name: rudolf-currency-notifier
   namespace: {{ $.Release.Name }}
 spec:
-  schedule: "0 0 * * *"
+  schedule: {{ .Values.rudolfCurrencyNotifier.config.schedule }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -29,6 +29,11 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            volumeMounts:
+            - mountPath: /bin/rudolf-currency-notifier.js
+              name: rudolf-currency-notifier
+              readonly: true
+              subPath: rudolf-currency-notifier.js
           restartPolicy: OnFailure
           volumes:
           - name: rudolf-currency-notifier
