@@ -46,7 +46,7 @@ bridgeService:
     slack:
       bot:
         username: "Relay Bridge Test (Odin ↔ Heimdall)"
-      channel: "9c-relay-bridge-bot-tmp-test"
+      channel: "9c-relay-bridge-bot-test-rdb"
 
   db:
     enabled: true
