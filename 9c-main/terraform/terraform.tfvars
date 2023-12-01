@@ -176,8 +176,8 @@ node_groups = {
     }]
   }
 
-  "heimdall-m7g_2xl_2c_spot" = {
-    instance_types    = ["m7g.2xlarge"]
+  "heimdall-2c_spot" = {
+    instance_types    = ["r7g.xlarge", "m7g.2xlarge", "r6g.xlarge"]
     availability_zone = "us-east-2c"
     capacity_type     = "SPOT"
     desired_size      = 2
