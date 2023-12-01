@@ -338,7 +338,7 @@ testHeadless1:
 
   resources:
     requests:
-      cpu: 3	
+      cpu: 3
       memory: 25Gi
 
   nodeSelector:
