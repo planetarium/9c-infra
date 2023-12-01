@@ -344,8 +344,8 @@ testHeadless1:
 
   resources:
     requests:
-      cpu: 1
-      memory: 12Gi
+      cpu: 3
+      memory: 25Gi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_spot
