@@ -1,0 +1,99 @@
+{{ if .Values.testWorldBoss.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-onboarding-eks
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-onboarding-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: test-world-boss-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: test-world-boss-service
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-world-boss-service
+  serviceName: test-world-boss-service
+  template:
+    metadata:
+      labels:
+        app: test-world-boss-service
+    spec:
+      containers:
+        - args:
+            - alembic upgrade head && uvicorn world_boss.wsgi:app --workers 8 --timeout-keep-alive 600 --host 0.0.0.0 --port 5000
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database-url
+                  name: world-boss-env
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: redis-host
+                  name: world-boss-env
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: redis-port
+                  name: world-boss-env
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: world-boss-env
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: world-boss-env
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: celery-broker-url
+                  name: world-boss-env
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: celery-result-backend
+                  name: world-boss-env
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: slack-signing-secret
+                  name: world-boss-env
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: sentry-dsn
+                  name: world-boss-env
+          image: {{ $.Values.testWorldBoss.image.repository }}:{{ $.Values.testWorldBoss.image.tag }}
+          name: test-world-boss-service
+          ports:
+            - containerPort: 5000
+      {{- with $.Values.testWorldBoss.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-onboarding-iam-role
+      serviceAccountName: {{ $.Release.Name }}-onboarding-iam-role
+  updateStrategy:
+    type: RollingUpdate
+{{ end }}
