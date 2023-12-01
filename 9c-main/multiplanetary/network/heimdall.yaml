@@ -316,7 +316,13 @@ bridgeService:
     slack:
       bot:
         username: "Relay Bridge (Odin ↔ Heimdall)"
-      channel: "9c-relay-bridge-bot"
+      channel: "9c-relay-bridge-bot-rdb"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "8521305"
+      downstream: "134016"
 
 testHeadless1:
   enabled: true
