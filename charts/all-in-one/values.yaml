@@ -612,6 +612,8 @@ bridgeService:
     enabled: false
     size: "10Gi"
 
+bridgeServiceApi:
+  enabled: false
 
 testWorldBoss:
   enabled: false
