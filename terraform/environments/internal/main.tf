@@ -1,20 +1,20 @@
 terraform {
-  required_providers {
-    aws = {
-      version = ">= 3"
-    }
-  }
-  required_version = ">= 0.13.0"
-
   backend "s3" {
     bucket = "9c-tfstates"
     key    = "eks/9c-internal"
-    region = "us-east-2"
+    region = var.region
   }
 }
 
-module "common" {
-  source = "../../modules/root"
+module "internal_eks" {
+  source = "../../modules/eks"
+  cluster_name = "internal-cluster"
+  vpc_id       = module.network.vpc_id
+  // ... 기타 필요한 변수들
+}
+
+module "internal_eks" {
+  source = "../../modules/eks"
 
   name = "9c-internal-v2"
 
