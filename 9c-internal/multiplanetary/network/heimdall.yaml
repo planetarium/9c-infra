@@ -58,6 +58,9 @@ bridgeService:
       upstream: "8501520"
       downstream: "132831"
 
+bridgeServiceApi:
+  enabled: true
+
 dataProvider:
   enabled: true
   rwMode: false
