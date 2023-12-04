@@ -330,7 +330,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-2e79a9ef0fbe926e55862a88266802f71e59d9d5"
+    tag: "git-a7ff95b2e5d1dad7c4a78930df4ab87f2fc05237"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
