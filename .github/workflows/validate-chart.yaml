@@ -11,4 +11,4 @@ jobs:
           tar -xvzf kubeconform-linux-amd64.tar.gz
       - name: Find and Validate Charts
         run: |
-          sh .github/scripts/validate-charts.sh
+          bash .github/scripts/validate-charts.sh
