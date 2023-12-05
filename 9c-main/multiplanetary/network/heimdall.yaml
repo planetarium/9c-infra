@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-a7ff95b2e5d1dad7c4a78930df4ab87f2fc05237"
+    tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
   appProtocolVersion: "200110/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCEBSSeYaHr4+RmntCpLy+QL9kWohZygYNQyhsPvtNBJgIgSZqLJrl6qAwGelbcGY4RsbLRDFkbQaX6wusZ2xScHYY=/ZHU5OnRpbWVzdGFtcHUxMDoxNzAwNzExNTMxZQ=="
 
@@ -353,7 +353,7 @@ testHeadless1:
   loggingEnabled: true
 
   extraArgs:
-    - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=4
 
   tolerations:
   - effect: NoSchedule
