@@ -118,7 +118,7 @@ remoteHeadless:
     value: "::ffff:118.131.110.197"
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
 
   hosts:
   - "idun-internal-rpc-1.nine-chronicles.com"
@@ -204,7 +204,7 @@ validator:
 
 
   extraArgs:
-  - --tx-quota-per-signer=4
+  - --tx-quota-per-signer=1
   - --consensus-target-block-interval=6500
 
   nodeSelector:
