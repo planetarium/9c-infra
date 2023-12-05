@@ -344,7 +344,7 @@ testHeadless2:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-ec5474149e29051511b9d468b823c852544f95c5"
+    tag: "git-bc75448d5551cc116b6bff42f7f63fb08a9ce316"
 
   loggingEnabled: true
 
@@ -359,6 +359,13 @@ testHeadless2:
     value: "60s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
+  - name: Jwt__EnableJwtAuthentication
+    value: "true"
+  - name: Jwt__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   extraArgs:
   - --tx-quota-per-signer=1
