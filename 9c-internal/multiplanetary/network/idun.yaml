@@ -8,7 +8,7 @@ global:
     repository: "planetariumhq/ninechronicles-headless"
     tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
-  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
   
