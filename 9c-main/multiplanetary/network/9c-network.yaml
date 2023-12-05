@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-ec5474149e29051511b9d468b823c852544f95c5"
+    tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
   appProtocolVersion: "200110/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCnkMilH6x6+Pf3Ud0wF54ZdH7P.30PZfZzOc75hq6TggIgfbaK6p3XNAGrFi1+3uOxXd.heWP.SfgX9NvM9mvgh44=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTIxZQ=="
 
@@ -432,7 +432,6 @@ rudolfService:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
     graphqlEndpoint: "http://9c-main-full-state.nine-chronicles.com/graphql"
     genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
-  
   db:
     local: false
 
