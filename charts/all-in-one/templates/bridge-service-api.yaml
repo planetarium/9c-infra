@@ -1,0 +1,63 @@
+{{ if .Values.bridgeServiceApi.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: bridge-service-api
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: bridge-service-api
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge-service-api
+  serviceName: bridge-service-api
+  template:
+    metadata:
+      labels:
+        app: bridge-service-api
+    spec:
+      containers:
+        - env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: DATABASE_URL
+                name: bridge-env
+          image: {{ $.Values.bridgeServiceApi.image.repository }}:{{ $.Values.bridgeServiceApi.image.tag }}
+          name: bridge-service-api
+      {{- with $.Values.bridgeServiceApi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 60
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bridge-service-api
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=dogeon,Service=bridge-service-api,Name=bridge-service-api
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+    - name: https
+      port: 443
+      targetPort: 3000
+  selector:
+    app: bridge-service-api
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+{{ end }}

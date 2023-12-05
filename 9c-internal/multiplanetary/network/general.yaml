@@ -15,6 +15,12 @@ bridgeService:
     pullPolicy: Always
     tag: "git-7467985b018a9543e75d91b5583f749d31ff9daa"
 
+bridgeServiceApi:
+  image:
+    repository: planetariumhq/9c-bridge-api
+    pullPolicy: Always
+    tag: "git-f6340a8acccc63942b2ee3a6c84a93a47e63085b"
+
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
