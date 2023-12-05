@@ -19,7 +19,7 @@ bridgeServiceApi:
   image:
     repository: planetariumhq/9c-bridge-api
     pullPolicy: Always
-    tag: "git-66993f4c7f5f83bcf7f90d4214143b4aaab7d3b4"
+    tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
 
 dataProvider:
   image:
