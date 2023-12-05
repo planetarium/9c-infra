@@ -6,7 +6,7 @@ global:
   networkType: Internal
   image:
     repository: "planetariumhq/ninechronicles-headless"
-    tag: "git-b9522002b24635475fda4b19534e3c4a43dffc3b-200tx"
+    tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
 
