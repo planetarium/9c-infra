@@ -330,6 +330,11 @@ testHeadless1:
   - --tx-quota-per-signer=1
   - --config=appsettings.configmap.json
 
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
   tolerations:
   - effect: NoSchedule
     key: dedicated
@@ -337,7 +342,7 @@ testHeadless1:
     value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-2c_spot
 
 testHeadless2:
   enabled: true
@@ -367,11 +372,17 @@ testHeadless2:
 
   resources:
     requests:
-      cpu: 2
-      memory: 20Gi
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r6g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-2c_spot
 
 emptyChronicle:
   enabled: false
