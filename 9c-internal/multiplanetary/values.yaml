@@ -5,3 +5,4 @@ path: "9c-internal/multiplanetary"
 network:
   - "heimdall"
   - "9c-network"
+  - "idun"
