@@ -24,7 +24,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: DATABASE_URL
-                name: bridge-env
+                name: bridge-service-api
           image: {{ $.Values.bridgeServiceApi.image.repository }}:{{ $.Values.bridgeServiceApi.image.tag }}
           name: bridge-service-api
       {{- with $.Values.bridgeServiceApi.nodeSelector }}
