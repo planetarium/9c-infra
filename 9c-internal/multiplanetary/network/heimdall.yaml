@@ -13,6 +13,9 @@ global:
 
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
+  resetSnapshot: true
+  rollbackSnapshot: false
+
 externalSecret:
   enabled: true
   prefix: "9c-internal-v2/heimdall"
@@ -171,7 +174,7 @@ snapshot:
 
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
-  path: 9c-internal-v2/heimdall
+  path: internal/heimdall
 
   resources:
     requests:
