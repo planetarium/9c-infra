@@ -97,16 +97,20 @@ reset_snapshot() {
 # Type "y" to reset the cluster with a new snapshot and "n" to just deploy the cluster.
 echo "Do you want to reset the cluster with a new snapshot(y/n)?"
 read response
-
-echo $SLACK_WEBHOOK_URL
+CHAIN_NAME=$1
 
 if [ $response = y ]
 then
     echo "Reset cluster with a new snapshot"
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster with a new snapshot"}' $SLACK_WEBHOOK_URL
-    reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" $SLACK_WEBHOOK_URL || true
+    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster with a new snapshot"}'
+    if [ $CHAIN_NAME = "odin"]
+    then
+      reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" || true
+    else
+      reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" || true
+    fi
 else
     echo "Reset cluster without resetting snapshot."
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster without resetting snapshot."}' $SLACK_WEBHOOK_URL
+    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster without resetting snapshot."}'
 fi
 

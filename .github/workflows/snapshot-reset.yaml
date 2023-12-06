@@ -1,6 +1,15 @@
-name: Internal Snapshot Reset
+name: Internal Snapshot S3 Reset
 on:
   workflow_dispatch:
+    inputs:
+      chain:
+        required: true
+        description: 'chain'
+        default: 'odin'
+        type: choice
+        options:
+        - odin
+        - heimdall
 
 concurrency:
   group: release
@@ -14,9 +23,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: reset internal snapshot
         run: |
-          echo "y" | bash .github/scripts/reset-snapshot.sh
+          echo "y" | bash .github/scripts/reset-snapshot.sh "${{ github.event.inputs.chain }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
