@@ -1,4 +1,4 @@
-name: Internal Snapshot Reset
+name: Internal Snapshot S3 Reset
 on:
   workflow_dispatch:
     inputs:
