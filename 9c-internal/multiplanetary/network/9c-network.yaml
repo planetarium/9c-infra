@@ -233,7 +233,7 @@ worldBoss:
   image:
     repository: planetariumhq/world-boss-service
     pullPolicy: Always
-    tag: "git-f6e5276bd073a4372b4c05e3f7af77499f1ec664"
+    tag: "git-722f71e94fc7a0c3b140530b541e9dd1c684d02a"
 
   ports:
     targetPort: 5000
