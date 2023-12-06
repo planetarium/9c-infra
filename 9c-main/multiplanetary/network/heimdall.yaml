@@ -330,10 +330,6 @@ bridgeServiceApi:
 testHeadless1:
   enabled: true
   replicas: 2
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-a7ff95b2e5d1dad7c4a78930df4ab87f2fc05237"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -365,7 +361,37 @@ testHeadless1:
     value: remote-headless-test
 
 testHeadless2:
-  enabled: false
+  enabled: true
+  replicas: 1
+
+  host: "heimdall-test-2.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 500Gi
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-2c_spot
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-quota-per-signer=4
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 emptyChronicle:
   enabled: false
