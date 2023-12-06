@@ -181,10 +181,6 @@ marketService:
 
 patrolRewardService:
   enabled: true
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-27ad53400070096c0672707f52465be9b126869d"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
@@ -229,11 +225,6 @@ volumeRotator:
 
 worldBoss:
   enabled: true
-
-  image:
-    repository: planetariumhq/world-boss-service
-    pullPolicy: Always
-    tag: "git-722f71e94fc7a0c3b140530b541e9dd1c684d02a"
 
   ports:
     targetPort: 5000
