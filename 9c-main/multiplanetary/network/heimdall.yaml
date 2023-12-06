@@ -331,6 +331,11 @@ testHeadless1:
   enabled: true
   replicas: 2
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    tag: "git-a7ff95b2e5d1dad7c4a78930df4ab87f2fc05237"
+
   host: "heimdall-test-1.nine-chronicles.com"
 
   ports:
@@ -363,6 +368,11 @@ testHeadless1:
 testHeadless2:
   enabled: true
   replicas: 1
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    tag: "git-a7ff95b2e5d1dad7c4a78930df4ab87f2fc05237"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
