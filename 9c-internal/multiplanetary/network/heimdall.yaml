@@ -236,8 +236,7 @@ testHeadless1:
     pullPolicy: Always
     tag: "git-52fedb4a050d12fb5fd44e5e83c61ed4a50a9e2b"
 
-  hosts:
-    - "heimdall-internal-test-1.nine-chronicles.com"
+  host: "heimdall-internal-test-1.nine-chronicles.com"
 
   ports:
     headless: 31234
