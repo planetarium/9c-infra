@@ -58,10 +58,8 @@ reset_snapshot() {
         done
     }
 
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal."}' $3
     copy_snapshot $1 $2
   else
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Copying 9c-main snapshots to 9c-internal."}' $3
     ARCHIVE="archive_"$(date '+%Y%m%d%H')
     INTERNAL_PREFIX=$(echo $1/ | awk '{gsub(/\//,"\\/");print}')
     ARCHIVE_PATH=$1/$ARCHIVE/
@@ -102,7 +100,6 @@ CHAIN_NAME=$1
 if [ $response = y ]
 then
     echo "Reset cluster with a new snapshot"
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster with a new snapshot"}'
     if [ $CHAIN_NAME = "odin"]
     then
       reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" || true
@@ -111,6 +108,5 @@ then
     fi
 else
     echo "Reset cluster without resetting snapshot."
-    curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] Reset cluster without resetting snapshot."}'
 fi
 
