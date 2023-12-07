@@ -309,7 +309,7 @@ testHeadless1:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-663192396151d46eb54cc959c13ded9fca3da67a"
+    tag: "git-fe322126096a1785224c3c1f9b2ba46bc7ce651b"
 
   loggingEnabled: true
 
