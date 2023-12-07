@@ -1,20 +1,20 @@
 terraform {
+  required_providers {
+    aws = {
+      version = ">= 3"
+    }
+  }
+  required_version = ">= 0.13.0"
+
   backend "s3" {
     bucket = "9c-tfstates"
     key    = "eks/9c-internal"
-    region = var.region
+    region = "us-east-2"
   }
 }
 
-module "internal_eks" {
-  source = "../../modules/eks"
-  cluster_name = "internal-cluster"
-  vpc_id       = module.network.vpc_id
-  // ... 기타 필요한 변수들
-}
-
-module "internal_eks" {
-  source = "../../modules/eks"
+module "common" {
+  source = "../../modules/root"
 
   name = "9c-internal-v2"
 
@@ -36,37 +36,102 @@ module "internal_eks" {
 
 
   # node group
-  node_groups = {
+node_groups = {
     "9c-internal-c5_4xl_2c" = {
-      instance_types    = ["c5.4xlarge"]
+      instance_types    = ["c5d.4xlarge"]
       availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
       desired_size      = 0
       min_size          = 0
       max_size          = 1
     }
 
-    "9c-internal-m5_l_2c" = {
-      instance_types    = ["m5.large"]
+    "9c-internal-m5d_l_2c" = {
+      instance_types    = ["m5d.large"]
       availability_zone = "us-east-2c"
-      desired_size      = 3
+      capacity_type     = "SPOT"
+      desired_size      = 4
       min_size          = 0
-      max_size          = 3
+      max_size          = 15
     }
 
-    "9c-internal-m5_2xl_2c" = {
-      instance_types    = ["m5.2xlarge"]
+    "9c-internal-m5d_2xl_2c" = {
+      instance_types    = ["m5d.2xlarge"]
       availability_zone = "us-east-2c"
-      desired_size      = 2
-      min_size          = 0
-      max_size          = 2
-    }
-
-    "9c-internal-m5_xl_2c" = {
-      instance_types    = ["m5.xlarge"]
-      availability_zone = "us-east-2c"
-      desired_size      = 5
+      capacity_type     = "SPOT"
+      desired_size      = 0
       min_size          = 0
       max_size          = 5
+    }
+
+    "9c-internal-m5d_xl_2c" = {
+      instance_types    = ["m5d.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 16
+    }
+
+    "9c-internal-m7g_2xl_2c" = {
+      instance_types    = ["m7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 1
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "9c-internal-r6g_l_2c" = {
+      instance_types    = ["r6g.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 5
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
+
+    "9c-internal-r6g_xl_2c" = {
+      instance_types    = ["r6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 5
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "9c-internal-c7g_4xl_2c" = {
+      instance_types    = ["c7g.4xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 1
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "9c-internal-ondemand-r7g_l_2c" = {
+      instance_types    = ["r7g.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 5
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "heimdall-internal-r7g_l_2c" = {
+      instance_types    = ["r7g.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 5
+      min_size          = 5
+      max_size          = 10
+      ami_type          = "AL2_ARM_64"
     }
   }
 }
