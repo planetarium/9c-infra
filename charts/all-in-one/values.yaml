@@ -355,7 +355,7 @@ testHeadless1:
 
   env: []
 
-  host: "9c-main-test-1.nine-chronicles.com"
+  host: ""
 
   ports:
     headless: 31234
@@ -391,7 +391,7 @@ testHeadless2:
 
   env: []
 
-  host: "9c-main-test-2.nine-chronicles.com"
+  host: ""
 
   ports:
     headless: 31234
