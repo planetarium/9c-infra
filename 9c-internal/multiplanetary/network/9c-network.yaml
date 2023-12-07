@@ -76,6 +76,7 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/odin/appsettings.json
 
 remoteHeadless:
   image:
@@ -105,6 +106,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/odin/appsettings.json
 
 dataProvider:
   enabled: true

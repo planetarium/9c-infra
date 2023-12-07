@@ -134,6 +134,9 @@ remoteHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
+  extraArgs:
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json
+
 rudolfService:
   enabled: true
 
@@ -200,6 +203,9 @@ validator:
     requests:
       cpu: 1500m
       memory: 12Gi
+
+  extraArgs:
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json
 
 worldBoss:
   enabled: true
