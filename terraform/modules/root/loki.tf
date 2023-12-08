@@ -49,8 +49,8 @@ resource "aws_iam_policy" "loki" {
                 "s3:DeleteObject"
             ],
             "Resource": [
-                "arn:aws:s3:::loki.planetarium-dev.com/*",
-                "arn:aws:s3:::loki.planetarium-dev.com"
+                "arn:aws:s3:::loki-dev.planetariumhq.com/*",
+                "arn:aws:s3:::loki-dev.planetariumhq.com"
             ]
         }
     ]

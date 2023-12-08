@@ -43,14 +43,14 @@ resource "aws_iam_policy" "fluent_bit" {
          "Action":[
             "s3:ListBucket"
          ],
-         "Resource":"arn:aws:s3:::athena.planetarium-dev.com"
+         "Resource":"arn:aws:s3:::fluent-bit.planetariumhq.com"
         },
         {
           "Effect":"Allow",
           "Action":[
               "s3:PutObject"
           ],
-          "Resource":"arn:aws:s3:::athena.planetarium-dev.com/*"
+          "Resource":"arn:aws:s3:::fluent-bit.planetariumhq.com/*"
         }
     ]
 }
