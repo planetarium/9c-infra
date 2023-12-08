@@ -4,11 +4,11 @@ terraform {
       version = ">= 3"
     }
   }
-  required_version = ">= 0.13.0"
+  required_version = ">= 1.3.6"
 
   backend "s3" {
     bucket = "9c-tfstates"
-    key    = "eks/9c-internal"
+    key    = "eks/9c-internal-v2"
     region = "us-east-2"
   }
 }
@@ -50,9 +50,9 @@ node_groups = {
       instance_types    = ["m5d.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 4
+      desired_size      = 0
       min_size          = 0
-      max_size          = 15
+      max_size          = 20
     }
 
     "9c-internal-m5d_2xl_2c" = {
@@ -68,8 +68,8 @@ node_groups = {
       instance_types    = ["m5d.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
+      desired_size      = 5
+      min_size          = 5
       max_size          = 16
     }
 
@@ -77,9 +77,9 @@ node_groups = {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 1
-      min_size          = 0
-      max_size          = 1
+      desired_size      = 2
+      min_size          = 2
+      max_size          = 15
       ami_type          = "AL2_ARM_64"
     }
 
@@ -87,9 +87,9 @@ node_groups = {
       instance_types    = ["r6g.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 5
+      desired_size      = 0
       min_size          = 0
-      max_size          = 15
+      max_size          = 25
       ami_type          = "AL2_ARM_64"
     }
 
@@ -99,7 +99,7 @@ node_groups = {
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
       desired_size      = 5
-      min_size          = 0
+      min_size          = 5
       max_size          = 15
       ami_type          = "AL2_ARM_64"
     }
@@ -108,9 +108,9 @@ node_groups = {
       instance_types    = ["c7g.4xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 1
+      desired_size      = 0
       min_size          = 0
-      max_size          = 1
+      max_size          = 10
       ami_type          = "AL2_ARM_64"
     }
 
@@ -118,7 +118,7 @@ node_groups = {
       instance_types    = ["r7g.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 5
+      desired_size      = 6
       min_size          = 0
       max_size          = 15
       ami_type          = "AL2_ARM_64"
@@ -128,8 +128,8 @@ node_groups = {
       instance_types    = ["r7g.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 5
-      min_size          = 5
+      desired_size      = 2
+      min_size          = 0
       max_size          = 10
       ami_type          = "AL2_ARM_64"
     }

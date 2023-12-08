@@ -89,6 +89,6 @@ variable "addon_versions" {
     "coredns"            = "v1.8.7-eksbuild.1"
     "kube-proxy"         = "v1.22.6-eksbuild.1"
     "vpc_cni"            = "v1.11.0-eksbuild.1"
-    "aws_ebs_csi_driver" = "v1.6.1-eksbuild.1"
+    "aws_ebs_csi_driver" = "v1.24.0-eksbuild.1"
   }
 }
