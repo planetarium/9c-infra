@@ -104,6 +104,8 @@ spec:
           read:
             count: 3
             nodeGroup: 9c-internal-r6g_xl_2c
+        opentelemetry:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

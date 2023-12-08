@@ -1,0 +1,26 @@
+{{ if .Values.opentelemetry.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: opentelemetry
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+    chart: opentelemetry-collector
+    targetRevision: 0.76.0
+    helm:
+      values: |-
+        namespaceOverride: "monitoring"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+---
+{{ end }}
