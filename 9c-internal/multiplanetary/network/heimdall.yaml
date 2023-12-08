@@ -230,7 +230,7 @@ worldBoss:
     node.kubernetes.io/instance-type: m5d.xlarge
 
 testHeadless1:
-  enabled: false
+  enabled: true
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -245,6 +245,7 @@ testHeadless1:
 
   storage:
     data: 500Gi
+    accessModes: "ReadWriteMany"
 
   resources:
     requests:
