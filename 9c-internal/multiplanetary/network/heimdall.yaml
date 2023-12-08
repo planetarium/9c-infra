@@ -234,7 +234,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-baaa84c514ce41856de3dfc521f2a6ef202d46a1"
+    tag: "git-b6453d19679aa71d133dcd67c555e76324149d31"
 
   host: "heimdall-internal-test-1.nine-chronicles.com"
 
@@ -245,6 +245,7 @@ testHeadless1:
 
   storage:
     data: 500Gi
+    accessModes: "ReadWriteMany"
 
   resources:
     requests:
