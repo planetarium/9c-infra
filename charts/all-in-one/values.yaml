@@ -341,10 +341,11 @@ bridge:
 testHeadless1:
   enabled: false
   image:
-    repository: longfin/9c-headless
+    # follow global image
+    repository: ""
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200020-perf-tune-13"
+    tag: ""
 
   loggingEnabled: false
 
@@ -364,6 +365,7 @@ testHeadless1:
 
   storage:
     data: 1000Gi
+    accessModes: "ReadWriteOnce"
 
   resources:
     requests:
