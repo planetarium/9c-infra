@@ -259,4 +259,3 @@ testHeadless1:
 
   extraArgs:
     - --tx-quota-per-signer=1
-    - --arena-participants-sync=false
