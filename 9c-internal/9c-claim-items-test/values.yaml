@@ -31,7 +31,7 @@ externalSecret:
 snapshot:
   downloadSnapshot: false
   slackChannel: "9c-internal-claim-items"
-  image: "planetariumhq/ninechronicles-snapshot:git-708a18d12e951f1c4275c5137eb577123dd81715"
+  image: "planetariumhq/ninechronicles-snapshot:git-e9fc57f2495c0d835697c3f491a93063267c0668"
   partition:
     enabled: true
     suspend: true

@@ -113,7 +113,7 @@ class ValuesFileUpdater:
         )
 
 def extract_metadata(image_source: str, delimiter: str = "|") -> IntegrationMetadata:
-    # Example input: remoteHeadless|planetariumhq/ninechronicles-snapshot:git-e14cb15c049c5648752672571ea3864d50989de5
+    # Example input: remoteHeadless|planetariumhq/ninechronicles-snapshot:git-e9fc57f2495c0d835697c3f491a93063267c0668
 
     manifest_key, dockerhub_info = image_source.split(delimiter)
     dockerhub_org, dockerhub_image_info = dockerhub_info.split("/")
