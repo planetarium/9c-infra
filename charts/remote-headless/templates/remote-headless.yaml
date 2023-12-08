@@ -182,7 +182,7 @@ spec:
       name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
     spec:
       accessModes:
-      - ReadWriteOnce
+      - {{ default "ReadWriteOnce" $.Values.storage.accessModes }}
       resources:
         requests:
           storage: {{ $.Values.storage.data }}
