@@ -36,7 +36,7 @@ spec:
         accountId: "319679068466"
         prometheus:
           server:
-            nodeGroup: 9c-internal-r6g_xl_2c
+            nodeGroup: 9c-internal-ondemand-r7g_l_2c
             extraScrapeConfigs:
               - job_name: scrape-headlesses
                 metrics_path: /metrics
@@ -100,10 +100,10 @@ spec:
           bucketName: loki-dev.planetariumhq.com
           write:
             count: 2
-            nodeGroup: 9c-internal-r6g_xl_2c
+            nodeGroup: 9c-internal-ondemand-r7g_l_2c
           read:
             count: 3
-            nodeGroup: 9c-internal-r6g_xl_2c
+            nodeGroup: 9c-internal-ondemand-r7g_l_2c
         opentelemetry:
           enabled: true
   destination:
