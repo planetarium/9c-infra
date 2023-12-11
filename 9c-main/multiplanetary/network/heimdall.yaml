@@ -372,6 +372,12 @@ testHeadless1:
 
   loggingEnabled: true
 
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+
   extraArgs:
   - --tx-quota-per-signer=1
   - --config=appsettings.configmap.json
@@ -410,6 +416,12 @@ testHeadless2:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
   loggingEnabled: true
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
