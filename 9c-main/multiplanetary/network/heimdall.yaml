@@ -115,6 +115,10 @@ fullState:
     value: "::ffff:3.18.248.125"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   tolerations:
   - effect: NoSchedule
@@ -145,6 +149,10 @@ validator:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   loggingEnabled: true
 
@@ -203,6 +211,10 @@ remoteHeadless:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -360,6 +372,12 @@ testHeadless1:
 
   loggingEnabled: true
 
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+
   extraArgs:
   - --tx-quota-per-signer=1
   - --config=appsettings.configmap.json
@@ -398,6 +416,12 @@ testHeadless2:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
   loggingEnabled: true
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
