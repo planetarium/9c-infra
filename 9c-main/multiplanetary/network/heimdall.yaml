@@ -376,7 +376,7 @@ testHeadless1:
   - name: Headless__AccessControlService__AccessControlServiceType
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -421,7 +421,7 @@ testHeadless2:
   - name: Headless__AccessControlService__AccessControlServiceType
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
