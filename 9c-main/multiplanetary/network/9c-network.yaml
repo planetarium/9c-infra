@@ -9,7 +9,7 @@ global:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
-  appProtocolVersion: "200110/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCnkMilH6x6+Pf3Ud0wF54ZdH7P.30PZfZzOc75hq6TggIgfbaK6p3XNAGrFi1+3uOxXd.heWP.SfgX9NvM9mvgh44=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTExLTIxZQ=="
+  appProtocolVersion: "200120/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDBpTmpmZkr1VsSwtYKKKaWSO7c2tr+kihvsmCPNvFaKgIgWtLZOpQYpFKPdOQGdc8QwqnfzRqKOBCugUT2XlrowL4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
