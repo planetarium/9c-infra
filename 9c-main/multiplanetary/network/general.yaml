@@ -1,7 +1,7 @@
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "72"
+    tag: "80"
 
 seed:
   image:
@@ -11,7 +11,7 @@ seed:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: 'git-d9e36f8012a40effaa654e52d8eb426adfa99d42'
+    tag: '80'
 
 worldBoss:
   image:
