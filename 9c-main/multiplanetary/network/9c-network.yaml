@@ -5,10 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
-
   appProtocolVersion: "200120/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDBpTmpmZkr1VsSwtYKKKaWSO7c2tr+kihvsmCPNvFaKgIgWtLZOpQYpFKPdOQGdc8QwqnfzRqKOBCugUT2XlrowL4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
@@ -82,9 +78,6 @@ seed:
 validator:
   count: 4
 
-  image:
-    repository: planetariumhq/ninechronicles-headless
-
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "true"
@@ -112,7 +105,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --consensus-target-block-interval=6500
-  - --config=appsettings.configmap.json
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
@@ -178,7 +171,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=appsettings.configmap.json
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
@@ -249,11 +242,7 @@ marketService:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
 fullState:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-ad6414cb21ef4275d69f1b2f7b3cea84be8a6add"
-
-  enabled: truen
+  enabled: true
 
   loggingEnabled: true
 
@@ -264,7 +253,7 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
-  - --config=appsettings.configmap.json
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -319,10 +308,6 @@ bridge:
 testHeadless1:
   enabled: true
 
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-fe322126096a1785224c3c1f9b2ba46bc7ce651b"
-
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
@@ -345,7 +330,7 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=appsettings.configmap.json
+  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   resources:
     requests:
@@ -363,10 +348,6 @@ testHeadless1:
 
 testHeadless2:
   enabled: true
-
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-bc75448d5551cc116b6bff42f7f63fb08a9ce316"
 
   loggingEnabled: true
 
