@@ -1,6 +1,7 @@
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
     tag: "80"
 
 seed:
@@ -11,6 +12,7 @@ seed:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
     tag: '80'
 
 worldBoss:
