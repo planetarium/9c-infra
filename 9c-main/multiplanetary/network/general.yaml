@@ -3,6 +3,8 @@ global:
     repository: planetariumhq/ninechronicles-headless
     tag: "72"
 
+  appProtocolVersion: 
+    200120/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCDrBoixBL6uym5CMuQmQu.x1NOQ7m0Fd.n5CppgrR7DwIgUz.3qiaKOhZ+CY+gaplcbFWwjW7BgpMU6HZxrc4Z4.E=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ==
 seed:
   image:
     repository: planetariumhq/libplanet-seed
