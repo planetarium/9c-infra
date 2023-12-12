@@ -219,7 +219,7 @@ rudolfCurrencyNotifier:
   enabled: true
 
   config:
-    schedule: "0 0 0/1 * *"
+    schedule: "0 0 * * *"
     graphqlEndpoint: "https://9c-internal-rpc-1.nine-chronicles.com/graphql"
     targetAddress: "0xB5AF28837b28A9C768e9849d90646E3D6078311c"
     serverName: "9c-internal"
