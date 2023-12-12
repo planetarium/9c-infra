@@ -308,6 +308,10 @@ bridge:
 testHeadless1:
   enabled: true
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "80"
+
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
@@ -348,6 +352,10 @@ testHeadless1:
 
 testHeadless2:
   enabled: true
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "80"
 
   loggingEnabled: true
 

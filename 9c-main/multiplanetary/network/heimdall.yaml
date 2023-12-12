@@ -335,6 +335,10 @@ testHeadless1:
   enabled: true
   replicas: 2
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "80"
+
   host: "heimdall-test-1.nine-chronicles.com"
 
   ports:
@@ -374,6 +378,10 @@ testHeadless1:
 testHeadless2:
   enabled: true
   replicas: 1
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "80"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
