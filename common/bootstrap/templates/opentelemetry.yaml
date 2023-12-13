@@ -16,6 +16,26 @@ spec:
       values: |-
         namespaceOverride: "monitoring"
         mode: "deployment"
+        config:
+          exporters:
+            prometheus:
+              endpoint: "0.0.0.0:9464"
+              namespace: monitoring
+          service:
+            pipelines:
+              metrics:
+                exporters: [prometheus]
+        ports:
+          metrics:
+            enabled: true
+          prometheus:
+            enabled: true
+            containerPort: 9464
+            servicePort: 9464
+            hostPort: 9464
+            protocol: TCP
+        service:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
