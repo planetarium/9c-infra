@@ -92,3 +92,9 @@ variable "addon_versions" {
     "aws_ebs_csi_driver" = "v1.24.0-eksbuild.1"
   }
 }
+
+variable "loki_bucket" {
+  description = "Loki's s3 bucket"
+
+  default = "loki-dev.planetariumhq.com"
+}
