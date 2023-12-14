@@ -6,9 +6,9 @@ logLevel: "debug"
 
 global:
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20231213-04"
+    tag: "git-5f7e9b70b648f62f6ed5e00f4c281fa91fadbca3"
 
   appProtocolVersion: "200120/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDBpTmpmZkr1VsSwtYKKKaWSO7c2tr+kihvsmCPNvFaKgIgWtLZOpQYpFKPdOQGdc8QwqnfzRqKOBCugUT2XlrowL4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ=="
 
@@ -39,7 +39,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-d515403988343f7dce09d8c89e1cf278fd27c59e"
+  image: "planetariumhq/ninechronicles-snapshot:git-3d1a5a773876554f6c375a8a297c23dec5f6d72c"
   path: "main/partition"
 
   fullSnapshot:
@@ -195,18 +195,18 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: 'git-3108fb7f5265008b69849e1f0d3d769435a052e2'
+    tag: 'git-4ca427835ae05beaa90a2f75799350f400294287'
 
   rwMode: true
   render: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
 
   resources:
     requests:
       cpu: '3'
-      memory: 12Gi
+      memory: 26Gi
 
 explorer:
   enabled: false
