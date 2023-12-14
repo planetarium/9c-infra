@@ -1,8 +1,8 @@
 global:
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20231213-04"
+    tag: "80"
 
 seed:
   image:
