@@ -95,6 +95,13 @@ spec:
                       group: 9c-rudolf
                 tls_config:
                   insecure_skip_verify: true
+              - job_name: 'otel-collector'
+                scrape_interval: 10s
+                # metrics_path defaults to '/metrics'
+                metrics_path: /metrics
+                # scheme defaults to 'http'.
+                static_configs:
+                  - targets: ['opentelemetry-opentelemetry-collector.monitoring.svc.cluster.local:9464']
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
