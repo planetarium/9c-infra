@@ -106,6 +106,8 @@ spec:
             nodeGroup: 9c-internal-ondemand-r7g_l_2c
         opentelemetry:
           enabled: true
+        tempo:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

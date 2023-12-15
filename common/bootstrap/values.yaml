@@ -32,3 +32,6 @@ prometheus:
 
 opentelemetry:
   enabled: false
+
+tempo:
+  enabled: false
