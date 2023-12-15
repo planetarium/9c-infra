@@ -1,0 +1,38 @@
+{{ if .Values.tempo.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: tempo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: tempo
+    targetRevision: 1.7.1
+    helm:
+      values: |-
+        tempo:
+          querier:
+            max_concurrent_queries: 100
+          global_overrides:
+            defaults:
+              ingestion:
+                strategy: global
+                limit_bytes: 100000000
+              read:
+                max_bytes_per_tag_values_query: 20000000
+              global:
+                max_bytes_per_trace: 20000000
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+---
+{{ end }}
