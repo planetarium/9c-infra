@@ -15,6 +15,7 @@ global:
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json"
 
   peerStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
@@ -110,7 +111,6 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --consensus-target-block-interval=6500
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
@@ -176,7 +176,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
@@ -264,7 +263,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -346,7 +344,6 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json
 
   resources:
     requests:
@@ -384,7 +381,7 @@ testHeadless2:
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
   - name: Jwt__EnableJwtAuthentication
-    value: "true"
+    value: "false"
   - name: Jwt__Key
     valueFrom:
       secretKeyRef:

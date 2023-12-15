@@ -57,6 +57,9 @@ spec:
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
         - --network-type={{ $.Values.global.networkType }}
+        {{- if $.Values.global.headlessAppsettingsPath }}
+        - --config={{ $.Values.global.headlessAppsettingsPath }}
+        {{- end }}
         {{- with $.Values.testHeadless2.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

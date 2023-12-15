@@ -5,6 +5,7 @@ global:
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   networkType: Internal
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
   
@@ -135,7 +136,6 @@ remoteHeadless:
     eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
   extraArgs:
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json
 
 rudolfService:
   enabled: true
@@ -205,7 +205,6 @@ validator:
       memory: 12Gi
 
   extraArgs:
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json
 
 worldBoss:
   enabled: true

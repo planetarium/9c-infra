@@ -100,6 +100,9 @@ spec:
         {{- end }}
         - --network-type={{ $.Values.global.networkType }}
         - --tx-life-time=10
+        {{- if $.Values.global.headlessAppsettingsPath }}
+        - --config={{ $.Values.global.headlessAppsettingsPath }}
+        {{- end }}
         command:
           - dotnet
         env:

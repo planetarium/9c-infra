@@ -55,6 +55,9 @@ function run_headless() {
       --peer "$SEED1" \
       --peer "$SEED2" \
       --peer "$SEED3" \
+      {{- if $.Values.global.headlessAppsettingsPath }}
+      --config={{ $.Values.global.headlessAppsettingsPath }} \
+      {{- end }}
       > "$HEADLESS_LOG" 2>&1 &
 
   PID="$!"

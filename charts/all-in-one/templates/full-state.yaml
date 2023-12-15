@@ -53,6 +53,9 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --network-type={{ $.Values.global.networkType }}
+        {{- if $.Values.global.headlessAppsettingsPath }}
+        - --config={{ $.Values.global.headlessAppsettingsPath }}
+        {{- end }}
         {{- with $.Values.fullState.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
