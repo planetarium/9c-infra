@@ -381,7 +381,7 @@ testHeadless2:
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
   - name: Jwt__EnableJwtAuthentication
-    value: "true"
+    value: "false"
   - name: Jwt__Key
     valueFrom:
       secretKeyRef:
