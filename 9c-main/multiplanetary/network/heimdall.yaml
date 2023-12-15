@@ -15,6 +15,7 @@ global:
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
+  remoteAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json"
 
   peerStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
@@ -89,7 +90,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -155,7 +155,6 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
   - --consensus-target-block-interval=7000
 
   consensusSeedStrings:
@@ -215,7 +214,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
@@ -248,7 +246,6 @@ explorer:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
@@ -373,7 +370,6 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   tolerations:
   - effect: NoSchedule
@@ -418,7 +414,6 @@ testHeadless2:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   tolerations:
   - effect: NoSchedule
@@ -440,7 +435,6 @@ remoteActionEvaluatorHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --config=https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c

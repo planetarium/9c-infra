@@ -56,6 +56,11 @@ function run_headless() {
       --app-protocol-version="$APP_PROTOCOL_VERSION" \
       --trusted-app-protocol-version-signer="$TRUSTED_APP_PROTOCOL_VERSION_SIGNER" \
       --ice-server="$ICE_SERVER" \
+      {{- if $.Values.global.remoteAppsettingsPath }}
+      --config={{ $.Values.global.remoteAppsettingsPath }} \
+      {{- else }}
+      --config=appsettings.configmap.json \
+      {{- end }}
       {{- range $i, $s := $.Values.global.peerStrings }}
       --peer "$SEED{{ add $i 1 }}" \
       {{- end }}
