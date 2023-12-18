@@ -100,7 +100,7 @@ CHAIN_NAME=$1
 if [ $response = y ]
 then
     echo "Reset cluster with a new snapshot"
-    if [ $CHAIN_NAME = "odin"]
+    if [ $CHAIN_NAME = "odin" ]
     then
       reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" || true
     else
