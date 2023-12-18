@@ -102,6 +102,13 @@ spec:
                 # scheme defaults to 'http'.
                 static_configs:
                   - targets: ['opentelemetry-opentelemetry-collector.monitoring.svc.cluster.local:9464']
+              - job_name: 'pod monitoring'
+                honor_labels: true
+                kubernetes_sd_configs:
+                - role: pod
+                relabel_configs:
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
