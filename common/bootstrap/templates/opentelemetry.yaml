@@ -25,9 +25,9 @@ spec:
                 http:
                   endpoint: 0.0.0.0:4318
           exporters:
-            otlp:	
-              endpoint: tempo.monitoring.svc.cluster.local:4317	
-              tls:	
+            otlp:
+              endpoint: tempo.monitoring.svc.cluster.local:4317
+              tls:
                 insecure: true
             prometheus:
               endpoint: "0.0.0.0:9464"
