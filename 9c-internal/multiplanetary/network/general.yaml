@@ -1,7 +1,7 @@
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-09f402cbbf5fecfd465d41fd051585306044956b"
+    tag: "git-51160ded82adcb73a4002d422ddc666bbb86b3cd"
 
 seed:
   image:
