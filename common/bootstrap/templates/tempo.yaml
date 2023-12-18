@@ -18,15 +18,6 @@ spec:
         tempo:
           querier:
             max_concurrent_queries: 100
-          global_overrides:
-            defaults:
-              ingestion:
-                strategy: global
-                limit_bytes: 100000000
-              read:
-                max_bytes_per_tag_values_query: 20000000
-              global:
-                max_bytes_per_trace: 20000000
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
