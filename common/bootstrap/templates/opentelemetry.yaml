@@ -25,6 +25,10 @@ spec:
                 http:
                   endpoint: 0.0.0.0:4318
           exporters:
+            otlp:	
+              endpoint: tempo.monitoring.svc.cluster.local:4317	
+              tls:	
+                insecure: true
             prometheus:
               endpoint: "0.0.0.0:9464"
               namespace: monitoring
@@ -35,6 +39,8 @@ spec:
             pipelines:
               metrics:
                 exporters: [prometheus]
+              traces:
+                exporters: [otlp]
         ports:
           metrics:
             enabled: true
