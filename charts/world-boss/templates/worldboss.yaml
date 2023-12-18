@@ -79,6 +79,16 @@ spec:
                 secretKeyRef:
                   key: slack-signing-secret
                   name: world-boss-env
+            - name: GRAPHQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-password
+                  name: world-boss-env
+            - name: SLACK_CHANNEL_ID
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel-id
+                  name: world-boss-env
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: world-boss-service
           ports:
@@ -159,6 +169,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: slack-signing-secret
+                  name: world-boss-env
+            - name: GRAPHQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-password
+                  name: world-boss-env
+            - name: SLACK_CHANNEL_ID
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel-id
                   name: world-boss-env
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           name: world-boss-worker

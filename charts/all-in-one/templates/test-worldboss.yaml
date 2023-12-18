@@ -83,6 +83,16 @@ spec:
                 secretKeyRef:
                   key: sentry-dsn
                   name: world-boss-env
+            - name: GRAPHQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-password
+                  name: world-boss-env
+            - name: SLACK_CHANNEL_ID
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel-id
+                  name: world-boss-env
           image: {{ $.Values.testWorldBoss.image.repository }}:{{ $.Values.testWorldBoss.image.tag }}
           name: test-world-boss-service
           ports:
