@@ -6,7 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
-  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
@@ -28,7 +27,7 @@ spec:
                   name: slack
                   key: slack-webhook-url
             resources:
-              {{- toYaml . | nindent 14 }}
+              {{- toYaml .Values.resources | nindent 14 }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/preload_headless.sh

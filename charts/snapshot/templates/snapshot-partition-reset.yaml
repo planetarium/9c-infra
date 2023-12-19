@@ -6,7 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 spec:
-  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
