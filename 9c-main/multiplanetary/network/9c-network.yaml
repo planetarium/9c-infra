@@ -10,7 +10,7 @@ global:
     pullPolicy: Always
     tag: "git-5f7e9b70b648f62f6ed5e00f4c281fa91fadbca3"
 
-  appProtocolVersion: "200120/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDBpTmpmZkr1VsSwtYKKKaWSO7c2tr+kihvsmCPNvFaKgIgWtLZOpQYpFKPdOQGdc8QwqnfzRqKOBCugUT2XlrowL4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ=="
+  appProtocolVersion: "200130/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIBf2OVLx.dmj0pHzL32CF2pG2448.4BfnptP.c11sL6dAiA1cwrbsskFnDoCqCaxwsyTlDhh+rnBDr27rMbRQ7M5zw==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTE5ZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
