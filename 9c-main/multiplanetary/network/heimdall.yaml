@@ -10,7 +10,7 @@ global:
     pullPolicy: Always
     tag: "80"
 
-  appProtocolVersion: "200120/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCDrBoixBL6uym5CMuQmQu.x1NOQ7m0Fd.n5CppgrR7DwIgUz.3qiaKOhZ+CY+gaplcbFWwjW7BgpMU6HZxrc4Z4.E=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTEyZQ=="
+  appProtocolVersion: "200130/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIBf2OVLx.dmj0pHzL32CF2pG2448.4BfnptP.c11sL6dAiA1cwrbsskFnDoCqCaxwsyTlDhh+rnBDr27rMbRQ7M5zw==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTE5ZQ=="
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
