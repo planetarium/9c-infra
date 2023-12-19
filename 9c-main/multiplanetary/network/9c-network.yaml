@@ -35,7 +35,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-3d1a5a773876554f6c375a8a297c23dec5f6d72c"
+  image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
   path: "main/partition"
 
   fullSnapshot:
@@ -96,6 +96,10 @@ validator:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   loggingEnabled: true
 
@@ -160,6 +164,10 @@ remoteHeadless:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -267,6 +275,10 @@ fullState:
     value: "::ffff:3.18.248.125"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   tolerations:
   - effect: NoSchedule
@@ -315,6 +327,10 @@ testHeadless1:
     value: "60s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -361,6 +377,10 @@ testHeadless2:
       secretKeyRef:
         key: jwt
         name: private-keys
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "redis"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
