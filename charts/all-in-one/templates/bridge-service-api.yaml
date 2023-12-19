@@ -12,7 +12,6 @@ spec:
   selector:
     matchLabels:
       app: bridge-service-api
-  serviceName: bridge-service-api
   template:
     metadata:
       labels:

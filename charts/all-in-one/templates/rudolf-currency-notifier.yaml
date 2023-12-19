@@ -32,7 +32,7 @@ spec:
             volumeMounts:
             - mountPath: /bin/rudolf-currency-notifier.js
               name: rudolf-currency-notifier
-              readonly: true
+              readOnly: true
               subPath: rudolf-currency-notifier.js
           restartPolicy: OnFailure
           volumes:

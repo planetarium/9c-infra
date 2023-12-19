@@ -35,6 +35,4 @@ spec:
                   name: slack
                   key: slack-webhook-url
           restartPolicy: OnFailure
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
 {{ end }}

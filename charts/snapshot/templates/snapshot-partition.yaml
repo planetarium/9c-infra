@@ -4,7 +4,6 @@ metadata:
   name: snapshot-partition
   namespace: {{ $.Values.namespace }}
 spec:
-  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
