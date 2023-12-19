@@ -33,8 +33,6 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 60
       restartPolicy: Always
-  updateStrategy:
-    type: RollingUpdate
 ---
 apiVersion: v1
 kind: Service
