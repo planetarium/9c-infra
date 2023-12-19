@@ -5,11 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "80"
-
   appProtocolVersion: "200130/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIBf2OVLx.dmj0pHzL32CF2pG2448.4BfnptP.c11sL6dAiA1cwrbsskFnDoCqCaxwsyTlDhh+rnBDr27rMbRQ7M5zw==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTE5ZQ=="
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"

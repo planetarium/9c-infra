@@ -5,11 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-5f7e9b70b648f62f6ed5e00f4c281fa91fadbca3"
-
   appProtocolVersion: "200130/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIDDf40VoFu3AlvufZRGGhSZ48bocvBg6VVxjgajGME6QAiBiMJMjFAgMzILHk3eoor9OXS14MAqTxjkKVYwDx6Pr3Q==/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTEyLTE5ZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
@@ -190,11 +185,6 @@ remoteHeadless:
 
 dataProvider:
   enabled: true
-
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: 'git-4ca427835ae05beaa90a2f75799350f400294287'
 
   rwMode: true
   render: true
