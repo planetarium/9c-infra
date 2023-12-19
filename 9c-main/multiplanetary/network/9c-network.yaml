@@ -186,11 +186,6 @@ remoteHeadless:
 dataProvider:
   enabled: true
 
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: 'git-4ca427835ae05beaa90a2f75799350f400294287'
-
   rwMode: true
   render: true
 
