@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kong-gateway
+    app.kubernetes.io/instance: {{ $.Chart.Name }}
+  name: kong-gateway
+  namespace: {{ $.Chart.Name }}
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: kong-gateway
+  template:
+    metadata:
+      labels:
+        app: kong-gateway
+    spec:
+      containers:
+        - env:
+          - name: KONG_DATABASE
+            value: "off"
+          - name: KONG_PROXY_ACCESS_LOG
+            value: "/kong/log/access.log"
+          - name: KONG_ADMIN_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_PROXY_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_LISTEN
+            value: "0.0.0.0:8001"
+          - name: KONG_ADMIN_GUI_URL
+            value: "http://localhost:8002"
+          - name: KONG_DECLARATIVE_CONFIG
+            value: "/kong/routes/kong.yml"
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          name: kong-gateway
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+            - containerPort: 8001
+              name: config
+              protocol: TCP
+            - containerPort: 8002
+              name: admin
+              protocol: TCP
+          volumeMounts:
+          - name: nginx-config
+            mountPath: /usr/local/kong/nginx-kong.conf
+            subPath: nginx-kong.conf
+          - name: kong-config
+            mountPath: /kong/routes/kong.yml
+            subPath: kong.yml
+          - mountPath: /kong/log
+            name: access-log
+          securityContext:
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+      terminationGracePeriodSeconds: 60
+      restartPolicy: Always
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: nginx-config
+        configMap:
+          defaultMode: 0777
+          name: nginx-config
+      - name: kong-config
+        configMap:
+          defaultMode: 0777
+          name: kong-config
+      - hostPath:
+          path: /var/log/kong
+          type: DirectoryOrCreate
+        name: access-log

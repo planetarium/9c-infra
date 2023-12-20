@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-config
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  kong.yml: |-
+    _format_version: "3.0"
+    _transform: true
+    
+    services:
+    - name: srdg
+      url: http://3.129.244.253:3000/
+      routes:
+      - name: default
+        paths:
+        - /srdg
+      - name: health
+        paths:
+        - /health
+        plugins:
+        - name: request-termination
+          config:
+            status_code: 200
+            content_type: applicaton/json
+            body: '{"status":"UP"}'
+    - name: 9cscan-odin
+      url: https://api.9cscan.com
+      routes:
+      - name: 9cscan-odin
+        paths:
+        - /9cscan/odin
+    - name: 9cscan-heimdall
+      url: https://api-heimdall.9cscan.com
+      routes:
+      - name: 9cscan-heimdall
+        paths:
+        - /9cscan/heimdall
+    - name: 9cscan-odin-internal
+      url: https://api-internal.9cscan.com
+      routes:
+      - name: 9cscan-odin-internal
+        paths:
+        - /9cscan/internal/odin

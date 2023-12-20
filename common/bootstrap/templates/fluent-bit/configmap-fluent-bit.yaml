@@ -223,8 +223,8 @@ data:
         Host            srdg.planetarium.team
         Port            443
         AWS_Region      us-east-2
-        HTTP_User       president-kim
-        HTTP_Passwd     xqy*tzj2AMQ-ckh0rat
+        HTTP_User       [user]
+        HTTP_Passwd     [password]
         Index           nginx_logs
         Type            _doc
         tls             On
