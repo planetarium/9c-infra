@@ -13,7 +13,7 @@ data:
     
     services:
     - name: srdg
-      url: http://3.129.244.253:3000/
+      url: http://a1c681e2f760b46ebba1505be7031177-666535022.us-east-2.elb.amazonaws.com
       routes:
       - name: default
         paths:
