@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kong-pdb
+spec:
+  minAvailable: 1    # 최소 가용 Pod 수
+  selector:
+    matchLabels:
+      app: kong-gateway     # 이 PDB가 적용될 Pod의 레이블
+

@@ -12,6 +12,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "{{ $.Values.acmArn }}"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Owner=Yoshi,Creator=Jihyung,Service={{ $.Release.Name }},Name=srdg,Description=ForHackaton2023
 spec:
   ports:
     - name: http
