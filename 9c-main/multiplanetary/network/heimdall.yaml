@@ -253,7 +253,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-full-state.nine-chronicles.com
+    value: main-full-state.heimdall.svc.cluster.local
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
@@ -265,7 +265,7 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: heimdall-full-state.nine-chronicles.com
+    value: main-full-state.heimdall.svc.cluster.local
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
