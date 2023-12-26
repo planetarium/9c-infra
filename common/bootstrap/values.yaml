@@ -32,6 +32,8 @@ prometheus:
 
 opentelemetry:
   enabled: false
+  nodeGroup: ""
 
 tempo:
   enabled: false
+  nodeGroup: ""

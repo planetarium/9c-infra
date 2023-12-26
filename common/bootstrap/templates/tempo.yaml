@@ -18,6 +18,10 @@ spec:
         tempo:
           querier:
             max_concurrent_queries: 100
+        {{- with $.Values.tempo.nodeGroup }}
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: {{ . }}
+        {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

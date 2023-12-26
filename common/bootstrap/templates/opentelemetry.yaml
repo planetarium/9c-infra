@@ -16,6 +16,10 @@ spec:
       values: |-
         namespaceOverride: "monitoring"
         mode: "deployment"
+        {{- with $.Values.opentelemetry.nodeGroup }}
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: {{ . }}
+        {{- end }}
         config:
           receivers:
             otlp:
