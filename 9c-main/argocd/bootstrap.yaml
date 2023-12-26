@@ -151,6 +151,12 @@ spec:
           enabled: false
           memory: 16Gi
           nodeGroup: 9c-main-r6g_xl_2c
+        opentelemetry:
+          enabled: true
+          nodeGroup: 9c-main-r7g_xl_2c
+        tempo:
+          enabled: true
+          nodeGroup: 9c-main-r7g_xl_2c
 
   destination:
     server: https://kubernetes.default.svc
