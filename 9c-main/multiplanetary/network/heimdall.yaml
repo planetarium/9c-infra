@@ -451,11 +451,11 @@ acc:
     port: 6379
 
     nodeSelector:
-      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
     resources:
       requests:
-        memory: 4Gi
+        memory: 8Gi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-t3_medium
