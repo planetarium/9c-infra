@@ -93,6 +93,16 @@ spec:
                 secretKeyRef:
                   key: slack-channel-id
                   name: world-boss-env
+            - name: HEADLESS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: headless-url
+                  name: world-boss-env
+            - name: DATA_PROVIDER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: data-provider-url
+                  name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-service
           ports:
@@ -190,6 +200,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: slack-channel-id
+                  name: world-boss-env
+            - name: HEADLESS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: headless-url
+                  name: world-boss-env
+            - name: DATA_PROVIDER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: data-provider-url
                   name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-worker
