@@ -330,7 +330,7 @@ bridgeServiceApi:
 
 testHeadless1:
   enabled: true
-  replicas: 2
+  replicas: 1
 
   image:
     repository: planetariumhq/ninechronicles-headless
