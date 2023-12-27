@@ -41,7 +41,7 @@ data:
         rewrite name heimdall-full-state.nine-chronicles.com main-full-state.heimdall.svc.cluster.local
         rewrite name heimdall-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local
         rewrite name heimdall-test-1.nine-chronicles.com test-headless-1.heimdall.svc.cluster.local
-        rewrite name heimdall-test-1.nine-chronicles.com test-headless-2.heimdall.svc.cluster.local
+        rewrite name heimdall-test-2.nine-chronicles.com test-headless-2.heimdall.svc.cluster.local
         {{- end }}
         prometheus :9153
         forward . /etc/resolv.conf
