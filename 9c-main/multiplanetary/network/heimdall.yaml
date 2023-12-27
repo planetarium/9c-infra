@@ -202,10 +202,6 @@ remoteHeadless:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -451,11 +447,11 @@ acc:
     port: 6379
 
     nodeSelector:
-      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
 
     resources:
       requests:
-        memory: 4Gi
+        memory: 8Gi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-t3_medium
