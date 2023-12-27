@@ -310,7 +310,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "80"
+    tag: "git-79f076bdba9664d9cba7118f9d5288edfb0124d7"
 
   loggingEnabled: true
 
@@ -355,7 +355,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-27ba3aaf4bce9814ba3e07ec3052111666352884"
+    tag: "git-79f076bdba9664d9cba7118f9d5288edfb0124d7"
 
   loggingEnabled: true
 

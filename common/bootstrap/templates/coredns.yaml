@@ -22,6 +22,7 @@ data:
         rewrite name 9c-main-rpc-8.nine-chronicles.com remote-headless-8.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-9.nine-chronicles.com remote-headless-9.9c-network.svc.cluster.local
         rewrite name 9c-main-rpc-10.nine-chronicles.com remote-headless-10.9c-network.svc.cluster.local
+        rewrite name 9c-main-full-state.nine-chronicles.com main-full-state.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-5.nine-chronicles.com validator-5.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-6.nine-chronicles.com validator-6.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-7.nine-chronicles.com validator-7.9c-network.svc.cluster.local
@@ -37,9 +38,10 @@ data:
         rewrite name heimdall-rpc-6.nine-chronicles.com remote-headless-6.heimdall.svc.cluster.local
         rewrite name heimdall-rpc-7.nine-chronicles.com remote-headless-7.heimdall.svc.cluster.local
         rewrite name heimdall-rpc-8.nine-chronicles.com remote-headless-8.heimdall.svc.cluster.local
-        rewrite name heimdall-full-state.nine-chronicles.com remote-headless-1.heimdall.svc.cluster.local
+        rewrite name heimdall-full-state.nine-chronicles.com main-full-state.heimdall.svc.cluster.local
         rewrite name heimdall-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local
         rewrite name heimdall-test-1.nine-chronicles.com test-headless-1.heimdall.svc.cluster.local
+        rewrite name heimdall-test-2.nine-chronicles.com test-headless-2.heimdall.svc.cluster.local
         {{- end }}
         prometheus :9153
         forward . /etc/resolv.conf

@@ -335,7 +335,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "80"
+    tag: "git-79f076bdba9664d9cba7118f9d5288edfb0124d7"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -379,7 +379,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "80"
+    tag: "git-79f076bdba9664d9cba7118f9d5288edfb0124d7"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
