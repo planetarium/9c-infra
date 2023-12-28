@@ -121,6 +121,12 @@ patrolRewardService:
 remoteHeadless:
   count: 1
 
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "RestAPI"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "http://acc-service.heimdall.svc.cluster.local:80"
+
   resources:
     requests:
       cpu: 1
@@ -258,3 +264,18 @@ testHeadless1:
 
   extraArgs:
     - --tx-quota-per-signer=1
+
+acc:
+  enabled: true
+
+  redis:
+    enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-t3_medium
+
+  env:
+  - name: AccessControlServiceType
+    value: "sqlite"
+  - name: AccessControlServiceConnectionString
+    value: "Data Source=/data/acc.db"
