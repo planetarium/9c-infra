@@ -27,7 +27,7 @@ spec:
         - name: ACC_CONFIG_FILE
           value: "appsettings.prod.json"
         {{- with $.Values.acc.env }}
-          {{- toYaml . | nindent 10 }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}
         volumeMounts:
         - name: acc-appsettings
