@@ -124,6 +124,15 @@ node_groups = {
       ami_type          = "AL2_ARM_64"
     }
 
+    "9c-internal-t3_medium" = {
+      instance_types    = ["t3.medium"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 1
+    }
+
     "heimdall-internal-r7g_l_2c" = {
       instance_types    = ["r7g.large"]
       availability_zone = "us-east-2c"

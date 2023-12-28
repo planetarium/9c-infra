@@ -448,6 +448,7 @@ acc:
   enabled: true
 
   redis:
+    enabled: true
     port: 6379
 
     nodeSelector:
