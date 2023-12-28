@@ -251,3 +251,18 @@ worldBoss:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
+
+acc:
+  enabled: true
+
+  redis:
+    enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-t3_medium
+
+  env:
+  - name: AccessControlServiceType
+    value: "sqlite"
+  - name: AccessControlServiceConnectionString
+    value: "Data Source=/data/acc.db"
