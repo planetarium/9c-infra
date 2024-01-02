@@ -328,9 +328,9 @@ testHeadless1:
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "RestAPI"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "http://acc-service.9c-network.svc.cluster.local:80"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -378,9 +378,9 @@ testHeadless2:
         key: jwt
         name: private-keys
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "RestAPI"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "http://acc-service.9c-network.svc.cluster.local:80"
 
   extraArgs:
   - --tx-quota-per-signer=1
