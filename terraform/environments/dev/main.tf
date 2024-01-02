@@ -36,6 +36,83 @@ module "common" {
     "us-east-2c" = "10.0.160.0/20"
   }
 
+  addon_versions = {
+    "coredns"            = "v1.10.1-eksbuild.2"
+    "kube-proxy"         = "v1.28.1-eksbuild.1"
+    "vpc_cni"            = "v1.14.1-eksbuild.1"
+    "aws_ebs_csi_driver" = "v1.24.0-eksbuild.1"
+  }
+
   # node group
-  node_groups = {}
+  node_groups = {
+    "odin-m5_l_2c" = {
+      instance_types    = ["m5.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 12
+    }
+
+    "odin-r7g_xl_2c" = {
+      instance_types    = ["r7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 10
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "odin-m7g_xl_2c" = {
+      instance_types    = ["m7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 6
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "odin-m7g_2xl_2c_test" = {
+      instance_types    = ["m7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "remote-headless-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "odin-m7g_2xl_2c_validator" = {
+      instance_types    = ["m7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 6
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "validator-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "general-t3_medium" = {
+      instance_types    = ["t3.medium"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 1
+    }
+  }
 }
