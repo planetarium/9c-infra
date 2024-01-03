@@ -413,6 +413,44 @@ testHeadless2:
   tolerations: []
   affinity: {}
 
+jwtHeadless:
+  enabled: false
+  image:
+    # follow global image
+    repository: ""
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  loggingEnabled: false
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: false
+
+  env: []
+
+  host: ""
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+    accessModes: "ReadWriteOnce"
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 marketService:
   enabled: false
   rwMode: false
