@@ -345,7 +345,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-5930f16e7b42003a412c04b08c32e0ac711233bd"
+    tag: "git-54012699c4a1acec921b9e1e2d7f7b7b07a86177"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -386,6 +386,8 @@ testHeadless1:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+  - name: OPTL_ENDPOINT
+    value: "http://172.20.239.175:4318"
 
   extraArgs:
   - --tx-quota-per-signer=1
