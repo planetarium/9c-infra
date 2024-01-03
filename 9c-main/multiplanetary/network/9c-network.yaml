@@ -388,13 +388,6 @@ testHeadless2:
     value: "10"
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
-  - name: Jwt__EnableJwtAuthentication
-    value: "false"
-  - name: Jwt__Key
-    valueFrom:
-      secretKeyRef:
-        key: jwt
-        name: private-keys
   - name: Headless__AccessControlService__AccessControlServiceType
     value: "RestAPI"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -404,6 +397,55 @@ testHeadless2:
   - --tx-quota-per-signer=1
 
   host: "9c-main-test-2.nine-chronicles.com"
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-2c_spot
+
+jwtHeadless:
+  enabled: true
+
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+    tag: "git-5930f16e7b42003a412c04b08c32e0ac711233bd"
+
+  loggingEnabled: true
+
+  host: "9c-main-jwt.nine-chronicles.com"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "RestAPI"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "http://acc-service.9c-network.svc.cluster.local:80"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
 
   resources:
     requests:
