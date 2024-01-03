@@ -89,7 +89,9 @@ validator:
   - name: IpRateLimiting__GeneralRules__2__Limit
     value: "10"
   - name: IpRateLimiting__IpBanMinute
-    value: "30"
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
   - name: IpRateLimiting__IpWhiteList__1
     value: "::ffff:3.18.248.125"
   - name: IpRateLimiting__IpWhiteList__2
@@ -156,6 +158,10 @@ remoteHeadless:
     value: "300s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "10"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
   - name: IpRateLimiting__IpWhiteList__1
@@ -265,6 +271,10 @@ fullState:
     value: "60s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "120"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
   - name: IpRateLimiting__IpWhiteList__1
     value: "::ffff:157.245.68.243"
   - name: IpRateLimiting__IpWhiteList__2
@@ -327,6 +337,10 @@ testHeadless1:
     value: "60s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
     value: "RestAPI"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -370,6 +384,10 @@ testHeadless2:
     value: "60s"
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
   - name: Jwt__EnableJwtAuthentication
     value: "false"
   - name: Jwt__Key
