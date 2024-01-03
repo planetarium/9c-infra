@@ -35,7 +35,7 @@ acc:
   image:
     repository: planetariumhq/access-control-center
     pullPolicy: Always
-    tag: "git-d1d2ccbb9fb8f6ffd5e7a6109363471c8f8fa480"
+    tag: "git-b4792e7403b30f74ded92dfe368b4bc986454736"
 
 remoteActionEvaluatorHeadless:
   image:
