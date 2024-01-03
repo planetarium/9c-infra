@@ -62,7 +62,7 @@ spec:
             readOnly: true
             subPath: download_snapshot.sh
           - mountPath: /data
-            name: remote-headless-data-{{ $index }}
+            name: jwt-headless-data
       {{- end }}
       containers:
       - args:
@@ -127,7 +127,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: jwt-headless-data-1
+          name: jwt-headless-data
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -201,7 +201,7 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      name: jwt-headless-data-1
+      name: jwt-headless-data
     spec:
       accessModes:
       - ReadWriteOnce
