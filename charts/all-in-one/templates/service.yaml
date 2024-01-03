@@ -300,6 +300,45 @@ spec:
 ---
 {{ end }}
 
+{{ if .Values.jwtHeadless.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwt-headless
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: graphql
+    port: {{ $.Values.jwtHeadless.ports.graphql }}
+    targetPort: {{ $.Values.jwtHeadless.ports.graphql }}
+  - name: rpc
+    port: {{ $.Values.jwtHeadless.ports.rpc }}
+    targetPort: {{ $.Values.jwtHeadless.ports.rpc }}
+  - name: headless
+    port: {{ $.Values.jwtHeadless.ports.headless }}
+    targetPort: {{ $.Values.jwtHeadless.ports.headless }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.jwtHeadless.ports.graphql }}
+  selector:
+    app: jwt-headless
+  type: LoadBalancer
+
+---
+{{ end }}
+
 {{ if .Values.worldBoss.enabled }}
 apiVersion: v1
 kind: Service
