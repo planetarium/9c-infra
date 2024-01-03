@@ -45,58 +45,42 @@ module "common" {
 
   # node group
   node_groups = {
-    "odin-m5_l_2c" = {
+    "general-m5_l_2c" = {
       instance_types    = ["m5.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 0
+      desired_size      = 1
       min_size          = 0
-      max_size          = 12
+      max_size          = 6
     }
 
-    "odin-r7g_xl_2c" = {
+    "general-r7g_xl_2c" = {
       instance_types    = ["r7g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 0
+      desired_size      = 1
       min_size          = 0
-      max_size          = 10
+      max_size          = 2
       ami_type          = "AL2_ARM_64"
     }
 
-    "odin-m7g_xl_2c" = {
+    "general-m7g_xl_2c" = {
       instance_types    = ["m7g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 0
+      desired_size      = 1
       min_size          = 0
-      max_size          = 6
+      max_size          = 4
       ami_type          = "AL2_ARM_64"
     }
 
-    "odin-m7g_2xl_2c_test" = {
+    "general-m7g_2xl_2c_validator" = {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 0
+      desired_size      = 1
       min_size          = 0
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-      disk_size         = 50
-      taints = [{
-        key    = "dedicated"
-        value  = "remote-headless-test"
-        effect = "NO_SCHEDULE"
-      }]
-    }
-
-    "odin-m7g_2xl_2c_validator" = {
-      instance_types    = ["m7g.2xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 6
+      max_size          = 4
       ami_type          = "AL2_ARM_64"
       disk_size         = 50
       taints = [{
@@ -104,6 +88,16 @@ module "common" {
         value  = "validator-test"
         effect = "NO_SCHEDULE"
       }]
+    }
+
+    "general-r6g_xl_2c" = {
+      instance_types    = ["r6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 2
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
     }
 
     "general-t3_medium" = {
