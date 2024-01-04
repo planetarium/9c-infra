@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
+    tag: "libplanet4-tmp2"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -22,6 +22,7 @@ global:
 
 externalSecret:
   enabled: true
+  prefix: 9c-main-v2
 
 seed:
   count: 1
@@ -30,7 +31,7 @@ seed:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4713179b64e5eeb0ea617768d5acccbb9a289617"
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
   - "tcp-seed-1.9c-odin-libplanet4-test-20240104.svc.cluster.local"
