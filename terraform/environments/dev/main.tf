@@ -45,15 +45,6 @@ module "common" {
 
   # node group
   node_groups = {
-    "general-c5_4xl_2c" = {
-      instance_types    = ["c5d.4xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 1
-    }
-
     "general-m5d_l_2c" = {
       instance_types    = ["m5d.large"]
       availability_zone = "us-east-2c"
@@ -63,24 +54,6 @@ module "common" {
       max_size          = 20
     }
 
-    "general-m5d_2xl_2c" = {
-      instance_types    = ["m5d.2xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 5
-    }
-
-    "general-m5d_xl_2c" = {
-      instance_types    = ["m5d.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 5
-      min_size          = 5
-      max_size          = 16
-    }
-
     "general-m7g_2xl_2c" = {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
@@ -88,37 +61,6 @@ module "common" {
       desired_size      = 5
       min_size          = 2
       max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "general-r6g_l_2c" = {
-      instance_types    = ["r6g.large"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 25
-      ami_type          = "AL2_ARM_64"
-    }
-
-
-    "general-r6g_xl_2c" = {
-      instance_types    = ["r6g.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 5
-      min_size          = 5
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "general-c7g_4xl_2c" = {
-      instance_types    = ["c7g.4xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 10
       ami_type          = "AL2_ARM_64"
     }
 
