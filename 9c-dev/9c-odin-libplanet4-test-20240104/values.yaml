@@ -42,7 +42,7 @@ seed:
   workerCount: 1000
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    node.kubernetes.io/instance-type: m5d.large
 
 remoteHeadless:
   count: 1
