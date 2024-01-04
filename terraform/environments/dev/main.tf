@@ -85,7 +85,7 @@ module "common" {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 2
+      desired_size      = 5
       min_size          = 2
       max_size          = 15
       ami_type          = "AL2_ARM_64"

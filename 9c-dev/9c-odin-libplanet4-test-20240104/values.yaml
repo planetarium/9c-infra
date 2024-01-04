@@ -36,28 +36,39 @@ seed:
   hosts:
   - "tcp-seed-1.9c-odin-libplanet4-test-20240104.svc.cluster.local"
 
-  nodeSelector: {}
+  loggingEnabled: true
+
+  # dotnet args
+  workerCount: 1000
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5.large
 
 remoteHeadless:
   count: 1
   image:
     pullPolicy: Always
 
-  logger:
-    enabled: false
-    name: "remote-headless"
+  loggingEnabled: true
 
   useTurnServer: false
 
   hosts:
   - "remote-headless-1.9c-odin-libplanet4-test-20240104.svc.cluster.local"
 
-  nodeSelector: {}
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+
 
 validator:
   count: 4
   image:
     pullPolicy: Always
+
+  loggingEnabled: true
 
   consensusSeedStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
@@ -68,4 +79,9 @@ validator:
   - "validator-3.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   - "validator-4.9c-odin-libplanet4-test-20240104.svc.cluster.local"
 
-  nodeSelector: {}
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --consensus-target-block-interval=6500
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
