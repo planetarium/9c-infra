@@ -52,6 +52,8 @@ spec:
             type: Recreate
           extraArgs:
             log.level: debug
+          extraFlags:
+            - web.enable-remote-write-receiver
           {{- with $.Values.prometheus.server.nodeGroup }}
           nodeSelector:
             eks.amazonaws.com/nodegroup: {{ . }}

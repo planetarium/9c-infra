@@ -16,8 +16,13 @@ spec:
     helm:
       values: |-
         tempo:
+          metricsGenerator:
+            enabled: true
+            remoteWriteUrl: "http://prometheus-server.monitoring.svc.cluster.local/api/v1/write"
           querier:
             max_concurrent_queries: 100
+          global_overrides:
+            max_traces_per_user: 1000000
         {{- with $.Values.tempo.nodeGroup }}
         nodeSelector:
           eks.amazonaws.com/nodegroup: {{ . }}
