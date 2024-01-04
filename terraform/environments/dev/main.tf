@@ -49,7 +49,7 @@ module "common" {
       instance_types    = ["m5d.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 0
+      desired_size      = 1
       min_size          = 0
       max_size          = 20
     }
