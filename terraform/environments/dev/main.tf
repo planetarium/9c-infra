@@ -51,16 +51,25 @@ module "common" {
       capacity_type     = "ON_DEMAND"
       desired_size      = 1
       min_size          = 0
-      max_size          = 6
+      max_size          = 3
+    }
+
+    "general-m5d_xl_2c" = {
+      instance_types    = ["m5d.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 2
+      min_size          = 0
+      max_size          = 4
     }
 
     "general-r7g_xl_2c" = {
       instance_types    = ["r7g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 1
+      desired_size      = 2
       min_size          = 0
-      max_size          = 2
+      max_size          = 6
       ami_type          = "AL2_ARM_64"
     }
 
