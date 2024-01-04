@@ -446,6 +446,8 @@ testHeadless2:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+  - name: OPTL_ENDPOINT
+    value: http://172.20.239.175:4318
 
   extraArgs:
   - --tx-quota-per-signer=1
