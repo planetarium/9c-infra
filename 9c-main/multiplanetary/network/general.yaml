@@ -2,7 +2,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-5930f16e7b42003a412c04b08c32e0ac711233bd"
+    tag: "91"
 
 seed:
   image:
@@ -13,7 +13,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: 'git-d1236b656234f3d3db3897ad149913b64ce32ec5'
+    tag: '91'
 
 worldBoss:
   image:
