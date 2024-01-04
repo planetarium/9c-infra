@@ -415,11 +415,6 @@ testHeadless2:
 jwtHeadless:
   enabled: true
 
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-5930f16e7b42003a412c04b08c32e0ac711233bd"
-
   loggingEnabled: true
 
   host: "9c-main-jwt.nine-chronicles.com"
