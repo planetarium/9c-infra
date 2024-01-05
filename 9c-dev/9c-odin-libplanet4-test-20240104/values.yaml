@@ -74,10 +74,10 @@ validator:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
 
   hosts:
-  - "validator-1.9c-odin-libplanet4-test-20240104.svc.cluster.local"
-  - "validator-2.9c-odin-libplanet4-test-20240104.svc.cluster.local"
-  - "validator-3.9c-odin-libplanet4-test-20240104.svc.cluster.local"
-  - "validator-4.9c-odin-libplanet4-test-20240104.svc.cluster.local"
+  - "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
+  - "validator-6.9c-odin-libplanet4-test-20240104.svc.cluster.local"
+  - "validator-7.9c-odin-libplanet4-test-20240104.svc.cluster.local"
+  - "validator-8.9c-odin-libplanet4-test-20240104.svc.cluster.local"
 
   extraArgs:
   - --tx-quota-per-signer=1
