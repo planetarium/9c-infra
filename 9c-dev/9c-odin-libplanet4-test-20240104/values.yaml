@@ -71,7 +71,7 @@ validator:
   loggingEnabled: true
 
   consensusSeedStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
 
   hosts:
   - "validator-1.9c-odin-libplanet4-test-20240104.svc.cluster.local"
