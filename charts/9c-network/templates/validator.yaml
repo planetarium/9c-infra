@@ -1,5 +1,5 @@
 {{ range $idx := until (int .Values.validator.count) }}
-{{ $index := add $idx 1 }}
+{{ $index := add $idx 5 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
