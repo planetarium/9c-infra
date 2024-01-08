@@ -36,6 +36,9 @@ spec:
           server:
             nodeGroup: 9c-main-r6g_xl_2c
             extraScrapeConfigs:
+              - job_name: 'kube-state-metrics'
+                static_configs:
+                  - targets: ['prometheus-kube-state-metrics.monitoring.svc.cluster.local:8080']
               - job_name: scrape-headlesses
                 metrics_path: /metrics
                 scrape_interval: 8s
