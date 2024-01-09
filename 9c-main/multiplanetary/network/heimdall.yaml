@@ -458,6 +458,50 @@ testHeadless2:
     operator: Equal
     value: remote-headless-test
 
+jwtHeadless:
+  enabled: true
+
+  loggingEnabled: true
+
+  host: "heimdall-jwt.nine-chronicles.com"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "RestAPI"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "http://acc-service.heimdall.svc.cluster.local:80"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-2c_spot
+
 emptyChronicle:
   enabled: false
 
