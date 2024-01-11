@@ -245,11 +245,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          {{- if and (eq $index 1) (and (eq $.Values.snapshot.path "main/partition") (eq $.Values.global.networkType "Main")) }}
-          storage: 1500Gi
-          {{- else }}
           storage: {{ $.Values.remoteHeadless.storage.data }}
-          {{- end }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
