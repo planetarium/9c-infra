@@ -1,0 +1,85 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-mizuki-onboarding"
+logLevel: "debug"
+
+global:
+  validatorPath: "validator-5.9c-mizuki-heimdall.svc.cluster.local"
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: 91
+
+  appProtocolVersion: "200131/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIAiOFze6U9KZ12SLNKGyGGP.JMQMfoNbDppBq1kaByzUAiBv48M5eAKB695KpexNWuUmVfvWi3CWzVcEu2BSBNsMqA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAxLTA0ZQ=="
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
+  
+  peerStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+  resetSnapshot: true
+
+snapshot:
+  path: "main/heimdall/partition"
+
+externalSecret:
+  enabled: true
+  prefix: 9c-onboarding-mizuki
+
+seed:
+  count: 1
+  useTurnServer: false
+
+  hosts:
+  - "tcp-seed-1.9c-mizuki-heimdall.svc.cluster.local"
+
+  loggingEnabled: true
+
+  # dotnet args
+  workerCount: 1000
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
+remoteHeadless:
+  count: 1
+  image:
+    pullPolicy: Always
+
+  loggingEnabled: true
+
+  useTurnServer: false
+
+  hosts:
+  - "remote-headless-1.9c-mizuki-heimdall.svc.cluster.local"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: onboarding-mizuki-m7g_2xl_2c
+
+
+validator:
+  count: 1
+  image:
+    pullPolicy: Always
+
+  loggingEnabled: true
+
+  consensusSeedStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
+
+  hosts:
+  - "validator-5.9c-mizuki-heimdall.svc.cluster.local"
+  - "validator-6.9c-mizuki-heimdall.svc.cluster.local"
+  - "validator-7.9c-mizuki-heimdall.svc.cluster.local"
+  - "validator-8.9c-mizuki-heimdall.svc.cluster.local"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --consensus-target-block-interval=6500
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: onboarding-mizuki-m7g_2xl_2c

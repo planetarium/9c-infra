@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 9c-mizuki-heimdall
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/9c-network
+    helm:
+      valueFiles:
+        - ../../9c-onboarding-mizuki/9c-mizuki-heimdall/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: 9c-mizuki-heimdall
