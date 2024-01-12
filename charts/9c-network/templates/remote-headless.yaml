@@ -22,9 +22,10 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
+      {{- if $.Values.global.resetSnapshot }}
       initContainers:
       - args:
-        - https://snapshots.nine-chronicles.com/internal
+        - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
         - /data/headless
         - $(RESET_SNAPSHOT_OPTION)
         - remote-headless-{{ $index }}
@@ -53,6 +54,7 @@ spec:
               key: slack-webhook-url
         resources:
           {{- toYaml $.Values.remoteHeadless.resources | nindent 10 }}
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
