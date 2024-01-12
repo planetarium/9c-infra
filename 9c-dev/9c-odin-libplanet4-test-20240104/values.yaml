@@ -20,6 +20,9 @@ global:
 
   resetSnapshot: true
 
+snapshot:
+  path: "internal"
+
 externalSecret:
   enabled: true
   prefix: 9c-main-v2
