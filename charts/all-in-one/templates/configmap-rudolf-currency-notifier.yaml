@@ -8,5 +8,5 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  rudolf-currency-notifier.ts: |- {{ tpl (.Files.Get "scripts/common/rudolf-currency-notifier.ts") . | nindent 4 }}
+  rudolf-currency-notifier.ts: |- {{ tpl (.Files.Get "scripts/rudolf/rudolf-currency-notifier.ts") . | nindent 4 }}
 {{ end }}
