@@ -288,3 +288,4 @@ guildService:
 
   db:
     local: true
+    size: "10Gi"
