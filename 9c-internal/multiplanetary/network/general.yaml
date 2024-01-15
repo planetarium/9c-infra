@@ -59,4 +59,4 @@ guildService:
   image:
     repository: planetariumhq/guild-service
     pullPolicy: Always
-    tag: "git-24cd2babd009243376e5a75d009d68b3e50c451d"
+    tag: "git-20520bc34fc444effda4f015f6a9e7a6865cb99d"
