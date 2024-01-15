@@ -14,14 +14,18 @@ spec:
         spec:
           containers:
           - name: slack-notifier
-            image: node:20-alpine
+            image: denoland/deno:alpine-1.39.2
             command:
-            - node /bin/rudolf-currency-notifier.js
+            - deno
+            args:
+            - run
+            - -A
+            - /bin/rudolf-currency-notifier.ts
             env:
             - name: GQL_ENDPOINT
               value: {{ .Values.rudolfCurrencyNotifier.config.graphqlEndpoint }}
             - name: TARGET_ADDRESS
-              value: {{ .Values.rudolfCurrencyNotifier.config.targetAddress }}
+              value: {{ quote .Values.rudolfCurrencyNotifier.config.targetAddress }}
             - name: SERVER_NAME
               value: {{ .Values.rudolfCurrencyNotifier.config.serverName }}
             - name: SLACK_WEBHOOK_URL
@@ -30,10 +34,12 @@ spec:
                   name: slack
                   key: slack-webhook-url
             volumeMounts:
-            - mountPath: /bin/rudolf-currency-notifier.js
+            - mountPath: /bin/rudolf-currency-notifier.ts
               name: rudolf-currency-notifier
               readOnly: true
-              subPath: rudolf-currency-notifier.js
+              subPath: rudolf-currency-notifier.ts
+          nodeSelector:
+            node.kubernetes.io/instance-type: m5d.xlarge
           restartPolicy: OnFailure
           volumes:
           - name: rudolf-currency-notifier

@@ -1,7 +1,16 @@
-const endpoint = process.env.GQL_ENDPOINT;
-const address = process.env.TARGET_ADDRESS;
-const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-const serverName = process.env.SERVER_NAME;
+function getRequiredEnv(key: string): string {
+  const value = Deno.env.get(key);
+  if (value === undefined) {
+    throw new Error(`The '${key}' environment value doesn't exist.`);
+  }
+
+  return value;
+}
+
+const endpoint = getRequiredEnv("GQL_ENDPOINT");
+const address = getRequiredEnv("TARGET_ADDRESS");
+const webhookUrl = getRequiredEnv("SLACK_WEBHOOK_URL");
+const serverName = getRequiredEnv("SERVER_NAME");
 
 const tickers = [
   { ticker: 'Item_NT_400000', decimalPlace: 0 },
