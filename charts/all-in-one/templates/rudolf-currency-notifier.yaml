@@ -25,7 +25,7 @@ spec:
             - name: GQL_ENDPOINT
               value: {{ .Values.rudolfCurrencyNotifier.config.graphqlEndpoint }}
             - name: TARGET_ADDRESS
-              value: {{ .Values.rudolfCurrencyNotifier.config.targetAddress }}
+              value: {{ quote .Values.rudolfCurrencyNotifier.config.targetAddress }}
             - name: SERVER_NAME
               value: {{ .Values.rudolfCurrencyNotifier.config.serverName }}
             - name: SLACK_WEBHOOK_URL
