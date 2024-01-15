@@ -1,0 +1,46 @@
+{{ if .Values.guildService.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: guild-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: guild-service
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guild-service
+  serviceName: guild-service
+  template:
+    metadata:
+      labels:
+        app: guild-service
+    spec:
+      containers:
+        - args:
+            - GuildService.dll
+          command:
+            - dotnet
+          env:
+            - name: ConnectionStrings__Guild
+              valueFrom:
+                secretKeyRef:
+                  key: connection-string
+                  name: guild
+          {{- with $.Values.guildService.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ $.Values.guildService.image.repository }}:{{ $.Values.guildService.image.tag }}
+          name: guild-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      {{- with $.Values.guildService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
+{{ end }}

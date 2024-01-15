@@ -8,7 +8,7 @@ global:
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
-  
+
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
@@ -42,7 +42,7 @@ bridgeService:
     type: "kms"
     keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
     publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
-  
+
   txpool:
     type: "local"
 
@@ -189,7 +189,7 @@ snapshot:
     requests:
       cpu: 1300m
       memory: 10Gi
-      
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
@@ -279,3 +279,12 @@ acc:
     value: "sqlite"
   - name: AccessControlServiceConnectionString
     value: "Data Source=/data/acc.db"
+
+guildService:
+  enabled: true
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
+
+  db:
+    local: true
