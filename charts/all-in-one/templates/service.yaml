@@ -780,6 +780,7 @@ spec:
   selector:
     app: rudolf-db
   type: ClusterIP
+---
 {{ end }}
 
 {{ if .Values.guildService.enabled }}
@@ -811,11 +812,10 @@ spec:
   selector:
     app: guild-service
   type: LoadBalancer
-
 ---
 {{ end }}
 
-  {{ if .Values.guildService.db.local }}
+{{ if .Values.guildService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:

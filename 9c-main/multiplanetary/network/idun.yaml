@@ -415,3 +415,10 @@ rudolfService:
     securityGroupIds:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"
+
+guildService:
+  enabled: false
+
+  db:
+    local: false
+    size: "10Gi"
