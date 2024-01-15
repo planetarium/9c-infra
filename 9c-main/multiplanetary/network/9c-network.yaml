@@ -531,6 +531,15 @@ rudolfService:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"
 
+rudolfCurrencyNotifier:
+  enabled: true
+
+  config:
+    schedule: "0 0 * * *"
+    graphqlEndpoint: "https://9c-main-full-state.nine-chronicles.com/graphql"
+    targetAddress: "0x4c35e816c9e13628615581a436a0df38F57A08cc"
+    serverName: "odin"
+
 testWorldBoss:
   enabled: false
 
