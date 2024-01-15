@@ -60,3 +60,9 @@ bridgeServiceApi:
     repository: planetariumhq/9c-bridge-api
     pullPolicy: Always
     tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
+
+guildService:
+  image:
+    repository: planetariumhq/guild-service
+    pullPolicy: Always
+    tag: "git-20520bc34fc444effda4f015f6a9e7a6865cb99d"

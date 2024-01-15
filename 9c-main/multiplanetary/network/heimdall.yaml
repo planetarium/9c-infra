@@ -582,3 +582,10 @@ rudolfCurrencyNotifier:
     graphqlEndpoint: "https://heimdall-full-state.nine-chronicles.com/graphql"
     targetAddress: "0xec48c68198dA91e89d6CA4eff93C23441e167358"
     serverName: "heimdall"
+
+guildService:
+  enabled: false
+
+  db:
+    local: false
+    size: "10Gi"

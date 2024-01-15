@@ -545,3 +545,10 @@ testWorldBoss:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+
+guildService:
+  enabled: false
+
+  db:
+    local: false
+    size: "10Gi"
