@@ -76,6 +76,7 @@ data:
     log_format kong_log_format escape=json '$remote_addr - $remote_user [$time_local] '
                                '"$request" $status $body_bytes_sent '
                                '"$http_referer" "$http_user_agent" '
+                               '$request_time $upstream_response_time '
                                'kong_request_id: "$kong_request_id" '
                                '"$request_body"';
     
