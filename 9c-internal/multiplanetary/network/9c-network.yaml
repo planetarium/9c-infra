@@ -218,7 +218,7 @@ rudolfService:
     - "sg-0343e5c4514681670"
 
 rudolfCurrencyNotifier:
-  enabled: true
+  enabled: false
 
   config:
     schedule: "0 0 * * *"
