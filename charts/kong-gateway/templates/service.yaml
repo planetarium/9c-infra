@@ -10,6 +10,8 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: >- 
+      Environment=production,Owner=Yoshi,Creator=Jihyung,Service=kong-gateway,Name=srdg,Description=ForHackaton2023
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "{{ $.Values.acmArn }}"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
 spec:
