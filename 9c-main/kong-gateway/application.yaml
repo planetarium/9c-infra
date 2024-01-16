@@ -13,7 +13,7 @@ spec:
     path: charts/kong-gateway
     helm:
       valueFiles:
-        - ../../srdg/kong-gateway/values.yaml
+        - ../../9c-main/kong-gateway/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kong-gateway
