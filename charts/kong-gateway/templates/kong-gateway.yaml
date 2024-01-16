@@ -5,7 +5,7 @@ metadata:
     app: kong-gateway
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: kong-gateway
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Release.Name }}
 spec:
   replicas: 2
   strategy:
