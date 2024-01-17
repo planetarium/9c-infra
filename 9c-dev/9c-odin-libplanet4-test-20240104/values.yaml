@@ -88,3 +88,52 @@ validator:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+
+dataProvider:
+  enabled: true
+  migrateDatabase: true
+
+  storage:
+    data: 1000Gi
+    log: 4Gi
+
+  db:
+    local: true
+    storage: 1000Gi
+    database: ''
+    connectionString: ''
+    host: ''
+    port: 3306
+    user: user
+    password: ''
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 4Gi
+
+worldBoss:
+  enabled: true
+
+  ports:
+    targetPort: 5000
+
+  db:
+    local: true
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
