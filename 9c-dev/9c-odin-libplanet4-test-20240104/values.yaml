@@ -137,3 +137,8 @@ worldBoss:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
+
+guildService:
+  enabled: false
+  db:
+    local: false
