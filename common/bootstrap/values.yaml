@@ -1,5 +1,6 @@
 # Name of the cluster
 clusterName: ""
+region: "us-east-2"
 argocdPath: ""
 # AWS account id
 accountId: ""

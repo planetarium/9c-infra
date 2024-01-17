@@ -36,7 +36,7 @@ spec:
     helm:
       values: |-
         clusterName: {{ .Values.clusterName }}
-        region: us-east-2
+        region: {{ .Values.region }}
         serviceAccount:
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/eks-{{ .Values.clusterName }}-alb-controller

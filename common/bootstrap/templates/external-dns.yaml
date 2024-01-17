@@ -17,7 +17,7 @@ spec:
           - service
           - ingress
         aws:
-          region: us-east-2
+          region: {{ .Values.region }}
         policy: sync
         txtOwnerId: "{{ .Values.clusterName }}"
         serviceAccount:
