@@ -15,7 +15,7 @@ global:
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02dac8e104ec5dec045dddb9939d83722cc0e1df523795bface7ed10ae56187638"
   headlessAppsettingsPath: "appsettings.json"
-  
+
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
@@ -146,3 +146,12 @@ guildService:
   enabled: false
   db:
     local: false
+
+patrolRewardService:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m5d_xl_2c
+
+  db:
+    local: true
