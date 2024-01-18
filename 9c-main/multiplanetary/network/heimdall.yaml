@@ -584,7 +584,7 @@ rudolfCurrencyNotifier:
     serverName: "heimdall"
   
   nodeSelector:
-      eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 guildService:
   enabled: false
