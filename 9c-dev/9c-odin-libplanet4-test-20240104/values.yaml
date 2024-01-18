@@ -109,7 +109,7 @@ dataProvider:
     password: ''
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: general-m7g_xl_2c
 
   resources:
     requests:
