@@ -38,10 +38,8 @@ spec:
               name: rudolf-currency-notifier
               readOnly: true
               subPath: rudolf-currency-notifier.ts
-          {{- with .Values.rudolfCurrencyNotifier.nodeSelector }}
           nodeSelector:
-            {{- toYaml . | nindent 8 }}
-          {{- end }}
+            {{ .Values.rudolfCurrencyNotifier.nodeSelector }}
           restartPolicy: OnFailure
           volumes:
           - name: rudolf-currency-notifier
