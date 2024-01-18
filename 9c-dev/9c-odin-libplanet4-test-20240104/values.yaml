@@ -25,7 +25,7 @@ snapshot:
 
 externalSecret:
   enabled: true
-  prefix: 9c-main-v2
+  prefix: 9c-internal-v2
 
 seed:
   count: 1
