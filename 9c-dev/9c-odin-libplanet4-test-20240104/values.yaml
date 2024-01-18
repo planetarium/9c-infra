@@ -98,6 +98,9 @@ dataProvider:
     data: 1000Gi
     log: 4Gi
 
+  image:
+    tag: "libplanet4-1"
+
   db:
     local: true
     storage: 1000Gi
