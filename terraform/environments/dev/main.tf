@@ -54,6 +54,15 @@ module "common" {
       max_size          = 20
     }
 
+    "general-m5d_xl_2c" = {
+      instance_types    = ["m5d.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 20
+    }
+
     "general-m7g_2xl_2c" = {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
