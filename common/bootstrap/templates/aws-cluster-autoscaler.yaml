@@ -15,7 +15,7 @@ spec:
       values: |-
         autoDiscovery:
           clusterName: {{ .Values.clusterName }}
-        awsRegion: us-east-2
+        awsRegion: {{ .Values.region }}
         cloudProvider: aws
         image:
           tag: v1.20.0
