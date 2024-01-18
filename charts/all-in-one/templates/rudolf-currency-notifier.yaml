@@ -38,8 +38,10 @@ spec:
               name: rudolf-currency-notifier
               readOnly: true
               subPath: rudolf-currency-notifier.ts
+          {{- with $.Values.rudolfCurrencyNotifier.nodeSelector }}
           nodeSelector:
-            node.kubernetes.io/instance-type: m5d.xlarge
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
           restartPolicy: OnFailure
           volumes:
           - name: rudolf-currency-notifier

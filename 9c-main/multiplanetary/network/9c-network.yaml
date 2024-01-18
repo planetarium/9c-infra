@@ -539,6 +539,9 @@ rudolfCurrencyNotifier:
     graphqlEndpoint: "https://9c-main-full-state.nine-chronicles.com/graphql"
     targetAddress: "0x4c35e816c9e13628615581a436a0df38F57A08cc"
     serverName: "odin"
+  
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
 
 testWorldBoss:
   enabled: false

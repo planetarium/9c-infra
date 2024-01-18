@@ -226,6 +226,9 @@ rudolfCurrencyNotifier:
     targetAddress: "0xB5AF28837b28A9C768e9849d90646E3D6078311c"
     serverName: "9c-internal"
 
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge
+
 volumeRotator:
   enabled: true
 
