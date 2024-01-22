@@ -1,0 +1,19 @@
+name: Reset bridge service
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Reset
+      id: reset
+      run: |
+        bash .github/scripts/reset-internal-heimdall-bridge-service.sh
+      env:
+        GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
