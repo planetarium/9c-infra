@@ -11,6 +11,21 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.20.0' # 필요한 kubectl 버전을 명시하세요.
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+    - name: Configure Kubernetes Context
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ./kubeconfig
+        export KUBECONFIG=./kubeconfig
+  
     - name: Reset
       id: reset
       run: |
