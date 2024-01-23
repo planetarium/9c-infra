@@ -144,6 +144,17 @@ worldBoss:
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m5d_xl_2c
 
+marketService:
+  enabled: true
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: git-713f9ba9d9492aac7a2c61eadddb7f7c694bb72e
+
+  db:
+    local: true
+    size: 1Gi
+
 guildService:
   enabled: false
   db:
