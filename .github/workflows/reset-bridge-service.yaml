@@ -34,3 +34,5 @@ jobs:
         bash .github/scripts/reset-internal-heimdall-bridge-service.sh
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.BRIDGE_RESET_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.BRIDGE_RESET_AWS_SECRET_ACCESS_KEY }}
