@@ -549,7 +549,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-5748e1246fdfd7727620cb09f606b798c7bbf10f"
+    tag: "git-cc830dd9bf0052feb624a81fbcde7e4a901e392c"
 
   nodeSelector: {}
 
