@@ -27,7 +27,8 @@ snapshot:
 
 externalSecret:
   enabled: true
-  prefix: 9c-internal-v2
+  prefix: 9c-dev-v2
+  pkPrefixOverride: 9c-internal-v2
 
 seed:
   count: 1
