@@ -23,9 +23,11 @@ jobs:
 
     - name: Configure Kubernetes Context
       run: |
-        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ./kubeconfig
-        export KUBECONFIG=./kubeconfig
-  
+        aws eks update-kubeconfig --name 9c-internal-v2 --region us-east-2 --role-arn arn:aws:iam::319679068466:role/EKS
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     - name: Reset
       id: reset
       run: |
