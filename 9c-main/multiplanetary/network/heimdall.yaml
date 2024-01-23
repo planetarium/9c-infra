@@ -592,3 +592,13 @@ guildService:
   db:
     local: false
     size: "10Gi"
+
+
+ninechroniclesUtilBackend:
+  enabled: true
+
+  image:
+    repository: planetariumhq/9cutil-backend
+    tag: git-17b9c812e11630d8b9c3d451ecfd0b74b235d31f
+  
+  headlessEndpoint: "https://heimdall-full-state.nine-chronicles.com/graphql"

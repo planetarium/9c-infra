@@ -684,3 +684,6 @@ testWorldBoss:
     sentryDsn: ""
 
   nodeSelector: {}
+
+ninechroniclesUtilBackend:
+  enabled: false
