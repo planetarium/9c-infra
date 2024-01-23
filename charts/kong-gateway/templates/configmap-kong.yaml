@@ -45,3 +45,9 @@ data:
       - name: 9cscan-odin-internal
         paths:
         - /9cscan/internal/odin
+    - name: bnbc
+      url: http://a99bb8c2ca5d240b9bc17796ac8ed279-719156173.us-west-2.elb.amazonaws.com
+      routes:
+      - name: bnbc
+        paths:
+        - /bnbc/minigame
