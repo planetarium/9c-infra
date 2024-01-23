@@ -161,10 +161,6 @@ explorer:
 
 marketService:
   enabled: true
-  image:
-    repository: planetariumhq/market-service
-    pullPolicy: Always
-    tag: git-bed6517646e0e5b8ba44700406f714b9cf389782
 
   db:
     local: true
