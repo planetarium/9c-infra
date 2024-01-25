@@ -25,7 +25,7 @@ jobs:
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
-        args: get pods -n heimdall
+        args: scale --replicas=0 statefulset/bridge-service -n heimdall
 
     - name: Configure Kubernetes Context
       run: |
