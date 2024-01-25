@@ -4,24 +4,24 @@ NAMESPACE="heimdall"
 GITHUB_TOKEN=${GITHUB_TOKEN}
 REPO="planetarium/9c-infra"
 FILE_PATH="9c-internal/multiplanetary/network/heimdall.yaml"
-BRANCH="test-script"
+BRANCH="main"
 
-scale_down() {
-    kubectl scale --replicas=0 statefulset/$1 --namespace=$NAMESPACE
-}
+# scale_down() {
+#     kubectl scale --replicas=0 statefulset/$1 --namespace=$NAMESPACE
+# }
 
-delete_pvc() {
-    kubectl delete pvc/$1 --namespace=$NAMESPACE
-}
+# delete_pvc() {
+#     kubectl delete pvc/$1 --namespace=$NAMESPACE
+# }
 
-scale_down "bridge-service-db"
-scale_down "bridge-service"
+# scale_down "bridge-service-db"
+# scale_down "bridge-service"
 
-echo "scale_down db, service"
+# echo "scale_down db, service"
 
-delete_pvc "bridge-service-db-data-bridge-service-db-0"
+# delete_pvc "bridge-service-db-data-bridge-service-db-0"
 
-echo "delete pvc"
+# echo "delete pvc"
 
 GQL_ENDPOINT="https://9c-internal-rpc-1.nine-chronicles.com/graphql"
 GQL_QUERY='{"query":"{ nodeStatus { tip { index } } }"}'
@@ -43,3 +43,4 @@ git commit -m "Update RDB upstream index to $TIP_INDEX"
 git push origin $BRANCH
 
 echo "commit"
+
