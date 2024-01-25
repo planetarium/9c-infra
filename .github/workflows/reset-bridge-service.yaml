@@ -21,6 +21,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
 
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: get pods -n heimdall
+
     - name: Configure Kubernetes Context
       run: |
         sudo mkdir ~/.kube
