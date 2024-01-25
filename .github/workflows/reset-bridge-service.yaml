@@ -37,7 +37,7 @@ jobs:
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
-        args: kubectl delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
+        args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
   
     - name: Reset
       id: reset
