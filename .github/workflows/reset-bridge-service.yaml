@@ -24,7 +24,7 @@ jobs:
     - name: Configure Kubernetes Context
       run: |
         sudo mkdir ~/.kube
-        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+        echo "${{ secrets.KUBECONFIG }}" | sudo base64 -d > ~/.kube/config
         export KUBECONFIG=./kubeconfig
 
     - name: Reset
