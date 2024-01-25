@@ -26,13 +26,19 @@ jobs:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
         args: scale --replicas=0 statefulset/bridge-service -n heimdall
-
-    - name: Configure Kubernetes Context
-      run: |
-        sudo mkdir ~/.kube
-        sudo echo "${{ secrets.KUBECONFIG }}" | sudo base64 -d > ~/.kube/config
-        export KUBECONFIG=./kubeconfig
-
+  
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: scale --replicas=0 statefulset/bridge-service-db -n heimdall
+    
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: kubectl delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
+  
     - name: Reset
       id: reset
       run: |
