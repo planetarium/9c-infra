@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-99281f626324b4e668686cbd81c176de4c86d952-arm64v8"
+    tag: "git-2b337bdd4a66a85011e6c90850147583ad10f949"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -19,7 +19,7 @@ global:
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 snapshot:
@@ -109,7 +109,7 @@ dataProvider:
     log: 4Gi
 
   image:
-    tag: "git-1e458c037b127d65f4289193ba800dd8c50d252e-arm64v8"
+    tag: "git-3da9d207ef8237e48eeb953ea53bb5308a873aad"
 
   db:
     local: true
@@ -157,7 +157,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-713f9ba9d9492aac7a2c61eadddb7f7c694bb72e
+    tag: git-850e0ac4135a9ee3ef75c1820c00289b0996f050
 
   db:
     local: true
