@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-index:
+  reset-bridge-service:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,17 +14,30 @@ jobs:
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.20.0' # 필요한 kubectl 버전을 명시하세요.
+        version: 'v1.29.0'
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y jq
 
-    - name: Configure Kubernetes Context
-      run: |
-        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ./kubeconfig
-        export KUBECONFIG=./kubeconfig
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: scale --replicas=0 statefulset/bridge-service -n heimdall
+  
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: scale --replicas=0 statefulset/bridge-service-db -n heimdall
+    
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: kubectl delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
   
     - name: Reset
       id: reset
@@ -32,3 +45,4 @@ jobs:
         bash .github/scripts/reset-internal-heimdall-bridge-service.sh
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+
