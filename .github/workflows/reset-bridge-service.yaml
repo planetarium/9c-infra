@@ -38,11 +38,20 @@ jobs:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
         args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
-  
-    - name: Reset
-      id: reset
+
+    - uses: actions/setup-python@v2.2.2
+      with:
+        python-version: 3.10.13
+
+    - run: |
+        python -m pip install -r requirements.txt
+        flit install
+      name: install dependencies
+      working-directory: ./scripts
+
+    - name: Update Apv
       run: |
-        bash .github/scripts/reset-internal-heimdall-bridge-service.sh
+        python cli.py update-bridge 9c-internal heimdall
+      working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
-

@@ -2,6 +2,7 @@ from typing import List
 
 import typer
 
+from app.update_bridge_service import BridgeServiceUpdater
 from app.update_values import ValuesFileUpdater
 from app.update_apv import ApvUpdater
 
@@ -23,6 +24,41 @@ def update_values(
     """
 
     ValuesFileUpdater().update(file_path_at_github, sources)
+
+@k8s_app.command()
+def update_apv(
+    number: int,
+    dir_name: str = typer.Argument(
+        ...,
+        help="9c-internal or 9c-main",
+    ),
+    file_name: str = typer.Argument(
+        ...,
+        help="general, odin, heimdall, ...",
+    ),
+):
+    """
+    Run post deploy script
+    """
+
+    ApvUpdater().update(number, dir_name, file_name)  # type:ignore
+
+@k8s_app.command()
+def update_bridge_service(
+    dir_name: str = typer.Argument(
+        ...,
+        help="9c-internal or 9c-main",
+    ),
+    file_name: str = typer.Argument(
+        ...,
+        help="general, odin, heimdall, ...",
+    ),
+):
+    """
+    Run post deploy script
+    """
+
+    BridgeServiceUpdater().update(dir_name, file_name)  # type:ignore
 
 @k8s_app.command()
 def update_apv(
