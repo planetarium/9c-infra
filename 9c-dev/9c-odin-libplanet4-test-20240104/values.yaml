@@ -25,7 +25,7 @@ global:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-1b7c01fa313b5524a6cd114dabc430a046686cb2"
+  image: "planetariumhq/ninechronicles-snapshot:git-a484e5089d57a961aa97d6e75c38980323b587e6"
   partition:
     enabled: true
     suspend: true
