@@ -40,7 +40,7 @@ class BridgeServiceUpdater:
         response = requests.post(GQL_ENDPOINT, json=GQL_QUERY)
         response_json = response.json()
 
-        tip_index = response_json['data']['nodeStatus']['tip']['index']
+        tip_index = str(response_json['data']['nodeStatus']['tip']['index'])
 
         result_values_file = update_upstream_index(result_values_file, tip_index)
 
