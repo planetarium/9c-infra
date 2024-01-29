@@ -1,6 +1,6 @@
 from tempfile import TemporaryFile
 from time import time
-from typing import List, NamedTuple
+from typing import List, Literal, NamedTuple
 
 import structlog
 import requests
@@ -12,9 +12,17 @@ from app.dockerhub.image import check_image_exists
 
 logger = structlog.get_logger(__name__)
 
-
-GQL_ENDPOINT = "https://9c-internal-rpc-1.nine-chronicles.com/graphql"
 GQL_QUERY = {"query": "{ nodeStatus { tip { index } } }"}
+
+Network = Literal["9c-internal"]
+Planet = Literal["heimdall"]
+
+GQL_ENDPOINTS = {
+    "9c-internal": {
+        "odin": "https://9c-internal-rpc-1.nine-chronicles.com/graphql",
+        "heimdall": "https://heimdall-internal-rpc-1.nine-chronicles.com/graphql",
+    },
+}
 
 
 class BridgeServiceUpdater:
@@ -25,8 +33,8 @@ class BridgeServiceUpdater:
 
     def update(
         self,
-        dir_name: str,
-        file_name: str
+        dir_name: Network,
+        file_name: Planet
     ):
         new_branch = f"update-bridge-service-{int(time())}"
         file_path = f"{dir_name}/multiplanetary/network/{file_name}.yaml"
@@ -37,14 +45,14 @@ class BridgeServiceUpdater:
         )
         result_values_file = remote_values_file_contents
 
-        response = requests.post(GQL_ENDPOINT, json=GQL_QUERY)
-        response_json = response.json()
+        upstream, downstream = get_endpoint_pair(dir_name, file_name)
+        upstream_tip_index = fetch_tip_index(upstream)
+        downstream_tip_index = fetch_tip_index(downstream)
 
-        tip_index = str(response_json['data']['nodeStatus']['tip']['index'])
+        result_values_file = update_index(result_values_file, "upstream", str(upstream_tip_index))
+        result_values_file = update_index(result_values_file, "downstream", str(downstream_tip_index))
 
-        result_values_file = update_upstream_index(result_values_file, tip_index)
-
-        pr_body = f"Update bridge-service to {tip_index}"
+        pr_body = f"Update bridge-service to {upstream_tip_index}, {downstream_tip_index}"
         self._create_pr(
             target_github_repo="9c-infra",
             base_commit_hash=contents_response["sha"],
@@ -101,13 +109,21 @@ class BridgeServiceUpdater:
             draft=False,
         )
 
-def update_upstream_index(contents: str, tip_index: str):
+
+def fetch_tip_index(endpoint: str) -> int:
+    response = requests.post(endpoint, json=GQL_QUERY)
+    response_json = response.json()
+
+    return response_json['data']['nodeStatus']['tip']['index']
+
+
+def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_index: str):
     def update_index_recursively(data):
         if isinstance(data, dict):
             for key, value in data.items():
                 if key == "defaultStartBlockIndex":
-                    if "upstream" in data[key]:
-                        data[key]["upstream"] = tip_index
+                    if stream in data[key]:
+                        data[key][stream] = tip_index
                 else:
                     update_index_recursively(value)
         elif isinstance(data, list):
@@ -125,3 +141,11 @@ def update_upstream_index(contents: str, tip_index: str):
         new_doc = fp.read()
 
     return new_doc
+
+
+def get_endpoint_pair(network: Network, planet: Planet) -> (str, str):
+    match (network, planet):
+        case ("9c-internal", "heimdall"):
+            return (GQL_ENDPOINTS["9c-internal"]["odin"], GQL_ENDPOINTS["9c-internal"]["heimdall"])
+
+    raise TypeError(f"Not supported network and planet: {network}, {planet}")
