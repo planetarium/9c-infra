@@ -51,7 +51,7 @@ jobs:
 
     - name: Update Apv
       run: |
-        python cli.py update-bridge 9c-internal heimdall
+        python cli.py update-bridge-service 9c-internal heimdall
       working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
