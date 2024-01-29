@@ -107,7 +107,7 @@ def update_upstream_index(contents: str, tip_index: str):
             for key, value in data.items():
                 if key == "defaultStartBlockIndex":
                     if "upstream" in data[key]:
-                        data[key]["upstream"] = tip_index
+                        data[key]["upstream"] = str(tip_index)
                 else:
                     update_index_recursively(value)
         elif isinstance(data, list):
