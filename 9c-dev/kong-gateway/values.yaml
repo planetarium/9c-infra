@@ -1,4 +1,4 @@
-clusterName: 9c-main-v2
+clusterName: 9c-dev-v2
 
 environment: "development"
 
@@ -15,4 +15,4 @@ storage:
   class: gp3-extensible
 
 nodeSelector:
-  node.kubernetes.io/instance-type: m5.large
+  node.kubernetes.io/instance-type: m5d.large
