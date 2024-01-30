@@ -225,7 +225,11 @@ data:
         AWS_Region      us-east-2
         HTTP_User       [user]
         HTTP_Passwd     [password]
+        {{- if eq $.Values.clusterName "9c-dev-v2" }}
+        Index           nginx_logs_dev
+        {{- else }}
         Index           nginx_logs
+        {{- end }}
         Type            _doc
         tls             On
         tls.verify      On
@@ -258,7 +262,7 @@ data:
     [PARSER]
         Name                nginx
         Format              regex
-        Regex               ^(?<remote_addr>[^ ]*) - (?<remote_user>[^ ]*) \[(?<time_local>[^\]]*)\] "(?<method>\S+) (?<path>\S+) (?<protocol>\S+)" (?<status>\d+) (?<body_bytes_sent>\d+) "(?<http_referer>[^"]*)" "(?<http_user_agent>[^"]*)" kong_request_id: "(?<kong_request_id>[^"]*)" "(?<request_body>.*)"
+        Regex               ^(?<remote_addr>[^ ]*) - (?<remote_user>[^ ]*) \[(?<time_local>[^\]]*)\] "(?<method>\S+) (?<path>\S+) (?<protocol>\S+)" (?<status>\d+) (?<body_bytes_sent>\d+) "(?<http_referer>[^"]*)" "(?<http_user_agent>[^"]*)" (?<response_time>[0-9\.]+) (?:(?<upstream_response_time>[0-9\.]+))? kong_request_id: "(?<kong_request_id>[^ "]*)" "(?<request_body>.*)"
         Time_Key            time_local
         Time_Format         %d/%b/%Y:%H:%M:%S %z
         Decode_Field        json request_body
