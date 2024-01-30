@@ -1,5 +1,7 @@
 clusterName: 9c-main-v2
 
+environment: "production"
+
 useExternalSecret: true
 
 image:

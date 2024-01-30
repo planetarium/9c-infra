@@ -27,6 +27,7 @@ data:
             status_code: 200
             content_type: applicaton/json
             body: '{"status":"UP"}'
+    {{- if eq $.Values.environment "production" }}
     - name: 9cscan-odin
       url: https://api.9cscan.com
       routes:
@@ -39,6 +40,13 @@ data:
       - name: 9cscan-heimdall
         paths:
         - /9cscan/heimdall
+    - name: bnbc
+      url: http://a99bb8c2ca5d240b9bc17796ac8ed279-719156173.us-west-2.elb.amazonaws.com
+      routes:
+      - name: bnbc
+        paths:
+        - /bnbc/minigame
+    {{- else }}
     - name: 9cscan-odin-internal
       url: https://api-internal.9cscan.com
       routes:
@@ -46,8 +54,9 @@ data:
         paths:
         - /9cscan/internal/odin
     - name: bnbc
-      url: http://a99bb8c2ca5d240b9bc17796ac8ed279-719156173.us-west-2.elb.amazonaws.com
+      url: http://a2e2a824e8917421ca052a02fda29394-946090765.us-east-1.elb.amazonaws.com
       routes:
       - name: bnbc
         paths:
         - /bnbc/minigame
+    {{- end }}
