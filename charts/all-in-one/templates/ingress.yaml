@@ -24,7 +24,7 @@ spec:
     - host: {{ index $.Values.validator.hosts $idx }}
       http:
         paths:
-          - path: /
+          - path: /ui/playground
             pathType: Prefix
             backend:
               service:
@@ -58,7 +58,7 @@ spec:
     - host: {{ index $.Values.remoteHeadless.hosts $idx }}
       http:
         paths:
-          - path: /
+          - path: /ui/playground
             pathType: Prefix
             backend:
               service:
