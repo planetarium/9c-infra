@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200131/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIAiOFze6U9KZ12SLNKGyGGP.JMQMfoNbDppBq1kaByzUAiBv48M5eAKB695KpexNWuUmVfvWi3CWzVcEu2BSBNsMqA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAxLTA0ZQ=="
+  appProtocolVersion: "200132/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCICDOi7JdoNNB5jCiLbkaIMi.Qjkpud1R245ipFS4gXG1AiB8BEqaisDerlOISMJB+xo4pnKuMNeiPaGA6xLqJBmLng==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAxLTMxZQ=="
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
@@ -582,7 +582,6 @@ rudolfCurrencyNotifier:
     graphqlEndpoint: "https://heimdall-full-state.nine-chronicles.com/graphql"
     targetAddress: "0xec48c68198dA91e89d6CA4eff93C23441e167358"
     serverName: "heimdall"
-  
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
@@ -600,5 +599,5 @@ ninechroniclesUtilBackend:
   image:
     repository: planetariumhq/9cutil-backend
     tag: git-29bd49051cca9a11ca4684f1f16ca3ebafde34e1
-  
+
   headlessEndpoint: "https://heimdall-full-state.nine-chronicles.com/graphql"
