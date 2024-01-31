@@ -49,7 +49,7 @@ jobs:
       name: install dependencies
       working-directory: ./scripts
 
-    - name: Update Apv
+    - name: Update 'bridgeService.rdb.defaultStartBlockIndex'
       run: |
         python cli.py update-bridge-service 9c-internal heimdall
       working-directory: ./scripts
