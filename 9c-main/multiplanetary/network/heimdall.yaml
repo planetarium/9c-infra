@@ -345,7 +345,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    ttag: "92"
+    tag: "92"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
