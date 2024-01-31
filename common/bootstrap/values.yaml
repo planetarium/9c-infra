@@ -9,9 +9,6 @@ memcached:
   enabled: false
   memory: 1Gi
 
-ingressNginx:
-  enabled: false
-
 loki:
   enabled: false
   write:
