@@ -8,8 +8,8 @@ echo "$BASEDIR"
 reset_snapshot() {
   CHAIN=$3
   PREFIX="s3://9c-snapshots-v2/"
-  PREVIOUS_MAINNET_EPOCH_PATH=${$1#$PREFIX}
-  BASE_URL_PATH=${$2#$PREFIX}
+  PREVIOUS_MAINNET_EPOCH_PATH="${1#$PREFIX}"
+  BASE_URL_PATH="${2#$PREFIX}"
   NEW_SNAPSHOT_TIP=0
   if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/$PREVIOUS_MAINNET_EPOCH_PATH/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
     base_url="snapshots.nine-chronicles.com/$BASE_URL_PATH"
