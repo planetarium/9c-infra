@@ -6,8 +6,13 @@ echo "$BASEDIR"
 
 # AWS configuration must be already set on your environment
 reset_snapshot() {
-  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/internal/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
-    base_url="snapshots.nine-chronicles.com/main/partition/internal"
+  CHAIN=$3
+  PREFIX="s3://9c-snapshots-v2/"
+  PREVIOUS_MAINNET_EPOCH_PATH=${$1#$PREFIX}
+  BASE_URL_PATH=${$2#$PREFIX}
+  NEW_SNAPSHOT_TIP=0
+  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/$PREVIOUS_MAINNET_EPOCH_PATH/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
+    base_url="snapshots.nine-chronicles.com/$BASE_URL_PATH"
 
     get_snapshot_value() {
         snapshot_json_url="$1"
@@ -27,6 +32,7 @@ reset_snapshot() {
         aws s3 cp "$2/latest.zip" "$1/latest.zip"
         aws s3 cp "$2/latest.json" "$1/latest.json"
         aws s3 cp "$2/latest.json" "$1/mainnet_latest.json"
+        $NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
 
         while :
         do
@@ -65,6 +71,7 @@ reset_snapshot() {
     ARCHIVE_PATH=$1/$ARCHIVE/
     ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
     MAIN_PREFIX=$(echo $2/ | awk '{gsub(/\//,"\\/");print}')
+    $NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
 
     # archive internal cluster chain
     for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|json"); do
@@ -90,6 +97,7 @@ reset_snapshot() {
   # reset cf path
   CF_DISTRIBUTION_ID="EAU4XRUZSBUD5"
   aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$CF_PATH"
+  curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: #$NEW_SNAPSHOT_TIP." $"https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
 }
 
 # Type "y" to reset the cluster with a new snapshot and "n" to just deploy the cluster.
@@ -102,9 +110,9 @@ then
     echo "Reset cluster with a new snapshot"
     if [ $CHAIN_NAME = "odin" ]
     then
-      reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" || true
+      reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" $CHAIN_NAME || true
     else
-      reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" || true
+      reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" $CHAIN_NAME || true
     fi
 else
     echo "Reset cluster without resetting snapshot."
