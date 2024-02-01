@@ -32,7 +32,7 @@ reset_snapshot() {
         aws s3 cp "$2/latest.zip" "$1/latest.zip"
         aws s3 cp "$2/latest.json" "$1/latest.json"
         aws s3 cp "$2/latest.json" "$1/mainnet_latest.json"
-        $NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
+        NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
 
         while :
         do
@@ -71,7 +71,7 @@ reset_snapshot() {
     ARCHIVE_PATH=$1/$ARCHIVE/
     ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
     MAIN_PREFIX=$(echo $2/ | awk '{gsub(/\//,"\\/");print}')
-    $NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
+    NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
 
     # archive internal cluster chain
     for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|json"); do
