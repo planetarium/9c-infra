@@ -97,7 +97,7 @@ reset_snapshot() {
   # reset cf path
   CF_DISTRIBUTION_ID="EAU4XRUZSBUD5"
   aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$CF_PATH"
-  curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: #$NEW_SNAPSHOT_TIP." $"https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
+  curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." $"https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
 }
 
 # Type "y" to reset the cluster with a new snapshot and "n" to just deploy the cluster.
