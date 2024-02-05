@@ -7,7 +7,7 @@ seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always
-    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+    tag: "git-8ed94bf22e09888b72f4495f4f7f48b718772609"
 
 bridgeService:
   image:
