@@ -598,6 +598,7 @@ ninechroniclesUtilBackend:
 
   image:
     repository: planetariumhq/9cutil-backend
-    tag: git-29bd49051cca9a11ca4684f1f16ca3ebafde34e1
+    tag: git-e316148b3c0158b45bfa072d62870e7eec237a13
 
   headlessEndpoint: "https://heimdall-full-state.nine-chronicles.com/graphql"
+  dataProviderEndpoint: "https://heimdall-dp.9c.gg/graphql"
