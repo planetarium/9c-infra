@@ -12,7 +12,7 @@ global:
     tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02dac8e104ec5dec045dddb9939d83722cc0e1df523795bface7ed10ae56187638"
   headlessAppsettingsPath: "appsettings.json"
 
