@@ -83,6 +83,8 @@ validator:
   count: 4
   image:
     pullPolicy: Always
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
 
   loggingEnabled: true
 
@@ -111,6 +113,8 @@ dataProvider:
     log: 4Gi
 
   image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
     tag: "git-2e560f150c7ca1ec9a97e6f1d18c4e4c8c992457"
 
   db:
