@@ -20,7 +20,7 @@ global:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
   resetSnapshot: true
-  rollbackSnapshot: true
+  rollbackSnapshot: false
 
 snapshot:
   downloadSnapshot: true
@@ -29,7 +29,7 @@ snapshot:
   partition:
     enabled: true
     suspend: true
-  path: main/partition/internal
+  path: 9c-dev-v2
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
