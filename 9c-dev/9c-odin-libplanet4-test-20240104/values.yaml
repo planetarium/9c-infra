@@ -215,7 +215,7 @@ rudolfService:
 
   config:
     graphqlEndpoint: "http://remote-headless-1.9c-odin-libplanet4-test-20240104.svc.cluster.local/graphql"
-    genesisBlockHash: "729fa26958648a35b53e8e3905d11ec53b1b4929bf5f499884aed7df616f5913"
+    genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
 
   db:
     local: true
