@@ -29,7 +29,7 @@ snapshot:
   partition:
     enabled: true
     suspend: true
-  path: 9c-dev-v2
+  path: internal
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
