@@ -29,7 +29,7 @@ snapshot:
   partition:
     enabled: true
     suspend: true
-  path: 9c-dev-v2
+  path: internal/heimdall
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
@@ -140,6 +140,7 @@ worldBoss:
 
   image:
     repository: planetariumhq/world-boss-service
+    pullPolicy: Always
     tag: "git-ba6656e92c53165e3716681aa9ac4cac146d8229"
 
   ports:
