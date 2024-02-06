@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-2b337bdd4a66a85011e6c90850147583ad10f949"
+    tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -19,13 +19,13 @@ global:
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
 
-  resetSnapshot: false
-  rollbackSnapshot: false
+  resetSnapshot: true
+  rollbackSnapshot: true
 
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-a484e5089d57a961aa97d6e75c38980323b587e6"
+  image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
   partition:
     enabled: true
     suspend: true
@@ -62,6 +62,8 @@ remoteHeadless:
   count: 1
   image:
     pullPolicy: Always
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
 
   loggingEnabled: true
 
@@ -109,7 +111,7 @@ dataProvider:
     log: 4Gi
 
   image:
-    tag: "git-3da9d207ef8237e48eeb953ea53bb5308a873aad"
+    tag: "git-2e560f150c7ca1ec9a97e6f1d18c4e4c8c992457"
 
   db:
     local: true
@@ -131,6 +133,10 @@ dataProvider:
 
 worldBoss:
   enabled: true
+
+  image:
+    repository: planetariumhq/world-boss-service
+    tag: "git-ba6656e92c53165e3716681aa9ac4cac146d8229"
 
   ports:
     targetPort: 5000
@@ -157,7 +163,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: git-850e0ac4135a9ee3ef75c1820c00289b0996f050
+    tag: git-0fddf8f1fd87c41eb2d370bb06ace0525b4c57fd
 
   db:
     local: true
@@ -185,6 +191,10 @@ guildService:
 
 patrolRewardService:
   enabled: true
+  image:
+    repository: planetariumhq/patrol-reward-service
+    pullPolicy: Always
+    tag: git-cc830dd9bf0052feb624a81fbcde7e4a901e392c
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m5d_xl_2c
