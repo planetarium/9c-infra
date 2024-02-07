@@ -1,0 +1,11 @@
+externalSecret:
+  enabled: true
+  prefix: "mothership-devnet"
+
+env:
+  L1_RPC: https://ethereum-holesky.publicnode.com
+
+storageClassName: gp3-extensible
+
+genesis:
+  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com

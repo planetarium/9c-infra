@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: l2launcher-20240214
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/eseiker/mothership-l2launcher.git
+      targetRevision: k8s
+      path: templates/helm
+      helm:
+        valueFiles:
+          - $infra/9c-dev/l2launcher-20240214/values.yaml
+    - repoURL: https://github.com/eseiker/9c-infra.git
+      targetRevision: l2launcher
+      ref: infra
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: l2launcher-20240214
