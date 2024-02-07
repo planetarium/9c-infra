@@ -8,6 +8,4 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   check_chain_tip.sh: |- {{ tpl (.Files.Get "scripts/data-provider/check_chain_tip.sh") . | nindent 4 }}
-  {{- if ne $.Values.global.networkType "Main" }}
   setup_internal_db.sh: |- {{ tpl (.Files.Get "scripts/data-provider/setup_internal_db.sh") . | nindent 4 }}
-  {{- end }}
