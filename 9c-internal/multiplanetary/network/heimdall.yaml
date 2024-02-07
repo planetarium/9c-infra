@@ -90,6 +90,28 @@ dataProvider:
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
 
+testDataProvider:
+  enabled: true
+
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+
 marketService:
   enabled: true
 
