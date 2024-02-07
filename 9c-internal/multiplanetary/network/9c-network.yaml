@@ -81,6 +81,8 @@ validator:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
 
+  loggingEnabled: true
+
   extraArgs:
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
