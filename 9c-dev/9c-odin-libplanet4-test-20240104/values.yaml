@@ -229,6 +229,4 @@ rudolfService:
 
   service:
     enabled: true
-    securityGroupIds:
-    - "sg-0c865006315f5b9f0"
-    - "sg-0343e5c4514681670"
+    public: true

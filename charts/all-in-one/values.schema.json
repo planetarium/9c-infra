@@ -88,6 +88,10 @@
                     },
                     "uniqueItems": true,
                     "description": "Security Group Ids array to assign to the ELB resource."
+                  },
+                  "public": {
+                    "type": "boolean",
+                    "description": "Expose the service to the public."
                   }
                 },
                 "additionalProperties": false,

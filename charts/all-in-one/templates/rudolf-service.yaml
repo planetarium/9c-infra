@@ -76,6 +76,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
+    {{- if .Values.rudolfService.service.public }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     {{- if .Values.rudolfService.service.securityGroupIds }}
     service.beta.kubernetes.io/aws-load-balancer-security-groups: {{ join "," .Values.rudolfService.service.securityGroupIds }}
