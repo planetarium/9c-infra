@@ -244,6 +244,27 @@ dataProvider:
       cpu: '3'
       memory: 26Gi
 
+testDataProvider:
+  enabled: true
+  render: true
+  migrateDatabase: true
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  db:
+    local: true
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+
 explorer:
   enabled: false
 
