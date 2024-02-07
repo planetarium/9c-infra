@@ -602,6 +602,7 @@ rudolfService:
 
   service:
     enabled: false
+    public: false
 
   nodeSelector: {}
 
