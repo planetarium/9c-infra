@@ -94,7 +94,7 @@ testDataProvider:
   enabled: true
 
   render: true
-  migrateDatabase: false
+  migrateDatabase: true
 
   storage:
     data: 1000Gi
