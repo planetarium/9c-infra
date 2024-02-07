@@ -150,6 +150,54 @@ spec:
 ---
 {{ end }}
 
+
+{{ if $.Values.testDataProvider.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-data-provider-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=dx,Owner=jiwon,Service={{ $.Release.Name }},Name=test-data-provider-db
+spec:
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: test-data-provider-db
+  type: LoadBalancer
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-data-provider
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=dx,Owner=jiwon,Service={{ $.Release.Name }},Name=test-data-provider
+spec:
+  ports:
+  - name: graphql
+    port: 80
+    targetPort: 80
+  selector:
+    app: data-provider
+  type: LoadBalancer
+---
+{{ end }}
+
+
 {{ if $.Values.explorer.enabled }}
 apiVersion: v1
 kind: Service
