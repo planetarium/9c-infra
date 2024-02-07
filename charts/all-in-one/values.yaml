@@ -218,6 +218,34 @@ dataProvider:
 
   nodeSelector: {}
 
+testDataProvider:
+  enabled: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 1000Gi
+    log: 10Gi
+
+  image:
+    repository: atralupus/ninechronicles-dataprovider
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4f2ac9ced9dbe8bd23bcf6fd40f0452e821eeb6a"
+  db:
+    local: true
+    storage: 100Gi
+    database: ""
+    connectionString: ""
+    host: ""
+    port: 3306
+    user: user
+    password: ""
+
+  resources: {}
+
+  nodeSelector: {}
+
 explorer:
   enabled: false
   image:
