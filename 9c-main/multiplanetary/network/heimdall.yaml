@@ -526,6 +526,8 @@ jwtHeadless:
 emptyChronicle:
   enabled: true
   network: "heimdall"
+  storage:
+    data: 1000Gi
 
 
 remoteActionEvaluatorHeadless:
