@@ -22,7 +22,7 @@ spec:
       initContainers:
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
-          - /data
+          - /data/empty-chronicle
           - $(RESET_SNAPSHOT_OPTION)
           - empty-chronicle
           - $(SLACK_WEBHOOK_URL)
@@ -40,8 +40,10 @@ spec:
             - mountPath: /data
               name: empty-chronicle-data
           env:
-          - name: RESET_SNAPSHOT_OPTION
-            value: "false"
+          - name: RESET_SNAPSHOT_OPTION  
+            value: "{{ $.Values.global.resetSnapshot }}"
+          - name: SNAPSHOT_ROLLBACK_OPTION
+            value: "{{ $.Values.global.rollbackSnapshot }}"
           - name: SLACK_WEBHOOK_URL
             valueFrom:
               secretKeyRef:
@@ -51,9 +53,24 @@ spec:
         - name: empty-chronicle
           image: "{{ .Values.emptyChronicle.image.repository }}:{{ .Values.emptyChronicle.image.tag }}"
           imagePullPolicy: Always
+          command:
+          - dotnet
+          args:
+          - EmptyChronicle.dll
+          {{- if eq .Values.emptyChronicle.network "heimdall" }}
+          - --heimdall
+          {{- else if eq .Values.emptyChronicle.network "odin" }}
+          - --odin
+          {{- else }}
+          {{ fail "Invalid network" }}
+          {{- end }}
           env:
             - name: PN_AppProtocolVersionToken
               value: {{ $.Values.global.appProtocolVersion }}
+            - name: PN_StorePath
+              value: "/data/empty-chronicle"
+            - name: ASPNETCORE_URLS
+              value: "http://+:{{ .Values.emptyChronicle.ports.port }}"
           ports:
             - name: http
               containerPort: {{ .Values.emptyChronicle.ports.port }}

@@ -524,7 +524,9 @@ jwtHeadless:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
 emptyChronicle:
-  enabled: false
+  enabled: true
+  network: "heimdall"
+
 
 remoteActionEvaluatorHeadless:
   enabled: false
