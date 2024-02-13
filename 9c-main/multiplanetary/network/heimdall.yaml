@@ -622,4 +622,4 @@ ninechroniclesUtilBackend:
     tag: git-a90defd240cc9d468130cd391c0195e6fb66cd64
 
   headlessEndpoint: "http://main-full-state.heimdall.svc.cluster.local/graphql"
-  dataProviderEndpoint: "http://heimdall-dp.9c.gg/graphql"
+  dataProviderEndpoint: "http://test-data-provider.heimdall.svc.cluster.local/graphql"
