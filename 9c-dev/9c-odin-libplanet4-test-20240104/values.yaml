@@ -28,7 +28,7 @@ ingress:
     dataProvider: "dev-dp.9c.gg"
     marketService: "dev-market.9c.gg"
     patrolRewardService: "dev-patrol.9c.gg"
-    worldBossService: "dev-world-boss.9c.gg"
+    worldBoss: "dev-world-boss.9c.gg"
 
 snapshot:
   downloadSnapshot: true
