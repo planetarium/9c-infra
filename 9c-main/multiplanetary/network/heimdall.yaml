@@ -628,5 +628,5 @@ ninechroniclesUtilBackend:
   jwt:
     enabled: true
 
-  headlessEndpoint: "http://heimdall-jwt.nine-chronicles.com//graphql"
+  headlessEndpoint: "http://heimdall-jwt.nine-chronicles.com/graphql"
   dataProviderEndpoint: "http://test-data-provider.heimdall.svc.cluster.local/graphql"
