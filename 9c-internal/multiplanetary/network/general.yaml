@@ -47,7 +47,7 @@ patrolRewardService:
 
 rudolfService:
   image:
-    tag: "git-6666e2bd461262faa398307c3fd098fbb988d2a8"
+    tag: "git-df13a4c8f7db88ff96bab9038eed0ba7bb35a3d5"
 
 acc:
   image:
