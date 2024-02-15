@@ -27,6 +27,18 @@ spec:
               value: {{ $.Values.ninechroniclesUtilBackend.dataProviderEndpoint }}
             - name: ASPNETCORE_URLS
               value: http://*:3000
+            {{- if .Values.ninechroniclesUtilBackend.jwt.enabled }}
+            - name: StateService__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret-key
+                  name: ninechronicles-util-backend
+            - name: StateService__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-issuer
+                  name: ninechronicles-util-backend
+            {{- end }}
       {{- with $.Values.ninechroniclesUtilBackend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
