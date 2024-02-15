@@ -5,7 +5,7 @@ serviceAccount:
 
 image:
   repository: planetariumhq/ninechronicles-volumerotator
-  tag: "git-df6103821fbc8e852861cd64d07cab37b1ef6ac2"
+  tag: "git-035daf270e293a122e54772bfdea9c21363a8eca"
 
 nodeSelector:
   node.kubernetes.io/instance-type: r6g.large
