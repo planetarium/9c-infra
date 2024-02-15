@@ -22,7 +22,7 @@ externalSecret:
   prefix: "9c-internal-v2/heimdall"
 
 ingress:
-  enabled: true
+  enabled: false
 
 bridgeService:
   enabled: true
