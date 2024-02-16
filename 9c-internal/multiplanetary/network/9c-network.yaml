@@ -38,9 +38,6 @@ snapshot:
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
 
-ingress:
-  enabled: true
-
 seed:
   count: 1
   useTurnServer: false
