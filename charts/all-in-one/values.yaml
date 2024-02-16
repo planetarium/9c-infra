@@ -653,7 +653,7 @@ volumeRotator:
 
   image:
     repository: "planetariumhq/ninechronicles-volumerotator"
-    tag: "git-035daf270e293a122e54772bfdea9c21363a8eca"
+    tag: "git-81310418f954698ad61dc315b0a5577a68225334"
 
 bridgeService:
   enabled: false
