@@ -342,9 +342,9 @@ testHeadless1:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=0
@@ -389,9 +389,9 @@ testHeadless2:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=0
@@ -435,9 +435,9 @@ jwtHeadless:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
   - --tx-quota-per-signer=0
