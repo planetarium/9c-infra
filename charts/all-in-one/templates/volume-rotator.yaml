@@ -27,6 +27,8 @@ spec:
         {{- end }}
         
         headless:
+          image: {{ $.Values.volumeRotator.headlessImage }}
+          replicaCount: {{ $.Values.volumeRotator.replicaCount }}
           snapshotPath: {{ $.Values.snapshot.path }}
           nodeSelectorValue: {{ $.Values.volumeRotator.nodeSelectorValue }}
   destination:

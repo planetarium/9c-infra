@@ -524,7 +524,11 @@ jwtHeadless:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
 emptyChronicle:
-  enabled: false
+  enabled: true
+  network: "heimdall"
+  storage:
+    data: 1000Gi
+
 
 remoteActionEvaluatorHeadless:
   enabled: false
@@ -619,7 +623,10 @@ ninechroniclesUtilBackend:
 
   image:
     repository: planetariumhq/9cutil-backend
-    tag: git-a90defd240cc9d468130cd391c0195e6fb66cd64
+    tag: git-0a014ff0c522aeec8d42da5d188a09f16ec659d2
 
-  headlessEndpoint: "http://main-full-state.heimdall.svc.cluster.local/graphql"
-  dataProviderEndpoint: "http://heimdall-dp.9c.gg/graphql"
+  jwt:
+    enabled: true
+
+  headlessEndpoint: "http://heimdall-jwt.nine-chronicles.com/graphql"
+  dataProviderEndpoint: "http://test-data-provider.heimdall.svc.cluster.local/graphql"

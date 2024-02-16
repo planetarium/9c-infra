@@ -22,6 +22,10 @@ spec:
         ports:
         - containerPort: 80
         env:
+        - name: Headless_Image
+          value: {{ $.Values.headless.image }}
+        - name: Headless_ReplicaCount
+          value: {{ $.Values.headless.replicaCount | quote }}
         - name: Headless_SnapshotPath
           value: {{ $.Values.headless.snapshotPath }}
         - name: Headless_NodeSelector
