@@ -106,7 +106,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
   - --consensus-target-block-interval=7000
 
   consensusSeedStrings:
@@ -176,7 +176,7 @@ remoteHeadless:
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
@@ -209,7 +209,7 @@ explorer:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   nodeSelector:
     node.kubernetes.io/instance-type: r7g.xlarge
@@ -258,7 +258,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -320,7 +320,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
+    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
 
   loggingEnabled: true
 
@@ -342,12 +342,12 @@ testHeadless1:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   resources:
     requests:
@@ -369,7 +369,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
+    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
 
   loggingEnabled: true
 
@@ -389,12 +389,12 @@ testHeadless2:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   host: "9c-main-test-2.nine-chronicles.com"
 
@@ -435,12 +435,12 @@ jwtHeadless:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
+    value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.9c-network.svc.cluster.local:80"
+    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   resources:
     requests:
@@ -469,7 +469,7 @@ remoteActionEvaluatorHeadless:
   host: "9c-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
-  - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=0
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
@@ -507,7 +507,7 @@ volumeRotator:
     node.kubernetes.io/instance-type: r6g.xlarge
 
   nodeSelectorValue: "9c-main-r7g_xl_2c"
-  headlessImage: "planetariumhq/ninechronicles-headless:git-a21b26720461cb884cf8fea25fe5e8704e6dd066"
+  headlessImage: "planetariumhq/ninechronicles-headless:git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
   replicaCount: 8
 
 rudolfService:
