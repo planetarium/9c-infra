@@ -249,6 +249,11 @@ testDataProvider:
   render: true
   migrateDatabase: true
 
+  image:
+    repository: atralupus/ninechronicles-dataprovider
+    pullPolicy: Always
+    tag: "git-149caf0b6fa96346f27563d906ecfe34a91a49ec"
+
   storage:
     data: 1000Gi
     log: 10Gi
