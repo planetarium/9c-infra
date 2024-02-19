@@ -366,7 +366,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
+    tag: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -426,7 +426,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
+    tag: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
