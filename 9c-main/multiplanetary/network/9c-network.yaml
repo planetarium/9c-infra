@@ -507,7 +507,7 @@ volumeRotator:
     node.kubernetes.io/instance-type: r6g.xlarge
 
   nodeSelectorValue: "9c-main-r7g_xl_2c"
-  headlessImage: "planetariumhq/ninechronicles-headless:riemannulus/ninechronicles-headless:suho-20240219-4-arm"
+  headlessImage: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
   replicaCount: 8
 
 rudolfService:
