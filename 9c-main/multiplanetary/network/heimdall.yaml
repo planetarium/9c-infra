@@ -84,7 +84,7 @@ fullState:
 
   extraArgs:
   - --no-reduce-store
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -155,7 +155,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
   - --consensus-target-block-interval=7500
 
   consensusSeedStrings:
@@ -218,7 +218,7 @@ remoteHeadless:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
@@ -276,7 +276,7 @@ explorer:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
@@ -416,7 +416,7 @@ testHeadless1:
     value: "http://172.20.239.175:4318"
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   tolerations:
   - effect: NoSchedule
@@ -476,7 +476,7 @@ testHeadless2:
     value: http://172.20.239.175:4318
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   tolerations:
   - effect: NoSchedule
@@ -512,7 +512,7 @@ jwtHeadless:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   resources:
     requests:
@@ -545,7 +545,7 @@ remoteActionEvaluatorHeadless:
   host: "heimdall-main-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
-  - --tx-quota-per-signer=0
+  - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
