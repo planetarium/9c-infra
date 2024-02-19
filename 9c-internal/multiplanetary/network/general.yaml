@@ -1,7 +1,7 @@
 global:
   image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
+    repository: riemannulus/ninechronicles-headless
+    tag: "suho-20240219-5-arm"
 
 seed:
   image:
