@@ -318,9 +318,9 @@ testHeadless1:
   enabled: true
 
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20240219-4-arm"
+    tag: "git-1269f37810da19318c39eefd1656ac7ef31f4879"
 
   loggingEnabled: true
 
@@ -367,9 +367,9 @@ testHeadless2:
   enabled: true
 
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20240219-4-arm"
+    tag: "git-1269f37810da19318c39eefd1656ac7ef31f4879"
 
   loggingEnabled: true
 
@@ -507,7 +507,7 @@ volumeRotator:
     node.kubernetes.io/instance-type: r6g.xlarge
 
   nodeSelectorValue: "9c-main-r7g_xl_2c"
-  headlessImage: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
+  headlessImage: "planetariumhq/ninechronicles-headless:git-1269f37810da19318c39eefd1656ac7ef31f4879"
   replicaCount: 8
 
 rudolfService:

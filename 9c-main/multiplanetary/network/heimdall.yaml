@@ -369,9 +369,9 @@ testHeadless1:
   replicas: 1
 
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20240219-4-arm"
+    tag: "git-1269f37810da19318c39eefd1656ac7ef31f4879"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -429,9 +429,9 @@ testHeadless2:
   replicas: 1
 
   image:
-    repository: riemannulus/ninechronicles-headless
+    repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "suho-20240219-4-arm"
+    tag: "git-1269f37810da19318c39eefd1656ac7ef31f4879"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
