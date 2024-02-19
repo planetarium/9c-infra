@@ -35,7 +35,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
+  image: "planetariumhq/ninechronicles-snapshot:git-6cb89d29c675776976bb10e48bde35be3844c75b"
   path: "main/partition"
 
   fullSnapshot:
@@ -320,7 +320,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
+    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
 
   loggingEnabled: true
 
@@ -369,7 +369,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
+    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
 
   loggingEnabled: true
 
@@ -507,7 +507,7 @@ volumeRotator:
     node.kubernetes.io/instance-type: r6g.xlarge
 
   nodeSelectorValue: "9c-main-r7g_xl_2c"
-  headlessImage: "planetariumhq/ninechronicles-headless:git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
+  headlessImage: "planetariumhq/ninechronicles-headless:git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
   replicaCount: 8
 
 rudolfService:

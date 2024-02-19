@@ -34,7 +34,7 @@ externalSecret:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
+  image: "planetariumhq/ninechronicles-snapshot:git-6cb89d29c675776976bb10e48bde35be3844c75b"
   path: "main/heimdall/partition"
 
   fullSnapshot:
@@ -366,7 +366,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
+    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
 
   host: "heimdall-test-1.nine-chronicles.com"
 
@@ -426,7 +426,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-fd1698a3a2a0f6fb0c6d870fb12eac0d5e42bf2c"
+    tag: "git-858bfe01472cbf8ca410787614ac0d048bac8eaa"
 
   host: "heimdall-test-2.nine-chronicles.com"
 
