@@ -318,9 +318,9 @@ testHeadless1:
   enabled: true
 
   image:
-    repository: planetariumhq/ninechronicles-headless
+    repository: riemannulus/ninechronicles-headless
     pullPolicy: Always
-    tag: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
+    tag: "suho-20240219-4-arm"
 
   loggingEnabled: true
 
@@ -367,9 +367,9 @@ testHeadless2:
   enabled: true
 
   image:
-    repository: planetariumhq/ninechronicles-headless
+    repository: riemannulus/ninechronicles-headless
     pullPolicy: Always
-    tag: "riemannulus/ninechronicles-headless:suho-20240219-4-arm"
+    tag: "suho-20240219-4-arm"
 
   loggingEnabled: true
 
