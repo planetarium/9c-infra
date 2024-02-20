@@ -98,7 +98,9 @@ spec:
         {{- with $.Values.validator.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- if eq $.Values.global.networkType "Main"  }}
         - --network-type={{ $.Values.global.networkType }}
+        {{- end }}
         - --tx-life-time=10
         {{- if $.Values.global.headlessAppsettingsPath }}
         - --config={{ $.Values.global.headlessAppsettingsPath }}

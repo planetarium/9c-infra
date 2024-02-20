@@ -121,7 +121,9 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
+        {{- if eq $.Values.global.networkType "Main"  }}
         - --network-type={{ $.Values.global.networkType }}
+        {{- end }}
         {{- if $.Values.global.headlessAppsettingsPath }}
         - --config={{ $.Values.global.headlessAppsettingsPath }}
         {{- end }}

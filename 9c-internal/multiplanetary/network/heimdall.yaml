@@ -147,6 +147,7 @@ remoteHeadless:
   loggingEnabled: true
 
   extraArgs:
+  - --planet=OdinInternal
 
 rudolfService:
   enabled: true
@@ -218,6 +219,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
+  - --planet=OdinInternal
 
 worldBoss:
   enabled: true
