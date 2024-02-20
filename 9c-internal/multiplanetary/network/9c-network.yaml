@@ -83,6 +83,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
+  - --planet=OdinInternal
 
 remoteHeadless:
   image:
@@ -112,6 +113,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --planet=OdinInternal
 
 dataProvider:
   enabled: true
