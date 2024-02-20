@@ -22,7 +22,12 @@ externalSecret:
   prefix: "9c-internal-v2/heimdall"
 
 ingress:
-  enabled: false
+  enabled: true
+  hosts:
+    dataProvider: "heimdall-internal-dp.9c.gg"
+    marketService: "heimdall-internal-market.9c.gg"
+    patrolRewardService: "heimdall-internal-patrol.9c.gg"
+    worldBoss: "heimdall-internal-world-boss.9c.gg"
 
 bridgeService:
   enabled: true
