@@ -22,12 +22,13 @@ HOME="/app"
 STORE_PATH="/data/headless"
 APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-SLACK_TOKEN=$2
+SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
+SNAPSHOT_PATH=$4
 
 function senderr() {
   echo "$1"
-  curl --data "[K8S] $1. Check snapshot-partition--$2 in {{ $.Values.clusterName }} cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $SLACK_WEBHOOK
 }
 
 function make_and_upload_snapshot() {
@@ -37,7 +38,7 @@ function make_and_upload_snapshot() {
   STATE_DIR="/data/snapshots/state"
   METADATA_DIR="/data/snapshots/metadata"
   FULL_DIR="/data/snapshots/full"
-  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
+  URL="https://snapshots.nine-chronicles.com/$2/latest.json"
 
   mkdir -p "$OUTPUT_DIR" "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
   if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -47,7 +48,7 @@ function make_and_upload_snapshot() {
   fi
 
   if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$1" --snapshot-type "full"; then
-    senderr "Snapshot creation failed."
+    senderr "Snapshot creation failed." "$SLACK_WEBHOOK"
     exit 1
   fi
 
@@ -72,13 +73,13 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.output json
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
-  invalidate_cf "/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME"
+  "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/$2/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+  invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME"
   7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
-  "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
-  invalidate_cf "/{{ $.Values.snapshot.path }}/full/$FULL_SNAPSHOT_FILENAME_7Z"
+  "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
+  invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME_7Z"
   rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
   rm "$LATEST_FULL_SNAPSHOT"
 }
@@ -93,4 +94,5 @@ function invalidate_cf() {
 }
 
 trap '' HUP
-make_and_upload_snapshot "$1"
+
+make_and_upload_snapshot "$APP_PROTOCOL_VERSION" "$SNAPSHOT_PATH"

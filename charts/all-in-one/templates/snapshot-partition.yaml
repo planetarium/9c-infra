@@ -82,7 +82,7 @@ spec:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
             - $(CF_DISTRIBUTION_ID)
-            - $(SLACK_TOKEN)
+            - {{ $.Values.snapshot.path }}
             command:
             - /bin/upload_snapshot.sh
             env:

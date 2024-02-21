@@ -35,9 +35,8 @@ snapshot:
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
   partition:
-    enabled: true
-    suspend: true
-  path: 9c-dev-v2
+    enabled: false
+  path: 9c-internal
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
