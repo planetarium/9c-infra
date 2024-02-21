@@ -9,3 +9,7 @@ storageClassName: gp3-extensible
 
 genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
+
+blockscout:
+  db:
+    storage: 100Gi
