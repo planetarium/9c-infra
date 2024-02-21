@@ -28,7 +28,7 @@ mkdir -p "$HEADLESS_LOG_DIR"
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-v'$VERSION_NUMBER' in 9c-internal cluster at preload_headless.sh."}' $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
 }
 
 function preload_complete() {
