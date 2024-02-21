@@ -24,6 +24,14 @@ global:
 externalSecret:
   enabled: true
 
+ingress:
+  enabled: true
+  hosts:
+    dataProvider: "odin-internal-dp.9c.gg"
+    marketService: "odin-internal-market.9c.gg"
+    patrolRewardService: "odin-internal-patrol.9c.gg"
+    worldBoss: "odin-world-boss.9c.gg"
+
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"

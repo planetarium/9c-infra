@@ -67,16 +67,4 @@ spec:
                 port:
                   number: 80
     {{- end }}
-    {{- if $.Values.guildService.enabled }}
-    - host: {{ $.Values.ingress.hosts.guildService }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: guild-service
-                port:
-                  number: 80
-    {{- end }}
 {{- end }}
