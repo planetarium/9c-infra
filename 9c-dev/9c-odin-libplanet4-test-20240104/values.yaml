@@ -37,6 +37,7 @@ snapshot:
   partition:
     enabled: false
   path: 9c-internal
+  uploadPath: 9c-dev
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 

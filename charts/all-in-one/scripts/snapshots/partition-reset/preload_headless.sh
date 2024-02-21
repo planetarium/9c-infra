@@ -8,7 +8,7 @@ HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
-SLACK_TOKEN=$2
+SLACK_WEBHOOK=$2
 
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 STORE_PATH="/data/headless"
@@ -29,7 +29,7 @@ mkdir -p "$HEADLESS_LOG_DIR"
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
-  curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in {{ $.Values.clusterName }} cluster at preload_headless.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-partition-reset-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
 }
 
 function preload_complete() {
