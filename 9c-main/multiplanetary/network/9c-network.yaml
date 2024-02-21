@@ -43,7 +43,7 @@ snapshot:
     suspend: false
 
   partitionReset:
-    enabled: true
+    enabled: false
 
   partition:
     enabled: true

@@ -24,10 +24,11 @@ APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
+SNAPSHOT_PATH=$4
 
 function senderr() {
   echo "$1"
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $2
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $SLACK_WEBHOOK
 }
 
 function make_and_upload_snapshot() {
@@ -47,7 +48,7 @@ function make_and_upload_snapshot() {
   fi
 
   if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH"  --block-before 0 --apv "$1" --snapshot-type "partition"; then
-    senderr "Snapshot creation failed."
+    senderr "Snapshot creation failed." "$SLACK_WEBHOOK"
     exit 1
   fi
 
@@ -147,4 +148,4 @@ function invalidate_cf() {
 
 trap '' HUP
 
-make_and_upload_snapshot $1
+make_and_upload_snapshot "$APP_PROTOCOL_VERSION" "$SNAPSHOT_PATH"
