@@ -78,8 +78,24 @@ module "common" {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 4
-      min_size          = 4
+      desired_size      = 1
+      min_size          = 1
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "remote-headless-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "9c-main-r7g_2xl_2c_test" = {
+      instance_types    = ["r7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 3
+      min_size          = 3
       max_size          = 15
       ami_type          = "AL2_ARM_64"
       disk_size         = 50
@@ -126,7 +142,7 @@ module "common" {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 4
+      desired_size      = 0
       min_size          = 0
       max_size          = 10
       ami_type          = "AL2_ARM_64"
@@ -222,8 +238,8 @@ module "common" {
       instance_types    = ["r7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 1
-      min_size          = 1
+      desired_size      = 0
+      min_size          = 0
       max_size          = 15
       ami_type          = "AL2_ARM_64"
       disk_size         = 50
@@ -238,7 +254,7 @@ module "common" {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 1
+      desired_size      = 0
       min_size          = 0
       max_size          = 6
       ami_type          = "AL2_ARM_64"
