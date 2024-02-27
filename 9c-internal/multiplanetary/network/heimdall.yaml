@@ -224,6 +224,7 @@ validator:
   loggingEnabled: true
 
   extraArgs:
+  - --tx-life-time=2000000000
   - --planet=HeimdallInternal
 
 worldBoss:
