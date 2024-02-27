@@ -16,6 +16,7 @@ global:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
   networkType: Internal
+  planet: OdinInternal
   consensusType: pbft
 
   resetSnapshot: true
@@ -92,7 +93,6 @@ validator:
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
   - --tx-life-time=2000000000
-  - --planet=OdinInternal
 
 remoteHeadless:
   image:
@@ -122,7 +122,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --planet=OdinInternal
 
 dataProvider:
   enabled: true
