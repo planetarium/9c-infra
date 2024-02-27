@@ -100,8 +100,8 @@ spec:
         {{- end }}
         {{- if eq $.Values.global.networkType "Main"  }}
         - --network-type={{ $.Values.global.networkType }}
-        {{- end }}
         - --tx-life-time=10
+        {{- end }}
         {{- if $.Values.global.headlessAppsettingsPath }}
         - --config={{ $.Values.global.headlessAppsettingsPath }}
         {{- end }}
