@@ -86,11 +86,13 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  {{- if not $.Values.ingress.enabled }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
+  {{- end }}
 spec:
   ports:
   - name: graphql
@@ -98,7 +100,11 @@ spec:
     targetPort: 80
   selector:
     app: data-provider-write
+  {{- if not $.Values.ingress.enabled }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 {{ else }}
 ---
@@ -110,11 +116,13 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  {{- if not $.Values.ingress.enabled }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
+  {{- end }}
 spec:
   ports:
   - name: graphql
@@ -122,7 +130,11 @@ spec:
     targetPort: 80
   selector:
     app: data-provider
+  {{- if not $.Values.ingress.enabled }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 ---
 {{ end }}
 
@@ -345,6 +357,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  {{- if not $.Values.ingress.enabled }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
@@ -353,6 +366,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
+  {{- end }}
   name: world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
@@ -372,7 +386,11 @@ spec:
     targetPort: {{ $.Values.worldBoss.ports.targetPort }}
   selector:
     app: world-boss-service
+  {{- if not $.Values.ingress.enabled }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 ---
 {{ end }}
@@ -479,6 +497,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  {{- if not $.Values.ingress.enabled }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -487,6 +506,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
+  {{- end }}
 spec:
   ports:
     - name: http
@@ -499,7 +519,11 @@ spec:
       targetPort: 80
   selector:
     app: market-service
+  {{- if not $.Values.ingress.enabled }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 ---
 {{ end }}
@@ -677,6 +701,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  {{- if not $.Values.ingress.enabled }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -685,6 +710,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
+  {{- end }}
 spec:
   ports:
     - name: http
@@ -697,7 +723,11 @@ spec:
       targetPort: 80
   selector:
     app: patrol-reward-service
+  {{- if not $.Values.ingress.enabled }}
   type: LoadBalancer
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 ---
 {{ end }}
