@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "migration-agent"
+    tag: "migration-agent-1"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -71,7 +71,7 @@ remoteHeadless:
   image:
     pullPolicy: Always
     repository: planetariumhq/ninechronicles-headless
-    tag: "migration-agent"
+    tag: "migration-agent-1"
 
   loggingEnabled: true
 
@@ -92,7 +92,7 @@ validator:
   image:
     pullPolicy: Always
     repository: planetariumhq/ninechronicles-headless
-    tag: "migration-agent"
+    tag: "migration-agent-1"
 
   loggingEnabled: true
 
