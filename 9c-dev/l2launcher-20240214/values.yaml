@@ -9,7 +9,8 @@ storageClassName: gp3-extensible
 
 genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
-  createSnapshot: true
+  snapshot: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/snapshot/snapshot-2024-02-28T09%3A02Z.tar.zst
+  createSnapshot: false
   s3SnapshotPath: mothership-devnet-holesky-genesis/snapshot
 
 blockscout:
@@ -18,4 +19,5 @@ blockscout:
     storage: 100Gi
 
 node:
+  replicas: 2
   loadBalancerExternal: true
