@@ -340,7 +340,7 @@ testHeadless1:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "110"
+    tag: "git-cfc5ac2ff99d885c0506c60f43f471a9d3feeeac"
 
   loggingEnabled: true
 
@@ -389,7 +389,7 @@ testHeadless2:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "110"
+    tag: "git-cfc5ac2ff99d885c0506c60f43f471a9d3feeeac"
 
   loggingEnabled: true
 
@@ -527,7 +527,7 @@ volumeRotator:
     node.kubernetes.io/instance-type: r6g.xlarge
 
   nodeSelectorValue: "9c-main-r7g_xl_2c"
-  headlessImage: "planetariumhq/ninechronicles-headless:110"
+  headlessImage: "planetariumhq/ninechronicles-headless:git-cfc5ac2ff99d885c0506c60f43f471a9d3feeeac"
   replicaCount: 8
 
 rudolfService:
