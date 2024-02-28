@@ -95,7 +95,7 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
-        - --network-type={{ $.Values.global.networkType }}
+        - --planet={{ $.Values.global.planet }}
         {{- if $.Values.global.headlessAppsettingsPath }}
         - --config={{ $.Values.global.headlessAppsettingsPath }}
         {{- end }}

@@ -87,7 +87,7 @@ spec:
         - --tx-life-time=10
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
-        - --network-type={{ $.Values.global.networkType }}
+        - --planet={{ $.Values.global.planet }}
         {{- with $.Values.explorer.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
