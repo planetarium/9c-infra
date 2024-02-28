@@ -241,6 +241,17 @@ remoteHeadless:
 
   loggingEnabled: true
 
+dataProviderDataMigrator:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 26Gi
+
 dataProvider:
   enabled: true
   rwMode: true
