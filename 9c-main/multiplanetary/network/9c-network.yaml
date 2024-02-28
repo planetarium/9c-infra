@@ -7,6 +7,9 @@ logLevel: "debug"
 global:
   appProtocolVersion: "200150/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIHSZrakgCOPMyDIjSy22Jm7zWxte9vlvbivzw144J2TwAiBTYUu8aw3LJHFeZS6MRCjYMT5LvMYiih2hIL+9LVXGBA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAyLTI4ZQ=="
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: git-cfc5ac2ff99d885c0506c60f43f471a9d3feeeac
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
