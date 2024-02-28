@@ -522,7 +522,7 @@ acc:
     eks.amazonaws.com/nodegroup: 9c-main-t3_medium
 
 volumeRotator:
-  enabled: true
+  enabled: false
   nodeSelector:
     node.kubernetes.io/instance-type: r6g.xlarge
 
