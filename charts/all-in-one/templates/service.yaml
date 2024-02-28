@@ -370,8 +370,10 @@ metadata:
   name: world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
+  {{- if not $.Values.ingress.enabled }}
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
+  {{- end }}
   ipFamilies:
   - IPv4
   ipFamilyPolicy: SingleStack
