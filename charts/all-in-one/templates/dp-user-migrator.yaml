@@ -33,10 +33,9 @@ spec:
             {{- end }}
             imagePullPolicy: Always
             name: preload-headless
-            resources: {}
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
-            {{- with $.Values.dataProvider.resources }}
+            {{- with $.Values.dataProviderDataMigrator.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
             {{- end }}
@@ -69,10 +68,9 @@ spec:
             {{- end }}
             imagePullPolicy: Always
             name: preload-headless1
-            resources: {}
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
-            {{- with $.Values.dataProvider.resources }}
+            {{- with $.Values.dataProviderDataMigrator.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
             {{- end }}
@@ -133,7 +131,7 @@ spec:
             name: migration
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
-            {{- with $.Values.dataProvider.resources }}
+            {{- with $.Values.dataProviderDataMigrator.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
             {{- end }}
