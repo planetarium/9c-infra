@@ -209,6 +209,19 @@ remoteHeadless:
 
   loggingEnabled: true
 
+dataProviderDataMigrator:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 26Gi
+  
+  storage: 1000Gi
+
 dataProvider:
   enabled: true
 
