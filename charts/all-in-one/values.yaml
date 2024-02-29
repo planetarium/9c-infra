@@ -417,10 +417,11 @@ testHeadless1:
 testHeadless2:
   enabled: false
   image:
-    repository: planetariumhq/ninechronicles-headless
+    # follow global image
+    repository: ""
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v200010-1"
+    tag: ""
 
   loggingEnabled: false
 
