@@ -177,7 +177,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ $.Values.dataProviderDataMigrator.storage }}
   storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem
 

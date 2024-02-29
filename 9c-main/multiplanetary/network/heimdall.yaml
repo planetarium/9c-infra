@@ -252,6 +252,8 @@ dataProviderDataMigrator:
       cpu: '3'
       memory: 26Gi
 
+  storage: 1000Gi
+
 dataProvider:
   enabled: true
   rwMode: true

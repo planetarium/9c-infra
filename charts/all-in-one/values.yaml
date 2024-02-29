@@ -189,6 +189,12 @@ remoteHeadless:
   tolerations: []
   affinity: {}
 
+dataProviderDataMigrator:
+  enabled: false
+  nodeSelector: {}
+  resources: {}
+  storage: 100Gi
+
 dataProvider:
   enabled: false
   rwMode: false
