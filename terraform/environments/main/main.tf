@@ -106,6 +106,17 @@ module "common" {
       }]
     }
 
+    "9c-main-r7g_2xl_2c" = {
+      instance_types    = ["r7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 10
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+    }
+
     "9c-main-c7g_4xl_2c_test" = {
       instance_types    = ["c7g.4xlarge"]
       availability_zone = "us-east-2c"
@@ -248,6 +259,17 @@ module "common" {
         value  = "remote-headless-test"
         effect = "NO_SCHEDULE"
       }]
+    }
+
+    "heimdall-r7g_2xl_2c" = {
+      instance_types    = ["r7g.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 10
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
     }
 
     "heimdall-m7g_2xl_2c_validator" = {
