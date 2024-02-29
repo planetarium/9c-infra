@@ -56,7 +56,7 @@ spec:
                   regex: __meta_kubernetes_pod_label_(.+)
         loki:
           enabled: true
-          bucketName: loki.planetariumhq.com
+          bucketName: loki-dev-v2.planetariumhq.com
           write:
             count: 3
             nodeGroup: general-r6g_xl_2c
