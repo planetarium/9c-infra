@@ -1,4 +1,4 @@
-name: test-internal-chain
+name: Test internal chain
 
 on:
   workflow_dispatch:
