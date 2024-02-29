@@ -36,7 +36,7 @@ snapshot:
   image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
   partition:
     enabled: false
-  path: 9c-internal
+  path: internal
   uploadPath: 9c-dev
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
