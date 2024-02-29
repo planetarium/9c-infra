@@ -3,6 +3,7 @@ from typing import List
 import typer
 
 from app.update_bridge_service import BridgeServiceUpdater
+from app.test_internal_chain import InternalChainTester
 from app.update_values import ValuesFileUpdater
 from app.update_apv import ApvUpdater
 
@@ -59,6 +60,21 @@ def update_bridge_service(
     """
 
     BridgeServiceUpdater().update(dir_name, file_name)  # type:ignore
+
+@k8s_app.command()
+def test_internal_chain(
+    network: str = typer.Argument(
+        ...,
+        help="odin-internal or heimdall-internal",
+    ),
+    offset: int = 100,
+    limit: int = 10,
+):
+    """
+    Run post deploy script
+    """
+
+    InternalChainTester().test(network, offset, limit)  # type:ignore
 
 @k8s_app.command()
 def update_apv(
