@@ -67,8 +67,8 @@ def test_internal_chain(
         ...,
         help="odin-internal or heimdall-internal",
     ),
-    offset: int,
-    limit: int,
+    offset: int = 100,
+    limit: int = 10,
 ):
     """
     Run post deploy script
