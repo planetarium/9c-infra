@@ -231,11 +231,11 @@ remoteHeadless:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_4xl_2c_test
 
   resources:
     requests:
-      cpu: '6'
+      cpu: '10'
       memory: 50Gi
 
   tolerations:
