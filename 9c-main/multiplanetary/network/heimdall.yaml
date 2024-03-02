@@ -235,7 +235,7 @@ remoteHeadless:
 
   resources:
     requests:
-      cpu: '10'
+      cpu: '12'
       memory: 50Gi
 
   tolerations:
