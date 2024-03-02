@@ -138,7 +138,7 @@ spec:
             volumeMounts:
             - mountPath: /data
               name: dp-user-migrator-volume
-          {{- with $.Values.dataProvider.nodeSelector }}
+          {{- with $.Values.dataProviderDataMigrator.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
