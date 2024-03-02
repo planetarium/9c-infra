@@ -274,6 +274,8 @@ spec:
             secretKeyRef:
               key: database
               name: data-provider
+        - name: RESET_SNAPSHOT_OPTION
+          value: "{{ $.Values.global.resetSnapshot }}"
         image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
         imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
         livenessProbe:
