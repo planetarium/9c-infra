@@ -278,12 +278,3 @@ acc:
   - name: AccessControlServiceConnectionString
     value: "Data Source=/data/acc.db"
 
-guildService:
-  enabled: false
-
-  nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
-
-  db:
-    local: true
-    size: "10Gi"

@@ -55,8 +55,3 @@ acc:
     pullPolicy: Always
     tag: "git-d1d2ccbb9fb8f6ffd5e7a6109363471c8f8fa480"
 
-guildService:
-  image:
-    repository: planetariumhq/guild-service
-    pullPolicy: Always
-    tag: "git-20520bc34fc444effda4f015f6a9e7a6865cb99d"

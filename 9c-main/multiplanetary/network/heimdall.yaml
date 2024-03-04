@@ -633,14 +633,6 @@ rudolfCurrencyNotifier:
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
-guildService:
-  enabled: false
-
-  db:
-    local: false
-    size: "10Gi"
-
-
 ninechroniclesUtilBackend:
   enabled: true
 

@@ -197,11 +197,6 @@ marketService:
   - name: WorkerConfig__SyncProduct
     value: "true"
 
-guildService:
-  enabled: false
-  db:
-    local: false
-
 patrolRewardService:
   enabled: true
   image:
