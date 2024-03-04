@@ -67,6 +67,8 @@ spec:
                     - remote-headless-1.heimdall.svc.cluster.local:80
                     - remote-headless-2.heimdall.svc.cluster.local:80
                     - remote-headless-3.heimdall.svc.cluster.local:80
+                    - remote-headless-4.heimdall.svc.cluster.local:80
+                    - remote-headless-5.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-rpc
                   - targets:
@@ -74,6 +76,11 @@ spec:
                     - test-headless-2.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-test-rpc
+                  - targets:
+                    - test-headless-1.heimdall.svc.cluster.local:80
+                    - test-headless-2.heimdall.svc.cluster.local:80
+                    labels:
+                      group: heimdall-test-rpc
                   - targets:
                     - sgp-nc-1.ninodes.com:80
                     - ash-nc-1.ninodes.com:80
@@ -93,11 +100,13 @@ spec:
                   - targets:
                     - data-provider-db.9c-network.svc.cluster.local:80
                     - data-provider-read.9c-network.svc.cluster.local:80
+                    - data-provider-write.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-data-provider
                   - targets:
                     - data-provider-db.heimdall.svc.cluster.local:80
                     - data-provider-read.heimdall.svc.cluster.local:80
+                    - data-provider-write.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-data-provider
                   - targets:
