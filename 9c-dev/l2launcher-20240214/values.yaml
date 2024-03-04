@@ -3,13 +3,13 @@ externalSecret:
   prefix: "mothership-devnet"
 
 env:
-  L1_RPC: https://ethereum-holesky.publicnode.com
+  L1_RPC: https://ethereum-holesky-rpc.publicnode.com
+  L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
 
 storageClassName: gp3-extensible
 
 genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
-  snapshot: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/snapshot/snapshot-2024-02-28T09%3A02Z.tar.zst
   createSnapshot: false
   s3SnapshotPath: mothership-devnet-holesky-genesis/snapshot
 
