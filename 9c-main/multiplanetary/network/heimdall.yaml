@@ -195,9 +195,6 @@ remoteHeadless:
   - "heimdall-rpc-3.nine-chronicles.com"
   - "heimdall-rpc-4.nine-chronicles.com"
   - "heimdall-rpc-5.nine-chronicles.com"
-  - "heimdall-rpc-6.nine-chronicles.com"
-  - "heimdall-rpc-7.nine-chronicles.com"
-  - "heimdall-rpc-8.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
