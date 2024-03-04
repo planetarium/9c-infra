@@ -27,12 +27,12 @@ class InternalChainTester:
     ):
         # mainnet headless URL and initial setup
         mainnet_headless = "odin-full-state.nine-chronicles.com"
-        target_validator = "k8s-9cnetwor-validato-708e2c954f-b762efe682772dcb.elb.us-east-2.amazonaws.com"
+        internal_target_validator = "odin-internal-validator-5.nine-chronicles.com"
         if network == "heimdall-internal":
             mainnet_headless = "heimdall-full-state.nine-chronicles.com"
-            target_validator = "k8s-heimdall-validato-5d9ca0e47e-85607ecfee8a803f.elb.us-east-2.amazonaws.com"
+            internal_target_validator = "heimdall-internal-validator-1.nine-chronicles.com"
         mainnet_headless_url = urljoin(f"http://{mainnet_headless}", "graphql")
-        target_validator_url = urljoin(f"http://{target_validator}", "graphql")
+        target_validator_url = urljoin(f"http://{internal_target_validator}", "graphql")
 
         tip_index = offset + limit
         print(tip_index)
