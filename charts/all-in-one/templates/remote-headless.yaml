@@ -26,8 +26,8 @@ spec:
         app: remote-headless-{{ $index }}
       name: remote-headless-{{ $index }}
     spec:
-      {{- if $.Values.global.resetSnapshot }}
       initContainers:
+        {{- if $.Values.global.resetSnapshot }}
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/headless
@@ -64,6 +64,7 @@ spec:
             subPath: download_snapshot.sh
           - mountPath: /data
             name: remote-headless-data-{{ $index }}
+        {{- end }}
         - command:
             - sh
             - '-c'
@@ -72,12 +73,22 @@ spec:
 
               # Endpoint to check
 
-              ENDPOINT="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+              SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
-              echo Checking: ${ENDPOINT}
+              echo Checking: ${SEED}
 
               while [[ $(curl --silent --output /dev/null --request GET
-              --write-out "%{http_code}" ${ENDPOINT}) -ne 200 ]]; do
+              --write-out "%{http_code}" ${SEED}) -ne 200 ]]; do
+                echo "Not ready"
+                sleep 5s
+              done
+
+              VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+
+              echo Checking: ${VALIDATOR}
+
+              while [[ $(curl --silent --output /dev/null --request GET
+              --write-out "%{http_code}" ${VALIDATOR}) -ne 200 ]]; do
                 echo "Not ready"
                 sleep 5s
               done
@@ -89,7 +100,6 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll

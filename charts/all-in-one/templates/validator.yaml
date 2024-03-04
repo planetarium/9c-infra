@@ -21,8 +21,8 @@ spec:
         app: validator-{{ $index }}
       name: validator-{{ $index }}
     spec:
-      {{- if $.Values.global.resetSnapshot }}
       initContainers:
+        {{- if $.Values.global.resetSnapshot }}
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/validator
@@ -60,6 +60,31 @@ spec:
           - mountPath: /data
             name: validator-data-{{ $index }}
       {{- end }}
+      - command:
+        - sh
+        - '-c'
+        - >
+          apk --no-cache add curl
+
+          # Endpoint to check
+
+          SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+
+          echo Checking: ${SEED}
+
+          while [[ $(curl --silent --output /dev/null --request GET
+          --write-out "%{http_code}" ${SEED}) -ne 200 ]]; do
+            echo "Not ready"
+            sleep 5s
+          done
+
+          echo Ready
+        image: alpine
+        imagePullPolicy: Always
+        name: wait
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
