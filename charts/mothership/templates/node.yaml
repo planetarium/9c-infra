@@ -1,0 +1,252 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: node
+  replicas: {{ .Values.node.replicas }}
+  template:
+    metadata:
+      labels:
+        name: node
+    spec:
+      initContainers:
+        - name: fetch-genesis
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - |
+              test -e genesis.json && test -e rollup.json && exit 0 ; \
+              curl -L --remote-name-all $GENESIS_SOURCE/{genesis.json,rollup.json} ; \
+              hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
+          workingDir: /genesis
+          env:
+            - name: GENESIS_SOURCE
+              value: "{{ .Values.genesis.source }}"
+          volumeMounts:
+            - mountPath: /genesis
+              name: genesis-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+        {{- if .Values.genesis.createSnapshot }}
+        - name: create-snapshot
+          image: alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              apk add zstd aws-cli ; \
+              TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
+              tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
+              aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
+          env:
+            - name: S3_SNAPSHOT_PATH
+              value: "{{ .Values.genesis.s3SnapshotPath }}"
+          volumeMounts:
+            - mountPath: /data
+              name: op-geth-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+        {{- end }}
+        {{- if .Values.genesis.snapshot }}
+        - name: fetch-snapshot
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - |
+              apk add zstd ; \
+              curl -L -o /data/snapshot.tar.zst.tmp $SNAPSHOT ; \
+              mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
+              mkdir -p /data/geth ; \
+              rm -rf /data/geth/chaindata ; \
+              zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth
+          env:
+            - name: SNAPSHOT
+              value: "{{ .Values.genesis.snapshot }}"
+          volumeMounts:
+            - mountPath: /data
+              name: op-geth-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+        {{- else }}
+        - name: genesis-init
+          image: {{ .Values.node.opGeth.image }}
+          args:
+            - init
+            - --datadir=/data
+            - /genesis/genesis.json
+          volumeMounts:
+            - mountPath: /data
+              name: op-geth-volume
+            - mountPath: /genesis
+              name: genesis-volume
+              readOnly: true
+        {{- end }}
+      containers:
+        - name: op-geth
+          image: {{ .Values.node.opGeth.image }}
+          args:
+            - --datadir=/data
+            - --http
+            - --http.port={{ .Values.node.opGeth.port.rpc }}
+            - --http.addr=0.0.0.0
+            - --http.vhosts=*
+            - --http.corsdomain=*
+            - --http.api=web3,debug,eth,txpool,net,engine
+            - --ws
+            - --ws.port={{ .Values.node.opGeth.port.wsrpc }}
+            - --ws.addr=0.0.0.0
+            - --ws.origins=*
+            - --ws.api=debug,eth,txpool,net,engine
+            - --authrpc.port={{ .Values.node.opGeth.port.authrpc }}
+            - --authrpc.addr=0.0.0.0
+            - --authrpc.vhosts=*
+            - --authrpc.jwtsecret=/genesis/jwt.txt
+            - --syncmode=full
+            - --gcmode=archive
+            - --nodiscover
+            - --maxpeers=0
+            - --rollup.disabletxpoolgossip=true
+          ports:
+            - containerPort: {{ .Values.node.opGeth.port.rpc }}
+              protocol: TCP
+            - containerPort: {{ .Values.node.opGeth.port.wsrpc }}
+              protocol: TCP
+            - containerPort: {{ .Values.node.opGeth.port.authrpc }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: op-geth-volume
+            - mountPath: /genesis
+              name: genesis-volume
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+                - nc
+                - -z
+                - localhost
+                - "{{ .Values.node.opGeth.port.rpc }}"
+            periodSeconds: 5
+        - name: op-node
+          image: {{ .Values.node.opNode.image }}
+          command:
+            - sh
+            - -c
+          args:
+            - |
+              op-node \
+                --l1=$(L1_RPC) \
+                --l1.beacon=$(L1_BEACON_RPC) \
+                --l1.rpckind=any \
+                --l2=http://localhost:{{ .Values.node.opGeth.port.authrpc }} \
+                --l2.jwt-secret=/genesis/jwt.txt \
+                --rollup.config=/genesis/rollup.json \
+                --rpc.addr=0.0.0.0 \
+                --rpc.port={{ .Values.node.opNode.port.rpc }} \
+                --rpc.enable-admin \
+                --p2p.listen.ip=0.0.0.0 \
+                --p2p.listen.tcp={{ .Values.node.opNode.port.p2p }} \
+                --sequencer.enabled=false \
+                --verifier.l1-confs=3 \
+                --log.level=debug
+          env:
+            - name: L1_RPC
+              valueFrom:
+                configMapKeyRef:
+                  name: env-cm
+                  key: L1_RPC
+            - name: L1_BEACON_RPC
+              valueFrom:
+                configMapKeyRef:
+                  name: env-cm
+                  key: L1_BEACON_RPC
+          ports:
+            - containerPort: {{ .Values.node.opNode.port.rpc }}
+              protocol: TCP
+            - containerPort: {{ .Values.node.opNode.port.p2p }}
+              protocol: TCP
+            - containerPort: {{ .Values.node.opNode.port.p2p }}
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /genesis
+              name: genesis-volume
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+                - nc
+                - -z
+                - localhost
+                - "{{ .Values.node.opNode.port.rpc }}"
+            periodSeconds: 5
+      volumes:
+        - name: genesis-volume
+          persistentVolumeClaim:
+            claimName: genesis-volume
+  volumeClaimTemplates:
+  - metadata:
+      name: genesis-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.genesis.volume.storage }}
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }}
+      {{- end }}
+      volumeMode: Filesystem
+  - metadata:
+      name: op-geth-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.node.opGeth.volume.storage }}
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }}
+      {{- end }}
+      volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if .Values.node.loadBalancerExternal }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- end }}
+spec:
+  selector:
+    name: node
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      name: op-geth-rpc
+      port: {{ .Values.node.opGeth.port.rpc }}
+      targetPort: {{ .Values.node.opGeth.port.rpc }}
+    - protocol: TCP
+      name: op-geth-wsrpc
+      port: {{ .Values.node.opGeth.port.wsrpc }}
+      targetPort: {{ .Values.node.opGeth.port.wsrpc }}
+    - protocol: TCP
+      name: op-node-rpc
+      port: {{ .Values.node.opNode.port.rpc }}
+      targetPort: {{ .Values.node.opNode.port.rpc }}
+    - protocol: TCP
+      name: op-node-p2p
+      port: {{ .Values.node.opNode.port.p2p }}
+    - protocol: UDP
+      name: op-node-p2p-udp
+      port: {{ .Values.node.opNode.port.p2p }}

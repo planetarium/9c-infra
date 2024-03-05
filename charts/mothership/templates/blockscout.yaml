@@ -1,0 +1,223 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: blockscout
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: blockscout
+  template:
+    metadata:
+      labels:
+        name: blockscout
+    spec:
+      containers:
+        - name: blockscout
+          image: blockscout/blockscout:6.1.0
+          args:
+            - sh
+            - -c
+            - bin/blockscout eval "Elixir.Explorer.ReleaseTasks.create_and_migrate()" && bin/blockscout start
+          env:
+            - name: ACCOUNT_ENABLED
+              value: "false"
+            - name: API_V1_READ_METHODS_DISABLED
+              value: "false"
+            - name: API_V1_WRITE_METHODS_DISABLED
+              value: "false"
+            - name: API_V2_ENABLED
+              value: "true"
+            - name: APPS_MENU
+              value: "false"
+            - name: BLOCK_TRANSFORMER
+              value: base
+            - name: CHAIN_ID
+            - name: CHAIN_SPEC_PATH
+              value: {{ .Values.genesis.source }}/genesis.json
+            - name: CHECKSUM_ADDRESS_HASHES
+              value: "true"
+            - name: CHECKSUM_FUNCTION
+              value: eth
+            - name: DATABASE_URL
+              value: postgresql://postgres:@blockscout-postgres:5432/blockscout?ssl=false
+            - name: DECODE_NOT_A_CONTRACT_CALLS
+              value: "true"
+            - name: DISABLE_EXCHANGE_RATES
+              value: "true"
+            - name: DISABLE_INDEXER
+              value: "false"
+            - name: DISABLE_REALTIME_INDEXER
+              value: "false"
+            - name: DISABLE_WEBAPP
+              value: "false"
+            - name: DISPLAY_TOKEN_ICONS
+              value: "false"
+            - name: ECTO_USE_SSL
+              value: "false"
+            - name: EIP_1559_ELASTICITY_MULTIPLIER
+              value: "2"
+            - name: EMISSION_FORMAT
+              value: DEFAULT
+            - name: ETHEREUM_JSONRPC_HTTP_URL
+              value: http://node:{{ .Values.node.opGeth.port.rpc }}/
+            - name: ETHEREUM_JSONRPC_TRACE_URL
+              value: http://node:{{ .Values.node.opGeth.port.rpc }}/
+            - name: ETHEREUM_JSONRPC_VARIANT
+              value: geth
+            - name: EXTERNAL_APPS
+              value: '[]'
+            - name: FETCH_REWARDS_WAY
+              value: trace_block
+            - name: FOOTER_LINK_TO_OTHER_EXPLORERS
+              value: "false"
+            - name: FOOTER_OTHER_EXPLORERS
+              value: '{}'
+            - name: HIDE_BLOCK_MINER
+              value: "false"
+            - name: INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER
+              value: "false"
+            - name: INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER
+              value: "false"
+            - name: INDEXER_DISABLE_TOKEN_INSTANCE_LEGACY_SANITIZE_FETCHER
+              value: "false"
+            - name: INDEXER_DISABLE_TOKEN_INSTANCE_REALTIME_FETCHER
+              value: "false"
+            - name: INDEXER_DISABLE_TOKEN_INSTANCE_RETRY_FETCHER
+              value: "false"
+            - name: INDEXER_DISABLE_TOKEN_INSTANCE_SANITIZE_FETCHER
+              value: "false"
+            - name: MICROSERVICE_SC_VERIFIER_ENABLED
+              value: "true"
+            - name: MICROSERVICE_SC_VERIFIER_TYPE
+              value: sc_verifier
+            - name: MICROSERVICE_SC_VERIFIER_URL
+              value: http://blockscout-smart-contract-verifier:8050/
+            - name: MICROSERVICE_SIG_PROVIDER_ENABLED
+              value: "true"
+            - name: MICROSERVICE_SIG_PROVIDER_URL
+              value: http://blockscout-sig-provider:8050/
+            - name: MICROSERVICE_VISUALIZE_SOL2UML_ENABLED
+              value: "true"
+            - name: MICROSERVICE_VISUALIZE_SOL2UML_URL
+              value: http://blockscout-visualizer:8050/
+            - name: NETWORK_PATH
+              value: /
+            - name: POOL_SIZE
+              value: "80"
+            - name: POOL_SIZE_API
+              value: "10"
+            - name: PORT
+              value: "{{ .Values.blockscout.port }}"
+            - name: RE_CAPTCHA_DISABLED
+              value: "false"
+            - name: SECRET_KEY_BASE
+              value: 56NtB48ear7+wMSf0IQuWDAAazhpb31qyc7GiyspBP2vh7t5zlCsF5QDv76chXeN
+            - name: SHOW_ADDRESS_MARKETCAP_PERCENTAGE
+              value: "true"
+            - name: SHOW_MAINTENANCE_ALERT
+              value: "false"
+            - name: SHOW_PRICE_CHART
+              value: "false"
+            - name: SHOW_PRICE_CHART_LEGEND
+              value: "false"
+            - name: SHOW_TENDERLY_LINK
+              value: "false"
+            - name: SHOW_TXS_CHART
+              value: "true"
+            - name: SUBNETWORK
+              value: 'L2 CHAIN '
+            - name: SUPPORTED_CHAINS
+              value: '{}'
+            - name: TXS_STATS_ENABLED
+              value: "true"
+          ports:
+            - containerPort: {{ .Values.blockscout.port }}
+              protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockscout
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if .Values.blockscout.loadBalancerExternal }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- end }}
+spec:
+  selector:
+    name: blockscout
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: {{ .Values.blockscout.port }}
+      targetPort: {{ .Values.blockscout.port }}
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: blockscout-postgres
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: blockscout-postgres
+  template:
+    metadata:
+      labels:
+        name: blockscout-postgres
+    spec:
+      containers:
+        - name: blockscout-postgres
+          image: postgres:14
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - name: blockscout-postgres-volume
+              mountPath: /var/lib/postgresql/data
+              subPath: data
+      volumes:
+        - name: blockscout-postgres-volume
+          persistentVolumeClaim:
+            claimName: blockscout-postgres-volume
+  volumeClaimTemplates:
+  - metadata:
+      name: blockscout-postgres-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.blockscout.db.storage }}
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }}
+      {{- end }}
+      volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockscout-postgres
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    name: blockscout-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

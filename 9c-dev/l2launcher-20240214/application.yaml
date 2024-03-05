@@ -6,15 +6,12 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/eseiker/mothership-l2launcher.git
-      targetRevision: k8s
-      path: templates/helm
+    - repoURL: https://github.com/planetarium/9c-infra.git
+      targetRevision: l2launcher
+      path: charts/mothership
       helm:
         valueFiles:
-          - $infra/9c-dev/l2launcher-20240214/values.yaml
-    - repoURL: https://github.com/eseiker/9c-infra.git
-      targetRevision: l2launcher
-      ref: infra
+          - ../../9c-dev/l2launcher-20240214/values.yaml
 
   destination:
     server: https://kubernetes.default.svc
