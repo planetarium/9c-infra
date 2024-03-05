@@ -56,7 +56,7 @@ seed:
     tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
-  - "9c-internal-tcp.planetarium.dev"
+  - "tcp-seed-1.9c-network.svc.cluster.local"
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
