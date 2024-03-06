@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: op-proposer
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.opProposer.replicas }}
+  selector:
+    matchLabels:
+      name: op-proposer
+  template:
+    metadata:
+      labels:
+        name: op-proposer
+    spec:
+      initContainers:
+        - name: fetch-genesis
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - curl -L --remote-name-all $GENESIS_SOURCE/L2OutputOracleProxyAddress
+          workingDir: /genesis
+          env:
+            - name: GENESIS_SOURCE
+              value: "{{ .Values.genesis.source }}"
+          volumeMounts:
+            - mountPath: /genesis
+              name: genesis-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+      containers:
+        - name: op-proposer
+          image: {{ .Values.opProposer.image }}
+          command:
+            - sh
+            - -c
+          args:
+            - |
+              op-proposer \
+                --private-key=$(PROPOSER_KEY) \
+                --l1-eth-rpc=$(L1_RPC) \
+                --rollup-rpc=http://node:{{ .Values.node.opNode.port.rpc }} \
+                --rpc.port={{ .Values.opProposer.port.rpc }} \
+                --l2oo-address=$(cat /genesis/L2OutputOracleProxyAddress) \
+                --poll-interval=12s
+          env:
+            - name: L1_RPC
+              value: {{ .Values.env.L1_RPC }}
+            - name: PROPOSER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: private-keys
+                  key: PROPOSER_KEY
+          ports:
+            - containerPort: {{ .Values.opProposer.port.rpc }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /genesis
+              name: genesis-volume
+              readOnly: true
+      volumes:
+        - name: genesis-volume
+          persistentVolumeClaim:
+            claimName: genesis-volume
+  volumeClaimTemplates:
+  - metadata:
+      name: genesis-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.genesis.volume.storage }}
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }}
+      {{- end }}
+      volumeMode: Filesystem
