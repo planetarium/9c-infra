@@ -103,6 +103,21 @@ spec:
                 secretKeyRef:
                   key: data-provider-url
                   name: world-boss-env
+            - name: HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-secret
+                  name: world-boss-env
+            - name: HEADLESS_JWT_ISS
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-iss
+                  name: world-boss-env
+            - name: HEADLESS_JWT_ALGORITHM
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-algorithm
+                  name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-service
           ports:
