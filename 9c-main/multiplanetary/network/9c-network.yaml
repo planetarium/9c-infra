@@ -137,11 +137,11 @@ validator:
     value: validator-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_validator
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c_validator
 
   resources:
     requests:
-      cpu: '6'
+      cpu: '2'
       memory: 25Gi
 
 remoteHeadless:
