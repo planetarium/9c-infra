@@ -18,7 +18,7 @@ dataProvider:
 worldBoss:
   image:
     repository: planetariumhq/world-boss-service
-    tag: "git-ba6656e92c53165e3716681aa9ac4cac146d8229"
+    tag: "git-4f9569034627e97de1ff57f72ee502ab5803ec47"
 
 marketService:
   image:
