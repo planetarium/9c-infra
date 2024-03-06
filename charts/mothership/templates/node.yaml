@@ -157,15 +157,9 @@ spec:
                 --log.level=debug
           env:
             - name: L1_RPC
-              valueFrom:
-                configMapKeyRef:
-                  name: env-cm
-                  key: L1_RPC
+              value: {{ .Values.env.L1_RPC }}
             - name: L1_BEACON_RPC
-              valueFrom:
-                configMapKeyRef:
-                  name: env-cm
-                  key: L1_BEACON_RPC
+              value: {{ .Values.env.L1_BEACON_RPC }}
           ports:
             - containerPort: {{ .Values.node.opNode.port.rpc }}
               protocol: TCP

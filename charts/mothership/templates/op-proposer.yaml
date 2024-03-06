@@ -46,10 +46,7 @@ spec:
                 --poll-interval=12s
           env:
             - name: L1_RPC
-              valueFrom:
-                configMapKeyRef:
-                  name: env-cm
-                  key: L1_RPC
+              value: {{ .Values.env.L1_RPC }}
             - name: PROPOSER_KEY
               valueFrom:
                 secretKeyRef:
