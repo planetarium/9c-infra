@@ -24,29 +24,14 @@ node:
     volume: &op-node-volume
       storage: 100Mi
 
-sequencer:
-  replicas: 0
-  opGeth:
-    image: *op-geth-image
-    port:
-      <<: *op-geth-port
-    volume:
-      <<: *op-geth-volume
-  opNode:
-    image: *op-node-image
-    port:
-      <<: *op-node-port
-    volume:
-      <<: *op-node-volume
-
 opBatcher:
-  replicas: 0
+  replicas: 1
   image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.0
   port:
     rpc: 8548
 
 opProposer:
-  replicas: 0
+  replicas: 1
   image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.0
   port:
     rpc: 8560

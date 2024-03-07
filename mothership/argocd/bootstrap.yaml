@@ -1,0 +1,83 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infra
+spec:
+  description: In-cluster applications managed by DevOps team
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bootstrap
+spec:
+  project: infra
+  source:
+    repoURL: https://github.com/planetarium/9c-infra
+    targetRevision: main
+    path: common/bootstrap
+    helm:
+      values: |
+        clusterName: mothership
+        argocdPath: mothership
+        accountId: "319679068466"
+        prometheus:
+          server:
+            nodeGroup: mothership-m7g_l_2c
+            extraScrapeConfigs:
+              - job_name: 'pod monitoring'
+                honor_labels: true
+                kubernetes_sd_configs:
+                - role: pod
+                relabel_configs:
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+        loki:
+          enabled: true
+          bucketName: loki-mothership.planetariumhq.com
+          write:
+            count: 3
+            nodeGroup: mothership-m7g_l_2c
+            resources:
+              requests:
+                cpu: 1500m
+                memory: 6Gi
+          read:
+            count: 3
+            nodeGroup: mothership-m7g_l_2c
+            resources:
+              requests:
+                cpu: 2000m
+                memory: 12Gi
+              limits:
+                cpu: 2000m
+                memory: 12Gi
+        memcached:
+          enabled: false
+          memory: 16Gi
+          nodeGroup: mothership-m7g_l_2c
+        opentelemetry:
+          enabled: true
+          nodeGroup: mothership-m7g_l_2c
+        tempo:
+          enabled: true
+          nodeGroup: mothership-m7g_l_2c
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
