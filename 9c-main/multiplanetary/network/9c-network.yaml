@@ -141,7 +141,7 @@ validator:
 
   resources:
     requests:
-      cpu: '2'
+      cpu: '6'
       memory: 25Gi
 
 remoteHeadless:
