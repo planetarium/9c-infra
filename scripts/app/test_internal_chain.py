@@ -7,9 +7,8 @@ import requests
 from urllib.parse import urljoin
 from app.client import GithubClient
 from app.config import config
-from typing import Literal
 
-Network = Literal["odin"]
+Network = "odin-internal"
 Offset = 0
 Limit = 10
 
@@ -28,9 +27,11 @@ class InternalChainTester:
         # mainnet headless URL and initial setup
         mainnet_headless = "odin-full-state.nine-chronicles.com"
         internal_target_validator = "odin-internal-validator-5.nine-chronicles.com"
+        sleep_time = 5
         if network == "heimdall-internal":
             mainnet_headless = "heimdall-full-state.nine-chronicles.com"
             internal_target_validator = "heimdall-internal-validator-1.nine-chronicles.com"
+            sleep_time = 0
         mainnet_headless_url = urljoin(f"http://{mainnet_headless}", "graphql")
         target_validator_url = urljoin(f"http://{internal_target_validator}", "graphql")
 
@@ -80,6 +81,7 @@ class InternalChainTester:
                     for block in blocks:
                         transactions = block['transactions']
                         await send_tx(session, transactions, block['index'])
+                        await asyncio.sleep(sleep_time)
 
             asyncio.run(process_block(blocks))
 
