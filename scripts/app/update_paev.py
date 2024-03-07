@@ -18,7 +18,7 @@ class PluggableActionEvaluatorUpdater:
         lib9c_plugin_url):
 
         # Check if both URLs exist
-        if url_exists(paev_url) and url_exists(lib9c_plugin_url):
+        if self._url_exists(paev_url) and self._url_exists(lib9c_plugin_url):
             print("Both URLs are valid and accessible.")
 
             # Download the file
@@ -75,7 +75,7 @@ class PluggableActionEvaluatorUpdater:
             print("One or both URLs are not accessible. Please check the URLs and try again.")
             return False
 
-    def url_exists(url):
+    def _url_exists(url):
         try:
             response = requests.head(url, allow_redirects=True)
             return response.status_code == 200
