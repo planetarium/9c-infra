@@ -76,9 +76,9 @@ class PluggableActionEvaluatorUpdater:
             return False
 
     def url_exists(url):
-    try:
-        response = requests.head(url, allow_redirects=True)
-        return response.status_code == 200
-    except requests.exceptions.RequestException as e:
-        print(f"Error checking URL {url}: {e}")
-        return False
+        try:
+            response = requests.head(url, allow_redirects=True)
+            return response.status_code == 200
+        except requests.exceptions.RequestException as e:
+            print(f"Error checking URL {url}: {e}")
+            return False
