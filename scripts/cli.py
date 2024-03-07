@@ -6,6 +6,7 @@ from app.update_bridge_service import BridgeServiceUpdater
 from app.test_internal_chain import InternalChainTester
 from app.update_values import ValuesFileUpdater
 from app.update_apv import ApvUpdater
+from app.update_paev import PluggableActionEvaluatorUpdater
 
 k8s_app = typer.Typer()
 
@@ -97,6 +98,24 @@ def update_apv(
     """
 
     ApvUpdater().update(number, dir_name, file_name)  # type:ignore
+
+@k8s_app.command()
+def update_paev(
+    paev_url: str = typer.Argument(
+        ...,
+    ),
+    end_value: int = typer.Argument(
+        ...,
+    ),
+    lib9c_plugin_url: str = typer.Argument(
+        ...,
+    ),
+):
+    """
+    Run post deploy script
+    """
+
+    PluggableActionEvaluatorUpdater().update(paev_url, end_value, lib9c_plugin_url)  # type:ignore
 
 if __name__ == "__main__":
     k8s_app()

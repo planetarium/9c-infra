@@ -1,0 +1,41 @@
+name: Update Pluggable Action Evaluator
+
+on:
+  workflow_dispatch:
+    inputs:
+      paev_url:
+        required: true
+        description: 'Insert the appsetting.json url to update (e.g. https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-test.json)'
+      end_value:
+        required: true
+        description: 'Insert the ending tip index of the previous version (e.g. 1115268)'
+      lib9c_plugin_url:
+        required: true
+        description: 'Insert the lib9c plugin url of the previous version (e.g. https://9c-dx.s3.ap-northeast-2.amazonaws.com/Lib9c.Plugin/ff2c8ae6cfd030ffd20020e1a5bbc4e0caadfe97/linux-arm64.zip)'
+
+jobs:
+  update-paev:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2.2.2
+      with:
+        python-version: 3.10.13
+
+    - run: |
+        python -m pip install -r requirements.txt
+        flit install
+      name: install dependencies
+      working-directory: ./scripts
+
+    - name: Update Pluggable Action Evaluator
+      run: |
+        python cli.py update-paev ${{ github.event.inputs.paev_url }} ${{ github.event.inputs.end_value }} ${{ github.event.inputs.lib9c_plugin_url }}
+      working-directory: ./scripts
+      env:
+        GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
