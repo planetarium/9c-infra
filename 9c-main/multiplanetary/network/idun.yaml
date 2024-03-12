@@ -350,9 +350,6 @@ testHeadless1:
 testHeadless2:
   enabled: false
 
-emptyChronicle:
-  enabled: false
-
 remoteActionEvaluatorHeadless:
   enabled: false
 

@@ -269,32 +269,6 @@ dataProvider:
       cpu: '6'
       memory: 50Gi
 
-testDataProvider:
-  enabled: true
-  render: true
-  migrateDatabase: true
-
-  image:
-    repository: atralupus/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: "git-cc70584ed59e8c9b441f46058a4342ac05ffcce3"
-
-  storage:
-    data: 1000Gi
-    log: 10Gi
-
-  db:
-    local: true
-    database: ""
-    connectionString: ""
-    host: ""
-    port: 3306
-    user: user
-    password: ""
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
-
 explorer:
   enabled: false
 
@@ -543,13 +517,6 @@ jwtHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
-emptyChronicle:
-  enabled: true
-  network: "heimdall"
-  storage:
-    data: 1000Gi
-
-
 remoteActionEvaluatorHeadless:
   enabled: false
 
@@ -629,16 +596,3 @@ rudolfCurrencyNotifier:
     serverName: "heimdall"
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
-
-ninechroniclesUtilBackend:
-  enabled: true
-
-  image:
-    repository: planetariumhq/9cutil-backend
-    tag: git-7678ec325d80b7798e877d94f205bc2df51b3fbd
-
-  jwt:
-    enabled: true
-
-  headlessEndpoint: "http://heimdall-jwt.nine-chronicles.com/graphql"
-  dataProviderEndpoint: "http://test-data-provider.heimdall.svc.cluster.local/graphql"

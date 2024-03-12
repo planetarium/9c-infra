@@ -41,11 +41,6 @@ remoteActionEvaluatorHeadless:
   image:
     tag: "41"
 
-emptyChronicle:
-  image:
-    repository: planetariumhq/emptychronicle
-    tag: "git-59bf846ed6f977e3b5d2003c17ae7f00c211f22b"
-
 rudolfService:
   image:
     tag: "git-1f93812f5c1a5626298eb97a59e97dececa052ab"

@@ -479,9 +479,6 @@ jwtHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-2c_spot
 
-emptyChronicle:
-  enabled: false
-
 remoteActionEvaluatorHeadless:
   enabled: false
 
