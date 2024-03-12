@@ -20,7 +20,8 @@ blockscout:
     storage: 100Gi
 
 node:
-  replicas: 2
+  count: 2
+  sequencerEnabled: false
   loadBalancerExternal: true
 
 opProposer:
