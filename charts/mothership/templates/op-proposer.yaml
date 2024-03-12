@@ -40,7 +40,7 @@ spec:
               op-proposer \
                 --private-key=$(PROPOSER_KEY) \
                 --l1-eth-rpc=$(L1_RPC) \
-                --rollup-rpc=http://node-0:{{ .Values.node.opNode.port.rpc }} \
+                --rollup-rpc=http://node-1:{{ .Values.node.opNode.port.rpc }} \
                 --rpc.port={{ .Values.opProposer.port.rpc }} \
                 --l2oo-address=$(cat /genesis/L2OutputOracleProxyAddress) \
                 --poll-interval=12s
