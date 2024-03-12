@@ -61,9 +61,9 @@ spec:
             - name: EMISSION_FORMAT
               value: DEFAULT
             - name: ETHEREUM_JSONRPC_HTTP_URL
-              value: http://node:{{ .Values.node.opGeth.port.rpc }}/
+              value: http://node-0:{{ .Values.node.opGeth.port.rpc }}/
             - name: ETHEREUM_JSONRPC_TRACE_URL
-              value: http://node:{{ .Values.node.opGeth.port.rpc }}/
+              value: http://node-0:{{ .Values.node.opGeth.port.rpc }}/
             - name: ETHEREUM_JSONRPC_VARIANT
               value: geth
             - name: EXTERNAL_APPS
