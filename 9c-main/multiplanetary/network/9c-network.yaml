@@ -189,17 +189,19 @@ remoteHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
   resources:
     requests:
-      cpu: '6'
-      memory: 50Gi
+      cpu: '5'
+      memory: 28Gi
 
   tolerations:
   - effect: NoSchedule
