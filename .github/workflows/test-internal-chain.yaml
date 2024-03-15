@@ -47,3 +47,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
         SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+        SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
