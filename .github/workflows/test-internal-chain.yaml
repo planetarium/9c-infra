@@ -17,6 +17,10 @@ on:
       limit:
         required: true
         description: 'Insert how many blocks from the mainnet to test (e.g. 100)'
+      delay_interval:
+        required: false
+        default: 0
+        description: 'Insert the delay interval(sec) when staging the mainnet txs to the internal network per block (default: 0)'
 
 jobs:
   test-internal-chain:
@@ -38,7 +42,8 @@ jobs:
 
     - name: Test internal chain
       run: |
-        python cli.py test-internal-chain ${{ github.event.inputs.network }} ${{ github.event.inputs.offset }} ${{ github.event.inputs.limit }}
+        python cli.py test-internal-chain ${{ github.event.inputs.network }} ${{ github.event.inputs.offset }} ${{ github.event.inputs.limit }} ${{ github.event.inputs.delay_interval }}
       working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+        SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}

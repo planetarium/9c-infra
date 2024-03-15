@@ -13,6 +13,8 @@ class Config(NamedTuple):
     key_passphrase: Optional[str] = None
     # signer key address
     key_address: Optional[str] = None
+    # slack token
+    key_address: Optional[str] = None
 
     @classmethod
     def init(self):
@@ -26,6 +28,7 @@ class Config(NamedTuple):
         for v in [
             "KEY_PASSPHRASE",
             "KEY_ADDRESS",
+            "SLACK_TOKEN"
         ]:
             try:
                 setattr(self, v.lower(), os.environ[v])

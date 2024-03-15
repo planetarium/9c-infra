@@ -11,6 +11,7 @@ from app.config import config
 Network = "odin-internal"
 Offset = 0
 Limit = 10
+Delay = 0
 
 class InternalChainTester:
     def __init__(self) -> None:
@@ -22,19 +23,20 @@ class InternalChainTester:
         self,
         network: Network,
         offset: Offset,
-        limit: Limit
+        limit: Limit,
+        delay: Delay
     ):
         # mainnet headless URL and initial setup
         mainnet_headless = "odin-full-state.nine-chronicles.com"
         internal_target_validator = "odin-internal-validator-5.nine-chronicles.com"
-        sleep_time = 5
+        sleep_time = delay
         if network == "heimdall-internal":
             mainnet_headless = "heimdall-full-state.nine-chronicles.com"
             internal_target_validator = "heimdall-internal-validator-1.nine-chronicles.com"
-            sleep_time = 0
         mainnet_headless_url = urljoin(f"http://{mainnet_headless}", "graphql")
         target_validator_url = urljoin(f"http://{internal_target_validator}", "graphql")
 
+        original_offset = offset
         tip_index = offset + limit
         print(tip_index)
 
@@ -87,3 +89,9 @@ class InternalChainTester:
 
             # Increment the offset for the next query
             offset += current_limit
+
+        # The URL you want to send the data to
+        url = f'https://planetariumhq.slack.com/services/hooks/slackbot?token={config.slack_token}&channel=%239c-internal'
+        data = f"[9C-INFRA] Finished testing `{network}` network from `#{original_offset}` to `#{tip_index}`."
+        headers = {'Content-Type': 'text/plain'}
+        response = requests.post(url, data=data, headers=headers)
