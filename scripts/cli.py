@@ -74,12 +74,15 @@ def test_internal_chain(
     limit: int = typer.Argument(
         ...,
     ),
+    delay_interval: int = typer.Argument(
+        ...,
+    ),
 ):
     """
     Run post deploy script
     """
 
-    InternalChainTester().test(network, offset, limit)  # type:ignore
+    InternalChainTester().test(network, offset, limit, delay_interval)  # type:ignore
 
 @k8s_app.command()
 def update_apv(
