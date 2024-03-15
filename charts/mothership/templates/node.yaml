@@ -156,13 +156,17 @@ spec:
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
                 --sequencer.enabled={{ and $.Values.node.sequencerEnabled (eq $index 1) }} \
                 --verifier.l1-confs=3 \
-                --log.level=debug
+                --log.level=debug \
+                --metrics.enabled \
+                --metrics.port={{ $.Values.mode.opNode.port.metrics }}
           env:
             - name: L1_RPC
               value: {{ $.Values.env.L1_RPC }}
             - name: L1_BEACON_RPC
               value: {{ $.Values.env.L1_BEACON_RPC }}
           ports:
+            - containerPort: {{ $.Values.node.opNode.port.metrics }}
+              protocol: TCP
             - containerPort: {{ $.Values.node.opNode.port.rpc }}
               protocol: TCP
             - containerPort: {{ $.Values.node.opNode.port.p2p }}
@@ -243,6 +247,9 @@ spec:
     - protocol: TCP
       name: op-node-p2p
       port: {{ $.Values.node.opNode.port.p2p }}
+    - protocol: TCP
+      name: op-node-metrics
+      port: {{ $.Values.node.opNode.port.metrics }}
     - protocol: UDP
       name: op-node-p2p-udp
       port: {{ $.Values.node.opNode.port.p2p }}
