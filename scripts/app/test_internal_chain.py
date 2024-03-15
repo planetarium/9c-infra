@@ -8,10 +8,10 @@ from urllib.parse import urljoin
 from app.client import GithubClient
 from app.config import config
 
-Network = "odin-internal"
-Offset = 0
-Limit = 10
-Delay = 0
+Network = str
+Offset = int
+Limit = int
+Delay = int
 
 class InternalChainTester:
     def __init__(self) -> None:

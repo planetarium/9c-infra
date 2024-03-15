@@ -28,24 +28,6 @@ def update_values(
     ValuesFileUpdater().update(file_path_at_github, sources)
 
 @k8s_app.command()
-def update_apv(
-    number: int,
-    dir_name: str = typer.Argument(
-        ...,
-        help="9c-internal or 9c-main",
-    ),
-    file_name: str = typer.Argument(
-        ...,
-        help="general, odin, heimdall, ...",
-    ),
-):
-    """
-    Run post deploy script
-    """
-
-    ApvUpdater().update(number, dir_name, file_name)  # type:ignore
-
-@k8s_app.command()
 def update_bridge_service(
     dir_name: str = typer.Argument(
         ...,
@@ -82,7 +64,7 @@ def test_internal_chain(
     Run post deploy script
     """
 
-    InternalChainTester().test(network, offset, limit, delay_interval)  # type:ignore
+    InternalChainTester().test(network, offset, limit, delay_interval)
 
 @k8s_app.command()
 def update_apv(
@@ -100,7 +82,7 @@ def update_apv(
     Run post deploy script
     """
 
-    ApvUpdater().update(number, dir_name, file_name)  # type:ignore
+    ApvUpdater().update(number, dir_name, file_name)
 
 @k8s_app.command()
 def update_paev(
@@ -118,7 +100,7 @@ def update_paev(
     Run post deploy script
     """
 
-    PluggableActionEvaluatorUpdater().update(paev_url, end_value, lib9c_plugin_url)  # type:ignore
+    PluggableActionEvaluatorUpdater().update(paev_url, end_value, lib9c_plugin_url)
 
 if __name__ == "__main__":
     k8s_app()

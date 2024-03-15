@@ -111,7 +111,7 @@ class ApvUpdater:
 
 def update_apv(contents: str, apv: Apv):
     yaml = YAML()
-    yaml.preserve_quotes = True  # type:ignore
+    yaml.preserve_quotes = True
     doc = yaml.load(contents)
 
     doc["global"]["appProtocolVersion"] = apv.raw
