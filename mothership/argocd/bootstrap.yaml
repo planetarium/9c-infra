@@ -43,6 +43,16 @@ spec:
                 relabel_configs:
                 - action: labelmap
                   regex: __meta_kubernetes_pod_label_(.+)
+              - job_name: scrape-op-node
+                metrics_path: /metrics
+                scrape_interval: 8s
+                scrape_timeout: 6s
+                static_configs:
+                  - targets:
+                    - node-1.holesky-devnet.svc.cluster.local:7300
+                    - node-2.holesky-devnet.svc.cluster.local:7300
+                    labels:
+                      group: op-node
         loki:
           enabled: false
         memcached:

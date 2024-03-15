@@ -22,6 +22,7 @@ node:
     port: &op-node-port
       rpc: 8547
       p2p: 9222
+      metrics: 7300
     volume: &op-node-volume
       storage: 100Mi
 
