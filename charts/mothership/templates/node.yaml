@@ -158,7 +158,7 @@ spec:
                 --verifier.l1-confs=3 \
                 --log.level=debug \
                 --metrics.enabled \
-                --metrics.port={{ $.Values.mode.opNode.port.metrics }}
+                --metrics.port={{ $.Values.node.opNode.port.metrics }}
           env:
             - name: L1_RPC
               value: {{ $.Values.env.L1_RPC }}
