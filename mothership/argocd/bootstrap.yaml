@@ -53,6 +53,11 @@ spec:
                     - node-2.holesky-devnet.svc.cluster.local:7300
                     labels:
                       group: op-node
+        grafana:
+          serviceAnnotations:
+            service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+            service.beta.kubernetes.io/aws-load-balancer-type: external
         loki:
           enabled: false
         memcached:
