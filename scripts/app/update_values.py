@@ -139,7 +139,7 @@ def update_image_tag(contents: str, *, manifest_key: str, repo_to_change: str, t
                 update_tag_recursively(item)
 
     yaml = YAML()
-    yaml.preserve_quotes = True  # type:ignore
+    yaml.preserve_quotes = True
     doc = yaml.load(contents)
     update_tag_recursively(doc)
 

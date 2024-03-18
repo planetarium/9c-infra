@@ -1,6 +1,6 @@
 from tempfile import TemporaryFile
 from time import time
-from typing import List, Literal, NamedTuple
+from typing import Tuple, Literal
 
 import structlog
 import requests
@@ -131,7 +131,7 @@ def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_i
                 update_index_recursively(item)
 
     yaml = YAML()
-    yaml.preserve_quotes = True  # type:ignore
+    yaml.preserve_quotes = True
     doc = yaml.load(contents)
     update_index_recursively(doc)
 
@@ -143,7 +143,7 @@ def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_i
     return new_doc
 
 
-def get_endpoint_pair(network: Network, planet: Planet) -> (str, str):
+def get_endpoint_pair(network: Network, planet: Planet) -> Tuple[str, str]:
     match (network, planet):
         case ("9c-internal", "heimdall"):
             return (GQL_ENDPOINTS["9c-internal"]["odin"], GQL_ENDPOINTS["9c-internal"]["heimdall"])
