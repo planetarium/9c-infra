@@ -54,6 +54,11 @@ spec:
                 relabel_configs:
                 - action: labelmap
                   regex: __meta_kubernetes_pod_label_(.+)
+        grafana:
+          serviceAnnotations:
+            service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+            service.beta.kubernetes.io/aws-load-balancer-type: external
         loki:
           enabled: true
           bucketName: loki-dev-v2.planetariumhq.com

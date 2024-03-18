@@ -44,6 +44,10 @@ spec:
 
         service:
           type: LoadBalancer
+          {{- with $.Values.grafana.serviceAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
