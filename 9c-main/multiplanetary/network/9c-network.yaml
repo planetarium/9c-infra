@@ -59,11 +59,11 @@ snapshot:
 
   resources:
     requests:
-      cpu: '5'
-      memory: 50Gi
+      cpu: '3'
+      memory: 28Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -215,12 +215,12 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
 
   resources:
     requests:
-      cpu: '6'
-      memory: 50Gi
+      cpu: '3'
+      memory: 28Gi
   
   storage: 1000Gi
 
