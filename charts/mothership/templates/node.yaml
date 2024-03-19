@@ -115,12 +115,14 @@ spec:
             - --maxpeers=0
             - --rollup.disabletxpoolgossip=true
           ports:
-            - containerPort: {{ $.Values.node.opGeth.port.rpc }}
-              protocol: TCP
-            - containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
-              protocol: TCP
-            - containerPort: {{ $.Values.node.opGeth.port.authrpc }}
-              protocol: TCP
+            - name: op-geth-rpc
+              containerPort: {{ $.Values.node.opGeth.port.rpc }}
+            - name: op-geth-wsrpc
+              containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
+            - name: op-geth-authrpc
+              containerPort: {{ $.Values.node.opGeth.port.authrpc }}
+            - name: op-geth-p2p
+              containerPort: {{ $.Values.node.opGeth.port.p2p }}
           volumeMounts:
             - mountPath: /data
               name: op-geth-volume
@@ -165,14 +167,12 @@ spec:
             - name: L1_BEACON_RPC
               value: {{ $.Values.env.L1_BEACON_RPC }}
           ports:
-            - containerPort: {{ $.Values.node.opNode.port.metrics }}
-              protocol: TCP
-            - containerPort: {{ $.Values.node.opNode.port.rpc }}
-              protocol: TCP
-            - containerPort: {{ $.Values.node.opNode.port.p2p }}
-              protocol: TCP
-            - containerPort: {{ $.Values.node.opNode.port.p2p }}
-              protocol: UDP
+            - name: op-node-rpc
+              containerPort: {{ $.Values.node.opNode.port.rpc }}
+            - name: op-node-p2p
+              containerPort: {{ $.Values.node.opNode.port.p2p }}
+            - name: op-node-metrics
+              containerPort: {{ $.Values.node.opNode.port.metrics }}
           volumeMounts:
             - mountPath: /genesis
               name: genesis-volume
@@ -226,33 +226,41 @@ metadata:
     {{- if $.Values.node.loadBalancerExternal }}
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/0027ddf6-3baa-4d9e-85fb-df1fdf710a60
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     {{- end }}
 spec:
   selector:
     name: node-{{ $index }}
+  {{- if $.Values.node.loadBalancerExternal }}
   type: LoadBalancer
+  {{- end }}
   ports:
-    - protocol: TCP
-      name: op-geth-rpc
+    - name: op-geth-rpc-port
+      targetPort: op-geth-rpc
       port: {{ $.Values.node.opGeth.port.rpc }}
-      targetPort: {{ $.Values.node.opGeth.port.rpc }}
-    - protocol: TCP
-      name: op-geth-wsrpc
+    - name: op-geth-rpc-http
+      targetPort: op-geth-rpc
+      port: 80
+    - name: op-geth-rpc-https
+      targetPort: op-geth-rpc
+      port: 443
+    - name: op-geth-wsrpc-port
+      targetPort: op-geth-wsrpc
       port: {{ $.Values.node.opGeth.port.wsrpc }}
-      targetPort: {{ $.Values.node.opGeth.port.wsrpc }}
-    - protocol: TCP
-      name: op-node-rpc
+    - name: op-geth-p2p-port
+      targetPort: op-geth-p2p
+      port: {{ $.Values.node.opGeth.port.p2p }}
+    - name: op-node-rpc-port
+      targetPort: op-node-rpc
       port: {{ $.Values.node.opNode.port.rpc }}
       targetPort: {{ $.Values.node.opNode.port.rpc }}
-    - protocol: TCP
-      name: op-node-p2p
+    - name: op-node-p2p-port
+      targetPort: op-node-p2p
       port: {{ $.Values.node.opNode.port.p2p }}
-    - protocol: TCP
-      name: op-node-metrics
+    - name: op-node-metrics-port
+      targetPort: op-node-metrics
       port: {{ $.Values.node.opNode.port.metrics }}
-    - protocol: UDP
-      name: op-node-p2p-udp
-      port: {{ $.Values.node.opNode.port.p2p }}
 
 ---
 
