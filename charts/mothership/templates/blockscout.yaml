@@ -133,8 +133,8 @@ spec:
             - name: TXS_STATS_ENABLED
               value: "true"
           ports:
-            - containerPort: {{ .Values.blockscout.port }}
-              protocol: TCP
+            - name: blockscout
+              containerPort: {{ .Values.blockscout.port }}
 
 ---
 
@@ -147,15 +147,25 @@ metadata:
     {{- if .Values.blockscout.loadBalancerExternal }}
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/0027ddf6-3baa-4d9e-85fb-df1fdf710a60
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     {{- end }}
 spec:
   selector:
     name: blockscout
+  {{- if $.Values.blockscout.loadBalancerExternal }}
   type: LoadBalancer
+  {{- end }}
   ports:
-    - protocol: TCP
+    - name: blockscout-port
+      targetPort: blockscout
       port: {{ .Values.blockscout.port }}
-      targetPort: {{ .Values.blockscout.port }}
+    - name: blockscout-http
+      targetPort: blockscout
+      port: 80
+    - name: blockscout-https
+      targetPort: blockscout
+      port: 443
 
 ---
 
