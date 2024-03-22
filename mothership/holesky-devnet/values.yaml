@@ -23,7 +23,7 @@ node:
   sequencerEnabled: true
   loadBalancerExternal: true
   nodeSelector:
-    node.kubernetes.io/instance-type: mothership-r7g_xl_2c
+    node.kubernetes.io/instance-type: r7g.xlarge
   opGeth:
     resources:
       requests:
