@@ -22,6 +22,11 @@ node:
   count: 2
   sequencerEnabled: true
   loadBalancerExternal: true
+  nodeSelector: mothership-r7g_xl_2c
+  opGeth:
+    resources:
+      requests:
+        memory: 16Gi
 
 opProposer:
   replicas: 1
