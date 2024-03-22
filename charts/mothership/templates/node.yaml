@@ -136,7 +136,7 @@ spec:
                 - localhost
                 - "{{ $.Values.node.opGeth.port.rpc }}"
             periodSeconds: 5
-          {{- with $.Values.node.resources }}
+          {{- with $.Values.node.opGeth.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}

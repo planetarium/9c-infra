@@ -22,7 +22,8 @@ node:
   count: 2
   sequencerEnabled: true
   loadBalancerExternal: true
-  nodeSelector: mothership-r7g_xl_2c
+  nodeSelector:
+    node.kubernetes.io/instance-type: mothership-r7g_xl_2c
   opGeth:
     resources:
       requests:
