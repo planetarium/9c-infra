@@ -104,15 +104,14 @@ spec:
             - --ws.port={{ $.Values.node.opGeth.port.wsrpc }}
             - --ws.addr=0.0.0.0
             - --ws.origins=*
-            - --ws.api=debug,eth,txpool,net,engine
+            - --ws.api=web3,debug,eth,txpool,net,engine
             - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
             - --authrpc.jwtsecret=/genesis/jwt.txt
-            - --syncmode=full
-            - --gcmode=archive
-            - --nodiscover
-            - --maxpeers=0
+            - --port={{ $.Values.node.opGeth.port.p2p }}
+            - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
+            - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
             - --rollup.disabletxpoolgossip=true
           ports:
             - name: op-geth-rpc
@@ -137,6 +136,10 @@ spec:
                 - localhost
                 - "{{ $.Values.node.opGeth.port.rpc }}"
             periodSeconds: 5
+          {{- with $.Values.node.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         - name: op-node
           image: {{ $.Values.node.opNode.image }}
           command:
@@ -147,18 +150,16 @@ spec:
               op-node \
                 --l1=$(L1_RPC) \
                 --l1.beacon=$(L1_BEACON_RPC) \
-                --l1.rpckind=any \
                 --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
                 --l2.jwt-secret=/genesis/jwt.txt \
                 --rollup.config=/genesis/rollup.json \
-                --rpc.addr=0.0.0.0 \
-                --rpc.port={{ $.Values.node.opNode.port.rpc }} \
-                --rpc.enable-admin \
+                --p2p.priv.path=/genesis/jwt.txt \
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --rpc.addr=0.0.0.0 \
+                --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --sequencer.enabled={{ and $.Values.node.sequencerEnabled (eq $index 1) }} \
-                --verifier.l1-confs=3 \
-                --log.level=debug \
                 --metrics.enabled \
                 --metrics.port={{ $.Values.node.opNode.port.metrics }}
           env:
@@ -189,6 +190,10 @@ spec:
         - name: genesis-volume
           persistentVolumeClaim:
             claimName: genesis-volume
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: genesis-volume
