@@ -21,7 +21,7 @@ node:
     volume: &op-geth-volume
       storage: 100Gi
   opNode:
-    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.0
+    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.2
     port: &op-node-port
       rpc: 8547
       p2p: 9003
@@ -31,13 +31,13 @@ node:
 
 opBatcher:
   replicas: 1
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.0
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.2
   port:
     rpc: 8548
 
 opProposer:
   replicas: 1
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.0
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.2
   port:
     rpc: 8560
 

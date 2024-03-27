@@ -24,13 +24,13 @@ spec:
               test -e genesis.json && test -e rollup.json && exit 0 ; \
               curl -L --remote-name-all $GENESIS_SOURCE/{genesis.json,rollup.json} ; \
               hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
-          workingDir: /genesis
+          workingDir: /node
           env:
             - name: GENESIS_SOURCE
               value: "{{ $.Values.genesis.source }}"
           volumeMounts:
-            - mountPath: /genesis
-              name: genesis-volume
+            - mountPath: /node
+              name: node-volume
           securityContext:
             runAsUser: 0
             runAsNonRoot: false
@@ -81,12 +81,12 @@ spec:
           args:
             - init
             - --datadir=/data
-            - /genesis/genesis.json
+            - /node/genesis.json
           volumeMounts:
             - mountPath: /data
               name: op-geth-volume
-            - mountPath: /genesis
-              name: genesis-volume
+            - mountPath: /node
+              name: node-volume
               readOnly: true
         {{- end }}
       containers:
@@ -108,7 +108,7 @@ spec:
             - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
-            - --authrpc.jwtsecret=/genesis/jwt.txt
+            - --authrpc.jwtsecret=/node/jwt.txt
             - --port={{ $.Values.node.opGeth.port.p2p }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
             - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
@@ -125,8 +125,8 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: op-geth-volume
-            - mountPath: /genesis
-              name: genesis-volume
+            - mountPath: /node
+              name: node-volume
               readOnly: true
           livenessProbe:
             exec:
@@ -151,15 +151,18 @@ spec:
                 --l1=$(L1_RPC) \
                 --l1.beacon=$(L1_BEACON_RPC) \
                 --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
-                --l2.jwt-secret=/genesis/jwt.txt \
-                --rollup.config=/genesis/rollup.json \
-                --p2p.priv.path=/genesis/jwt.txt \
+                --l2.jwt-secret=/node/jwt.txt \
+                --rollup.config=/node/rollup.json \
+                --sequencer.enabled={{ and $.Values.node.sequencerEnabled (eq $index 1) }} \
+                --p2p.sequencer.key=$(SEQUENCER_KEY) \
+                --p2p.priv.path=/node/jwt.txt \
+                --p2p.peerstore.path=/node/opnode_peerstore_db \
+                --p2p.discovery.path=/node/opnode_discovery_db \
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
-                --sequencer.enabled={{ and $.Values.node.sequencerEnabled (eq $index 1) }} \
                 --metrics.enabled \
                 --metrics.port={{ $.Values.node.opNode.port.metrics }}
           env:
@@ -167,6 +170,11 @@ spec:
               value: {{ $.Values.env.L1_RPC }}
             - name: L1_BEACON_RPC
               value: {{ $.Values.env.L1_BEACON_RPC }}
+            - name: SEQUENCER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: private-keys
+                  key: SEQUENCER_KEY
           ports:
             - name: op-node-rpc
               containerPort: {{ $.Values.node.opNode.port.rpc }}
@@ -175,9 +183,8 @@ spec:
             - name: op-node-metrics
               containerPort: {{ $.Values.node.opNode.port.metrics }}
           volumeMounts:
-            - mountPath: /genesis
-              name: genesis-volume
-              readOnly: true
+            - mountPath: /node
+              name: node-volume
           livenessProbe:
             exec:
               command:
@@ -187,16 +194,16 @@ spec:
                 - "{{ $.Values.node.opNode.port.rpc }}"
             periodSeconds: 5
       volumes:
-        - name: genesis-volume
+        - name: node-volume
           persistentVolumeClaim:
-            claimName: genesis-volume
+            claimName: node-volume
       {{- with $.Values.node.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: genesis-volume
+      name: node-volume
     spec:
       accessModes:
         - ReadWriteOnce

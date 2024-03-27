@@ -1,0 +1,34 @@
+externalSecret:
+  enabled: true
+  prefix: "mothership-devnet"
+
+env:
+  L1_RPC: https://ethereum-holesky-rpc.publicnode.com
+  L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
+
+storageClassName: gp3-extensible
+
+genesis:
+  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
+  createSnapshot: false
+  s3SnapshotPath: mothership-devnet-holesky-genesis/snapshot
+
+blockscout:
+  loadBalancerExternal: true
+  db:
+    storage: 100Gi
+
+node:
+  count: 1
+  sequencerEnabled: false
+  loadBalancerExternal: true
+  opGeth:
+    resources:
+      requests:
+        memory: 2Gi
+
+opProposer:
+  replicas: 0
+
+opBatcher:
+  replicas: 0
