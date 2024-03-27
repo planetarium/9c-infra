@@ -163,18 +163,16 @@ spec:
         - containerPort: {{ $.Values.validator.ports.gossip }}
           name: gossip
           protocol: TCP
+        {{- if eq $.Values.global.networkType "Main"  }}
         livenessProbe:
           exec:
             command:
-            {{- if eq $.Values.global.networkType "Main"  }}
             - /bin/liveness_probe_validator.sh
-            {{- else }}
-            - /bin/liveness_probe_validator.sh
-            {{- end }}
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 60
           timeoutSeconds: 60
+        {{- end }}
         resources:
           {{- toYaml $.Values.validator.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
