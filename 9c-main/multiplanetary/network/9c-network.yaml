@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200152/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDt2kdspk23Ke3xxpCi4VJWHeR1MEpWrc35rBkYq0BujQIgJ45iGzVhenEmL1DWun2svuKpBZevCVQW74YL8gsTXxk=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAyLTI5ZQ=="
+  appProtocolVersion: "200160/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDg.Y1oo5Pvz0h6jgpqBKsBAY8afJFNyp0YuYTpaRUAsQIgC5DTlsBOmoCjeT+pmmNo30aDNkZXztRsmta7iaRjDk4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAzLTI3ZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -221,7 +221,7 @@ dataProviderDataMigrator:
     requests:
       cpu: '3'
       memory: 28Gi
-  
+
   storage: 1000Gi
 
 dataProvider:
