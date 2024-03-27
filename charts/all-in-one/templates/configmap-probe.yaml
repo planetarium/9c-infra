@@ -7,5 +7,5 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   liveness_probe.sh: |- {{ tpl (.Files.Get "scripts/common/liveness_probe.sh") . | nindent 4 }}
-  liveness_probe_miner.sh: |- {{ tpl (.Files.Get "scripts/common/liveness_probe_miner.sh") . | nindent 4 }}
+  liveness_probe_validator.sh: |- {{ tpl (.Files.Get "scripts/common/liveness_probe_validator.sh") . | nindent 4 }}
   readiness_probe.sh: |- {{ tpl (.Files.Get "scripts/common/readiness_probe.sh") . | nindent 4 }}

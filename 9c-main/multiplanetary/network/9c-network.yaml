@@ -88,6 +88,10 @@ seed:
 validator:
   count: 4
 
+  # custom image for odin validator (remove upon next release)
+  image:
+    tag: "git-e166707f4ebe7d3ad64318aca458054887a288ba"
+
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "true"
