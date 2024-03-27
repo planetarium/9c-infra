@@ -369,6 +369,10 @@ testHeadless1:
   enabled: true
   replicas: 1
 
+  image:
+    # used by game team to run `replay remote-tx` command
+    tag: "git-bab123a60159da9769673925e7833f81322aa625"
+
   host: "heimdall-test-1.nine-chronicles.com"
 
   ports:

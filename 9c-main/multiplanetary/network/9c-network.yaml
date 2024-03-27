@@ -352,6 +352,10 @@ bridge:
 testHeadless1:
   enabled: true
 
+  image:
+    # used by game team to run `replay remote-tx` command
+    tag: "git-bab123a60159da9769673925e7833f81322aa625"
+
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
