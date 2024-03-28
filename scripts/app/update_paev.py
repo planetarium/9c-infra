@@ -63,7 +63,7 @@ class PluggableActionEvaluatorUpdater:
             # Upload the modified file back to S3
             s3_resource = boto3.resource('s3')
             bucket_name = '9c-cluster-config'  # Replace with your actual bucket name
-            file_name = '9c-main/odin/appsettings-test.json'  # Replace with the S3 path for the upload
+            file_name = paev_url  # Replace with the S3 path for the upload
 
             # Convert the modified data back to JSON string
             file_content = json.dumps(data, indent=4)
