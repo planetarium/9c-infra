@@ -4,6 +4,7 @@ import json
 
 from app.client import GithubClient
 from app.config import config
+from urllib.parse import urlparse
 
 class PluggableActionEvaluatorUpdater:
     def __init__(self) -> None:
@@ -53,27 +54,24 @@ class PluggableActionEvaluatorUpdater:
                     pairs[insert_index]['range']['start'] = new_start_value
                     pairs.insert(insert_index, value_to_append)
                 else:
-                    print("The specified range was not found in the pairs.")
-                    return
+                    raise Exception("The specified range was not found in the pairs.")
                 
             else:
-                print("The specified structure does not exist in the provided JSON data.")
-                return
+                raise Exception("The specified structure does not exist in the provided JSON data.")
 
             # Upload the modified file back to S3
             s3_resource = boto3.resource('s3')
             bucket_name = '9c-cluster-config'  # Replace with your actual bucket name
-            file_name = '9c-main/odin/appsettings-test.json'  # Replace with the S3 path for the upload
+            file_name = extract_path_from_url(paev_url)  # Replace with the S3 path for the upload
 
             # Convert the modified data back to JSON string
             file_content = json.dumps(data, indent=4)
             s3_resource.Object(bucket_name, file_name).put(Body=file_content, ContentType='application/json')
 
             print(data)
-            print("File uploaded successfully.")
+            print(f"File uploaded successfully to {paev_url}.")
         else:
-            print("One or both URLs are not accessible. Please check the URLs and try again.")
-            return False
+            raise Exception("One or both URLs are not accessible. Please check the URLs and try again.")
 
 def url_exists(url):
     try:
@@ -82,3 +80,9 @@ def url_exists(url):
     except requests.exceptions.RequestException as e:
         print(f"Error checking URL {url}: {e}")
         return False
+
+def extract_path_from_url(url):
+    # Parse the URL to get the path part
+    parsed_url = urlparse(url)
+    # The `path` attribute contains the path component of the URL
+    return parsed_url.path.lstrip('/')
