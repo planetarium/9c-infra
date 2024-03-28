@@ -4,6 +4,7 @@ import json
 
 from app.client import GithubClient
 from app.config import config
+from urllib.parse import urlparse
 
 class PluggableActionEvaluatorUpdater:
     def __init__(self) -> None:
@@ -61,14 +62,14 @@ class PluggableActionEvaluatorUpdater:
             # Upload the modified file back to S3
             s3_resource = boto3.resource('s3')
             bucket_name = '9c-cluster-config'  # Replace with your actual bucket name
-            file_name = paev_url  # Replace with the S3 path for the upload
+            file_name = extract_path_from_url(paev_url)  # Replace with the S3 path for the upload
 
             # Convert the modified data back to JSON string
             file_content = json.dumps(data, indent=4)
             s3_resource.Object(bucket_name, file_name).put(Body=file_content, ContentType='application/json')
 
             print(data)
-            print(f"File uploaded successfully to {file_name}.")
+            print(f"File uploaded successfully to {paev_url}.")
         else:
             raise Exception("One or both URLs are not accessible. Please check the URLs and try again.")
 
@@ -79,3 +80,9 @@ def url_exists(url):
     except requests.exceptions.RequestException as e:
         print(f"Error checking URL {url}: {e}")
         return False
+
+def extract_path_from_url(url):
+    # Parse the URL to get the path part
+    parsed_url = urlparse(url)
+    # The `path` attribute contains the path component of the URL
+    return parsed_url.path.lstrip('/')
