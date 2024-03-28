@@ -53,12 +53,10 @@ class PluggableActionEvaluatorUpdater:
                     pairs[insert_index]['range']['start'] = new_start_value
                     pairs.insert(insert_index, value_to_append)
                 else:
-                    print("The specified range was not found in the pairs.")
-                    return
+                    raise Exception("The specified range was not found in the pairs.")
                 
             else:
-                print("The specified structure does not exist in the provided JSON data.")
-                return
+                raise Exception("The specified structure does not exist in the provided JSON data.")
 
             # Upload the modified file back to S3
             s3_resource = boto3.resource('s3')
@@ -70,10 +68,9 @@ class PluggableActionEvaluatorUpdater:
             s3_resource.Object(bucket_name, file_name).put(Body=file_content, ContentType='application/json')
 
             print(data)
-            print("File uploaded successfully.")
+            print(f"File uploaded successfully to {file_name}.")
         else:
-            print("One or both URLs are not accessible. Please check the URLs and try again.")
-            return False
+            raise Exception("One or both URLs are not accessible. Please check the URLs and try again.")
 
 def url_exists(url):
     try:
