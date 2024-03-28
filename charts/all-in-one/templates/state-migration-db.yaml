@@ -1,0 +1,61 @@
+{{ if .Values.stateMigrationService.db.local }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: state-migration-db
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: state-migration-db
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: state-migration-db
+  serviceName: state-migration-db
+  template:
+    metadata:
+      labels:
+        app: state-migration-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: state-migration
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: state-migration
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: state-migration
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.3
+          name: state-migration-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: state-migration-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: state-migration-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.stateMigrationService.db.size }}
+        storageClassName: {{ $.Release.Name }}-gp3
+        volumeMode: Filesystem
+{{ end }}
