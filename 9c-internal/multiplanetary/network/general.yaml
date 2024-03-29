@@ -55,7 +55,7 @@ acc:
     pullPolicy: Always
     tag: "git-d1d2ccbb9fb8f6ffd5e7a6109363471c8f8fa480"
 
-stateMigration:
+stateMigrationService:
   db:
     local: true
     size: 1Gi
