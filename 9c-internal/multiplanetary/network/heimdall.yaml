@@ -298,7 +298,7 @@ acc:
   - name: AccessControlServiceConnectionString
     value: "Data Source=/data/acc.db"
 
-stateMigration:
+stateMigrationService:
   enabled: true
 
   nodeSelector:
