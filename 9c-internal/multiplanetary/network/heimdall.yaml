@@ -298,3 +298,8 @@ acc:
   - name: AccessControlServiceConnectionString
     value: "Data Source=/data/acc.db"
 
+stateMigration:
+  enabled: true
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.xlarge

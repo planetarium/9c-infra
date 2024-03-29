@@ -55,3 +55,12 @@ acc:
     pullPolicy: Always
     tag: "git-d1d2ccbb9fb8f6ffd5e7a6109363471c8f8fa480"
 
+stateMigration:
+  db:
+    local: true
+    size: 1Gi
+
+  image:
+    repository: planetariumhq/state-migration-service
+    pullPolicy: Always
+    tag: "git-ad7daecb45aeb81bf62e57474f72c6692d96466e"

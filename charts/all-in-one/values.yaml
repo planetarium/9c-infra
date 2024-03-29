@@ -677,3 +677,10 @@ testWorldBoss:
     sentryDsn: ""
 
   nodeSelector: {}
+
+stateMigrationService:
+  enabled: false
+
+  db:
+    local: false
+    size: 1Gi

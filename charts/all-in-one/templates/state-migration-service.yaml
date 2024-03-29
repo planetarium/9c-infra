@@ -1,0 +1,76 @@
+{{ if .Values.stateMigrationService.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: state-migration-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: state-migration-service
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: state-migration-service
+  serviceName: state-migration-service
+  template:
+    metadata:
+      labels:
+        app: state-migration-service
+    spec:
+      containers:
+        - args:
+            - StateMigrationService.dll
+          command:
+            - dotnet
+          env:
+            - name: ConnectionStrings__StateMigration
+              valueFrom:
+                secretKeyRef:
+                  key: connection-string
+                  name: state-migration
+            - name: SignerConfig__PrivateKey
+              valueFrom:
+                secretKeyRef:
+                  key: private-key
+                  name: state-migration
+            - name: SignerConfig__RpcHost
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-host
+                  name: state-migration
+            - name: SignerConfig__GraphqlHost
+              valueFrom:
+                secretKeyRef:
+                  key: graphql-host
+                  name: state-migration
+            - name: SignerConfig__JwtSecret
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: state-migration
+            - name: SignerConfig__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-issuer
+                  name: state-migration
+            - name: WorkerConfig__FilePath
+              valueFrom:
+                secretKeyRef:
+                  key: file-path
+                  name: state-migration
+          {{- with $.Values.stateMigrationService.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ $.Values.stateMigrationService.image.repository }}:{{ $.Values.stateMigrationService.image.tag }}
+          name: state-migration-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      {{- with $.Values.stateMigrationService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
+{{ end }}
