@@ -781,3 +781,41 @@ spec:
   type: ClusterIP
 ---
 {{ end }}
+
+{{ if .Values.stateMigrationService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: state-migration-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    app: state-migration-service
+  type: ClusterIP
+---
+{{ end }}
+
+{{ if .Values.stateMigrationService.db.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: state-migration-db
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: state-migration-db
+  type: ClusterIP
+---
+{{ end }}
