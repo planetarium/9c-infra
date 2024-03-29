@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - args:
-            - GuildService.dll
+            - StateMigrationService.dll
           command:
             - dotnet
           env:
