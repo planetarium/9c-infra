@@ -602,3 +602,9 @@ rudolfCurrencyNotifier:
     serverName: "heimdall"
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+
+stateMigrationService:
+  enabled: true
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: heimdall-m5_l_2c

@@ -57,3 +57,9 @@ bridgeServiceApi:
     pullPolicy: Always
     tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
 
+
+stateMigrationService:
+  image:
+    repository: planetariumhq/state-migration-service
+    pullPolicy: Always
+    tag: "git-ad7daecb45aeb81bf62e57474f72c6692d96466e"
