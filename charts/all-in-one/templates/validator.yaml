@@ -170,8 +170,8 @@ spec:
             - /bin/liveness_probe_validator.sh
           failureThreshold: 3
           initialDelaySeconds: 1800
-          periodSeconds: 60
-          timeoutSeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 30
         {{- end }}
         resources:
           {{- toYaml $.Values.validator.resources | nindent 10 }}
