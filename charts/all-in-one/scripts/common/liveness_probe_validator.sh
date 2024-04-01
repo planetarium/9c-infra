@@ -16,7 +16,7 @@ if [[ $(( stagedTxIdsCount )) -gt 0 ]]; then
     http://localhost:80/graphql | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp')"
   last_timestamp="$(date +%s -u --date="$last_block")"
   now="$(date +%s)"
-  [[ $(( now - last_timestamp )) -lt 300 ]]
+  [[ $(( now - last_timestamp )) -lt 60 ]]
 else
   [[ $(( stagedTxIdsCount )) -gt 0 ]]
 fi
