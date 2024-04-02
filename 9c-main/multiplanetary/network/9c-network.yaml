@@ -584,4 +584,4 @@ stateMigrationService:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: 9c-main-m5_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
