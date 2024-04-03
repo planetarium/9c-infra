@@ -235,7 +235,7 @@ remoteHeadless:
   resources:
     requests:
       cpu: '5'
-      memory: 28Gi
+      memory: 50Gi
 
   tolerations:
   - effect: NoSchedule
