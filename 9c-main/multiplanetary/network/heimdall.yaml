@@ -208,9 +208,9 @@ remoteHeadless:
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "10"
   - name: IpRateLimiting__IpBanMinute
-    value: "10"
-  - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "15"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
   - name: IpRateLimiting__IpWhiteList__1
