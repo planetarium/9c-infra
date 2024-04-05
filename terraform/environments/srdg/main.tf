@@ -20,7 +20,7 @@ module "common" {
 
   create_vpc = true
 
-  availability_zone = "ap-northeast-2c"
+  nat_availability_zone = "ap-northeast-2c"
 
   addon_versions = {
     "coredns"            = "v1.10.1-eksbuild.6"
