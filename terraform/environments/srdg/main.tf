@@ -20,6 +20,8 @@ module "common" {
 
   create_vpc = true
 
+  nat_availability_zone = "ap-northeast-2c"
+
   addon_versions = {
     "coredns"            = "v1.10.1-eksbuild.6"
     "kube-proxy"         = "v1.28.1-eksbuild.1"
