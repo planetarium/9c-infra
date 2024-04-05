@@ -33,7 +33,7 @@ resource "aws_nat_gateway" "nat" {
 
   allocation_id = aws_eip.nat[0].id
 
-  subnet_id = aws_subnet.public["us-east-2c"].id
+  subnet_id = aws_subnet.public[var.availability_zone].id
 
   tags = {
     Name = "NAT-GW${count.index}-${var.vpc_name}"

@@ -6,3 +6,8 @@ terraform {
     }
   }
 }
+
+variable "availability_zone" {
+  type    = string
+  default = "us-east-2c"
+}
