@@ -113,6 +113,8 @@ spec:
             - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
             - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
             - --rollup.disabletxpoolgossip=true
+            - --syncmode=full
+            - --gcmode=archive
           ports:
             - name: op-geth-rpc
               containerPort: {{ $.Values.node.opGeth.port.rpc }}
