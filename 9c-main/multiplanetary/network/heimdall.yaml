@@ -604,7 +604,7 @@ rudolfCurrencyNotifier:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
 
 stateMigrationService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
