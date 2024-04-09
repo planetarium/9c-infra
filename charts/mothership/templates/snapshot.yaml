@@ -1,0 +1,174 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: snapshot
+  namespace: {{ $.Release.Name }}
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - name: fetch-genesis
+            image: curlimages/curl
+            command: ["sh", "-c"]
+            args:
+              - |
+                test -e genesis.json && test -e rollup.json && exit 0 ; \
+                curl -L --remote-name-all $GENESIS_SOURCE/{genesis.json,rollup.json} ; \
+                hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
+            workingDir: /node
+            env:
+              - name: GENESIS_SOURCE
+                value: "{{ $.Values.genesis.source }}"
+            volumeMounts:
+              - mountPath: /node
+                name: snapshot-genesis-volume
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+          - name: fetch-snapshot
+            image: curlimages/curl
+            command: ["sh", "-c"]
+            args:
+              - |
+                apk add zstd ; \
+                curl -L -o /data/snapshot.tar.zst.tmp $SNAPSHOT ; \
+                mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
+                mkdir -p /data/geth ; \
+                rm -rf /data/geth/chaindata ; \
+                zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth
+            env:
+              - name: SNAPSHOT
+                value: "{{ $.Values.genesis.snapshot }}"
+            volumeMounts:
+              - mountPath: /data
+                name: snapshot-geth-volume
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+          - name: preload
+            image: {{ $.Values.node.opGeth.image }}
+            env:
+              - name: L1_RPC
+                value: {{ $.Values.env.L1_RPC }}
+              - name: L1_BEACON_RPC
+                value: {{ $.Values.env.L1_BEACON_RPC }}
+              - name: SEQUENCER_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: private-keys
+                    key: SEQUENCER_KEY
+            command:
+            - ["sh", "-c"]
+            args:
+            - |
+              geth \
+                --datadir=/data \
+                --http \
+                --http.port=8545 \
+                --http.addr=0.0.0.0 \
+                --http.vhosts=* \
+                --http.corsdomain=* \
+                --http.api=web3,debug,eth,txpool,net,engine \
+                --ws \
+                --ws.port=8546 \
+                --ws.addr=0.0.0.0 \
+                --ws.origins=* \
+                --ws.api=web3,debug,eth,txpool,net,engine \
+                --authrpc.port=8551 \
+                --authrpc.addr=0.0.0.0 \
+                --authrpc.vhosts=* \
+                --authrpc.jwtsecret=/node/jwt.txt \
+                --port=30303 \
+                --discovery.port=30303 \
+                --rollup.disabletxpoolgossip=true \
+                --syncmode=full \
+                --gcmode=archive > /data/snapshot_logs/snapshot_geth_$(date -u +"%Y%m%d%H%M").log 2>&1 &
+              
+              GETH_PID="$!"
+              GETH_URL="http://localhost:8545"
+
+              op-node \
+                --l1=$(L1_RPC) \
+                --l1.beacon=$(L1_BEACON_RPC) \
+                --l2=http://localhost:8551 \
+                --l2.jwt-secret=/node/jwt.txt \
+                --rollup.config=/node/rollup.json \
+                --sequencer.enabled=true \
+                --p2p.sequencer.key=$(SEQUENCER_KEY) \
+                --p2p.priv.path=/node/jwt.txt \
+                --p2p.peerstore.path=/node/opnode_peerstore_db \
+                --p2p.discovery.path=/node/opnode_discovery_db \
+                --p2p.listen.ip=0.0.0.0 \
+                --p2p.listen.tcp=9003 \
+                --p2p.listen.udp=9003 \
+                --rpc.addr=0.0.0.0 \
+                --rpc.port=8547 \
+                --metrics.enabled \
+                --metrics.port=7300 > /data/snapshot_logs/snapshot_node_$(date -u +"%Y%m%d%H%M").log 2>&1 &
+              NODE_PID="$!"
+              
+              check_sync_status() {
+                  response=$(curl -sX POST $GETH_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0", "method":"eth_syncing", "params":[], "id":1}')
+                  echo $response | jq '.result'
+              }
+              
+              while true; do
+                  sync_status=$(check_sync_status)
+                  
+                  if [ "$sync_status" = "false" ]; then
+                      echo "Sync is complete. Triggering other tasks..."
+                      kill $GETH_PID
+                      kill $NODE_PID
+                      break
+                  else
+                      echo "Still syncing. Current status: $sync_status"
+                  fi
+                  sleep 60
+              done
+
+              sleep 60
+            {{- with $.Values.node.opGeth.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - mountPath: /data
+                name: snapshot-geth-volume
+              - mountPath: /node
+                name: snapshot-genesis-volume
+                readOnly: true
+          containers:
+          - name: create-snapshot
+            image: alpine
+            command: ["sh", "-c"]
+            args:
+              - |
+                apk add zstd aws-cli ; \
+                TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
+                tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
+                aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/test/snapshot-$TIME.tar.zst --acl public-read
+            env:
+              - name: S3_SNAPSHOT_PATH
+                value: "{{ $.Values.genesis.s3SnapshotPath }}"
+            volumeMounts:
+              - mountPath: /data
+                name: snapshot-geth-volume
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+          volumes:
+            - name: snapshot-geth-volume
+              persistentVolumeClaim:
+                claimName: snapshot-geth-volume
+            - name: snapshot-genesis-volume
+              persistentVolumeClaim:
+                claimName: snapshot-genesis-volume
+          {{- with $.Values.node.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+  schedule: 0 */12 * * *
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
