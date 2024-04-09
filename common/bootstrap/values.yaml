@@ -41,3 +41,8 @@ opentelemetry:
 tempo:
   enabled: false
   nodeGroup: ""
+
+argoWorkflows:
+  enabled: false
+  controllerNamespaces:
+  - default

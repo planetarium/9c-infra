@@ -55,6 +55,10 @@ spec:
           enabled: false
         tempo:
           enabled: false
+        argoWorkflows:
+          enabled: true
+          controllerNamespaces:
+          - holesky-devnet
 
   destination:
     server: https://kubernetes.default.svc

@@ -1,0 +1,37 @@
+{{- if .Values.argoWorkflows.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argo-workflows
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows
+spec:
+  project: infra
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo/argo-workflows
+    targetRevision: 0.41.1
+    helm:
+      values: |-
+        workflow:
+          serviceAccount:
+            create: true
+            name: "argo-workflows"
+          rbac:
+            create: true
+        controller:
+          workflowNamespaces:
+          {{- with $.Values.argoWorkflows.controllerNamespaces }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-workflows
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}
