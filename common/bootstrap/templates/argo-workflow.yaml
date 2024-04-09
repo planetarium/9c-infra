@@ -27,6 +27,8 @@ spec:
           {{- with $.Values.argoWorkflows.controllerNamespaces }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
+        server:
+          authMode: "server"
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-workflows
