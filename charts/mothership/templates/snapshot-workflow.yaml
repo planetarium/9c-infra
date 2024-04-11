@@ -162,6 +162,9 @@ spec:
             sleep 60
             exit 0;
 
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
       sidecars:
         - image: {{ $.Values.node.opGeth.image }}
           name: op-geth
