@@ -1,207 +1,214 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: CronWorkflow
 metadata:
   generateName: mothership-snapshot
   namespace: {{ $.Release.Namespace }}
 spec:
-  entrypoint: fetch-genesis
-  serviceAccountName: argo-workflows
-  volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
-  - metadata:
-      name: snapshot-node-volume
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: {{ $.Values.storageClassName }}
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: snapshot-data-volume
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: {{ $.Values.storageClassName }}
-      resources:
-        requests:
-          storage: 100Gi   
+  schedule: "0 18 * * *"
+  concurrencyPolicy: "Replace"
+  startingDeadlineSeconds: 7200
+  timezone: "Asia/Seoul"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3 
+  workflowSpec:
+    entrypoint: fetch-genesis
+    serviceAccountName: argo-workflows
+    volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
+    - metadata:
+        name: snapshot-node-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: {{ $.Values.storageClassName }}
+        resources:
+          requests:
+            storage: 100Mi
+    - metadata:
+        name: snapshot-data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: {{ $.Values.storageClassName }}
+        resources:
+          requests:
+            storage: 100Gi   
 
-  # This spec contains two templates: hello-hello-hello and whalesay
-  templates:
-  - name: mothership-snapshot
-    # Instead of just running a container
-    # This template has a sequence of steps
-    steps:
-    - - name: fetch-genesis
-        template: fetch-genesis 
-    - - name: fetch-snapshot
-        template: fetch-snapshot 
-    - - name: genesis-init
-        template: genesis-init
-    - - name: op-stack
-        template: op-stack
-    - - name: create-snapshot
-        template: create-snapshot
+    # This spec contains two templates: hello-hello-hello and whalesay
+    templates:
+    - name: mothership-snapshot
+      # Instead of just running a container
+      # This template has a sequence of steps
+      steps:
+      - - name: fetch-genesis
+          template: fetch-genesis 
+      - - name: fetch-snapshot
+          template: fetch-snapshot 
+      - - name: genesis-init
+          template: genesis-init
+      - - name: op-stack
+          template: op-stack
+      - - name: create-snapshot
+          template: create-snapshot
 
-  # This is the same template as from the previous example
-  - name: fetch-genesis
-    container:
-      image: curlimages/curl
-      command: ["sh", "-c"]
-      args: 
-        - |
-          test -e genesis.json && test -e rollup.json && exit 0 ; \
-          curl -L --remote-name-all {{ $.Values.genesis.source }}/{genesis.json,rollup.json} ; \
-          hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
-      env:
-        - name: GENESIS_SOURCE
-          value: "{{ $.Values.genesis.source }}"
-      volumeMounts:
-        - mountPath: /node
-          name: snapshot-node-volume
-      securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
-  - name: fetch-snapshot
-    container:
-      image: curlimages/curl
-      command: ["sh", "-c"]
-      args:
-        - |
-          apk add zstd ; \
-          curl -L -o /data/snapshot.tar.zst.tmp $SNAPSHOT ; \
-          mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
-          mkdir -p /data/geth ; \
-          rm -rf /data/geth/chaindata ; \
-          zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth
-      env:
-        - name: SNAPSHOT
-          value: "{{ $.Values.genesis.snapshot }}"
-      volumeMounts:
-        - mountPath: /data
-          name: snapshot-data-volume
-      securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
-  - name: genesis-init
-    container:
-      image: {{ $.Values.node.opGeth.image }}
-      args:
-        - init
-        - --datadir=/data
-        - /node/genesis.json
-      volumeMounts:
-        - mountPath: /data
-          name: snapshot-data-volume
-        - mountPath: /node
-          name: snapshot-node-volume
-          readOnly: true
-  - name: op-stack
-    container: 
-      image: curlimages/curl
-      command: ["sh", "-c"]
-      args:
-        - |
-          NODE_URL="http://localhost:8545"
-
-          sleep 60
-              
-          check_sync_status() {
-              response=$(curl -sX POST $NODE_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0", "method":"eth_syncing", "params":[], "id":1}')
-              echo $response | jq '.result'
-          }
-          
-          while true; do
-              sync_status=$(check_sync_status)
-              
-              if [ "$sync_status" = "false" ]; then
-                  echo "Sync is complete. exiting..."
-                  break
-              else
-                  echo "Still syncing. Current status: $sync_status"
-              fi
-              sleep 60
-          done
-
-          sleep 60
-          exit 0;
-
-    sidecars:
-      - image: {{ $.Values.node.opGeth.image }}
+    # This is the same template as from the previous example
+    - name: fetch-genesis
+      container:
+        image: curlimages/curl
+        command: ["sh", "-c"]
+        args: 
+          - |
+            test -e genesis.json && test -e rollup.json && exit 0 ; \
+            curl -L --remote-name-all {{ $.Values.genesis.source }}/{genesis.json,rollup.json} ; \
+            hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
+        env:
+          - name: GENESIS_SOURCE
+            value: "{{ $.Values.genesis.source }}"
+        volumeMounts:
+          - mountPath: /node
+            name: snapshot-node-volume
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
+    - name: fetch-snapshot
+      container:
+        image: curlimages/curl
+        command: ["sh", "-c"]
         args:
+          - |
+            apk add zstd ; \
+            curl -L -o /data/snapshot.tar.zst.tmp $SNAPSHOT ; \
+            mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
+            mkdir -p /data/geth ; \
+            rm -rf /data/geth/chaindata ; \
+            zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth
+        env:
+          - name: SNAPSHOT
+            value: "{{ $.Values.genesis.snapshot }}"
+        volumeMounts:
+          - mountPath: /data
+            name: snapshot-data-volume
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
+    - name: genesis-init
+      container:
+        image: {{ $.Values.node.opGeth.image }}
+        args:
+          - init
           - --datadir=/data
-          - --http
-          - --http.port={{ $.Values.node.opGeth.port.rpc }}
-          - --http.addr=0.0.0.0
-          - --http.vhosts=*
-          - --http.corsdomain=*
-          - --http.api=web3,debug,eth,txpool,net,engine
-          - --ws
-          - --ws.port={{ $.Values.node.opGeth.port.wsrpc }}
-          - --ws.addr=0.0.0.0
-          - --ws.origins=*
-          - --ws.api=web3,debug,eth,txpool,net,engine
-          - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
-          - --authrpc.addr=0.0.0.0
-          - --authrpc.vhosts=*
-          - --authrpc.jwtsecret=/node/jwt.txt
-          - --port={{ $.Values.node.opGeth.port.p2p }}
-          - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
-          - --rollup.sequencerhttp=http://localhost:{{ $.Values.node.opGeth.port.rpc }}
-          - --rollup.disabletxpoolgossip=true
-          - --syncmode=full
-          - --gcmode=archive
+          - /node/genesis.json
         volumeMounts:
           - mountPath: /data
             name: snapshot-data-volume
           - mountPath: /node
             name: snapshot-node-volume
             readOnly: true
-      - image: {{ $.Values.node.opNode.image }}
-        command:
-          - sh
-          - -c
+    - name: op-stack
+      container: 
+        image: curlimages/curl
+        command: ["sh", "-c"]
         args:
           - |
-            op-node \
-              --l1=$(L1_RPC) \
-              --l1.beacon=$(L1_BEACON_RPC) \
-              --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
-              --l2.jwt-secret=/node/jwt.txt \
-              --rollup.config=/node/rollup.json \
-              --sequencer.enabled=false \
-              --p2p.priv.path=/node/jwt.txt \
-              --p2p.peerstore.path=/node/opnode_peerstore_db \
-              --p2p.discovery.path=/node/opnode_discovery_db \
-              --p2p.listen.ip=0.0.0.0 \
-              --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
-              --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
-              --rpc.addr=0.0.0.0 \
-              --rpc.port={{ $.Values.node.opNode.port.rpc }} \
-              --metrics.enabled \
-              --metrics.port={{ $.Values.node.opNode.port.metrics }}
+            NODE_URL="http://localhost:8545"
+
+            sleep 60
+                
+            check_sync_status() {
+                response=$(curl -sX POST $NODE_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0", "method":"eth_syncing", "params":[], "id":1}')
+                echo $response | jq '.result'
+            }
+            
+            while true; do
+                sync_status=$(check_sync_status)
+                
+                if [ "$sync_status" = "false" ]; then
+                    echo "Sync is complete. exiting..."
+                    break
+                else
+                    echo "Still syncing. Current status: $sync_status"
+                fi
+                sleep 60
+            done
+
+            sleep 60
+            exit 0;
+
+      sidecars:
+        - image: {{ $.Values.node.opGeth.image }}
+          args:
+            - --datadir=/data
+            - --http
+            - --http.port={{ $.Values.node.opGeth.port.rpc }}
+            - --http.addr=0.0.0.0
+            - --http.vhosts=*
+            - --http.corsdomain=*
+            - --http.api=web3,debug,eth,txpool,net,engine
+            - --ws
+            - --ws.port={{ $.Values.node.opGeth.port.wsrpc }}
+            - --ws.addr=0.0.0.0
+            - --ws.origins=*
+            - --ws.api=web3,debug,eth,txpool,net,engine
+            - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
+            - --authrpc.addr=0.0.0.0
+            - --authrpc.vhosts=*
+            - --authrpc.jwtsecret=/node/jwt.txt
+            - --port={{ $.Values.node.opGeth.port.p2p }}
+            - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
+            - --rollup.sequencerhttp=http://localhost:{{ $.Values.node.opGeth.port.rpc }}
+            - --rollup.disabletxpoolgossip=true
+            - --syncmode=full
+            - --gcmode=archive
+          volumeMounts:
+            - mountPath: /data
+              name: snapshot-data-volume
+            - mountPath: /node
+              name: snapshot-node-volume
+              readOnly: true
+        - image: {{ $.Values.node.opNode.image }}
+          command:
+            - sh
+            - -c
+          args:
+            - |
+              op-node \
+                --l1=$(L1_RPC) \
+                --l1.beacon=$(L1_BEACON_RPC) \
+                --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
+                --l2.jwt-secret=/node/jwt.txt \
+                --rollup.config=/node/rollup.json \
+                --sequencer.enabled=false \
+                --p2p.priv.path=/node/jwt.txt \
+                --p2p.peerstore.path=/node/opnode_peerstore_db \
+                --p2p.discovery.path=/node/opnode_discovery_db \
+                --p2p.listen.ip=0.0.0.0 \
+                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --rpc.addr=0.0.0.0 \
+                --rpc.port={{ $.Values.node.opNode.port.rpc }} \
+                --metrics.enabled \
+                --metrics.port={{ $.Values.node.opNode.port.metrics }}
+          env:
+            - name: L1_RPC
+              value: {{ $.Values.env.L1_RPC }}
+            - name: L1_BEACON_RPC
+              value: {{ $.Values.env.L1_BEACON_RPC }}
+          volumeMounts:
+            - mountPath: /node
+              name: snapshot-node-volume
+    - name: create-snapshot
+      container:
+        image: alpine
+        command: ["sh", "-c"]
+        args:
+          - |
+            apk add zstd aws-cli ; \
+            TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
+            tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
+            aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
         env:
-          - name: L1_RPC
-            value: {{ $.Values.env.L1_RPC }}
-          - name: L1_BEACON_RPC
-            value: {{ $.Values.env.L1_BEACON_RPC }}
+          - name: S3_SNAPSHOT_PATH
+            value: "{{ $.Values.genesis.s3SnapshotPath }}"
         volumeMounts:
-          - mountPath: /node
-            name: snapshot-node-volume
-  - name: create-snapshot
-    container:
-      image: alpine
-      command: ["sh", "-c"]
-      args:
-        - |
-          apk add zstd aws-cli ; \
-          TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
-          tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
-          aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
-      env:
-        - name: S3_SNAPSHOT_PATH
-          value: "{{ $.Values.genesis.s3SnapshotPath }}"
-      volumeMounts:
-        - mountPath: /data
-          name: snapshot-data-volume
-      securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
+          - mountPath: /data
+            name: snapshot-data-volume
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
