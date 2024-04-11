@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: CronWorkflow
 metadata:
-  generateName: mothership-snapshot
+  generateName: mothership-snapshot-
   namespace: {{ $.Release.Namespace }}
 spec:
   schedule: "0 18 * * *"
-  concurrencyPolicy: "Replace"
+  concurrencyPolicy: "Forbid"
   startingDeadlineSeconds: 7200
   timezone: "Asia/Seoul"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3 
   workflowSpec:
-    entrypoint: fetch-genesis
+    entrypoint: mothership-snapshot
     serviceAccountName: argo-workflows
     volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
     - metadata:
@@ -37,22 +37,30 @@ spec:
       # Instead of just running a container
       # This template has a sequence of steps
       steps:
-      - - name: fetch-genesis
+      - - name: fetch-genesis-
           template: fetch-genesis 
-      - - name: fetch-snapshot
+      - - name: fetch-snapshot-
           template: fetch-snapshot 
-      - - name: genesis-init
+      - - name: genesis-init-
           template: genesis-init
-      - - name: op-stack
+      - - name: op-stack-
           template: op-stack
-      - - name: create-snapshot
+      - - name: create-snapshot-
           template: create-snapshot
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
     # This is the same template as from the previous example
     - name: fetch-genesis
       container:
         image: curlimages/curl
         command: ["sh", "-c"]
+        workingDir: /node
         args: 
           - |
             test -e genesis.json && test -e rollup.json && exit 0 ; \
@@ -67,6 +75,13 @@ spec:
         securityContext:
           runAsUser: 0
           runAsNonRoot: false
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     - name: fetch-snapshot
       container:
         image: curlimages/curl
@@ -88,6 +103,13 @@ spec:
         securityContext:
           runAsUser: 0
           runAsNonRoot: false
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     - name: genesis-init
       container:
         image: {{ $.Values.node.opGeth.image }}
@@ -101,12 +123,21 @@ spec:
           - mountPath: /node
             name: snapshot-node-volume
             readOnly: true
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     - name: op-stack
       container: 
+        name: check-sync
         image: curlimages/curl
         command: ["sh", "-c"]
         args:
           - |
+            apk add jq;
             NODE_URL="http://localhost:8545"
 
             sleep 60
@@ -133,6 +164,7 @@ spec:
 
       sidecars:
         - image: {{ $.Values.node.opGeth.image }}
+          name: op-geth
           args:
             - --datadir=/data
             - --http
@@ -152,10 +184,19 @@ spec:
             - --authrpc.jwtsecret=/node/jwt.txt
             - --port={{ $.Values.node.opGeth.port.p2p }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
-            - --rollup.sequencerhttp=http://localhost:{{ $.Values.node.opGeth.port.rpc }}
+            - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
             - --gcmode=archive
+          ports:
+            - name: op-geth-rpc
+              containerPort: {{ $.Values.node.opGeth.port.rpc }}
+            - name: op-geth-wsrpc
+              containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
+            - name: op-geth-authrpc
+              containerPort: {{ $.Values.node.opGeth.port.authrpc }}
+            - name: op-geth-p2p
+              containerPort: {{ $.Values.node.opGeth.port.p2p }}
           volumeMounts:
             - mountPath: /data
               name: snapshot-data-volume
@@ -163,6 +204,7 @@ spec:
               name: snapshot-node-volume
               readOnly: true
         - image: {{ $.Values.node.opNode.image }}
+          name: op-node
           command:
             - sh
             - -c
@@ -185,6 +227,13 @@ spec:
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
                 --metrics.port={{ $.Values.node.opNode.port.metrics }}
+          ports:
+            - name: op-node-rpc
+              containerPort: {{ $.Values.node.opNode.port.rpc }}
+            - name: op-node-p2p
+              containerPort: {{ $.Values.node.opNode.port.p2p }}
+            - name: op-node-metrics
+              containerPort: {{ $.Values.node.opNode.port.metrics }}
           env:
             - name: L1_RPC
               value: {{ $.Values.env.L1_RPC }}
@@ -193,6 +242,13 @@ spec:
           volumeMounts:
             - mountPath: /node
               name: snapshot-node-volume
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     - name: create-snapshot
       container:
         image: alpine
@@ -202,7 +258,7 @@ spec:
             apk add zstd aws-cli ; \
             TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
             tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
-            aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
+            aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/test/snapshot-$TIME.tar.zst --acl public-read
         env:
           - name: S3_SNAPSHOT_PATH
             value: "{{ $.Values.genesis.s3SnapshotPath }}"
@@ -212,3 +268,10 @@ spec:
         securityContext:
           runAsUser: 0
           runAsNonRoot: false
+      resources:
+        requests:
+          memory: 2Gi
+      {{- with $.Values.node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
