@@ -223,8 +223,8 @@ dataProviderDataMigrator:
 
   resources:
     requests:
-      cpu: '3'
-      memory: 28Gi
+      cpu: '5'
+      memory: 56Gi
 
   storage: 1500Gi
 
