@@ -117,6 +117,11 @@ spec:
                     - explorer.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-explorer
+                  - targets:
+                    - heimdall-rpc-1-apse1.nine-chronicles.com:80
+                    - heimdall-rpc-2-apse1.nine-chronicles.com:80
+                    labels:
+                      group: heimdall-apse1-rpc
                 tls_config:
                   insecure_skip_verify: true
               - job_name: scrape-9c-rudolf
