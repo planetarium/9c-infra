@@ -121,6 +121,21 @@ spec:
         - containerPort: {{ $.Values.jwtHeadless.ports.rpc }}
           name: rpc
           protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe_jwt.sh $(JWT_Token)
+          failureThreshold: 3
+          initialDelaySeconds: 1800
+          periodSeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe_jwt.sh $(JWT_Token)
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
         resources:
           {{- toYaml $.Values.jwtHeadless.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
@@ -128,14 +143,14 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: jwt-headless-data
-        - mountPath: /bin/liveness_probe.sh
+        - mountPath: /bin/liveness_probe_jwt.sh
           name: probe-script
           readOnly: true
-          subPath: liveness_probe.sh
-        - mountPath: /bin/readiness_probe.sh
+          subPath: liveness_probe_jwt.sh
+        - mountPath: /bin/readiness_probe_jwt.sh
           name: probe-script
           readOnly: true
-          subPath: readiness_probe.sh
+          subPath: readiness_probe_jwt.sh
         {{- if $.Values.jwtHeadless.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
@@ -161,6 +176,11 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: jwt
+                name: private-keys
+          - name: JWT_Token
+            valueFrom:
+              secretKeyRef:
+                key: jwt-token
                 name: private-keys
           {{- end }}
         {{- with $.Values.jwtHeadless.env }}
