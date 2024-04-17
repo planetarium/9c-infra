@@ -18,5 +18,12 @@ if [[ $(( stagedTxIdsCount )) -gt 0 ]]; then
   now="$(date +%s)"
   [[ $(( now - last_timestamp )) -lt 60 ]]
 else
-  [[ $(( stagedTxIdsCount )) -gt 0 ]]
+  sleep 5
+  newStagedTxIdsCount="$(
+  curl \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"query{nodeStatus{stagedTxIds}}"}' \
+  http://localhost:80/graphql | jq .data.nodeStatus | jq '.stagedTxIds | length'
+  )"
+  [[ $(( newStagedTxIdsCount )) -gt 0 ]]
 fi
