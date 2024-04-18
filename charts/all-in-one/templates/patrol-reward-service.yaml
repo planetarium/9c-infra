@@ -39,6 +39,16 @@ spec:
                 secretKeyRef:
                   key: graphql-port
                   name: patrol-reward
+            - name: GraphqlClientConfig__JwtSecret
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: patrol-reward
+            - name: GraphqlClientConfig__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-issuer
+                  name: patrol-reward
             - name: SignerConfig__PrivateKey
               valueFrom:
                 secretKeyRef:
