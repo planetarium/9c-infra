@@ -1,3 +1,4 @@
+{{ if $.Values.dataProvider.enabled }}
 {{ if $.Values.dataProvider.rwMode }}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -559,4 +560,5 @@ spec:
           storage: {{ $.Values.dataProvider.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+{{ end }}
 {{ end }}

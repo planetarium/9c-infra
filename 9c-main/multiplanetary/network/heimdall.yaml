@@ -68,6 +68,8 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
+  enabled: true
+
   count: 1
   useTurnServer: false
 
@@ -135,6 +137,8 @@ fullState:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
 validator:
+  enabled: true
+
   count: 1
 
   env:
@@ -184,6 +188,8 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c_validator
 
 remoteHeadless:
+  enabled: true
+
   count: 5
   replicas: 1
 

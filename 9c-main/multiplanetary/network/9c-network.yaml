@@ -69,6 +69,8 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
+  enabled: true
+
   count: 3
   useTurnServer: false
 
@@ -86,6 +88,8 @@ seed:
     node.kubernetes.io/instance-type: m5.large
 
 validator:
+  enabled: true
+
   count: 4
 
   # custom image for odin validator (remove upon next release)
@@ -149,6 +153,8 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
+  enabled: true
+
   count: 3
   replicas: 1
 

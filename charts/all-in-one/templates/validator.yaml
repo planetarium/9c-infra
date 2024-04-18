@@ -1,3 +1,4 @@
+{{ if $.Values.validator.enabled }}
 {{ range $idx := until (int .Values.validator.count) }}
 {{ $index := add $idx 5 }}
 apiVersion: apps/v1
@@ -243,4 +244,5 @@ spec:
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
+{{ end }}
 {{ end }}

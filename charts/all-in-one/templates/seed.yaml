@@ -1,3 +1,4 @@
+{{ if $.Values.seed.enabled }}
 {{ range $idx := until (int .Values.seed.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: apps/v1
@@ -97,4 +98,5 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 ---
+{{ end }}
 {{ end }}

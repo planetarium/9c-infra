@@ -1,3 +1,4 @@
+{{ if $.Values.remoteHeadless.enabled }}
 {{ range $idx := until (int .Values.remoteHeadless.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: apps/v1
@@ -259,4 +260,5 @@ spec:
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
 ---
+{{ end }}
 {{ end }}
