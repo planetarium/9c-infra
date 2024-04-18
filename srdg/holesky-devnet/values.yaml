@@ -20,15 +20,13 @@ blockscout:
 
 node:
   count: 1
-  sequencerEnabled: false
+  sequencerEnabled: true
   loadBalancerExternal: true
-  opGeth:
-    resources:
-      requests:
-        memory: 2Gi
+  nodeSelector:
+    node.kubernetes.io/instance-type: m7g.xlarge
 
 opProposer:
-  replicas: 0
+  replicas: 1
 
 opBatcher:
-  replicas: 0
+  replicas: 1
