@@ -124,7 +124,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/liveness_probe_jwt.sh $(JWT_Token)
+            - /bin/liveness_probe_jwt.sh
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 30
@@ -132,7 +132,7 @@ spec:
         readinessProbe:
           exec:
             command:
-            - /bin/readiness_probe_jwt.sh $(JWT_Token)
+            - /bin/readiness_probe_jwt.sh
           initialDelaySeconds: 15
           periodSeconds: 10
           timeoutSeconds: 10
@@ -177,7 +177,7 @@ spec:
               secretKeyRef:
                 key: jwt
                 name: private-keys
-          - name: JWT_Token
+          - name: JWT_TOKEN
             valueFrom:
               secretKeyRef:
                 key: jwt-token
