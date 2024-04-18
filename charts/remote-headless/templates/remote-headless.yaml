@@ -1,56 +1,105 @@
-{{ range $idx := until (int .Values.count) }}
+{{ range $idx := until (int $.Values.count) }}
 {{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
-    app.kubernetes.io/instance: {{ $.Chart.Name }}
-  name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
-  namespace: {{ $.Values.namespace }}
+    app: remote-headless-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: remote-headless-{{ $index }}
+  namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
+  {{- if $.Values.replicas }}
+  replicas: {{ $.Values.replicas }}
+  {{- else }}
   replicas: 1
+  {{- end }}
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
-  serviceName: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+      app: remote-headless-{{ $index }}
+  serviceName: remote-headless-{{ $index }}
   template:
     metadata:
       labels:
-        app: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
-      name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+        app: remote-headless-{{ $index }}
+      name: remote-headless-{{ $index }}
     spec:
       initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/internal
-        - /data/headless
-        - $(RESET_SNAPSHOT_OPTION)
-        - {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
-        - $(SLACK_WEBHOOK_URL)
-        - $(SNAPSHOT_ROLLBACK_OPTION)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-        name: reset-snapshot
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.resetSnapshot }}"
-        - name: SNAPSHOT_ROLLBACK_OPTION
-          value: "{{ $.Values.rollbackSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ $.Release.Name }}-slack
-              key: slack-webhook-url
+        {{- if $.Values.resetSnapshot }}
+        - args:
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
+          - /data/headless
+          - $(RESET_SNAPSHOT_OPTION)
+          - remote-headless-{{ $index }}
+          - $(SLACK_WEBHOOK_URL)
+          - $(SNAPSHOT_ROLLBACK_OPTION)
+          command:
+          - /bin/download_snapshot.sh
+          env:
+          - name: RESET_SNAPSHOT_OPTION  
+            value: "{{ $.Values.resetSnapshot }}"
+          - name: SNAPSHOT_ROLLBACK_OPTION
+            value: "{{ $.Values.rollbackSnapshot }}"
+          - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                key: slack-webhook-url
+                name: slack
+          {{- if and $.Values.image.repository $.Values.image.tag }}
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          {{- else }}
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          {{- end }}
+          imagePullPolicy: Always
+          name: reset-snapshot
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bin/download_snapshot.sh
+            name: download-snapshot-script
+            readOnly: true
+            subPath: download_snapshot.sh
+          - mountPath: /data
+            name: remote-headless-data-{{ $index }}
+        {{- end }}
+        - command:
+            - sh
+            - '-c'
+            - >
+              apk --no-cache add curl
+
+              # Endpoint to check
+
+              SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+
+              echo Checking: ${SEED}
+
+              while [[ $(curl --silent --output /dev/null --request GET
+              --write-out "%{http_code}" ${SEED}) -ne 200 ]]; do
+                echo "Not ready"
+                sleep 5s
+              done
+
+              VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+
+              echo Checking: ${VALIDATOR}
+
+              while [[ $(curl --silent --output /dev/null --request GET
+              --write-out "%{http_code}" ${VALIDATOR}) -ne 200 ]]; do
+                echo "Not ready"
+                sleep 5s
+              done
+
+              echo Ready
+          image: alpine
+          imagePullPolicy: Always
+          name: wait
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -82,7 +131,10 @@ spec:
         - --no-cors
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
-        - --network-type={{ $.Values.networkType }}
+        - --planet={{ $.Values.planet }}
+        {{- if $.Values.headlessAppsettingsPath }}
+        - --config={{ $.Values.headlessAppsettingsPath }}
+        {{- end }}
         {{- with $.Values.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -90,7 +142,7 @@ spec:
         - dotnet
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: Always
-        name: {{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}
+        name: remote-headless-{{ $index }}
         ports:
         - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
@@ -104,7 +156,11 @@ spec:
         livenessProbe:
           exec:
             command:
+            {{- if eq $.Values.networkType "Main"  }}
             - /bin/liveness_probe.sh
+            {{- else }}
+            - /bin/liveness_probe.sh
+            {{- end }}
           failureThreshold: 3
           initialDelaySeconds: 1800
           periodSeconds: 30
@@ -122,7 +178,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
+          name: remote-headless-data-{{ $index }}
         - mountPath: /bin/liveness_probe.sh
           name: probe-script
           readOnly: true
@@ -131,31 +187,35 @@ spec:
           name: probe-script
           readOnly: true
           subPath: readiness_probe.sh
+        {{- if $.Values.loggingEnabled }}
         - mountPath: /app/logs
           name: json-log
+        {{- end }}
+        - mountPath: /app/appsettings.configmap.json
+          name: appsettings
+          subPath: appsettings.json
         env:
-        - name: IpRateLimiting__EnableRateLimiting
-          value: "true"
-        - name: IpRateLimiting__GeneralRules__0__Limit
-          value: "15"
-        - name: IpRateLimiting__GeneralRules__1__Endpoint
-          value: "*:/graphql"
-        - name: IpRateLimiting__GeneralRules__1__Period
-          value: "1h"
-        - name: IpRateLimiting__GeneralRules__1__Limit
-          value: "3600"
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: JSON_LOG_PATH
-          value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_{{ default "remote-headless" $.Values.nameOverwrite }}-{{ $index }}.json
+          {{- if $.Values.loggingEnabled }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JSON_LOG_PATH
+            value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_remote-headless-{{ $index }}.json
+          {{- end }}
+        {{- with $.Values.env }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
@@ -165,21 +225,27 @@ spec:
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Chart.Name }}-probe-script
+          name: {{ $.Release.Name }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Chart.Name }}-download-snapshot-script
+          name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if $.Values.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
           type: DirectoryOrCreate
         name: json-log
+      {{- end }}
+      - name: appsettings
+        configMap:
+          defaultMode: 0700
+          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      name: {{ default "remote-headless" $.Values.nameOverwrite }}-data-{{ $index }}
+      name: remote-headless-data-{{ $index }}
     spec:
       accessModes:
       - {{ default "ReadWriteOnce" $.Values.storage.accessModes }}
