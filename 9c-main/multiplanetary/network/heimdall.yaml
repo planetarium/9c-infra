@@ -124,6 +124,8 @@ fullState:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   tolerations:
   - effect: NoSchedule
@@ -160,6 +162,8 @@ validator:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   loggingEnabled: true
 
@@ -225,6 +229,8 @@ remoteHeadless:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: DOTNET_gcServer
     value: "1"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -414,6 +420,8 @@ testHeadless1:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: OPTL_ENDPOINT
     value: "http://172.20.239.175:4318"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -469,6 +477,8 @@ testHeadless2:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: OPTL_ENDPOINT
     value: http://172.20.239.175:4318
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -505,6 +515,8 @@ jwtHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1

@@ -115,6 +115,8 @@ validator:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   loggingEnabled: true
 
@@ -195,6 +197,8 @@ remoteHeadless:
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
   - name: DOTNET_gcServer
     value: "1"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -328,6 +332,8 @@ fullState:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   tolerations:
   - effect: NoSchedule
@@ -383,6 +389,8 @@ testHeadless1:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -425,6 +433,8 @@ testHeadless2:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -471,6 +481,8 @@ jwtHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -487,7 +499,7 @@ jwtHeadless:
     value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-2c_spot
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
 remoteActionEvaluatorHeadless:
   enabled: false
