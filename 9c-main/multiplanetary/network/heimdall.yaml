@@ -295,10 +295,6 @@ marketService:
   env:
   - name: DOTNET_gcServer
     value: "1"
-  - name: RpcConfig__Host
-    value: main-full-state.heimdall.svc.cluster.local
-  - name: RpcConfig__Port
-    value: "31238"
   - name: WorkerConfig__SyncShop
     value: "false"
   - name: WorkerConfig__SyncProduct
@@ -307,10 +303,6 @@ marketService:
   envForWrite:
   - name: DOTNET_gcServer
     value: "1"
-  - name: RpcConfig__Host
-    value: main-full-state.heimdall.svc.cluster.local
-  - name: RpcConfig__Port
-    value: "31238"
   - name: WorkerConfig__SyncShop
     value: "true"
   - name: WorkerConfig__SyncProduct
