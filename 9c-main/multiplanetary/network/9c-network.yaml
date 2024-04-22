@@ -204,12 +204,12 @@ remoteHeadless:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
   resources:
     requests:
       cpu: '5'
-      memory: 50Gi
+      memory: 26Gi
 
   tolerations:
   - effect: NoSchedule
