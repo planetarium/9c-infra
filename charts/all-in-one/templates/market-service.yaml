@@ -29,6 +29,16 @@ spec:
                 secretKeyRef:
                   key: connection-string
                   name: market-db
+            - name: RpcConfig__Host
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-host
+                  name: market-env
+            - name: RpcConfig__Port
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-port
+                  name: market-env
           {{- with $.Values.marketService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
