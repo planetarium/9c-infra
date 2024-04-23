@@ -281,9 +281,9 @@ stateMigrationService:
     node.kubernetes.io/instance-type: m5d.xlarge
 
 jwtHeadless:
-  enabled: true
+  enabled: false
 
-  loggingEnabled: false
+  loggingEnabled: true
 
   host: "9c-internal-jwt.nine-chronicles.com"
 
