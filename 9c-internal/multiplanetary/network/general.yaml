@@ -37,7 +37,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: "git-6d7f3272ea8d606624ac0f0cf36abb6fad81e545"
+    tag: "git-4921c4b5a738a7d89dddb05d7db8d4cecefb4e98"
 
 patrolRewardService:
   image:
