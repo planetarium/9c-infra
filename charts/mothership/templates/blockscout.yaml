@@ -61,9 +61,9 @@ spec:
             - name: EMISSION_FORMAT
               value: DEFAULT
             - name: ETHEREUM_JSONRPC_HTTP_URL
-              value: http://node-1:{{ .Values.node.opGeth.port.rpc }}/
+              value: {{ .Values.blockscout.gethRpc }}/
             - name: ETHEREUM_JSONRPC_TRACE_URL
-              value: http://node-1:{{ .Values.node.opGeth.port.rpc }}/
+              value: {{ .Values.blockscout.gethRpc }}/
             - name: ETHEREUM_JSONRPC_VARIANT
               value: geth
             - name: EXTERNAL_APPS
@@ -147,13 +147,13 @@ metadata:
     {{- if .Values.blockscout.loadBalancerExternal }}
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/0027ddf6-3baa-4d9e-85fb-df1fdf710a60
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ .Values.awsLoadBalancerSslCert }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     {{- end }}
 spec:
   selector:
     name: blockscout
-  {{- if $.Values.blockscout.loadBalancerExternal }}
+  {{- if .Values.blockscout.loadBalancerExternal }}
   type: LoadBalancer
   {{- end }}
   ports:

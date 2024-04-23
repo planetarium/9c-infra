@@ -1,5 +1,6 @@
 {{ range $idx := until (int $.Values.node.count) }}
 {{ $index := add $idx 1 }}
+{{ $isSequencer := and $.Values.sequencer.enabled (eq ($index | toString) $.Values.sequencer.nodeIndex) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -111,7 +112,9 @@ spec:
             - --authrpc.jwtsecret=/node/jwt.txt
             - --port={{ $.Values.node.opGeth.port.p2p }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
-            - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
+            {{- if not $isSequencer }}
+            - --rollup.sequencerhttp={{ $.Values.sequencer.gethRpc }}
+            {{- end }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
             - --gcmode=archive
@@ -155,7 +158,7 @@ spec:
                 --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
                 --l2.jwt-secret=/node/jwt.txt \
                 --rollup.config=/node/rollup.json \
-                --sequencer.enabled={{ and $.Values.node.sequencerEnabled (eq $index 1) }} \
+                --sequencer.enabled={{ $isSequencer }} \
                 --p2p.sequencer.key=$(SEQUENCER_KEY) \
                 --p2p.priv.path=/node/jwt.txt \
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
@@ -240,7 +243,7 @@ metadata:
     {{- if $.Values.node.loadBalancerExternal }}
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/0027ddf6-3baa-4d9e-85fb-df1fdf710a60
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ $.Values.awsLoadBalancerSslCert }}
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     {{- end }}
 spec:

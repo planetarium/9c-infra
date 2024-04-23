@@ -7,6 +7,7 @@ env:
   L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
 
 storageClassName: gp3-extensible
+awsLoadBalancerSslCert: arn:aws:acm:ap-northeast-2:319679068466:certificate/3a295c76-66ac-433d-8448-758c83d374d3
 
 genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
@@ -18,15 +19,14 @@ blockscout:
   db:
     storage: 100Gi
 
+sequencer:
+  enabled: false
+  gethRpc: https://node-1.us-east-2.holesky.tests.mothership-pla.net
+
 node:
   count: 1
-  sequencerEnabled: true
   loadBalancerExternal: true
-  nodeSelector:
-    node.kubernetes.io/instance-type: m7g.xlarge
-
-opProposer:
-  replicas: 1
-
-opBatcher:
-  replicas: 1
+  opGeth:
+    resources:
+      requests:
+        memory: 4Gi
