@@ -1,10 +1,11 @@
+{{- if .Values.sequencer.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: op-proposer
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.opProposer.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       name: op-proposer
@@ -40,7 +41,7 @@ spec:
               op-proposer \
                 --private-key=$(PROPOSER_KEY) \
                 --l1-eth-rpc=$(L1_RPC) \
-                --rollup-rpc=http://node-1:{{ .Values.node.opNode.port.rpc }} \
+                --rollup-rpc={{ .Values.sequencer.nodeRpc }} \
                 --rpc.port={{ .Values.opProposer.port.rpc }} \
                 --l2oo-address=$(cat /genesis/L2OutputOracleProxyAddress) \
                 --poll-interval=12s
@@ -76,3 +77,4 @@ spec:
       storageClassName: {{ .Values.storageClassName }}
       {{- end }}
       volumeMode: Filesystem
+{{- end }}

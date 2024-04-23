@@ -7,12 +7,17 @@ genesis:
   volume:
     storage: 100Mi
 
+sequencer:
+  enabled: false
+  nodeIndex: ""
+  gethRpc: ""
+  nodeRpc: ""
+
 node:
   count: 1
-  sequencerEnabled: true
   loadBalancerExternal: false
   opGeth:
-    image: &op-geth-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:v1.101308.2
+    image: &op-geth-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:v1.101311.0
     port: &op-geth-port
       rpc: 8545
       wsrpc: 8546
@@ -21,7 +26,7 @@ node:
     volume: &op-geth-volume
       storage: 100Gi
   opNode:
-    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.2
+    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.3
     port: &op-node-port
       rpc: 8547
       p2p: 9003
@@ -30,19 +35,18 @@ node:
       storage: 100Mi
 
 opBatcher:
-  replicas: 1
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.2
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.3
   port:
     rpc: 8548
 
 opProposer:
-  replicas: 1
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.2
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.3
   port:
     rpc: 8560
 
 blockscout:
   port: 5000
   loadBalancerExternal: false
+  gethRpc: http://node-1:8545
   db:
     storage: 10Gi
