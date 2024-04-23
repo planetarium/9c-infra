@@ -184,10 +184,6 @@ marketService:
   env:
   - name: DOTNET_gcServer
     value: "1"
-  - name: RpcConfig__Host
-    value: 9c-internal-rpc-1.nine-chronicles.com
-  - name: RpcConfig__Port
-    value: "31238"
   - name: WorkerConfig__SyncShop
     value: "true"
   - name: WorkerConfig__SyncProduct
@@ -296,4 +292,3 @@ jwtHeadless:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
-
