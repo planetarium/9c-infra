@@ -1,3 +1,4 @@
+{{- if .Values.sequencer.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -7,7 +8,7 @@ spec:
   selector:
     matchLabels:
       name: op-batcher
-  replicas: {{ .Values.opBatcher.replicas }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -24,8 +25,8 @@ spec:
               op-batcher \
                 --private-key=$(BATCHER_KEY) \
                 --l1-eth-rpc=$(L1_RPC) \
-                --l2-eth-rpc=http://node-1:{{ .Values.node.opGeth.port.rpc }} \
-                --rollup-rpc=http://node-1:{{ .Values.node.opNode.port.rpc }} \
+                --l2-eth-rpc={{ .Values.sequencer.gethRpc }} \
+                --rollup-rpc={{ .Values.sequencer.nodeRpc }} \
                 --rpc.port={{ .Values.opBatcher.port.rpc }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.enable-admin \
@@ -46,3 +47,4 @@ spec:
           ports:
             - containerPort: {{ .Values.opBatcher.port.rpc }}
               protocol: TCP
+{{- end }}
