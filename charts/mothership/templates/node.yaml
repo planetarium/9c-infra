@@ -166,6 +166,7 @@ spec:
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.nat={{ $.Values.node.loadBalancerExternal }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
