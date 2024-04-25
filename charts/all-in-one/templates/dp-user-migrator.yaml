@@ -142,6 +142,10 @@ spec:
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with $.Values.dataProviderDataMigrator.tolerations }}
+          tolerations:
+            {{- toYaml $.Values.dataProviderDataMigrator.tolerations | nindent 12 }}
+          {{- end }}
           restartPolicy: OnFailure
           schedulerName: default-scheduler
           terminationGracePeriodSeconds: 30
