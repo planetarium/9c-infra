@@ -1,0 +1,124 @@
+{{- if and $.Values.remoteHeadlessApplication.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: remote-headless
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/remote-headless
+    helm:
+      values: |-
+        clusterName: {{ $.Values.clusterName }}
+        logLevel: {{ $.Values.logLevel }}
+
+        namespace: {{ $.Release.Name }}
+        nameOverwrite: "remote-headless"
+
+        appProtocolVersion: {{ $.Values.global.appProtocolVersion }}
+        genesisBlockPath: {{ $.Values.global.genesisBlockPath }}
+        trustedAppProtocolVersionSigner: {{ $.Values.global.trustedAppProtocolVersionSigner }}
+        headlessAppsettingsPath: {{ $.Values.global.headlessAppsettingsPath }}
+
+        peerStrings:
+        {{- range $.Values.global.peerStrings }}
+        - {{ . | quote }}
+        {{- end }}
+
+        iceServers:
+        {{- range $.Values.global.iceServers }}
+        - {{ . | quote }}
+        {{- end }}
+
+        networkType: {{ $.Values.global.networkType }}
+        planet: {{ $.Values.global.planet }}
+        consensusType: {{ $.Values.global.pbft }}
+
+        resetSnapshot: {{ $.Values.global.resetSnapshot }}
+        rollbackSnapshot: {{ $.Values.global.rollbackSnapshot }}
+
+        useExternalSecret: {{ $.Values.externalSecret.enabled }}
+        region: {{ $.Values.externalSecret.region }}
+        prefix: {{ $.Values.externalSecret.prefix }}
+        slackToken: ""
+        slackWebHookUrl: ""
+
+        # if you want to delete PVC with the volume provisioned together, set this value "Delete"
+        volumeReclaimPolicy: {{ $.Values.volumeReclaimPolicy }}
+
+        count: {{ $.Values.remoteHeadlessApplication.count }}
+        replicas: {{ $.Values.remoteHeadlessApplication.replicas }}
+
+        {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
+        image:
+          repository: {{ $.Values.remoteHeadless.image.repository }}
+          pullPolicy: Always
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: {{ $.Values.remoteHeadless.image.tag }}
+        {{- else }}
+        image:
+          repository: {{ $.Values.global.image.repository }}
+          pullPolicy: Always
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: {{ $.Values.global.image.tag }}
+        {{- end }}
+
+        snapshot:
+          path: {{ $.Values.remoteHeadless.image.repository }}
+
+        # dotnet args
+        extraArgs:
+        {{- with $.Values.remoteHeadlessApplication.extraArgs }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        # - --key=val
+
+        useTurnServer: {{ $.Values.remoteHeadlessApplication.useTurnServer }}
+
+        hosts:
+        {{- range $.Values.remoteHeadlessApplication.hosts }}
+        - {{ . | quote }}
+        {{- end }}
+
+        certificate: {{ $.Values.remoteHeadlessApplication.certificate }}
+
+        env:
+        {{- with $.Values.remoteHeadlessApplication.env }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        ports:
+          headless: {{ $.Values.remoteHeadlessApplication.ports.headless }}
+          graphql: {{ $.Values.remoteHeadlessApplication.ports.graphql }}
+          rpc: {{ $.Values.remoteHeadlessApplication.ports.rpc }}
+
+        storage:
+          class: {{ $.Release.Name }}-gp3
+          data: {{ $.Values.remoteHeadlessApplication.data }}
+
+        resources:
+          requests:
+            cpu: {{ $.Values.remoteHeadlessApplication.resources.requests.cpu }}
+            memory: {{ $.Values.remoteHeadlessApplication.resources.requests.memory }}
+
+        {{- with $.Values.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        {{- with $.Values.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        affinity: {}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}
