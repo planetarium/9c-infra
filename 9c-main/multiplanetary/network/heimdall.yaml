@@ -188,7 +188,7 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c_validator
 
 remoteHeadless:
-  count: 5
+  count: 3
   replicas: 1
 
   useTurnServer: false
@@ -197,8 +197,6 @@ remoteHeadless:
   - "heimdall-rpc-1.nine-chronicles.com"
   - "heimdall-rpc-2.nine-chronicles.com"
   - "heimdall-rpc-3.nine-chronicles.com"
-  - "heimdall-rpc-4.nine-chronicles.com"
-  - "heimdall-rpc-5.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -236,12 +234,12 @@ remoteHeadless:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
   resources:
     requests:
       cpu: '5'
-      memory: 50Gi
+      memory: 28Gi
 
   tolerations:
   - effect: NoSchedule
