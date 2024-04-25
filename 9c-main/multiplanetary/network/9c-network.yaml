@@ -219,7 +219,7 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_test
 
   resources:
     requests:
@@ -227,6 +227,12 @@ dataProviderDataMigrator:
       memory: 56Gi
 
   storage: 1500Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 dataProvider:
   enabled: true
