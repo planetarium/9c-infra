@@ -24,7 +24,7 @@ sequencer:
   gethRpc: https://node-1.us-east-2.holesky.tests.mothership-pla.net
 
 node:
-  count: 1
+  count: 2
   loadBalancerExternal: true
   opGeth:
     resources:
