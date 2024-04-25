@@ -78,6 +78,7 @@ spec:
 ---
 {{ end }}
 
+{{ if $.Values.dataProvider.enabled }}
 {{- if eq $.Values.clusterName "9c-main-v2" }}
 apiVersion: v1
 kind: Service
@@ -160,6 +161,7 @@ spec:
     app: data-provider-db
   type: LoadBalancer
 ---
+{{ end }}
 {{ end }}
 
 {{ if $.Values.explorer.enabled }}
