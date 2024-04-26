@@ -110,8 +110,8 @@ spec:
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
             - --authrpc.jwtsecret=/node/jwt.txt
-            - --port={{ $.Values.node.opGeth.port.p2p }}
-            - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
+            - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
+            - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             {{- if not $isSequencer }}
             - --rollup.sequencerhttp={{ $.Values.sequencer.gethRpc }}
             {{- end }}
@@ -125,8 +125,12 @@ spec:
               containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
             - name: op-geth-authrpc
               containerPort: {{ $.Values.node.opGeth.port.authrpc }}
-            - name: op-geth-p2p
-              containerPort: {{ $.Values.node.opGeth.port.p2p }}
+            - name: op-geth-p2p-tcp
+              protocol: TCP
+              containerPort: {{ $.Values.node.opGeth.port.p2p.tcp }}
+            - name: op-geth-p2p-udp
+              protocol: UDP
+              containerPort: {{ $.Values.node.opGeth.port.p2p.udp }}
           volumeMounts:
             - mountPath: /data
               name: op-geth-volume
@@ -164,9 +168,12 @@ spec:
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
                 --p2p.listen.ip=0.0.0.0 \
-                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
-                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
+                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \
                 --p2p.nat={{ $.Values.node.loadBalancerExternal }} \
+                {{- if $.Values.node.hosts }}
+                --p2p.advertise.ip={{ index $.Values.node.hosts $idx }} \
+                {{- end }}
                 --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
@@ -184,8 +191,12 @@ spec:
           ports:
             - name: op-node-rpc
               containerPort: {{ $.Values.node.opNode.port.rpc }}
-            - name: op-node-p2p
-              containerPort: {{ $.Values.node.opNode.port.p2p }}
+            - name: op-node-p2p-tcp
+              protocol: TCP
+              containerPort: {{ $.Values.node.opNode.port.p2p.tcp }}
+            - name: op-node-p2p-udp
+              protocol: UDP
+              containerPort: {{ $.Values.node.opNode.port.p2p.udp }}
             - name: op-node-metrics
               containerPort: {{ $.Values.node.opNode.port.metrics }}
           volumeMounts:
@@ -266,16 +277,26 @@ spec:
     - name: op-geth-wsrpc-port
       targetPort: op-geth-wsrpc
       port: {{ $.Values.node.opGeth.port.wsrpc }}
-    - name: op-geth-p2p-port
-      targetPort: op-geth-p2p
-      port: {{ $.Values.node.opGeth.port.p2p }}
+    - name: op-geth-p2p-port-tcp
+      targetPort: op-geth-p2p-tcp
+      protocol: TCP
+      port: {{ $.Values.node.opGeth.port.p2p.tcp }}
+    - name: op-geth-p2p-port-udp
+      targetPort: op-geth-p2p-udp
+      protocol: UDP
+      port: {{ $.Values.node.opGeth.port.p2p.udp }}
     - name: op-node-rpc-port
       targetPort: op-node-rpc
       port: {{ $.Values.node.opNode.port.rpc }}
       targetPort: {{ $.Values.node.opNode.port.rpc }}
-    - name: op-node-p2p-port
-      targetPort: op-node-p2p
-      port: {{ $.Values.node.opNode.port.p2p }}
+    - name: op-node-p2p-port-tcp
+      targetPort: op-node-p2p-tcp
+      protocol: TCP
+      port: {{ $.Values.node.opNode.port.p2p.tcp }}
+    - name: op-node-p2p-port-udp
+      targetPort: op-node-p2p-udp
+      protocol: UDP
+      port: {{ $.Values.node.opNode.port.p2p.udp }}
     - name: op-node-metrics-port
       targetPort: op-node-metrics
       port: {{ $.Values.node.opNode.port.metrics }}
