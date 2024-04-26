@@ -22,14 +22,18 @@ node:
       rpc: 8545
       wsrpc: 8546
       authrpc: 8551
-      p2p: 30303
+      p2p:
+        tcp: 30303
+        udp: 30303
     volume: &op-geth-volume
       storage: 100Gi
   opNode:
     image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.3
     port: &op-node-port
       rpc: 8547
-      p2p: 9003
+      p2p:
+        tcp: 9003
+        udp: 9003
       metrics: 7300
     volume: &op-node-volume
       storage: 100Mi

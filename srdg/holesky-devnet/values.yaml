@@ -26,7 +26,19 @@ sequencer:
 node:
   count: 2
   loadBalancerExternal: true
+  opNode:
+    port:
+      p2p:
+        tcp: 9003
+        udp: 9222
   opGeth:
+    port:
+      p2p:
+        tcp: 30303
+        udp: 30304
     resources:
       requests:
         memory: 4Gi
+  hosts:
+    - node-1.ap-northeast-2.holesky.tests.mothership-pla.net
+    - node-2.ap-northeast-2.holesky.tests.mothership-pla.net
