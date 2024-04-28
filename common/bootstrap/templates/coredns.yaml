@@ -28,6 +28,7 @@ data:
         rewrite name 9c-main-validator-6.nine-chronicles.com validator-6.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-7.nine-chronicles.com validator-7.9c-network.svc.cluster.local
         rewrite name 9c-main-validator-8.nine-chronicles.com validator-8.9c-network.svc.cluster.local
+        rewrite name 9c-main-jwt.nine-chronicles.com jwt-headless.9c-network.svc.cluster.local
         rewrite name 9c-main-test-1.nine-chronicles.com test-headless-1.9c-network.svc.cluster.local
         rewrite name 9c-main-test-2.nine-chronicles.com test-headless-2.9c-network.svc.cluster.local
         rewrite name heimdall-seed-1.nine-chronicles.com tcp-seed-1.heimdall.svc.cluster.local
@@ -41,6 +42,7 @@ data:
         rewrite name heimdall-rpc-8.nine-chronicles.com remote-headless-8.heimdall.svc.cluster.local
         rewrite name heimdall-full-state.nine-chronicles.com main-full-state.heimdall.svc.cluster.local
         rewrite name heimdall-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local
+        rewrite name heimdall-jwt.nine-chronicles.com jwt-headless.heimdall.svc.cluster.local
         rewrite name heimdall-test-1.nine-chronicles.com test-headless-1.heimdall.svc.cluster.local
         rewrite name heimdall-test-2.nine-chronicles.com test-headless-2.heimdall.svc.cluster.local
         {{- end }}
