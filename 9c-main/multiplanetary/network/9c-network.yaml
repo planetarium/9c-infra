@@ -249,6 +249,12 @@ dataProvider:
     requests:
       cpu: '3'
       memory: 26Gi
+  
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: PLUGIN_PATH
+    value: "/data"
 
 explorer:
   enabled: false
@@ -339,8 +345,13 @@ fullState:
     operator: Equal
     value: remote-headless-test
 
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-c7g_4xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
 
 worldBoss:
   enabled: true
