@@ -59,6 +59,11 @@ spec:
                 secretKeyRef:
                   key: file-path
                   name: state-migration
+            - name: WorkerConfig__TxTimeStamp
+              valueFrom:
+                secretKeyRef:
+                  key: tx-time-stamp
+                  name: state-migration
           {{- with $.Values.stateMigrationService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
