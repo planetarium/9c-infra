@@ -62,4 +62,4 @@ stateMigrationService:
   image:
     repository: planetariumhq/state-migration-service
     pullPolicy: Always
-    tag: "git-e0ab3c570b05755f0098bc3f5f45b78d3d6da52f"
+    tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
