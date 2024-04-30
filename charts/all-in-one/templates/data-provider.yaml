@@ -100,7 +100,7 @@ spec:
               }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
               )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
               $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 360 ]]\n"
-          initialDelaySeconds: 600
+          initialDelaySeconds: 1800
           periodSeconds: 60
           timeoutSeconds: 60
         readinessProbe:
@@ -298,7 +298,7 @@ spec:
               }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
               )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
               $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 360 ]]\n"
-          initialDelaySeconds: 600
+          initialDelaySeconds: 1800
           periodSeconds: 60
           timeoutSeconds: 60
         name: data-provider-write
@@ -507,7 +507,7 @@ spec:
               )\"\nif [[ -n $test ]]; then\n  echo \"DataProvider query successful!\"\
               \nelse\n  echo \"DataProvider query unsuccessful!\"\nfi\n[[ -n $test\
               \ ]]\n"
-          initialDelaySeconds: 600
+          initialDelaySeconds: 1800
           periodSeconds: 60
           timeoutSeconds: 60
         name: data-provider
