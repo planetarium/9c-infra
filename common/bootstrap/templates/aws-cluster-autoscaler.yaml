@@ -20,6 +20,7 @@ spec:
         image:
           tag: v1.20.0
         extraArgs:
+          scale-down-enabled: true
           balance-similar-node-groups: true
           logtostderr: true
           skip-nodes-with-local-storage: false
