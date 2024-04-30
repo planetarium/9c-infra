@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200160/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDg.Y1oo5Pvz0h6jgpqBKsBAY8afJFNyp0YuYTpaRUAsQIgC5DTlsBOmoCjeT+pmmNo30aDNkZXztRsmta7iaRjDk4=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAzLTI3ZQ=="
+  appProtocolVersion: "200170/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCJAsvwzIb1sT4x6Zo1e1N5y3gqBroVA2FKzMvbrxr0RQIgIgxyKLCJurnYDc8RZZKcMU0oqAF3zm2ilrgWCxyRrWU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA0LTMwZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -249,7 +249,7 @@ dataProvider:
     requests:
       cpu: '3'
       memory: 26Gi
-  
+
   env:
   - name: DOTNET_gcServer
     value: "1"
