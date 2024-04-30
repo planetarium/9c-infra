@@ -28,6 +28,9 @@ sequencer:
 node:
   count: 2
   loadBalancerExternal: true
+  hosts:
+    - node-1.us-east-2.holesky.tests.mothership-pla.net
+    - node-2.us-east-2.holesky.tests.mothership-pla.net
   opGeth:
     resources:
       requests:
