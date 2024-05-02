@@ -23,12 +23,15 @@ spec:
         genesisBlockPath: {{ $.Values.global.genesisBlockPath }}
         trustedAppProtocolVersionSigner: {{ $.Values.global.trustedAppProtocolVersionSigner }}
         headlessAppsettingsPath: {{ $.Values.global.headlessAppsettingsPath }}
+        validatorPath: {{ $.Values.global.validatorPath }}
 
         seed:
           hosts:
           {{- range $.Values.seed.hosts }}
           - {{ . | quote }}
           {{- end }}
+          ports:
+            graphql: {{ $.Values.seed.ports.graphql }}
 
         peerStrings:
         {{- range $.Values.global.peerStrings }}
@@ -107,7 +110,8 @@ spec:
 
         storage:
           class: {{ $.Release.Name }}-gp3
-          data: {{ $.Values.remoteHeadlessApplication.data }}
+          data: {{ $.Values.remoteHeadlessApplication.storage.data }}
+          accessModes: {{ $.Values.remoteHeadlessApplication.storage.accessModes }}
 
         resources:
           requests:
@@ -123,6 +127,8 @@ spec:
         tolerations:
           {{- toYaml . | nindent 8 }}
         {{- end }}
+
+        loggingEnabled: {{ $.Values.loggingEnabled }}
 
         affinity: {}
 
