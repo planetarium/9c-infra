@@ -42,6 +42,8 @@ spec:
         rollbackSnapshot: {{ $.Values.global.rollbackSnapshot }}
 
         useExternalSecret: {{ $.Values.externalSecret.enabled }}
+
+        externalSecret:
           region: {{ $.Values.externalSecret.region }}
           prefix: {{ $.Values.externalSecret.prefix }}
 
@@ -69,7 +71,7 @@ spec:
         {{- end }}
 
         snapshot:
-          path: {{ $.Values.remoteHeadlessApplication.snapshot.path }}
+          path: {{ $.Values.snapshot.path }}
 
         # dotnet args
         extraArgs:
