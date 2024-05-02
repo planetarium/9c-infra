@@ -62,7 +62,9 @@ remoteHeadlessApplication:
   count: 2
   replicas: 1
 
-  data: 1000Gi
+  storage:
+    data: 1000Gi
+    accessModes: "ReadWriteOnce"
 
   ports:
     headless: 31234

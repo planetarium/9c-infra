@@ -33,7 +33,7 @@ data:
         curl \
           -H 'Content-Type: application/json' \
           --data '{"query":"query{chainQuery{blockQuery{blocks(desc:true,limit:1){index}}}}"}' \
-          http://9c-miner.planetarium.dev/graphql \
+          http://{{ $.Values.validatorPath }}/graphql \
         | jq -r '.data.chainQuery.blockQuery.blocks[0].index'
       )"
       echo $miner_tip
