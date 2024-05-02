@@ -24,6 +24,12 @@ spec:
         trustedAppProtocolVersionSigner: {{ $.Values.global.trustedAppProtocolVersionSigner }}
         headlessAppsettingsPath: {{ $.Values.global.headlessAppsettingsPath }}
 
+        seed:
+          hosts:
+          {{- range $.Values.seed.hosts }}
+          - {{ . | quote }}
+          {{- end }}
+
         peerStrings:
         {{- range $.Values.global.peerStrings }}
         - {{ . | quote }}
