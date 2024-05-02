@@ -5,7 +5,7 @@ clusterName: "9c-main-apse1"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200160/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQD3UFz94E4FNj0aMctHKehkAnJHQ.DprRRRpSpmcqWl5gIgamnS4pnN7gnnej6jY0NIph..eg4SBnJe6qL4WiqONJE=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTAzLTI3ZQ=="
+  appProtocolVersion: "200170/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIA+AeyMlBggOA+jRVzuVx9PpKibgqoAtZikvDXRkSwhFAiAGRJIq4ZoX+Gy8Zj7OPvLGKHg0qG7.CU+RYs2AfPEW7Q==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA0LTMwZQ=="
 
   validatorPath: "heimdall-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
@@ -115,12 +115,12 @@ remoteHeadlessApplication:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
 
   resources:
     requests:
       cpu: '5'
-      memory: 50Gi
+      memory: 26Gi
 
   tolerations:
   - effect: NoSchedule

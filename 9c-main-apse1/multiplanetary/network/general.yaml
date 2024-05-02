@@ -2,4 +2,4 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-f87c55c22939675a48eddd0a26e92a2551417c76"
+    tag: "git-0bd630057a9f211a0241f6de8d8876294c5c365c"
