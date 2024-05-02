@@ -69,7 +69,7 @@ spec:
         {{- end }}
 
         snapshot:
-          path: {{ $.Values.remoteHeadless.image.repository }}
+          path: {{ $.Values.remoteHeadlessApplication.snapshot.path }}
 
         # dotnet args
         extraArgs:
