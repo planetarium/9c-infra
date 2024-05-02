@@ -42,8 +42,9 @@ spec:
         rollbackSnapshot: {{ $.Values.global.rollbackSnapshot }}
 
         useExternalSecret: {{ $.Values.externalSecret.enabled }}
-        region: {{ $.Values.externalSecret.region }}
-        prefix: {{ $.Values.externalSecret.prefix }}
+          region: {{ $.Values.externalSecret.region }}
+          prefix: {{ $.Values.externalSecret.prefix }}
+
         slackToken: ""
         slackWebHookUrl: ""
 
