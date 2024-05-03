@@ -50,11 +50,11 @@ spec:
         resetSnapshot: {{ $.Values.global.resetSnapshot }}
         rollbackSnapshot: {{ $.Values.global.rollbackSnapshot }}
 
-        useExternalSecret: {{ $.Values.externalSecret.enabled }}
+        useExternalSecret: {{ $.Values.global.externalSecret.enabled }}
 
         externalSecret:
-          region: {{ $.Values.externalSecret.region }}
-          prefix: {{ $.Values.externalSecret.prefix }}
+          region: {{ $.Values.global.externalSecret.region }}
+          prefix: {{ $.Values.global.externalSecret.prefix }}
 
         slackToken: ""
         slackWebHookUrl: ""
