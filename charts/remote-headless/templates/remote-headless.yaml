@@ -5,9 +5,9 @@ kind: StatefulSet
 metadata:
   labels:
     app: remote-headless-{{ $index }}
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/instance: {{ $.Values.namespace }}
   name: remote-headless-{{ $index }}
-  namespace: {{ $.Release.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   {{- if $.Values.replicas }}
@@ -225,12 +225,12 @@ spec:
       volumes:
       - configMap:
           defaultMode: 448
-          name: {{ $.Release.Name }}-probe-script
+          name: {{ $.Values.namespace }}-probe-script
         name: probe-script
       - name: download-snapshot-script
         configMap:
           defaultMode: 0700
-          name: {{ $.Release.Name }}-download-snapshot-script
+          name: {{ $.Values.namespace }}-download-snapshot-script
       {{- if $.Values.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
