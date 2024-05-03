@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ default "remote-headless" .Values.nameOverwrite }}-download-snapshot-script
+  name: {{ $.Values.namespace }}-download-snapshot-script
   namespace: {{ $.Values.namespace }}
   labels:
-    app.kubernetes.io/instance: {{ default "remote-headless" .Values.nameOverwrite }}
+    app.kubernetes.io/instance: {{ $.Values.namespace }}
 data:
   download_snapshot.sh: |-
     #!/usr/bin/env bash
