@@ -292,6 +292,3 @@ jwtHeadless:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
-
-remoteHeadlessApplication:
-  enabled: false

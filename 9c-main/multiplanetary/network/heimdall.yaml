@@ -616,6 +616,3 @@ stateMigrationService:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
-
-remoteHeadlessApplication:
-  enabled: false
