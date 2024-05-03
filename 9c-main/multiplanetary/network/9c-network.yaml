@@ -178,9 +178,9 @@ remoteHeadless:
   - name: IpRateLimiting__GeneralRules__1__Limit
     value: "10"
   - name: IpRateLimiting__IpBanMinute
-    value: "5"
+    value: "30"
   - name: IpRateLimiting__IpBanThresholdCount
-    value: "15"
+    value: "5"
   - name: MultiAccountManaging__EnableManaging
     value: "true"
   - name: IpRateLimiting__IpWhiteList__1
@@ -202,7 +202,7 @@ remoteHeadless:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_4xl_2c_test
 
   resources:
     requests:
