@@ -608,3 +608,6 @@ stateMigrationService:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+
+remoteHeadlessApplication:
+  enabled: false

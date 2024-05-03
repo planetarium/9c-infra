@@ -299,3 +299,6 @@ stateMigrationService:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
+
+remoteHeadlessApplication:
+  enabled: false
