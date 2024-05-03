@@ -684,3 +684,6 @@ stateMigrationService:
   db:
     local: false
     size: 1Gi
+
+remoteHeadlessApplication:
+  enabled: false
