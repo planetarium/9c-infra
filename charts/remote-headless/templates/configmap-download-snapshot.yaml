@@ -28,7 +28,7 @@ data:
     SLACK_WEBHOOK=$5
     rollback_snapshot=${6:-"false"}
     complete_snapshot_reset=${7:-"false"}
-    mainnet_snapshot_json_filename="mainnet_latest.json"
+    mainnet_snapshot_json_filename="latest.json"
 
     if [ $download_option = "true" ]
     then
