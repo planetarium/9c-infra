@@ -8,7 +8,7 @@ metadata:
   name: remote-headless-{{ $index }}
   namespace: {{ $.Values.namespace }}
   labels:
-    app.kubernetes.io/instance: remote-headless
+    app.kubernetes.io/instance: {{ $.Values.namespace }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
