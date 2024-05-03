@@ -102,10 +102,6 @@ remoteHeadlessApplication:
     value: "::ffff:13.124.239.97"
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: DOTNET_gcServer
     value: "1"
   - name: DOTNET_gcConcurrent
