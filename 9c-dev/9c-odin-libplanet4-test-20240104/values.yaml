@@ -233,3 +233,6 @@ rudolfService:
   service:
     enabled: true
     public: true
+
+remoteHeadlessApplication:
+  enabled: false
