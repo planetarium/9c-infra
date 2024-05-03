@@ -165,10 +165,10 @@ spec:
             {{- else }}
             - /bin/liveness_probe.sh
             {{- end }}
-          failureThreshold: 3
+          failureThreshold: 5
           initialDelaySeconds: 1800
-          periodSeconds: 30
-          timeoutSeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 60
         readinessProbe:
           exec:
             command:
