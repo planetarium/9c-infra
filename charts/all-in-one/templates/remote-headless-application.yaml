@@ -118,17 +118,17 @@ spec:
             cpu: {{ $.Values.remoteHeadlessApplication.resources.requests.cpu }}
             memory: {{ $.Values.remoteHeadlessApplication.resources.requests.memory }}
 
-        {{- with $.Values.nodeSelector }}
+        {{- with $.Values.remoteHeadlessApplication.nodeSelector }}
         nodeSelector:
           {{- toYaml . | nindent 8 }}
         {{- end }}
 
-        {{- with $.Values.tolerations }}
+        {{- with $.Values.remoteHeadlessApplication.tolerations }}
         tolerations:
           {{- toYaml . | nindent 8 }}
         {{- end }}
 
-        loggingEnabled: {{ $.Values.loggingEnabled }}
+        loggingEnabled: {{ $.Values.remoteHeadlessApplication.loggingEnabled }}
 
         affinity: {}
 
