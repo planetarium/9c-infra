@@ -29,6 +29,11 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+  externalSecret:
+    region: "ap-southeast-1"
+    enabled: true
+    prefix: "9c-main-apse1/heimdall"
+
 seed:
   count: 0
 
@@ -39,11 +44,6 @@ seed:
     node: 31234
     gossip: 31235
     graphql: 31237
-
-externalSecret:
-  region: "ap-southeast-1"
-  enabled: true
-  prefix: "9c-main-apse1/heimdall"
 
 snapshot:
   path: "main/heimdall/partition"
