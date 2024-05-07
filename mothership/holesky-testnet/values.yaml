@@ -1,0 +1,37 @@
+externalSecret:
+  enabled: true
+  prefix: "mothership-testnet"
+
+env:
+  L1_RPC: https://ethereum-holesky-rpc.publicnode.com
+  L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
+
+storageClassName: gp3-extensible
+awsLoadBalancerSslCert: arn:aws:acm:us-east-2:319679068466:certificate/dbb84b9a-cb2b-407c-924a-70b3ca29e880
+
+genesis:
+  source: https://mothership-testnet-holesky-genesis.s3.us-east-2.amazonaws.com
+  createSnapshot: false
+  s3SnapshotPath: mothership-testnet-holesky-genesis/snapshot
+
+blockscout:
+  loadBalancerExternal: true
+  db:
+    storage: 100Gi
+
+sequencer:
+  enabled: true
+  nodeIndex: "1"
+  gethRpc: http://node-1:8545
+  nodeRpc: http://node-1:8547
+
+node:
+  count: 2
+  loadBalancerExternal: true
+  hosts:
+    - node-1.testnet.holesky.tests.mothership-pla.net
+    - node-2.testnet.holesky.tests.mothership-pla.net
+  opGeth:
+    resources:
+      requests:
+        memory: 4Gi
