@@ -46,12 +46,12 @@ data:
       - name: bnbc
         paths:
         - /bnbc/minigame
-    - name: 9cutil-backend
-      url: http://dx-ninecub-dev-ecs-alb-1394147989.us-east-2.elb.amazonaws.com
+    - name: mimir
+      url: http://dx-mimir-prod-ecs-alb-1648976749.us-east-2.elb.amazonaws.com
       routes:
-      - name: 9cutil-backend
+      - name: mimir
         paths:
-        - /9cub
+        - /mimir
     {{- else }}
     - name: 9cscan-odin-internal
       url: https://api-internal.9cscan.com
