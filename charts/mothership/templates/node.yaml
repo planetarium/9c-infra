@@ -22,7 +22,6 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              test -e genesis.json && test -e rollup.json && exit 0 ; \
               curl -L --remote-name-all $GENESIS_SOURCE/{genesis.json,rollup.json} ; \
               hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
           workingDir: /node
@@ -89,8 +88,6 @@ spec:
             - mountPath: /node
               name: node-volume
               readOnly: true
-            - mountPath: /node/secret
-              name: jwt
         {{- end }}
       containers:
         - name: op-geth
@@ -99,19 +96,19 @@ spec:
             - --datadir=/data
             - --http
             - --http.port={{ $.Values.node.opGeth.port.rpc }}
-            - --http.addr={{ index $.Values.node.hosts $idx }}
+            - --http.addr=0.0.0.0
             - --http.vhosts=*
             - --http.corsdomain=*
             - --http.api=web3,debug,eth,txpool,net,engine
             - --ws
             - --ws.port={{ $.Values.node.opGeth.port.wsrpc }}
-            - --ws.addr={{ index $.Values.node.hosts $idx }}
+            - --ws.addr=0.0.0.0
             - --ws.origins=*
             - --ws.api=web3,debug,eth,txpool,net,engine
             - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
-            - --authrpc.addr={{ index $.Values.node.hosts $idx }}
+            - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
-            - --authrpc.jwtsecret=/node/secret/jwt
+            - --authrpc.jwtsecret=/node/secret/JWT
             - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             {{- if not $isSequencer }}
@@ -139,6 +136,8 @@ spec:
             - mountPath: /node
               name: node-volume
               readOnly: true
+            - mountPath: /node/secret
+              name: jwt-secret
           livenessProbe:
             exec:
               command:
@@ -162,21 +161,21 @@ spec:
                 --l1=$(L1_RPC) \
                 --l1.beacon=$(L1_BEACON_RPC) \
                 --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
-                --l2.jwt-secret=/node/jwt.txt \
+                --l2.jwt-secret=/node/secret/JWT \
                 --rollup.config=/node/rollup.json \
                 --sequencer.enabled={{ $isSequencer }} \
                 --p2p.sequencer.key=$(SEQUENCER_KEY) \
-                --p2p.priv.path=/node/jwt.txt \
+                --p2p.priv.path=/node/secret/JWT \
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
-                --p2p.listen.ip={{ index $.Values.node.hosts $idx }} \
+                --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \
                 --p2p.nat={{ $.Values.node.loadBalancerExternal }} \
                 {{- if $.Values.node.hosts }}
                 --p2p.advertise.ip={{ index $.Values.node.hosts $idx }} \
                 {{- end }}
-                --rpc.addr={{ index $.Values.node.hosts $idx }} \
+                --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
                 --metrics.port={{ $.Values.node.opNode.port.metrics }}
@@ -204,6 +203,8 @@ spec:
           volumeMounts:
             - mountPath: /node
               name: node-volume
+            - mountPath: /node/secret
+              name: jwt-secret
           livenessProbe:
             exec:
               command:
@@ -216,9 +217,9 @@ spec:
         - name: node-volume
           persistentVolumeClaim:
             claimName: node-volume
-        - name: jwt-secret
-          secret:
-            secretName: jwt-secret
+        - name: jwt-secret
+          secret:
+            secretName: jwt-secret
       {{- with $.Values.node.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -10,7 +10,7 @@ storageClassName: gp3-extensible
 awsLoadBalancerSslCert: arn:aws:acm:us-east-2:319679068466:certificate/dbb84b9a-cb2b-407c-924a-70b3ca29e880
 
 genesis:
-  source: https://mothership-testnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
+  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
   createSnapshot: false
   s3SnapshotPath: ""
 
