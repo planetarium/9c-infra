@@ -295,11 +295,11 @@ spec:
       targetPort: op-node-rpc
       port: {{ $.Values.node.opNode.port.rpc }}
       targetPort: {{ $.Values.node.opNode.port.rpc }}
-    - name: op-node-p2p-port-tcp
+    - name: op-node-p2p-tcp
       targetPort: op-node-p2p-tcp
       protocol: TCP
       port: {{ $.Values.node.opNode.port.p2p.tcp }}
-    - name: op-node-p2p-port-udp
+    - name: op-node-p2p-udp
       targetPort: op-node-p2p-udp
       protocol: UDP
       port: {{ $.Values.node.opNode.port.p2p.udp }}
