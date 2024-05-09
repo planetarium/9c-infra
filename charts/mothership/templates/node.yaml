@@ -108,7 +108,7 @@ spec:
             - --authrpc.port={{ $.Values.node.opGeth.port.authrpc }}
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
-            - --authrpc.jwtsecret=/node/secret/JWT
+            - --authrpc.jwtsecret=/node/jwt.txt
             - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             {{- if not $isSequencer }}
@@ -161,13 +161,13 @@ spec:
                 --l1=$(L1_RPC) \
                 --l1.beacon=$(L1_BEACON_RPC) \
                 --l2=http://localhost:{{ $.Values.node.opGeth.port.authrpc }} \
-                --l2.jwt-secret=/node/secret/JWT \
+                --l2.jwt-secret=/node/jwt.txt \
                 --rollup.config=/node/rollup.json \
                 --sequencer.enabled={{ $isSequencer }} \
                 --p2p.sequencer.key=$(SEQUENCER_KEY) \
-                --p2p.priv.path=/node/secret/JWT \
-                --p2p.peerstore.path=/node/opnode_peerstore_db \
-                --p2p.discovery.path=/node/opnode_discovery_db \
+                --p2p.priv.path=/node/jwt.txt \
+                --p2p.peerstore.path=memory \
+                --p2p.discovery.path=memory \
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \

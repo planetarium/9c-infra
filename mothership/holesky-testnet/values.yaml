@@ -29,8 +29,8 @@ node:
   count: 2
   loadBalancerExternal: true
   hosts:
-    - 3.139.203.234
-    - 3.22.59.38
+    - node-1.testnet.holesky.tests.mothership-pla.net
+    - node-2.testnet.holesky.tests.mothership-pla.net
   opGeth:
     resources:
       requests:
