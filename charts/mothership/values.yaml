@@ -33,7 +33,7 @@ node:
       rpc: 8547
       p2p:
         tcp: 9003
-        udp: 9003
+        udp: 9004
       metrics: 7300
     volume: &op-node-volume
       storage: 100Mi
