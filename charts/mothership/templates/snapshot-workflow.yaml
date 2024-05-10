@@ -137,16 +137,34 @@ spec:
         command: ["sh", "-c"]
         args:
           - |
-            apk add jq;
+            apk add jq bind-tools;
             NODE_URL="http://localhost:8547"
             GETH_URL="http://localhost:8545"
 
 
-            sleep 60
+            sleep 30
+
+            sequencerAddr=$(dig +short node-1.{{ $.Release.Name }}.svc.cluster.local)
+
+            peerID=$(curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}' http://$sequencerAddr:{{ $.Values.node.opNode.port.rpc }} | jq ".result.peerID")
+
+            curl -X POST -H "Content-Type: application/json" --data \
+            '{"jsonrpc":"2.0","method":"opp2p_connectPeer","params":["/ip4/$addr/tcp/9003/p2p/$peerID"],"id":1}'  \
+            $NODE_URL
                 
             check_sync_status() {
-                response=$(curl -sX POST $GETH_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0", "method":"eth_syncing", "params":[], "id":1}')
-                echo $response | jq '.result'
+                hexIndex=$(curl -X POST $NODE_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                index=$(printf "%d\n" $hexIndex)
+
+                sequencerHexIndex=$(curl -X POST $sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
+
+                if [ $((sequencerHexIndex - index)) -le 10 ]
+                then
+                    echo "true"
+                else
+                    echo "false"
+                fi
             }
             
             while true; do
