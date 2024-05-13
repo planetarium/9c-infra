@@ -137,27 +137,36 @@ spec:
         command: ["sh", "-c"]
         args:
           - |
+            set -ex
             apk add jq bind-tools;
             NODE_URL="http://localhost:8547"
             GETH_URL="http://localhost:8545"
 
 
-            sleep 30
+            sleep 60
 
             sequencerAddr=$(dig +short node-1.{{ $.Release.Name }}.svc.cluster.local)
 
-            peerID=$(curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}' http://$sequencerAddr:{{ $.Values.node.opNode.port.rpc }} | jq ".result.peerID")
+            peerID=$(curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}' http://$sequencerAddr:{{ $.Values.node.opNode.port.rpc }} | jq -r ".result.peerID")
+
+            echo "peer ID: $peerID"
 
             curl -X POST -H "Content-Type: application/json" --data \
-            '{"jsonrpc":"2.0","method":"opp2p_connectPeer","params":["/ip4/$addr/tcp/9003/p2p/$peerID"],"id":1}'  \
+            '{"jsonrpc":"2.0","method":"opp2p_connectPeer","params":["/ip4/'"$sequencerAddr"'/tcp/9003/p2p/'"$peerID"'"],"id":1}' \
             $NODE_URL
                 
             check_sync_status() {
-                hexIndex=$(curl -X POST $NODE_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                hexIndex=$(curl -X POST $GETH_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                echo "$hexIndex"
                 index=$(printf "%d\n" $hexIndex)
 
-                sequencerHexIndex=$(curl -X POST $sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                echo "index: $index"
+
+                sequencerHexIndex=$(curl -X POST http://$sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                echo "$sequencerHexIndex"
                 sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
+
+                echo "sequencer index: $sequencerIndex"
 
                 if [ $((sequencerIndex - index)) -le 10 ]
                 then
@@ -205,8 +214,8 @@ spec:
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
             - --authrpc.jwtsecret=/node/jwt.txt
-            - --port={{ $.Values.node.opGeth.port.p2p }}
-            - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
+            - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
+            - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
@@ -246,8 +255,8 @@ spec:
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
                 --p2p.listen.ip=0.0.0.0 \
-                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
-                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
+                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
