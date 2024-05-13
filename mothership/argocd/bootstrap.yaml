@@ -70,6 +70,8 @@ spec:
           enabled: true
           controllerNamespaces:
           - holesky-testnet
+          server:
+            authMode: "server"
 
   destination:
     server: https://kubernetes.default.svc
