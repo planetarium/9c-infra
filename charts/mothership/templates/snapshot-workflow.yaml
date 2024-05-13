@@ -159,7 +159,7 @@ spec:
                 sequencerHexIndex=$(curl -X POST $sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
                 sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
 
-                if [ $((sequencerHexIndex - index)) -le 10 ]
+                if [ $((sequencerIndex - index)) -le 10 ]
                 then
                     echo "true"
                 else
