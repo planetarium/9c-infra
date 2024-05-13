@@ -157,17 +157,9 @@ spec:
                 
             check_sync_status() {
                 hexIndex=$(curl -X POST $GETH_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
-                echo "$hexIndex"
                 index=$(printf "%d\n" $hexIndex)
-
-                echo "index: $index"
-
                 sequencerHexIndex=$(curl -X POST http://$sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
-                echo "$sequencerHexIndex"
                 sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
-
-                echo "sequencer index: $sequencerIndex"
-
                 if [ $((sequencerIndex - index)) -le 10 ]
                 then
                     echo "true"
@@ -179,7 +171,7 @@ spec:
             while true; do
                 sync_status=$(check_sync_status)
                 
-                if [ "$sync_status" = "false" ]; then
+                if [ "$sync_status" = "true" ]; then
                     echo "Sync is complete. exiting..."
                     break
                 else
