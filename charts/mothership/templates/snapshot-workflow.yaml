@@ -218,8 +218,10 @@ spec:
               containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
             - name: op-geth-authrpc
               containerPort: {{ $.Values.node.opGeth.port.authrpc }}
-            - name: op-geth-p2p
-              containerPort: {{ $.Values.node.opGeth.port.p2p }}
+            - name: op-geth-p2p-tcp
+              containerPort: {{ $.Values.node.opGeth.port.p2p.tcp }}
+            - name: op-geth-p2p-udp
+              containerPort: {{ $.Values.node.opGeth.port.p2p.udp }}
           volumeMounts:
             - mountPath: /data
               name: snapshot-data-volume
@@ -253,8 +255,10 @@ spec:
           ports:
             - name: op-node-rpc
               containerPort: {{ $.Values.node.opNode.port.rpc }}
-            - name: op-node-p2p
-              containerPort: {{ $.Values.node.opNode.port.p2p }}
+            - name: op-node-p2p-tcp
+              containerPort: {{ $.Values.node.opNode.port.p2p.tcp }}
+            - name: op-node-p2p-udp
+              containerPort: {{ $.Values.node.opNode.port.p2p.udp }}
             - name: op-node-metrics
               containerPort: {{ $.Values.node.opNode.port.metrics }}
           env:
