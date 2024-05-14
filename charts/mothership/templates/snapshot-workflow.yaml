@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: CronWorkflow
 metadata:
-  generateName: mothership-snapshot-
+  name: mothership-snapshot
   namespace: {{ $.Release.Namespace }}
 spec:
   schedule: "0 18 * * *"
@@ -137,20 +137,47 @@ spec:
         command: ["sh", "-c"]
         args:
           - |
-            apk add jq;
-            NODE_URL="http://localhost:8545"
-
+            set -ex
+            apk add jq bind-tools;
+            NODE_URL="http://localhost:8547"
+            GETH_URL="http://localhost:8545"
             sleep 60
+            sequencerAddr=$(dig +short node-1.{{ $.Release.Namespace }}.svc.cluster.local)
+            peerID=$(curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}' http://$sequencerAddr:{{ $.Values.node.opNode.port.rpc }} | jq -r ".result.peerID")
+
+            if [ -z "$peerID" ]
+            then
+              echo "peerID is empty or null. Exiting the script."
+              exit 1
+            fi
+            echo "peer ID: $peerID"
+            curl -X POST -H "Content-Type: application/json" --data \
+            '{"jsonrpc":"2.0","method":"opp2p_connectPeer","params":["/ip4/'"$sequencerAddr"'/tcp/9003/p2p/'"$peerID"'"],"id":1}' \
+            $NODE_URL
                 
             check_sync_status() {
-                response=$(curl -sX POST $NODE_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0", "method":"eth_syncing", "params":[], "id":1}')
-                echo $response | jq '.result'
+                hexIndex=$(curl -X POST $GETH_URL -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                index=$(printf "%d\n" $hexIndex)
+                sequencerHexIndex=$(curl -X POST http://$sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
+                sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
+                if [ -z $index ] || [ -z $sequencerIndex ]
+                then
+                  echo "Failed to get index from node"
+                  exit 1;
+                fi
+
+                if [ $((sequencerIndex - index)) -le 10 ]
+                then
+                    echo "true"
+                else
+                    echo "false"
+                fi
             }
             
             while true; do
                 sync_status=$(check_sync_status)
                 
-                if [ "$sync_status" = "false" ]; then
+                if [ "$sync_status" = "true" ]; then
                     echo "Sync is complete. exiting..."
                     break
                 else
@@ -158,10 +185,7 @@ spec:
                 fi
                 sleep 60
             done
-
             sleep 60
-            exit 0;
-
         securityContext:
           runAsUser: 0
           runAsNonRoot: false
@@ -185,8 +209,8 @@ spec:
             - --authrpc.addr=0.0.0.0
             - --authrpc.vhosts=*
             - --authrpc.jwtsecret=/node/jwt.txt
-            - --port={{ $.Values.node.opGeth.port.p2p }}
-            - --discovery.port={{ $.Values.node.opGeth.port.p2p }}
+            - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
+            - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             - --rollup.sequencerhttp=http://node-1:{{ $.Values.node.opGeth.port.rpc }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
@@ -198,8 +222,10 @@ spec:
               containerPort: {{ $.Values.node.opGeth.port.wsrpc }}
             - name: op-geth-authrpc
               containerPort: {{ $.Values.node.opGeth.port.authrpc }}
-            - name: op-geth-p2p
-              containerPort: {{ $.Values.node.opGeth.port.p2p }}
+            - name: op-geth-p2p-tcp
+              containerPort: {{ $.Values.node.opGeth.port.p2p.tcp }}
+            - name: op-geth-p2p-udp
+              containerPort: {{ $.Values.node.opGeth.port.p2p.udp }}
           volumeMounts:
             - mountPath: /data
               name: snapshot-data-volume
@@ -224,8 +250,8 @@ spec:
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
                 --p2p.listen.ip=0.0.0.0 \
-                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p }} \
-                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p }} \
+                --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
+                --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.port={{ $.Values.node.opNode.port.rpc }} \
                 --metrics.enabled \
@@ -233,8 +259,10 @@ spec:
           ports:
             - name: op-node-rpc
               containerPort: {{ $.Values.node.opNode.port.rpc }}
-            - name: op-node-p2p
-              containerPort: {{ $.Values.node.opNode.port.p2p }}
+            - name: op-node-p2p-tcp
+              containerPort: {{ $.Values.node.opNode.port.p2p.tcp }}
+            - name: op-node-p2p-udp
+              containerPort: {{ $.Values.node.opNode.port.p2p.udp }}
             - name: op-node-metrics
               containerPort: {{ $.Values.node.opNode.port.metrics }}
           env:
@@ -278,3 +306,4 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
