@@ -13,7 +13,7 @@ genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
   createSnapshot: true
   snapshot: ""
-  s3SnapshotPath: "mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet/snapshot"
+  s3SnapshotPath: "mothership-devnet-holesky-genesis/testnet/snapshot"
 
 blockscout:
   loadBalancerExternal: true
