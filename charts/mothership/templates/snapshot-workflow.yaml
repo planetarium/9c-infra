@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: CronWorkflow
 metadata:
-  generateName: mothership-snapshot-
+  name: mothership-snapshot
   namespace: {{ $.Release.Namespace }}
 spec:
   schedule: "0 18 * * *"
