@@ -31,7 +31,7 @@ spec:
           authMode: "server"
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-workflows
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
