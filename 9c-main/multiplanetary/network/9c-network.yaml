@@ -149,7 +149,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 3
+  count: 2
   replicas: 1
 
   useTurnServer: false
@@ -157,14 +157,6 @@ remoteHeadless:
   hosts:
   - "9c-main-rpc-1.nine-chronicles.com"
   - "9c-main-rpc-2.nine-chronicles.com"
-  - "9c-main-rpc-3.nine-chronicles.com"
-  - "9c-main-rpc-4.nine-chronicles.com"
-  - "9c-main-rpc-5.nine-chronicles.com"
-  - "9c-main-rpc-6.nine-chronicles.com"
-  - "9c-main-rpc-7.nine-chronicles.com"
-  - "9c-main-rpc-8.nine-chronicles.com"
-  - "9c-main-rpc-9.nine-chronicles.com"
-  - "9c-main-rpc-10.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -420,7 +412,7 @@ testHeadless1:
     eks.amazonaws.com/nodegroup: 9c-main-2c_spot
 
 testHeadless2:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
