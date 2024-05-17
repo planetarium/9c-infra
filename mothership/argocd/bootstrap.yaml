@@ -69,6 +69,7 @@ spec:
         argoWorkflows:
           enabled: true
           controllerNamespaces:
+          - holesky-devnet
           - holesky-testnet
           server:
             authMode: "server"
