@@ -188,10 +188,6 @@ marketService:
   env:
   - name: DOTNET_gcServer
     value: "1"
-  - name: RpcConfig__Host
-    value: k8s-9codinli-remotehe-55686c889c-fbbfdb2f7f6d58ec.elb.us-east-2.amazonaws.com
-  - name: RpcConfig__Port
-    value: "31238"
   - name: WorkerConfig__SyncShop
     value: "true"
   - name: WorkerConfig__SyncProduct
