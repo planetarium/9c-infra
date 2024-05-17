@@ -18,7 +18,7 @@ spec:
         name: snapshot-node-volume
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: {{ $.Values.storageClassName }}
+        storageClassName: {{ .Release.Name }}-gp3
         resources:
           requests:
             storage: 100Mi
@@ -26,7 +26,7 @@ spec:
         name: snapshot-data-volume
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: {{ $.Values.storageClassName }}
+        storageClassName: {{ .Release.Name }}-gp3
         resources:
           requests:
             storage: 100Gi   
