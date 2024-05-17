@@ -31,21 +31,20 @@ spec:
           requests:
             storage: 100Gi   
 
-    # This spec contains two templates: hello-hello-hello and whalesay
     templates:
     - name: mothership-snapshot
       # Instead of just running a container
       # This template has a sequence of steps
       steps:
-      - - name: fetch-genesis-
+      - - name: fetch-genesis
           template: fetch-genesis 
-      - - name: fetch-snapshot-
+      - - name: fetch-snapshot
           template: fetch-snapshot 
-      - - name: genesis-init-
+      - - name: genesis-init
           template: genesis-init
-      - - name: op-stack-
+      - - name: op-stack
           template: op-stack
-      - - name: create-snapshot-
+      - - name: create-snapshot
           template: create-snapshot
       resources:
         requests:
@@ -55,7 +54,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-    # This is the same template as from the previous example
     - name: fetch-genesis
       container:
         image: curlimages/curl
