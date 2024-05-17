@@ -9,7 +9,7 @@ spec:
   startingDeadlineSeconds: 7200
   timezone: "Asia/Seoul"
   successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 3 
+  failedJobsHistoryLimit: 1
   workflowSpec:
     entrypoint: mothership-snapshot
     serviceAccountName: argo-workflows
