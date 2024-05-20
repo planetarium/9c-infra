@@ -70,8 +70,8 @@ spec:
           enabled: true
           controllerNamespaces:
           - holesky-testnet
-          server:
-            authMode: "server"
+          sso:
+            enabled: false
           ingress:
             enabled: true
             hosts:
