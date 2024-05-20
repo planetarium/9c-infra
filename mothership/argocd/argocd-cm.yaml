@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
-data:
+d
   url: https://argocd-mothership.planetarium.network
   statusbadge.enabled: 'true'
   admin.enabled: 'true'
@@ -20,3 +20,10 @@ data:
           clientSecret: "$github-ssh-client:dex.github.clientSecret"
           orgs:
             - name: planetarium
+    staticClients:
+      - id: argo-workflows-sso
+        name: Argo Workflow
+        redirectURIs:
+          - https://argo-workflows-mothership.planetarium.network/oauth2/callback
+        secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
+
