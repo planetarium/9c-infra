@@ -24,14 +24,15 @@ spec:
             create: true
         controller:
           workflowNamespaces:
-          {{- with $.Values.argoWorkflows.controllerNamespaces }}
+          {{- with .Values.argoWorkflows.controllerNamespaces }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
         server:
-          {{- if $.Values.argoWorkflows.sso.enabled }}
+          {{- if .Values.argoWorkflows.sso.enabled }}
           authMode: "sso"
           sso:
-            issuer: {{ $.Values.argoWorkflows.sso.issuer }}
+            enabled: true
+            issuer: {{ .Values.argoWorkflows.sso.issuer }}
             clientId:
               # -- Name of secret to retrieve the app OIDC client ID
               name: argo-workflows-sso
@@ -43,18 +44,18 @@ spec:
               # -- Key of a secret to retrieve the app OIDC client secret
               key: client-secret
             # -- The OIDC redirect URL. Should be in the form <argo-root-url>/oauth2/callback.
-            redirectUrl: {{ $.Values.argoWorkflows.sso.redirectUrl }}
+            redirectUrl: {{ .Values.argoWorkflows.sso.redirectUrl }}
           {{- else }}
           authMode: "server"
           {{- end }}
-          {{- if $.Values.argoWorkflows.ingress.enabled }}
+          {{- if .Values.argoWorkflows.ingress.enabled }}
           ingress:
             enabled: true
-            {{- with $.Values.argoWorkflows.ingress.annotations }}
+            {{- with .Values.argoWorkflows.ingress.annotations }}
             annotations:
               {{- toYaml . | nindent 14 }}
             {{- end }}
-            {{- with $.Values.argoWorkflows.ingress.hosts }}
+            {{- with .Values.argoWorkflows.ingress.hosts }}
             hosts:
               {{- toYaml . | nindent 14 }}
             {{- end }}
