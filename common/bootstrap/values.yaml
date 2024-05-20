@@ -46,3 +46,7 @@ argoWorkflows:
   enabled: false
   controllerNamespaces:
   - default
+  sso:
+    enabled: false
+  ingress:
+    enabled: false

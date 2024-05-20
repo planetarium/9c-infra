@@ -72,6 +72,19 @@ spec:
           - holesky-testnet
           server:
             authMode: "server"
+          ingress:
+            enabled: true
+            hosts:
+            - "argo-workflows-mothership.planetarium.network"
+            annotations:
+              kubernetes.io/ingress.class: alb
+              alb.ingress.kubernetes.io/scheme: internet-facing
+              alb.ingress.kubernetes.io/target-type: ip
+              alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+              alb.ingress.kubernetes.io/actions.ssl-redirect: >
+                {"Type":"redirect","RedirectConfig":{"Port":"443","Protocol":"HTTPS","StatusCode":"HTTP_302"}}
+              alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:319679068466:certificate/bdddee1c-76b1-49f0-bb85-37952d9944cc
+              alb.ingress.kubernetes.io/tags: Name=mothership-argo-workflows,Owner=jihyung,Service=argo-workflows,Team=devops,Environment=production
 
   destination:
     server: https://kubernetes.default.svc
