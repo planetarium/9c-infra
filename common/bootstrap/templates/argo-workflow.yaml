@@ -28,7 +28,31 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
         server:
+          {{- if $.Values.argoWorkflows.sso.enabled }}
+          authMode: "sso"
+          {{- else }}
           authMode: "server"
+          {{- end }}
+          {{- if $.Values.argoWorkflows.ingress.enabled }}
+          ingress:
+            enabled: true
+            {{- with $.Values.argoWorkflows.ingress.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with $.Values.argoWorkflows.ingress.hosts }}
+            hosts:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            extraPaths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: ssl-redirect
+                  port:
+                    name: use-annotation
+          {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
