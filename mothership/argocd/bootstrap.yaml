@@ -73,10 +73,10 @@ spec:
           - holesky-testnet
           sso:
             enabled: true
-            scoped:
-            - email
             rbac:
               enabled: false
+            scopes:
+            - email
             issuer: "https://argocd-mothership.planetarium.network/api/dex"
             redirectUrl: "https://argo-workflows-mothership.planetarium.network/oauth2/callback"
           ingress:
