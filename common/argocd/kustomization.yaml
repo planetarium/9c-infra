@@ -26,6 +26,6 @@ patchesJson6902:
         value:
           name: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
           valueFrom:
-                secretKeyRef:
-                  name: argo-workflows-sso
-                  key: client-secret
+            secretKeyRef:
+              name: argo-workflows-sso
+              key: client-secret
