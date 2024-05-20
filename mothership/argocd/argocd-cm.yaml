@@ -20,3 +20,10 @@ data:
           clientSecret: "$github-ssh-client:dex.github.clientSecret"
           orgs:
             - name: planetarium
+    staticClients:
+      - id: argo-workflows-sso
+        name: Argo Workflow
+        redirectURIs:
+          - https://argo-workflows-mothership.planetarium.network/oauth2/callback
+        secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
+
