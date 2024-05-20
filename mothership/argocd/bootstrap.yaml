@@ -72,7 +72,9 @@ spec:
           - holesky-devnet
           - holesky-testnet
           sso:
-            enabled: false
+            enabled: true
+            issuer: "https://argocd-mothership.planetarium.network/api/dex"
+            redirectUrl: "https://argo-workflows-mothership.planetarium.network/oauth2/callback"
           ingress:
             enabled: true
             hosts:

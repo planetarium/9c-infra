@@ -30,6 +30,20 @@ spec:
         server:
           {{- if $.Values.argoWorkflows.sso.enabled }}
           authMode: "sso"
+          sso:
+            issuer: {{ $.Values.argoWorkflows.sso.issuer }}
+            clientId:
+              # -- Name of secret to retrieve the app OIDC client ID
+              name: argo-workflows-sso
+              # -- Key of secret to retrieve the app OIDC client ID
+              key: client-id
+            clientSecret:
+              # -- Name of a secret to retrieve the app OIDC client secret
+              name: argo-workflows-sso
+              # -- Key of a secret to retrieve the app OIDC client secret
+              key: client-secret
+            # -- The OIDC redirect URL. Should be in the form <argo-root-url>/oauth2/callback.
+            redirectUrl: {{ $.Values.argoWorkflows.sso.redirectUrl }}
           {{- else }}
           authMode: "server"
           {{- end }}
