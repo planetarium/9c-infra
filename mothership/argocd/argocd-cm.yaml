@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
-d
+- data:
   url: https://argocd-mothership.planetarium.network
   statusbadge.enabled: 'true'
   admin.enabled: 'true'
