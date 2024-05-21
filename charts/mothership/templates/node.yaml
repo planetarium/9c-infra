@@ -90,6 +90,21 @@ spec:
               name: node-volume
               readOnly: true
         {{- end }}
+        - name: generate-static-peer
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - |
+              apk add jq bind-tools ; \
+              curl -X POST -H "Content-Type: application/json" --data \
+              '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
+              {{ $.Values.sequencer.gethRpc }} | jq -r ".peerID" > /node/bootnode ;
+          volumeMounts:
+            - mountPath: /node
+              name: op-node-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
       containers:
         - name: op-geth
           image: {{ $.Values.node.opGeth.image }}
@@ -167,6 +182,7 @@ spec:
                 --p2p.priv.path=/node/jwt.txt \
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
+                --p2p.bootnodes=$(cat /node/bootnode) \
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \
