@@ -86,6 +86,32 @@ remoteHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
+testHeadless1:
+  enabled: true
+  image:
+    tag: "git-cdc0ff5322e9047315d12749e174b36e5b92f1e5"
+
+  loggingEnabled: true
+  
+  host: "sloth-test-headless-1.nine-chronicles.com"
+  
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+
 
 validator:
   count: 4
