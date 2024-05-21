@@ -24,6 +24,7 @@ sequencer:
   enabled: true
   nodeIndex: "1"
   gethRpc: https://node-1.testnet.holesky.tests.mothership-pla.net
+  nodeRpc: https://node-1.testnet.holesky.tests.mothership-pla.net:8547
 
 node:
   count: 1
