@@ -82,12 +82,12 @@ spec:
       {{- end }}
     - name: fetch-snapshot
       container:
-        image: curlimages/curl
+        image: alpine
         command: ["sh", "-c"]
         args:
           - |
-            apk add zstd ; \
-            curl -L -o /data/snapshot.tar.zst.tmp $SNAPSHOT ; \
+            apk add zstd aws-cli ; \
+            aws s3 cp s3://$SNAPSHOT /data/snapshot.tar.zst.tmp ; \
             mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
             mkdir -p /data/geth ; \
             rm -rf /data/geth/chaindata ; \
