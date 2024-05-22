@@ -21,8 +21,8 @@ blockscout:
     storage: 100Gi
 
 sequencer:
-  gethRpc: https://node-1.testnet.holesky.tests.mothership-pla.net
-  nodeRpc: https://node-1.testnet.holesky.tests.mothership-pla.net:8547
+  gethRpc: http://node-1.testnet.holesky.tests.mothership-pla.net
+  nodeRpc: http://node-1.testnet.holesky.tests.mothership-pla.net:8547
 
 node:
   count: 1
@@ -41,4 +41,4 @@ node:
       requests:
         memory: 4Gi
   hosts:
-    - node-1.testnet-srdg.holesky.tests.mothership-pla.net
+    - node-1.testnet-srdg.tests.mothership-pla.net
