@@ -1,4 +1,4 @@
-{{- if and .Values.stateMigrationService.enabled .Values.stateMigrationService.db.local }}
+{{ if and .Values.stateMigrationService.enabled .Values.stateMigrationService.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
