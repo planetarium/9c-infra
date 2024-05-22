@@ -801,7 +801,6 @@ spec:
     app: state-migration-service
   type: ClusterIP
 ---
-{{ end }}
 
 {{ if .Values.stateMigrationService.db.local }}
 apiVersion: v1
@@ -820,4 +819,5 @@ spec:
     app: state-migration-db
   type: ClusterIP
 ---
+{{ end }}
 {{ end }}
