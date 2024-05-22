@@ -99,7 +99,7 @@ spec:
               apk add jq ; \
               curl -X POST -H "Content-Type: application/json" --data \
               '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
-              {{ $.Values.sequencer.nodeRpc }} | jq -r ".peerID" > /node/bootnode ;
+              {{ $.Values.sequencer.nodeRpc }} | jq -r ".result.ENR" > /node/bootnode ;
           volumeMounts:
             - mountPath: /node
               name: node-volume
