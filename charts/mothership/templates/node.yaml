@@ -102,7 +102,7 @@ spec:
               {{ $.Values.sequencer.nodeRpc }} | jq -r ".peerID" > /node/bootnode ;
           volumeMounts:
             - mountPath: /node
-              name: op-node-volume
+              name: node-volume
           securityContext:
             runAsUser: 0
             runAsNonRoot: false
