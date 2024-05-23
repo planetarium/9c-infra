@@ -1,4 +1,4 @@
-{{ if .Values.rudolfService.db.local }}
+{{ if and .Values.rudolfService.enabled .Values.rudolfService.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
