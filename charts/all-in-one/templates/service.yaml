@@ -139,7 +139,7 @@ spec:
 ---
 {{ end }}
 
-{{ if $.Values.dataProvider.db.local }}
+{{ if and .Values.dataProvider.enabled $.Values.dataProvider.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -399,8 +399,7 @@ spec:
 ---
 {{ end }}
 
-{{- if $.Values.worldBoss.db.local }}
-
+{{- if and $.Values.worldBoss.enabled $.Values.worldBoss.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -532,7 +531,7 @@ spec:
 ---
 {{ end }}
 
-{{ if .Values.marketService.db.local }}
+{{ if and .Values.marketService.enabled .Values.marketService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -703,7 +702,7 @@ spec:
 ---
 {{ end }}
 
-{{ if .Values.patrolRewardService.db.local }}
+{{ if and .Values.patrolRewardService.enabled .Values.patrolRewardService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -765,7 +764,7 @@ spec:
 ---
 {{ end }}
 
-{{ if .Values.rudolfService.db.local }}
+{{ if and .Values.rudolfService.enabled .Values.rudolfService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -802,7 +801,7 @@ spec:
   type: ClusterIP
 ---
 
-{{ if .Values.stateMigrationService.db.local }}
+{{ if and .Values.stateMigrationService.enabled .Values.stateMigrationService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
