@@ -82,7 +82,7 @@ spec:
       {{- end }}
     - name: fetch-snapshot
       container:
-        image: alpine
+        image: alpine:3.19
         command: ["sh", "-c"]
         args:
           - |
@@ -280,7 +280,7 @@ spec:
       {{- end }}
     - name: create-snapshot
       container:
-        image: alpine
+        image: alpine:3.19
         command: ["sh", "-c"]
         args:
           - |
