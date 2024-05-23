@@ -3,7 +3,6 @@ logLevel: "debug"
 
 global:
   validatorPath: "validator-5.idun.svc.cluster.local"
-  networkType: Internal
 
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
@@ -14,6 +13,13 @@ global:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31234"
 
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+
+  networkType: Internal
+  planet: HeimdallInternal
+  consensusType: pbft
+
+  resetSnapshot: true
+  rollbackSnapshot: false
 
 externalSecret:
   enabled: true
