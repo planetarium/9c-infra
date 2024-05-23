@@ -4,14 +4,12 @@ logLevel: "debug"
 global:
   validatorPath: "validator-5.idun.svc.cluster.local"
   networkType: Internal
-  image:
-    repository: "planetariumhq/ninechronicles-headless"
-    tag: "git-9c3d5c20eceb9770bbde41ee66e3d2e005b37e41"
 
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
-  
+
   peerStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.idun.svc.cluster.local,31234"
 
@@ -22,7 +20,7 @@ externalSecret:
   prefix: "9c-internal-v2/idun"
 
 bridgeService:
-  enabled: true
+  enabled: false
 
   multiplanetary:
     registryEndpoint: "https://planets-internal.nine-chronicles.com/planets/"
@@ -45,7 +43,7 @@ bridgeService:
       channel: "9c-relay-bridge-bot-tmp-test"
 
 dataProvider:
-  enabled: true
+  enabled: false
   rwMode: false
   render: true
   migrateDatabase: false
@@ -64,7 +62,7 @@ dataProvider:
     password: ""
 
 marketService:
-  enabled: true
+  enabled: false
 
   db:
     local: true
@@ -83,7 +81,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   db:
     local: true
@@ -127,7 +125,7 @@ remoteHeadless:
     eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c_on_demand
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     graphqlEndpoint: "https://idun-internal-rpc-1.nine-chronicles.com/graphql"
@@ -165,7 +163,7 @@ snapshot:
 
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
-  path: 9c-internal-v2/idun
+  path: internal/heimdall
 
   resources:
     requests:
@@ -211,7 +209,7 @@ validator:
     eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c_on_demand
 
 worldBoss:
-  enabled: true
+  enabled: false
   ports:
     targetPort: 5000
 
