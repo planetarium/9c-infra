@@ -128,7 +128,7 @@ remoteHeadless:
   - "idun-internal-rpc-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c_on_demand
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
 
 rudolfService:
   enabled: false
@@ -212,7 +212,7 @@ validator:
   - --consensus-target-block-interval=6500
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m7g_2xl_2c_on_demand
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
 
 worldBoss:
   enabled: false
