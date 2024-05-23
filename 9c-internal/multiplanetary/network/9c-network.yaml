@@ -59,7 +59,7 @@ seed:
   - "tcp-seed-1.9c-network.svc.cluster.local"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 validator:
   count: 4
@@ -142,7 +142,7 @@ dataProvider:
     password: ''
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
   resources:
     requests:
@@ -165,7 +165,7 @@ explorer:
       memory: 4Gi
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -193,7 +193,7 @@ patrolRewardService:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
   db:
     local: true
@@ -231,7 +231,7 @@ rudolfCurrencyNotifier:
     serverName: "9c-internal"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 volumeRotator:
   enabled: true
@@ -257,10 +257,10 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
     enabled: false
@@ -278,7 +278,7 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 jwtHeadless:
   enabled: false

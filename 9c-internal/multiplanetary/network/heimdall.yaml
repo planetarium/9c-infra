@@ -47,7 +47,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
   account:
     type: "kms"
@@ -120,7 +120,7 @@ patrolRewardService:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
   db:
     local: true
@@ -183,7 +183,7 @@ seed:
   - "tcp-seed-1.heimdall.svc.cluster.local"
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 snapshot:
   partition:
@@ -246,7 +246,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
 
 testHeadless1:
   enabled: false
@@ -280,7 +280,7 @@ testHeadless1:
   - --tx-quota-per-signer=1
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
     enabled: false
@@ -298,4 +298,4 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
+    eks.amazonaws.com/nodegroup: 9c-internal-m5d_l_2c
