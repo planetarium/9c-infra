@@ -130,6 +130,11 @@ remoteHeadless:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
 
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
 rudolfService:
   enabled: false
 
@@ -206,13 +211,17 @@ validator:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
 
-
   extraArgs:
   - --tx-quota-per-signer=1
   - --consensus-target-block-interval=6500
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
 
 worldBoss:
   enabled: false
