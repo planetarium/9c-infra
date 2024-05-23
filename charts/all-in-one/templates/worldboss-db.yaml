@@ -1,4 +1,4 @@
-{{ if .Values.worldBoss.db.local }}
+{{ if and .Values.worldBoss.enabled .Values.worldBoss.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

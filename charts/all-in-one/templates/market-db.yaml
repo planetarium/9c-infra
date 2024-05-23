@@ -1,4 +1,4 @@
-{{ if .Values.marketService.db.local }}
+{{ if and .Values.marketService.enabled .Values.marketService.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

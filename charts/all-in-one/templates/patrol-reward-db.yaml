@@ -1,4 +1,4 @@
-{{ if .Values.patrolRewardService.db.local }}
+{{ if and .Values.patrolRewardService.enabled .Values.patrolRewardService.db.local }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
