@@ -37,7 +37,7 @@ spec:
             runAsNonRoot: false
         {{- if $.Values.genesis.createSnapshot }}
         - name: create-snapshot
-          image: alpine
+          image: alpine:3.19
           command: ["sh", "-c"]
           args:
             - |

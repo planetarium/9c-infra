@@ -21,7 +21,8 @@ blockscout:
 
 sequencer:
   enabled: false
-  gethRpc: https://node-1.us-east-2.holesky.tests.mothership-pla.net
+  scheme: "https"
+  host: "node-1.us-east-2.holesky.tests.mothership-pla.net"
 
 node:
   count: 2
