@@ -12,7 +12,11 @@ spec:
     path: charts/all-in-one
     helm:
       valueFiles:
+        {{- if eq .Values.clusterName "9c-main-apse1" }}
+        - "../../9c-main/multiplanetary/network/general.yaml"
+        {{- else }}
         - "../../{{ $.Values.path }}/network/general.yaml"
+        {{- end }}
         - "../../{{ $.Values.path }}/network/{{ . }}.yaml"
 
   destination:
