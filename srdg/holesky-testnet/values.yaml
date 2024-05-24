@@ -21,8 +21,9 @@ blockscout:
     storage: 100Gi
 
 sequencer:
-  gethRpc: http://node-1.testnet.holesky.tests.mothership-pla.net
-  nodeRpc: http://node-1.testnet.holesky.tests.mothership-pla.net:8547
+  host: "node-1.testnet.holesky.tests.mothership-pla.net"
+  port:
+    node: 8547
 
 node:
   count: 1

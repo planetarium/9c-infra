@@ -96,10 +96,20 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              apk add jq ; \
-              curl -X POST -H "Content-Type: application/json" --data \
+              apk add jq bind-tools
+              peerID=$(curl -X POST -H "Content-Type: application/json" --data \
               '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
-              {{ $.Values.sequencer.nodeRpc }} | jq -r ".result.ENR" > /node/bootnode ;
+              {{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
+
+              if [ -z "$peerID" ]
+              then
+                echo "peerID is empty or null. Exiting the script."
+                exit 1
+              fi
+              sequencerIP=$(dig +short {{ $.Values.sequencer.host }} | tail -n1)
+              peerString=$(echo "/ip4/$sequencerIP/tcp/{{ $.Values.node.opNode.port.p2p.tcp }}/p2p/$peerID")
+              echo $peerString > /node/staticPeer
+
           volumeMounts:
             - mountPath: /node
               name: node-volume
@@ -130,7 +140,7 @@ spec:
             - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             {{- if not $isSequencer }}
-            - --rollup.sequencerhttp={{ $.Values.sequencer.gethRpc }}
+            - --rollup.sequencerhttp={{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.geth }}:{{ . }}{{- end }}
             {{- end }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
@@ -185,7 +195,7 @@ spec:
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
                 {{- if not $isSequencer }}
-                --p2p.bootnodes=$(cat /node/bootnode) \
+                --p2p.static=$(cat /node/staticPeer) \
                 {{- end }}
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \

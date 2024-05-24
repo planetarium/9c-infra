@@ -82,7 +82,7 @@ spec:
       {{- end }}
     - name: fetch-snapshot
       container:
-        image: alpine
+        image: alpine:3.19
         command: ["sh", "-c"]
         args:
           - |
@@ -280,14 +280,14 @@ spec:
       {{- end }}
     - name: create-snapshot
       container:
-        image: alpine
+        image: alpine:3.19
         command: ["sh", "-c"]
         args:
           - |
             apk add zstd aws-cli ; \
             TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
             tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
-            aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
+            aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read ; \
             aws s3 cp s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/latest.tar.zst --acl public-read
         env:
           - name: S3_SNAPSHOT_PATH

@@ -22,8 +22,11 @@ blockscout:
 sequencer:
   enabled: true
   nodeIndex: "1"
-  gethRpc: http://node-1:8545
-  nodeRpc: http://node-1:8547
+  scheme: "http"
+  host: "node-1"
+  port:
+    geth: 8545
+    node: 8547
 
 node:
   count: 2
