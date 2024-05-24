@@ -10,8 +10,11 @@ genesis:
 sequencer:
   enabled: false
   nodeIndex: ""
-  gethRpc: ""
-  nodeRpc: ""
+  scheme: "http"
+  host: ""
+  port:
+    geth: ""
+    node: ""
 
 node:
   count: 1
