@@ -41,7 +41,7 @@ spec:
               op-proposer \
                 --private-key=$(PROPOSER_KEY) \
                 --l1-eth-rpc=$(L1_RPC) \
-                --rollup-rpc={{ .Values.sequencer.nodeRpc }} \
+                --rollup-rpc={{ .Values.sequencer.scheme }}://{{ .Values.sequencer.host }}{{- with .Values.sequencer.port.node }}:{{ . }}{{- end }} \
                 --rpc.port={{ .Values.opProposer.port.rpc }} \
                 --l2oo-address=$(cat /genesis/L2OutputOracleProxyAddress) \
                 --poll-interval=12s
