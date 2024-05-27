@@ -59,7 +59,7 @@ seed:
   - "tcp-seed-1.9c-network.svc.cluster.local"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 validator:
   count: 4
@@ -142,7 +142,7 @@ dataProvider:
     password: ''
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   resources:
     requests:
@@ -165,7 +165,7 @@ explorer:
       memory: 4Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -179,7 +179,7 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   env:
   - name: DOTNET_gcServer
@@ -193,7 +193,7 @@ patrolRewardService:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   db:
     local: true
@@ -231,7 +231,7 @@ rudolfCurrencyNotifier:
     serverName: "9c-internal"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 volumeRotator:
   enabled: true
@@ -257,7 +257,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 acc:
   enabled: false
@@ -278,7 +278,7 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 jwtHeadless:
   enabled: false
