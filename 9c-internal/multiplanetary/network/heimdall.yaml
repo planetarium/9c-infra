@@ -47,7 +47,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   account:
     type: "kms"
@@ -106,7 +106,7 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   env:
   - name: DOTNET_gcServer
@@ -120,7 +120,7 @@ patrolRewardService:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   db:
     local: true
@@ -183,7 +183,7 @@ seed:
   - "tcp-seed-1.heimdall.svc.cluster.local"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 snapshot:
   partition:
@@ -246,7 +246,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 testHeadless1:
   enabled: false
@@ -298,4 +298,4 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5d_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand

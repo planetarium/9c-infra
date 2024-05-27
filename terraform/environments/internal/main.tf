@@ -73,6 +73,15 @@ node_groups = {
       max_size          = 16
     }
 
+    "9c-internal-m5_xl_2c_ondemand" = {
+      instance_types    = ["m5.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 2
+      min_size          = 0
+      max_size          = 10
+    }
+
     "9c-internal-m7g_2xl_2c" = {
       instance_types    = ["m7g.2xlarge"]
       availability_zone = "us-east-2c"
