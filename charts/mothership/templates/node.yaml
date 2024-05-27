@@ -37,7 +37,7 @@ spec:
             runAsNonRoot: false
         {{- if $.Values.genesis.createSnapshot }}
         - name: create-snapshot
-          image: alpine
+          image: alpine:3.19
           command: ["sh", "-c"]
           args:
             - |
@@ -90,6 +90,36 @@ spec:
               name: node-volume
               readOnly: true
         {{- end }}
+        {{- if not $isSequencer }}
+        - name: generate-static-peer
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - |
+              apk add jq bind-tools
+              while true; do
+                peerID=$(curl -X POST -H "Content-Type: application/json" --data \
+                '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
+                {{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
+              
+                if [ -n "$peerID" ]; then
+                  break
+                else
+                  echo "peerID is empty or null. Retrying..."
+                  sleep 5
+                fi
+              done
+              
+              sequencerIP=$(dig +short {{ $.Values.sequencer.host }} | tail -n1)
+              peerString=$(echo "/ip4/$sequencerIP/tcp/{{ $.Values.node.opNode.port.p2p.tcp }}/p2p/$peerID")
+              echo $peerString > /node/staticPeer
+          volumeMounts:
+            - mountPath: /node
+              name: node-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+        {{- end }}
       containers:
         - name: op-geth
           image: {{ $.Values.node.opGeth.image }}
@@ -113,7 +143,7 @@ spec:
             - --port={{ $.Values.node.opGeth.port.p2p.tcp }}
             - --discovery.port={{ $.Values.node.opGeth.port.p2p.udp }}
             {{- if not $isSequencer }}
-            - --rollup.sequencerhttp={{ $.Values.sequencer.gethRpc }}
+            - --rollup.sequencerhttp={{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.geth }}:{{ . }}{{- end }}
             {{- end }}
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
@@ -167,6 +197,9 @@ spec:
                 --p2p.priv.path=/node/jwt.txt \
                 --p2p.peerstore.path=/node/opnode_peerstore_db \
                 --p2p.discovery.path=/node/opnode_discovery_db \
+                {{- if not $isSequencer }}
+                --p2p.static=$(cat /node/staticPeer) \
+                {{- end }}
                 --p2p.listen.ip=0.0.0.0 \
                 --p2p.listen.tcp={{ $.Values.node.opNode.port.p2p.tcp }} \
                 --p2p.listen.udp={{ $.Values.node.opNode.port.p2p.udp }} \

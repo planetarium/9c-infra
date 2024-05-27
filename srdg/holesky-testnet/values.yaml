@@ -1,6 +1,6 @@
 externalSecret:
   enabled: true
-  prefix: "mothership-devnet"
+  prefix: "mothership-testnet"
 
 env:
   L1_RPC: https://ethereum-holesky-rpc.publicnode.com
@@ -10,9 +10,10 @@ storageClassName: gp3-extensible
 awsLoadBalancerSslCert: arn:aws:acm:ap-northeast-2:319679068466:certificate/3a295c76-66ac-433d-8448-758c83d374d3
 
 genesis:
-  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
+  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
   createSnapshot: false
-  s3SnapshotPath: mothership-devnet-holesky-genesis/snapshot
+  s3SnapshotPath: "mothership-devnet-holesky-genesis/testnet/snapshot"
+  snapshot: "https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet/snapshot/latest.tar.zst"
 
 blockscout:
   loadBalancerExternal: true
@@ -20,12 +21,12 @@ blockscout:
     storage: 100Gi
 
 sequencer:
-  enabled: false
-  scheme: "https"
-  host: "node-1.us-east-2.holesky.tests.mothership-pla.net"
+  host: "node-1.testnet.holesky.tests.mothership-pla.net"
+  port:
+    node: 8547
 
 node:
-  count: 2
+  count: 1
   loadBalancerExternal: true
   opNode:
     port:
@@ -41,5 +42,4 @@ node:
       requests:
         memory: 4Gi
   hosts:
-    - node-1.ap-northeast-2.holesky.tests.mothership-pla.net
-    - node-2.ap-northeast-2.holesky.tests.mothership-pla.net
+    - node-1.testnet-srdg.tests.mothership-pla.net
