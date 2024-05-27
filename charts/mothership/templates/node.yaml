@@ -110,7 +110,7 @@ spec:
                 fi
               done
               
-              sequencerIP=$(dig +short {{ $.Values.sequencer.host }} | tail -n1)
+              sequencerIP=$(dig +search +short {{ $.Values.sequencer.host }} | tail -n1)
               peerString=$(echo "/ip4/$sequencerIP/tcp/{{ $.Values.node.opNode.port.p2p.tcp }}/p2p/$peerID")
               echo $peerString > /node/staticPeer
           volumeMounts:
