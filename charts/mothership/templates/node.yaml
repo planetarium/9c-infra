@@ -97,19 +97,22 @@ spec:
           args:
             - |
               apk add jq bind-tools
-              peerID=$(curl -X POST -H "Content-Type: application/json" --data \
-              '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
-              {{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
-
-              if [ -z "$peerID" ]
-              then
-                echo "peerID is empty or null. Exiting the script."
-                exit 1
-              fi
+              while true; do
+                peerID=$(curl -X POST -H "Content-Type: application/json" --data \
+                '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
+                {{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
+              
+                if [ -n "$peerID" ]; then
+                  break
+                else
+                  echo "peerID is empty or null. Retrying..."
+                  sleep 5
+                fi
+              done
+              
               sequencerIP=$(dig +short {{ $.Values.sequencer.host }} | tail -n1)
               peerString=$(echo "/ip4/$sequencerIP/tcp/{{ $.Values.node.opNode.port.p2p.tcp }}/p2p/$peerID")
               echo $peerString > /node/staticPeer
-
           volumeMounts:
             - mountPath: /node
               name: node-volume
