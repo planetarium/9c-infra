@@ -22,6 +22,9 @@ global:
   resetSnapshot: true
   rollbackSnapshot: false
 
+  image:
+    tag: "git-d5df6a0d6dad4bfd1cf5c40bad141a92adc720ac"
+
 externalSecret:
   enabled: true
 
@@ -148,6 +151,9 @@ dataProvider:
     requests:
       cpu: 1
       memory: 4Gi
+
+  image:
+    tag: "git-dfb37a036a900368c7476d1537dd889e760a9fc6"
 
 explorer:
   enabled: false
