@@ -6,3 +6,5 @@ network:
   - "9c-network"
   - "heimdall"
   - "idun"
+  - "9c-network-v180"
+  - "heimdall-v180"
