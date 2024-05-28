@@ -3,7 +3,7 @@ logLevel: "debug"
 
 global:
   validatorPath: "validator-5.heimdall-v180.svc.cluster.local"
-  genesisBlockPath: "https://planets-internal-v180.nine-chronicles.com/planets/0x100000000001/genesis"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
@@ -36,7 +36,7 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://planets-internal-v180.nine-chronicles.com/planets/"
+    registryEndpoint: "https://planets-internal.nine-chronicles.com/planets-v180/"
     upstream: "0x100000000000"
     downstream: "0x100000000001"
 

@@ -3,7 +3,7 @@ logLevel: "debug"
 
 global:
   validatorPath: "validator-5.9c-network-v180.svc.cluster.local"
-  genesisBlockPath: "https://release-v180.nine-chronicles.com/genesis-block-9c-main"
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/odin/appsettings.json"
 
