@@ -158,7 +158,7 @@ spec:
                 index=$(printf "%d\n" $hexIndex)
                 sequencerHexIndex=$(curl -X POST http://$sequencerAddr:{{ $.Values.node.opGeth.port.rpc }} -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' | jq -r ".result")
                 sequencerIndex=$(printf "%d\n" $sequencerHexIndex)
-                if [ -z $index ] || [ -z $sequencerIndex ]
+                if [ -n $index ] && [ -n $sequencerIndex ] && [ $index -ne 0 ] && [ $sequencerIndex -ne 0 ]
                 then
                   echo "Failed to get index from node"
                   exit 1;
