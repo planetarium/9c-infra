@@ -35,26 +35,6 @@ spec:
           securityContext:
             runAsUser: 0
             runAsNonRoot: false
-        {{- if $.Values.genesis.createSnapshot }}
-        - name: create-snapshot
-          image: alpine:3.19
-          command: ["sh", "-c"]
-          args:
-            - |
-              apk add zstd aws-cli ; \
-              TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
-              tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
-              aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read
-          env:
-            - name: S3_SNAPSHOT_PATH
-              value: "{{ $.Values.genesis.s3SnapshotPath }}"
-          volumeMounts:
-            - mountPath: /data
-              name: op-geth-volume
-          securityContext:
-            runAsUser: 0
-            runAsNonRoot: false
-        {{- end }}
         {{- if $.Values.genesis.snapshot }}
         - name: fetch-snapshot
           image: curlimages/curl
@@ -148,6 +128,9 @@ spec:
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
             - --gcmode=archive
+            {{- with $.Values.node.opGeth.extraArgs }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: op-geth-rpc
               containerPort: {{ $.Values.node.opGeth.port.rpc }}

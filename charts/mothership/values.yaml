@@ -4,6 +4,7 @@ externalSecret:
 genesis:
   createSnapshot: false
   snapshot: ""
+  s3SnapshotPath: ""
   volume:
     storage: 100Mi
 
@@ -30,6 +31,7 @@ node:
         udp: 30303
     volume: &op-geth-volume
       storage: 100Gi
+    extraArgs: []
   opNode:
     image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.5
     port: &op-node-port
