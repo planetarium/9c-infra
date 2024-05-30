@@ -11,8 +11,8 @@ awsLoadBalancerSslCert: arn:aws:acm:us-east-2:319679068466:certificate/dbb84b9a-
 
 genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
-  createSnapshot: false
-  s3SnapshotPath: ""
+  createSnapshot: true
+  s3SnapshotPath: "mothership-devnet-holesky-genesis/testnet/snapshot"
 
 blockscout:
   loadBalancerExternal: true
