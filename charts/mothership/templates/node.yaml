@@ -128,7 +128,6 @@ spec:
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
             - --gcmode=archive
-            - --override.fjord=1717113600
             {{- with $.Values.node.opGeth.extraArgs }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
