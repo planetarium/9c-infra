@@ -133,6 +133,16 @@ node_groups = {
       ami_type          = "AL2_ARM_64"
     }
 
+    "9c-internal-ondemand-r7g_xl_2c" = {
+      instance_types    = ["r7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
     "9c-internal-t3_medium" = {
       instance_types    = ["t3.medium"]
       availability_zone = "us-east-2c"

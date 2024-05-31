@@ -116,7 +116,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_xl_2c
 
   loggingEnabled: true
 
