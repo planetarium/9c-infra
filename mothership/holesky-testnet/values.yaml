@@ -35,6 +35,9 @@ node:
     - node-1.testnet.holesky.tests.mothership-pla.net
     - node-2.testnet.holesky.tests.mothership-pla.net
   opGeth:
+    image: ghcr.io/planetarium/op-geth:latest
     resources:
       requests:
         memory: 4Gi
+    extraArgs:
+      - "--override.fjord=1717113600"
