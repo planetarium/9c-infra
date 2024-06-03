@@ -59,3 +59,7 @@ blockscout:
   gethRpc: http://node-1:8545
   db:
     storage: 10Gi
+
+bundler:
+  enabled: false
+  gethRpc: http://node-1:8545

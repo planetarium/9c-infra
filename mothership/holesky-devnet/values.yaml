@@ -38,3 +38,8 @@ node:
     resources:
       requests:
         memory: 4Gi
+
+bundler:
+  enabled: false
+  gethRpc: http://node-1:8545
+  entryPointContract: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"

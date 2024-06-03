@@ -1,0 +1,44 @@
+{{- if .Values.bundler.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stackup-bundler
+  namespace: {{ .Release.Namespace }}
+spec: 
+  selector:
+    matchLabels:
+      name: stackup-bundler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stackup-bundler
+    spec:
+      initContainers:
+        - name: wait-for-op-geth
+          image: curlimages/curl
+          command: ['sh', '-c']
+          args:
+            - |
+              until curl -sf {{ $.Values.bundler.gethRpc }};
+                do echo waiting for op-geth;
+                sleep 5;
+              done
+      containers:
+        - name: stackup-bundler
+          image: stackupwallet/stackup-bundler:v0.6.47
+          ports:
+            - containerPort: 4337
+          env:
+            - name: ERC4337_BUNDLER_ETH_CLIENT_URL
+              value: {{ $.Values.bundler.gethRpc }}
+            - name: ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS
+              value: {{ $.Values.bundler.entryPointContract }}
+            - name: ERC4337_BUNDLER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: private-keys
+                  key: ERC4337_BUNDLER_KEY
+            - name: ERC4337_BUNDLER_NATIVE_BUNDLER_COLLECTOR_TRACER
+              value: "bundlerCollectorTracer"
+{{- end }}
