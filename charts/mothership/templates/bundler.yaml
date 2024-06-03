@@ -3,17 +3,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: stackup-bundler
+  name: stackup-bundler-{{ $index }}
   namespace: {{ $.Release.Namespace }}
 spec: 
   selector:
     matchLabels:
-      name: stackup-bundler
+      name: stackup-bundler-{{ $index }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: stackup-bundler
+        app: stackup-bundler-{{ $index }}
     spec:
       initContainers:
         - name: wait-for-op-geth
@@ -49,7 +49,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: bundler-{{ $index }}
+  name: stackup-bundler-{{ $index }}
   namespace: {{ $.Release.Namespace }}
   annotations:
     {{- if $.Values.bundler.loadBalancerExternal }}
@@ -60,7 +60,7 @@ metadata:
     {{- end }}
 spec:
   selector:
-    name: bundler-{{ $index }}
+    name: stackup-bundler-{{ $index }}
   {{- if $.Values.node.loadBalancerExternal }}
   type: LoadBalancer
   {{- end }}
