@@ -61,7 +61,7 @@ metadata:
 spec:
   selector:
     name: stackup-bundler-{{ $index }}
-  {{- if $.Values.node.loadBalancerExternal }}
+  {{- if $.Values.bundler.loadBalancerExternal }}
   type: LoadBalancer
   {{- end }}
   ports:
