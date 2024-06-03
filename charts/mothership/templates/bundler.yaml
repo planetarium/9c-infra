@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: stackup-bundler-{{ $index }}
+        name: stackup-bundler-{{ $index }}
     spec:
       initContainers:
         - name: wait-for-op-geth
