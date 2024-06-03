@@ -89,6 +89,8 @@ spec:
         tempo:
           enabled: true
           nodeGroup: general-r7g_xl_2c
+        pyroscope:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc

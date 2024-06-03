@@ -50,3 +50,7 @@ argoWorkflows:
     enabled: false
   ingress:
     enabled: false
+
+pyroscope:
+  enabled: false
+  replicaCount: 2
