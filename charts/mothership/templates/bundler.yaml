@@ -20,7 +20,7 @@ spec:
           command: ['sh', '-c']
           args:
             - |
-              until curl -sf {{ $.Values.bundler.gethRpc }};
+              until curl -sf {{ .Values.bundler.gethRpc }};
                 do echo waiting for op-geth;
                 sleep 5;
               done
