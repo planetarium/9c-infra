@@ -43,6 +43,7 @@ node:
       - "--override.fjord=1717113600"
 
 bundler:
-  enabled: true
+  count: 1
+  loadBalancerExternal: true
   gethRpc: http://node-1:8545
   entryPointContract: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"

@@ -1,9 +1,10 @@
-{{- if .Values.bundler.enabled }}
+{{ range $idx := until (int $.Values.bundler.count) }}
+{{ $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: stackup-bundler
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
 spec: 
   selector:
     matchLabels:
@@ -26,9 +27,10 @@ spec:
               done
       containers:
         - name: stackup-bundler
-          image: stackupwallet/stackup-bundler:v0.6.47
+          image: {{ $.Values.bundler.image }}
           ports:
-            - containerPort: 4337
+            - name: stackup-bundler-rpc
+              containerPort: 4337
           env:
             - name: ERC4337_BUNDLER_ETH_CLIENT_URL
               value: {{ $.Values.bundler.gethRpc }}
@@ -41,4 +43,38 @@ spec:
                   key: ERC4337_BUNDLER_KEY
             - name: ERC4337_BUNDLER_NATIVE_BUNDLER_COLLECTOR_TRACER
               value: "bundlerCollectorTracer"
-{{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bundler-{{ $index }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    {{- if $.Values.bundler.loadBalancerExternal }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ $.Values.awsLoadBalancerSslCert }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    {{- end }}
+spec:
+  selector:
+    name: bundler-{{ $index }}
+  {{- if $.Values.node.loadBalancerExternal }}
+  type: LoadBalancer
+  {{- end }}
+  ports:
+    - name: stackup-bundler-rpc-port
+      targetPort: stackup-bundler-rpc
+      port: {{ $.Values.bundler.port }}
+    - name: stackup-bundler-rpc-http
+      targetPort: stackup-bundler-rpc
+      port: 80
+    - name: stackup-bundler-rpc-https
+      targetPort: stackup-bundler-rpc
+      port: 443
+
+---
+
+{{ end }}
