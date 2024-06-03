@@ -38,3 +38,6 @@ node:
     resources:
       requests:
         memory: 4Gi
+
+bundler:
+  enabled: false

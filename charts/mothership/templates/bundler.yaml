@@ -1,0 +1,79 @@
+{{- if .Values.bundler.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stackup-bundler
+  namespace: {{ .Release.Namespace }}
+spec: 
+  selector:
+    matchLabels:
+      name: stackup-bundler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: stackup-bundler
+    spec:
+      initContainers:
+        - name: wait-for-op-geth
+          image: curlimages/curl
+          command: ['sh', '-c']
+          args:
+            - |
+              until curl -sf {{ .Values.bundler.gethRpc }};
+                do echo waiting for op-geth;
+                sleep 5;
+              done
+      containers:
+        - name: stackup-bundler
+          image: {{ .Values.bundler.image }}
+          ports:
+            - name: stackup-bundler-rpc
+              containerPort: 4337
+          env:
+            - name: ERC4337_BUNDLER_ETH_CLIENT_URL
+              value: {{ .Values.bundler.gethRpc }}
+            - name: ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS
+              value: {{ .Values.bundler.entryPointContract }}
+            - name: ERC4337_BUNDLER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: private-keys
+                  key: ERC4337_BUNDLER_KEY
+            - name: ERC4337_BUNDLER_NATIVE_BUNDLER_COLLECTOR_TRACER
+              value: "bundlerCollectorTracer"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: stackup-bundler
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if .Values.bundler.loadBalancerExternal }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ .Values.awsLoadBalancerSslCert }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    {{- end }}
+spec:
+  selector:
+    name: stackup-bundler
+  {{- if .Values.bundler.loadBalancerExternal }}
+  type: LoadBalancer
+  {{- end }}
+  ports:
+    - name: stackup-bundler-rpc-port
+      targetPort: stackup-bundler-rpc
+      port: {{ .Values.bundler.port }}
+    - name: stackup-bundler-rpc-http
+      targetPort: stackup-bundler-rpc
+      port: 80
+    - name: stackup-bundler-rpc-https
+      targetPort: stackup-bundler-rpc
+      port: 443
+
+---
+
+{{- end }}
