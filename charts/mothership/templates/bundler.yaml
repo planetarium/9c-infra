@@ -28,7 +28,7 @@ spec:
         - name: stackup-bundler
           image: {{ .Values.bundler.image }}
           ports:
-            - name: stackup-bundler-rpc
+            - name: bundler-rpc
               containerPort: 4337
           env:
             - name: ERC4337_BUNDLER_ETH_CLIENT_URL
@@ -64,14 +64,14 @@ spec:
   type: LoadBalancer
   {{- end }}
   ports:
-    - name: stackup-bundler-rpc-port
-      targetPort: stackup-bundler-rpc
+    - name: bundler-rpc-port
+      targetPort: bundler-rpc
       port: {{ .Values.bundler.port }}
-    - name: stackup-bundler-rpc-http
-      targetPort: stackup-bundler-rpc
+    - name: bundler-rpc-http
+      targetPort: bundler-rpc
       port: 80
-    - name: stackup-bundler-rpc-https
-      targetPort: stackup-bundler-rpc
+    - name: bundler-rpc-https
+      targetPort: bundler-rpc
       port: 443
 
 ---
