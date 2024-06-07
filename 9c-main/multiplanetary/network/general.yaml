@@ -43,7 +43,7 @@ remoteActionEvaluatorHeadless:
 
 rudolfService:
   image:
-    tag: "git-1f93812f5c1a5626298eb97a59e97dececa052ab"
+    tag: "git-278252e48d7d13306dcb1820bd9524ee6a27203c"
 
 bridgeService:
   image:
