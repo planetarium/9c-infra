@@ -372,9 +372,6 @@ bridge:
 testHeadless1:
   enabled: true
 
-  image:
-    tag: "git-d0ef9a8410e1dd8ba9474d046553db018d1eef27"
-
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
