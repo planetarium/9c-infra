@@ -382,9 +382,6 @@ testHeadless1:
   enabled: true
   replicas: 1
 
-  image:
-    tag: "git-d0ef9a8410e1dd8ba9474d046553db018d1eef27"
-
   host: "heimdall-test-1.nine-chronicles.com"
 
   ports:
