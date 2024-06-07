@@ -247,6 +247,8 @@ dataProvider:
     value: "1"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: NC_Planet
+    value: Odin
 
 explorer:
   enabled: false

@@ -284,6 +284,14 @@ dataProvider:
       cpu: '3'
       memory: 26Gi
 
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: NC_Planet
+    value: Heimdall
+
 explorer:
   enabled: false
 
