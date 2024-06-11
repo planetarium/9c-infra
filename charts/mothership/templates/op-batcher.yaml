@@ -47,4 +47,8 @@ spec:
           ports:
             - containerPort: {{ .Values.opBatcher.port.rpc }}
               protocol: TCP
+      {{- with $.Values.opBatcher.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

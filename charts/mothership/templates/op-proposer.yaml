@@ -64,6 +64,10 @@ spec:
         - name: genesis-volume
           persistentVolumeClaim:
             claimName: genesis-volume
+      {{- with $.Values.opProposer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: genesis-volume
