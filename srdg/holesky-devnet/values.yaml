@@ -23,6 +23,8 @@ sequencer:
   enabled: false
   scheme: "https"
   host: "node-1.us-east-2.holesky.tests.mothership-pla.net"
+  port:
+    node: 8547
 
 node:
   count: 2
