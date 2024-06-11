@@ -54,3 +54,4 @@ argoWorkflows:
 pyroscope:
   enabled: false
   replicaCount: 2
+  nodeGroup: ""
