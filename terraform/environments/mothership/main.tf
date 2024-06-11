@@ -58,10 +58,19 @@ module "common" {
       instance_types    = ["r7g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 2
+      desired_size      = 1
       min_size          = 0
       max_size          = 5
       ami_type          = "AL2_ARM_64"
+    }
+    "mothership-r7a_l_2c" = {
+      instance_types    = ["r7a.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_x86_64"
     }
   }
 }
