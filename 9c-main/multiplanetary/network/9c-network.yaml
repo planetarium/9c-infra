@@ -44,7 +44,7 @@ ingress:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-a5572ca10a3497b3897e650b99d4713a3355eccb"
+  image: "planetariumhq/ninechronicles-snapshot:git-628c4bfa8b00dc071a8cf6a2a80b5e84c1d80262"
   path: "main/partition"
 
   fullSnapshot:
