@@ -80,7 +80,7 @@ spec:
               while true; do
                 peerID=$(curl -X POST -H "Content-Type: application/json" --data \
                 '{"jsonrpc":"2.0","method":"opp2p_self","params":[],"id":1}'  \
-                {{ $.Values.sequencer.scheme }}://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
+                http://{{ $.Values.sequencer.host }}{{- with $.Values.sequencer.port.node }}:{{ . }}{{- end }} | jq -r ".result.peerID")
               
                 if [ -n "$peerID" ]; then
                   break

@@ -33,12 +33,12 @@ node:
     port:
       p2p:
         tcp: 9003
-        udp: 9222
+        udp: 9003
   opGeth:
     port:
       p2p:
         tcp: 30303
-        udp: 30304
+        udp: 30303
     resources:
       requests:
         memory: 4Gi
