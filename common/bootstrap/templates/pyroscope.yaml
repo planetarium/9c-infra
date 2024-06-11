@@ -22,6 +22,10 @@ spec:
       values: |-
         pyroscope:
           replicaCount: {{ .Values.pyroscope.replicaCount }}
+          {{- with $.Values.pyroscope.nodeGroup }}
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: {{ . }}
+          {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: pyroscope

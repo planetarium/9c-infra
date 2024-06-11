@@ -122,6 +122,9 @@ spec:
           enabled: true
         tempo:
           enabled: true
+        pyroscope:
+          enabled: true
+          nodeGroup: 9c-internal-ondemand-r7g_l_2c
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
