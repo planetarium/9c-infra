@@ -13,7 +13,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-9013d174c6f157475f3640fbdc66bde941ffcbb4"
+    tag: "git-fa704c2d3d207a0935912f107fd6264148680cc4"
 
 worldBoss:
   image:
