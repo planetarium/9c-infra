@@ -34,6 +34,8 @@ node:
   hosts:
     - node-1.testnet.holesky.tests.mothership-pla.net
     - node-2.testnet.holesky.tests.mothership-pla.net
+  opNode:
+    image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.7-rc.1
   opGeth:
     image: ghcr.io/planetarium/op-geth:latest
     resources:
@@ -41,6 +43,16 @@ node:
         memory: 4Gi
     extraArgs:
       - "--override.fjord=1717113600"
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+
+opBatcher:
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.6
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+
+opProposer:
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.6
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
