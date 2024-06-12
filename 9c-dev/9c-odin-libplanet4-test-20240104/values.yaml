@@ -22,9 +22,6 @@ global:
   resetSnapshot: true
   rollbackSnapshot: true
 
-  pyroscope:
-    enabled: true
-
 ingress:
   enabled: true
   hosts:
