@@ -20,6 +20,9 @@ global:
   resetSnapshot: true
   rollbackSnapshot: false
 
+  pyroscope:
+    enabled: true
+
 externalSecret:
   enabled: true
   prefix: "9c-internal-v2/heimdall"
@@ -249,11 +252,11 @@ worldBoss:
     eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 testHeadless1:
-  enabled: false
+  enabled: true
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "git-39894281ca05d15acf6c476efe23388bb182cc7e"
+    tag: "git-340af53a2c40049c2b202ed0a87b8841bd34f60b"
 
   host: "heimdall-internal-test-1.nine-chronicles.com"
 

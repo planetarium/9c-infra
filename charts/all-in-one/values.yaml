@@ -29,6 +29,10 @@ global:
   slackToken: ""
   slackWebHookUrl: ""
 
+  pyroscope:
+    enabled: false
+    address: "http://pyroscope.pyroscope.svc.cluster.local:4040"
+
 externalSecret:
   enabled: false
   prefix: ""
