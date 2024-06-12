@@ -59,10 +59,11 @@ spec:
         {{- else }}
         - name: genesis-init
           image: {{ $.Values.node.opGeth.image }}
+          command: ["sh", "-c"]
           args:
-            - init
-            - --datadir=/data
-            - /node/genesis.json
+            - |
+              test -e /data/geth/chaindata/CURRENT && exit 0 ; \
+              geth init --datadir=/data /node/genesis.json
           volumeMounts:
             - mountPath: /data
               name: op-geth-volume
