@@ -80,7 +80,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /data
-          name: remote-headless-data-{{ $index }}
+          name: test-headless-data-1
       {{- end }}
       - command:
         - sh
