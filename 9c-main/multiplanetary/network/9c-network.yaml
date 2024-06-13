@@ -121,7 +121,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
-  - --consensus-target-block-interval=4500
+  - --consensus-target-block-interval=5500
   - --consensus-propose-second-base=30
 
   consensusSeedStrings:
