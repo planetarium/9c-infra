@@ -41,8 +41,6 @@ node:
     resources:
       requests:
         memory: 4Gi
-    extraArgs:
-      - "--override.fjord=1717113600"
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
