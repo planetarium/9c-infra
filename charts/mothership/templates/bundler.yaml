@@ -33,8 +33,6 @@ spec:
           env:
             - name: ERC4337_BUNDLER_ETH_CLIENT_URL
               value: {{ .Values.bundler.gethRpc }}
-            - name: ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS
-              value: {{ .Values.bundler.entryPointContract }}
             - name: ERC4337_BUNDLER_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
