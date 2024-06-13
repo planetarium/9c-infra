@@ -349,10 +349,10 @@ fullState:
   resources:
     requests:
       cpu: 3
-      memory: 50Gi
+      memory: 25Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-c7g_4xl_2c_test
 
 worldBoss:
   enabled: true
