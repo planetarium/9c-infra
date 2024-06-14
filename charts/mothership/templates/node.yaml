@@ -22,8 +22,9 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              test -e genesis.json && test -e rollup.json && exit 0 ; \
-              curl -L --remote-name-all $GENESIS_SOURCE/{genesis.json,rollup.json} ; \
+              curl -LO --clobber $GENESIS_SOURCE/rollup.json ; \
+              test -e genesis.json && exit 0 ; \
+              curl -LO $GENESIS_SOURCE/genesis.json ; \
               hexdump -vn32 -e'4/4 "%08x"' /dev/urandom > jwt.txt
           workingDir: /node
           env:
