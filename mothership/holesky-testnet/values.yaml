@@ -34,10 +34,7 @@ node:
   hosts:
     - node-1.testnet.holesky.tests.mothership-pla.net
     - node-2.testnet.holesky.tests.mothership-pla.net
-  opNode:
-    image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.7-rc.1
   opGeth:
-    image: ghcr.io/planetarium/op-geth:latest
     resources:
       requests:
         memory: 4Gi
@@ -45,16 +42,13 @@ node:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
 opBatcher:
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.6
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
 opProposer:
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.6
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
 bundler:
   enabled: true
   loadBalancerExternal: true
-  entryPointContract: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"
