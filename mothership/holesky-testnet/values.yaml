@@ -48,3 +48,6 @@ opBatcher:
 opProposer:
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+
+bundler:
+  enabled: true
