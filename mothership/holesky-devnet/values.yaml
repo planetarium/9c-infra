@@ -38,6 +38,16 @@ node:
     resources:
       requests:
         memory: 4Gi
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7i_l_2c
+
+opBatcher:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7i_l_2c
+
+opProposer:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7i_l_2c
 
 bundler:
   enabled: false

@@ -72,5 +72,13 @@ module "common" {
       max_size          = 5
       ami_type          = "AL2_x86_64"
     }
+    "mothership-r7i_l_2c" = {
+      instance_types    = ["r7i.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 2
+      min_size          = 0
+      max_size          = 5
+    }
   }
 }
