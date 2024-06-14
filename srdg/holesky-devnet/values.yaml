@@ -45,3 +45,13 @@ node:
   hosts:
     - node-1.ap-northeast-2.holesky.tests.mothership-pla.net
     - node-2.ap-northeast-2.holesky.tests.mothership-pla.net
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: srdg-m5_l_2c
+
+opBatcher:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: srdg-m5_l_2c
+
+opProposer:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: srdg-m5_l_2c
