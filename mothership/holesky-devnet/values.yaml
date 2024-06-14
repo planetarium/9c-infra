@@ -50,4 +50,5 @@ opProposer:
     eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
 
 bundler:
-  enabled: false
+  enabled: true
+  loadBalancerExternal: true
