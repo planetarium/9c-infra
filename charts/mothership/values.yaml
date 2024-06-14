@@ -63,6 +63,6 @@ blockscout:
 bundler:
   enabled: false
   image: stackupwallet/stackup-bundler:v0.6.47
-  loadBalancerExternal: true
+  loadBalancerExternal: false
   gethRpc: http://node-1:8545
   port: 4337

@@ -51,3 +51,4 @@ opProposer:
 
 bundler:
   enabled: true
+  loadBalancerExternal: true
