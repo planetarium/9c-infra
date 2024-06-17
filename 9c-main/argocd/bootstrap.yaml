@@ -182,6 +182,10 @@ spec:
         tempo:
           enabled: true
           nodeGroup: 9c-main-r7g_xl_2c
+        pyroscope:
+          enabled: true
+          replicaCount: 2
+          nodeGroup: 9c-main-r7g_xl_2c
 
   destination:
     server: https://kubernetes.default.svc
