@@ -7,7 +7,7 @@ global:
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/odin/appsettings.json"
 
-  appProtocolVersion: "1/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQDFvvGTtUSSRj524xJf0EcxmmU6UaXVDAfp3fsb7P6fkwIgdSicMlCnEUZwsPr+W6VLg+2ReY4+FIRC2vB1Yssz7EU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA1LTE5ZQ=="
+  appProtocolVersion: "200190/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCNQmMSk4nnbOXSpe9yk0Q2ecyoQYrnZpQxmMeVz+Ve0wIgb9v1jf4R6DL8iikurLgzH9gYQJ+zvEBsEqQqmS55nPc=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA2LTE3ZQ=="
 
   peerStrings:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.9c-network.svc.cluster.local,31234"
