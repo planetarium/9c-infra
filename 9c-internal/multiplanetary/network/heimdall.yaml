@@ -6,7 +6,7 @@ global:
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
-  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+  appProtocolVersion: "200190/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCNQmMSk4nnbOXSpe9yk0Q2ecyoQYrnZpQxmMeVz+Ve0wIgb9v1jf4R6DL8iikurLgzH9gYQJ+zvEBsEqQqmS55nPc=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA2LTE3ZQ=="
 
   peerStrings:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
