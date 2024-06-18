@@ -17,10 +17,10 @@ GQL_QUERY = {"query": "{ nodeStatus { tip { index } } }"}
 Network = Literal["9c-internal"]
 Planet = Literal["heimdall"]
 
-GQL_ENDPOINTS = {
+SNAPSHOT_METADATA_URL_MAP = {
     "9c-internal": {
-        "odin": "https://9c-internal-rpc-1.nine-chronicles.com/graphql",
-        "heimdall": "https://heimdall-internal-rpc-1.nine-chronicles.com/graphql",
+        "odin": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/latest.json",
+        "heimdall": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/heimdall/latest.json",
     },
 }
 
@@ -45,9 +45,9 @@ class BridgeServiceUpdater:
         )
         result_values_file = remote_values_file_contents
 
-        upstream, downstream = get_endpoint_pair(dir_name, file_name)
-        upstream_tip_index = fetch_tip_index(upstream)
-        downstream_tip_index = fetch_tip_index(downstream)
+        upstream, downstream = get_metadata_url_pair(dir_name, file_name)
+        upstream_tip_index = fetch_tip_index_from_snapshot_metadata(upstream)
+        downstream_tip_index = fetch_tip_index_from_snapshot_metadata(downstream)
 
         result_values_file = update_index(result_values_file, "upstream", str(upstream_tip_index))
         result_values_file = update_index(result_values_file, "downstream", str(downstream_tip_index))
@@ -117,6 +117,12 @@ def fetch_tip_index(endpoint: str) -> int:
     return response_json['data']['nodeStatus']['tip']['index']
 
 
+def fetch_tip_index_from_snapshot_metadata(metadataUrl: str) -> int:
+    response_json = requests.get(metadataUrl).json()
+
+    return response_json['Header']['Metadata']['Index']
+
+
 def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_index: str):
     def update_index_recursively(data):
         if isinstance(data, dict):
@@ -143,9 +149,9 @@ def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_i
     return new_doc
 
 
-def get_endpoint_pair(network: Network, planet: Planet) -> Tuple[str, str]:
+def get_metadata_url_pair(network: Network, planet: Planet) -> Tuple[str, str]:
     match (network, planet):
         case ("9c-internal", "heimdall"):
-            return (GQL_ENDPOINTS["9c-internal"]["odin"], GQL_ENDPOINTS["9c-internal"]["heimdall"])
+            return (SNAPSHOT_METADATA_URL_MAP["9c-internal"]["odin"], SNAPSHOT_METADATA_URL_MAP["9c-internal"]["heimdall"])
 
     raise TypeError(f"Not supported network and planet: {network}, {planet}")
