@@ -6,7 +6,7 @@ global:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: git-44329b07940cc50bc825ad8eb6deb6be989e1958
+    tag: git-b530441e86976d9fca9fc860a16f6a9451cfae03
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
