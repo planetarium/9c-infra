@@ -94,6 +94,7 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -181,6 +182,7 @@ validator:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
   - --consensus-target-block-interval=7500
+  - --arena-participants-sync=false
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"

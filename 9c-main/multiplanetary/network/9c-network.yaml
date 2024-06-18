@@ -123,6 +123,7 @@ validator:
   - --tx-life-time=10
   - --consensus-target-block-interval=5500
   - --consensus-propose-second-base=30
+  - --arena-participants-sync=false
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
@@ -299,6 +300,7 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
