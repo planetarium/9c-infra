@@ -133,6 +133,22 @@ module "common" {
       }]
     }
 
+   "9c-main-m7i_flex_2xl_2c_test" = {
+      instance_types    = ["m7i-flex.2xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 1
+      max_size          = 10
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "remote-headless-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
     "9c-main-r7g_xl_2c_validator" = {
       instance_types    = ["r7g.xlarge"]
       availability_zone = "us-east-2c"
