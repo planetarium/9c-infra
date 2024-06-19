@@ -214,6 +214,9 @@ spec:
             - --rollup.disabletxpoolgossip=true
             - --syncmode=full
             - --gcmode=archive
+            {{- with $.Values.node.opGeth.extraArgs }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: op-geth-rpc
               containerPort: {{ $.Values.node.opGeth.port.rpc }}
