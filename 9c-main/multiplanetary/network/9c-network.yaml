@@ -296,12 +296,19 @@ fullState:
 
   useTurnServer: false
 
+  setupPyroscope: true
+
   host: "9c-main-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
+
+  image:
+    tag: "git-5d3403b5c884ce9b0cc3eb895185de8eecc01323"
+
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -342,6 +349,28 @@ fullState:
     value: "1"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: PYROSCOPE_APPLICATION_NAME
+    value: main-full-state
+  - name: PYROSCOPE_SERVER_ADDRESS
+    value: http://pyroscope.pyroscope.svc.cluster.local:4040
+  - name: PYROSCOPE_PROFILING_ENABLED
+    value: "1"
+  - name: CORECLR_ENABLE_PROFILING
+    value: "1"
+  - name: CORECLR_PROFILER
+    value: '{BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}'
+  - name: CORECLR_PROFILER_PATH
+    value: /data/Pyroscope.Profiler.Native.so
+  - name: LD_PRELOAD
+    value: /data/Pyroscope.Linux.ApiWrapper.x64.so
+  - name: PYROSCOPE_PROFILING_CPU_ENABLED
+    value: "true"
+  - name: PYROSCOPE_PROFILING_EXCEPTION_ENABLED
+    value: "true"
+  - name: PYROSCOPE_PROFILING_ALLOCATION_ENABLED
+    value: "true"
+  - name: PYROSCOPE_PROFILING_LOCK_ENABLED
+    value: "true"
 
   tolerations:
   - effect: NoSchedule
@@ -355,7 +384,7 @@ fullState:
       memory: 25Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-c7g_4xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7i_flex_2xl_2c_test
 
 worldBoss:
   enabled: true
