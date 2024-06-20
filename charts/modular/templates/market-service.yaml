@@ -1,0 +1,26 @@
+{{- if $.Values.marketService.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-market-service
+  namespace: argocd
+spec:
+  project: {{ .Release.Name }}
+  source:
+    repoURL: https://github.com/eseiker/9c-infra.git
+    targetRevision: modular
+    path: charts/market-service
+    helm:
+      values: |-
+        namespace: {{ .Release.Name }}
+
+        {{- with $.Values.marketService }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}

@@ -1,0 +1,50 @@
+{{- if $.Values.worldBoss.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-worldboss
+  namespace: argocd
+spec:
+  project: {{ .Release.Name }}
+  source:
+    repoURL: https://github.com/eseiker/9c-infra.git
+    targetRevision: modular
+    path: charts/world-boss
+    helm:
+      values: |-
+        namespace: {{ .Release.Name }}
+
+        image:
+          repository: {{ $.Values.worldBoss.image.repository }}
+          pullPolicy: Always
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: {{ $.Values.worldBoss.image.tag }}
+
+        db:
+          local: {{ $.Values.worldBoss.db.local }}
+          storage:
+            size: {{ $.Values.worldBoss.db.size }}
+            class: {{ $.Values.worldBoss.db.storageClass }}
+
+        worldBossEnv:
+          databaseUrl: {{ $.Values.worldBoss.worldBossEnv.databaseUrl }}
+          redisHost: {{ $.Values.worldBoss.worldBossEnv.redisHost }}
+          redisPort: {{ $.Values.worldBoss.worldBossEnv.redisPort }}
+          kmsKeyId: {{ $.Values.worldBoss.worldBossEnv.kmsKeyId }}
+          slackToken: {{ $.Values.worldBoss.worldBossEnv.slackToken }}
+          celeryBrokerUrl: {{ $.Values.worldBoss.worldBossEnv.celeryBrokerUrl }}
+          celeryResultBackend: {{ $.Values.worldBoss.worldBossEnv.celeryResultBackend }}
+          slackSigningSecret: {{ $.Values.worldBoss.worldBossEnv.slackSigningSecret }}
+          sentryDsn: {{ $.Values.worldBoss.worldBossEnv.sentryDsn }}
+
+        {{- with $.Values.worldBoss.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}
