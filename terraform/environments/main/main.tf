@@ -140,7 +140,6 @@ module "common" {
       desired_size      = 1
       min_size          = 1
       max_size          = 10
-      ami_type          = "AL2_ARM_64"
       disk_size         = 50
       taints = [{
         key    = "dedicated"
