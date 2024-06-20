@@ -137,8 +137,8 @@ module "common" {
       instance_types    = ["r7g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 0
-      min_size          = 0
+      desired_size      = 4
+      min_size          = 4
       max_size          = 10
       ami_type          = "AL2_ARM_64"
       disk_size         = 50
@@ -153,8 +153,8 @@ module "common" {
       instance_types    = ["r7g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
-      desired_size      = 4
-      min_size          = 4
+      desired_size      = 0
+      min_size          = 0
       max_size          = 10
       ami_type          = "AL2_ARM_64"
       disk_size         = 50
