@@ -433,6 +433,7 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   tolerations:
   - effect: NoSchedule
@@ -492,6 +493,7 @@ testHeadless2:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   tolerations:
   - effect: NoSchedule
@@ -532,6 +534,7 @@ jwtHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   resources:
     requests:

@@ -434,6 +434,7 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   resources:
     requests:
@@ -480,6 +481,7 @@ testHeadless2:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   host: "9c-main-test-2.nine-chronicles.com"
 
@@ -530,6 +532,7 @@ jwtHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync=false
 
   resources:
     requests:
