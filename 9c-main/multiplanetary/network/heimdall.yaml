@@ -243,6 +243,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --arena-participants-sync-interval=4000
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
