@@ -88,9 +88,6 @@ seed:
 validator:
   count: 4
 
-  image:
-    tag: "git-dcfc4e83ebf69937f6944191bbb28a8bf1847c6b"
-
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "false"
@@ -307,9 +304,6 @@ fullState:
   - --no-reduce-store
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
-
-  image:
-    tag: "git-dcfc4e83ebf69937f6944191bbb28a8bf1847c6b"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
