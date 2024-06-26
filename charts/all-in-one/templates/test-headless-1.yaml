@@ -71,7 +71,7 @@ spec:
           - >
             apk --no-cache add curl tar
 
-            curl -s -L https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.14-pyroscope/pyroscope.0.8.14-glibc-aarch64.tar.gz  | tar xvz -C /data
+            curl -s -L https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.14-pyroscope/pyroscope.0.8.14-glibc-x86_64.tar.gz | tar xvz -C /data
         image: alpine
         imagePullPolicy: Always
         name: setup-pyroscope
@@ -139,8 +139,10 @@ spec:
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
         - --planet={{ $.Values.global.planet }}
-        {{- if $.Values.global.headlessAppsettingsPath }}
-        - --config={{ $.Values.global.headlessAppsettingsPath }}
+        {{- if .Values.testHeadless1.headlessAppsettingsPath }}
+        - --config={{ .Values.testHeadless1.headlessAppsettingsPath }}
+        {{- else if .Values.global.headlessAppsettingsPath }}
+        - --config={{ .Values.global.headlessAppsettingsPath }}
         {{- end }}
         {{- with $.Values.testHeadless1.extraArgs }}
           {{- toYaml . | nindent 8 }}
