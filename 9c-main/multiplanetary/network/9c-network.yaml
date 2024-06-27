@@ -124,7 +124,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
-  - --consensus-target-block-interval=4500
+  - --consensus-target-block-interval=4000
   - --consensus-propose-second-base=30
   - --arena-participants-sync=false
 
