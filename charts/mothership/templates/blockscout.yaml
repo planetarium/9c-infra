@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: blockscout
-          image: blockscout/blockscout:6.1.0
+          image: {{ .Values.blockscout.image }}
           args:
             - sh
             - -c
