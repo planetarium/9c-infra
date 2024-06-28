@@ -54,6 +54,7 @@ opProposer:
     rpc: 8560
 
 blockscout:
+  image: blockscout/blockscout:6.1.0
   port: 5000
   loadBalancerExternal: false
   gethRpc: http://node-1:8545
