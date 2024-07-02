@@ -44,7 +44,7 @@ spec:
                 --rollup-rpc={{ .Values.sequencer.scheme }}://{{ .Values.sequencer.host }}{{- with .Values.sequencer.port.node }}:{{ . }}{{- end }} \
                 --rpc.port={{ .Values.opProposer.port.rpc }} \
                 --l2oo-address=$(cat /genesis/L2OutputOracleProxyAddress) \
-                --poll-interval=12s
+                --wait-node-sync
           env:
             - name: L1_RPC
               value: {{ .Values.env.L1_RPC }}

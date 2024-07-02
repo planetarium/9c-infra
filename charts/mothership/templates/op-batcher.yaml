@@ -30,12 +30,9 @@ spec:
                 --rpc.port={{ .Values.opBatcher.port.rpc }} \
                 --rpc.addr=0.0.0.0 \
                 --rpc.enable-admin \
-                --poll-interval=1s \
-                --sub-safety-margin=6 \
-                --num-confirmations=1 \
-                --safe-abort-nonce-too-low-count=3 \
-                --resubmission-timeout=30s \
-                --max-channel-duration=1
+                --max-channel-duration=5 \
+                --batch-type=1 \
+                --wait-node-sync
           env:
             - name: L1_RPC
               value: {{ .Values.env.L1_RPC }}
