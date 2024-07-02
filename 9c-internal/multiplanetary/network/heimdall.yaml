@@ -74,7 +74,7 @@ bridgeService:
     enabled: true
     defaultStartBlockIndex:
       upstream: '11002970'
-      downstream: "2296808"
+      downstream: "2496506"
 
 bridgeServiceApi:
   enabled: true
