@@ -52,6 +52,11 @@ spec:
           volumeMounts:
             - name: proxyd-volume
               mountPath: /etc/proxyd
+      {{- with $.Values.proxyd.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
 ---
 
 apiVersion: v1

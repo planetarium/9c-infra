@@ -52,3 +52,9 @@ opProposer:
 bundler:
   enabled: true
   loadBalancerExternal: true
+
+proxyd:
+  enabled: true
+  loadBalancerExternal: true
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c

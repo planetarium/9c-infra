@@ -21,7 +21,7 @@ node:
   count: 1
   loadBalancerExternal: false
   opGeth:
-    image: &op-geth-image stackupwallet/op-geth:v1.101315.2
+    image: &op-geth-image ghcr.io/planetarium/op-geth:latest
     port: &op-geth-port
       rpc: 8545
       wsrpc: 8546
@@ -65,7 +65,7 @@ bundler:
   enabled: false
   image: stackupwallet/stackup-bundler:v0.6.47
   loadBalancerExternal: false
-  gethRpc: http://node-1:8545
+  gethRpc: http://proxy:8080
   port: 4337
 
 proxyd: 
