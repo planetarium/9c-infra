@@ -67,3 +67,10 @@ bundler:
   loadBalancerExternal: false
   gethRpc: http://node-1:8545
   port: 4337
+
+proxyd: 
+  enabled: false
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/proxyd:v4.6.0
+  loadBalancerExternal: false
+  gethRpc: http://node-1:8545
+  port: 8080

@@ -1,0 +1,88 @@
+{{- if .Values.proxyd.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxyd
+  namespace: {{ .Release.Namespace }}
+spec: 
+  selector:
+    matchLabels:
+      name: proxyd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: proxyd
+    spec:
+      volumes:
+        - name: proxyd-volume
+          emptyDir: {}
+      initContainers:
+        - name: fetch-config
+          image: curlimages/curl
+          command: ["sh", "-c"]
+          args:
+            - |
+              curl -LO $GENESIS_SOURCE/proxyd.toml ;
+          workingDir: /etc/proxyd
+          env:
+            - name: GENESIS_SOURCE
+              value: "{{ $.Values.genesis.source }}"
+          volumeMounts:
+            - mountPath: /etc/proxyd
+              name: proxyd-volume
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+        - name: wait-for-op-geth
+          image: curlimages/curl
+          command: ['sh', '-c']
+          args:
+            - |
+              until curl -sf {{ .Values.proxyd.gethRpc }};
+                do echo waiting for op-geth;
+                sleep 5;
+              done
+      containers:
+        - name: proxyd
+          image: {{ .Values.proxyd.image }}
+          ports:
+            - name: proxyd-rpc
+              containerPort: 8080
+          volumeMounts:
+            - name: proxyd-volume
+              mountPath: /etc/proxyd
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxyd
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if .Values.proxyd.loadBalancerExternal }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ .Values.awsLoadBalancerSslCert }}
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    {{- end }}
+spec:
+  selector:
+    name: proxyd
+  {{- if .Values.proxyd.loadBalancerExternal }}
+  type: LoadBalancer
+  {{- end }}
+  ports:
+    - name: proxyd-rpc-port
+      targetPort: proxyd-rpc
+      port: {{ .Values.proxyd.port }}
+    - name: proxyd-rpc-http
+      targetPort: proxyd-rpc
+      port: 80
+    - name: proxyd-rpc-https
+      targetPort: proxyd-rpc
+      port: 443
+
+---
+
+{{- end }}
