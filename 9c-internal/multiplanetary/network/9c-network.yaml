@@ -93,6 +93,7 @@ validator:
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
   - --tx-life-time=2000000000
+  - --remote-key-value-service
 
 remoteHeadless:
   image:
