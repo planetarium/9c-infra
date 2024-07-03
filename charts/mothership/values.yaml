@@ -21,7 +21,7 @@ node:
   count: 1
   loadBalancerExternal: false
   opGeth:
-    image: &op-geth-image ghcr.io/planetarium/op-geth:latest
+    image: &op-geth-image ghcr.io/planetarium/op-geth:v1.101315.2
     port: &op-geth-port
       rpc: 8545
       wsrpc: 8546
