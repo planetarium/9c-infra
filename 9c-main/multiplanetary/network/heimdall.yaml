@@ -181,7 +181,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
-  - --consensus-target-block-interval=7500
+  - --consensus-target-block-interval=8000
   - --arena-participants-sync=false
 
   consensusSeedStrings:
