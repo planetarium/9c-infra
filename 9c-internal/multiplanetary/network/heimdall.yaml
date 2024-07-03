@@ -228,6 +228,7 @@ validator:
   extraArgs:
   - --tx-life-time=2000000000
   - --planet=HeimdallInternal
+  - --remote-key-value-service
 
 worldBoss:
   enabled: true
