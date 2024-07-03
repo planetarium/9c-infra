@@ -73,8 +73,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: '11002970'
-      downstream: "2296808"
+      upstream: '11019207'
+      downstream: "2513221"
 
 bridgeServiceApi:
   enabled: true
@@ -228,6 +228,7 @@ validator:
   extraArgs:
   - --tx-life-time=2000000000
   - --planet=HeimdallInternal
+  - --remote-key-value-service
 
 worldBoss:
   enabled: true
