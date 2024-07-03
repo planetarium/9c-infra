@@ -20,7 +20,7 @@ spec:
           command: ['sh', '-c']
           args:
             - |
-              until curl -sf {{ .Values.bundler.gethRpc }};
+              until curl -sf -X POST {{ .Values.bundler.gethRpc }} -H "Content-Type: application/json" -d '{"id":0,"method":"eth_chainId","params":[],"jsonrpc":"2.0"}';
                 do echo waiting for op-geth;
                 sleep 5;
               done
