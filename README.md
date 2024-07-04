@@ -21,10 +21,8 @@ root directory를 보면 다음과 같이 구성되어 있습니다.
 ```
 9c-infra
 ├── 9c-internal
-├── 9c-internal-mead
 ├── 9c-main
 ├── 9c-sample
-├── 9c-sample-vpc
 ├── GUIDE.md
 ├── LICENSE
 ├── README.md
