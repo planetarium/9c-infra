@@ -5,6 +5,9 @@
 clusterName: "9c-sample"
 logLevel: "debug"
 
+apps:
+  - volume-rotator
+
 global:
   image:
     repository: planetariumhq/ninechronicles-headless

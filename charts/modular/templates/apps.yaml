@@ -1,0 +1,30 @@
+{{- range $.Values.apps }}
+{{- $chart := . }}
+{{- $values := index $.Values (camelcase $chart) }}
+{{- if $values.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-{{ $chart }}
+  namespace: argocd
+spec:
+  project: {{ .Release.Name }}
+  source:
+    repoURL: https://github.com/eseiker/9c-infra.git
+    targetRevision: modular
+    path: charts/{{ $chart }}
+    helm:
+      values: |-
+        namespace: {{ .Release.Name }}
+
+        {{- with $values }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}
+{{- end }}
