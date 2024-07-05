@@ -28,8 +28,8 @@ metadata:
 spec:
   project: {{ $.Release.Name }}
   source:
-    repoURL: https://github.com/eseiker/9c-infra.git
-    targetRevision: modular
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
     path: charts/modular
     helm:
       valueFiles:
