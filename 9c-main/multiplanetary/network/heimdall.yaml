@@ -200,7 +200,7 @@ validator:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c_validator
 
 remoteHeadless:
-  count: 2
+  count: 4
   replicas: 1
 
   useTurnServer: false
@@ -208,6 +208,8 @@ remoteHeadless:
   hosts:
   - "heimdall-rpc-1.nine-chronicles.com"
   - "heimdall-rpc-2.nine-chronicles.com"
+  - "heimdall-rpc-3.nine-chronicles.com"
+  - "heimdall-rpc-4.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
