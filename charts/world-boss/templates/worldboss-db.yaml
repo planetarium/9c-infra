@@ -1,0 +1,89 @@
+{{ if .Values.db.local }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-db
+  name: world-boss-db
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-db
+  serviceName: world-boss-db
+  template:
+    metadata:
+      labels:
+        app: world-boss-db
+    spec:
+      containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: world-boss-env
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: world-boss-env
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: world-boss-env
+          image: postgres:13.3
+          name: world-boss-db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: world-boss-db-data
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: world-boss-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $.Values.db.size }}
+        storageClassName: {{ $.Values.storage.class }}
+        volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: world-boss-redis
+  name: world-boss-redis
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-boss-redis
+  serviceName: world-boss-redis
+  template:
+    metadata:
+      labels:
+        app: world-boss-redis
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --appendonly
+            - "yes"
+          image: redis:6.2
+          name: world-boss-redis
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+{{- end }}

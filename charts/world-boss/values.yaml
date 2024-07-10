@@ -26,3 +26,6 @@ worldBossEnv:
   celeryBrokerUrl: ""
   celeryResultBackend: ""
   slackSigningSecret: ""
+
+storage:
+  class:

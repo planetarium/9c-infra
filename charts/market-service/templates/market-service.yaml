@@ -5,7 +5,7 @@ metadata:
     app: market-service
     app.kubernetes.io/instance: {{ $.Chart.Name }}
   name: market-service
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   replicas: 1
   selector:

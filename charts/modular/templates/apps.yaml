@@ -1,0 +1,31 @@
+{{- if not .Values.network }}
+{{- range $chartName := $.Values.apps }}
+{{- $key := $chartName | camelcase | untitle }}
+{{- $appValues := merge (index $.Values $key) (index $.Values.global $key) }}
+{{- if $appValues.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Release.Name }}-{{ $chartName }}
+  namespace: argocd
+spec:
+  project: {{ $.Release.Name }}
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/{{ $chartName }}
+    helm:
+      values: |-
+        namespace: {{ $.Release.Name }}
+
+        {{- with (merge $appValues $.Values.global) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

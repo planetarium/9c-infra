@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-snapshot-script
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ $.Values.namespace }}
   labels:
     app.kubernetes.io/instance: {{ $.Chart.Name }}
 data:
