@@ -36,7 +36,7 @@ ingress:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-e9fc57f2495c0d835697c3f491a93063267c0668"
+  image: "planetariumhq/ninechronicles-snapshot:git-45205b5ed6d978bb0dda6ad0b84fb0a393015711"
   partition:
     enabled: true
     suspend: true
