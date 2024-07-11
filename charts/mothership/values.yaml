@@ -59,10 +59,11 @@ blockscout:
   port: 5000
   loadBalancerExternal: false
   gethRpc: http://node-1:8545
-  databaseUrl: postgresql://postgres:@blockscout-postgres:5432/blockscout?ssl=false
+  indexer: true
   db:
-    enabled: false
+    local: true
     storage: 10Gi
+    url: postgresql://postgres:@blockscout-postgres:5432/blockscout?ssl=false
 
 bundler:
   enabled: false
