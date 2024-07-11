@@ -44,9 +44,10 @@ spec:
             - name: CHECKSUM_FUNCTION
               value: eth
             - name: DATABASE_URL
-              {{- if .Values.blockscout.db.secretKeyRef }}
+              {{- with .Values.blockscout.db.secretKeyRef }}
               valueFrom:
-                secretKeyRef: {{ .Values.blockscout.db.secretKeyRef }}
+                secretKeyRef:
+                  {{- toYaml . | nindent 18 }}
               {{- else }}
               value: {{ .Values.blockscout.db.url }}
               {{- end }}
