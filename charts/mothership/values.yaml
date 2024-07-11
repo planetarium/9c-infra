@@ -54,11 +54,14 @@ opProposer:
     rpc: 8560
 
 blockscout:
+  enabled: false
   image: blockscout/blockscout:6.7.1
   port: 5000
   loadBalancerExternal: false
   gethRpc: http://node-1:8545
+  databaseUrl: postgresql://postgres:@blockscout-postgres:5432/blockscout?ssl=false
   db:
+    enabled: false
     storage: 10Gi
 
 bundler:

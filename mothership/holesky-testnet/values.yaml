@@ -15,8 +15,10 @@ genesis:
   s3SnapshotPath: "mothership-devnet-holesky-genesis/testnet/snapshot"
 
 blockscout:
+  enabled: true
   loadBalancerExternal: true
   db:
+    enabled: true
     storage: 100Gi
 
 sequencer:
