@@ -46,12 +46,18 @@ data:
       - name: bnbc
         paths:
         - /bnbc/minigame
-    - name: mimir
-      url: http://dx-mimir-prod-ecs-alb-1648976749.us-east-2.elb.amazonaws.com
+    - name: mimir-odin
+      url: http://mimir-main-odin-prod-alb-595847679.us-east-2.elb.amazonaws.com
       routes:
-      - name: mimir
+      - name: mimir-odin
         paths:
-        - /mimir
+        - /mimir/odin
+    - name: mimir-heimdall
+      url: http://mimir-main-heimdall-prod-alb-880186789.us-east-2.elb.amazonaws.com
+      routes:
+      - name: mimir-heimdall
+        paths:
+        - /mimir/heimdall
     {{- else }}
     - name: 9cscan-odin-internal
       url: https://api-internal.9cscan.com
