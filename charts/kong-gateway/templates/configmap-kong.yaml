@@ -47,13 +47,13 @@ data:
         paths:
         - /bnbc/minigame
     - name: mimir-odin
-      url: http://mimir-main-odin-prod-alb-595847679.us-east-2.elb.amazonaws.com
+      url: http://mimir-main-odin-prod-alb-1012807141.us-east-2.elb.amazonaws.com
       routes:
       - name: mimir-odin
         paths:
         - /mimir/odin
     - name: mimir-heimdall
-      url: http://mimir-main-heimdall-prod-alb-880186789.us-east-2.elb.amazonaws.com
+      url: http://mimir-main-heimdall-prod-alb-1809799505.us-east-2.elb.amazonaws.com
       routes:
       - name: mimir-heimdall
         paths:
