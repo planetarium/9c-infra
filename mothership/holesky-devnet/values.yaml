@@ -18,8 +18,10 @@ blockscout:
   enabled: true
   loadBalancerExternal: true
   db:
-    enabled: true
-    storage: 100Gi
+    local: false
+    secretKeyRef:
+      name: private-keys
+      key: BLOCKSCOUT_DATABASE_URL
 
 sequencer:
   enabled: true
