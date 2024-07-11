@@ -1,3 +1,6 @@
+{{- if .Values.blockscout.enabled }}
+---
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -41,7 +44,7 @@ spec:
             - name: CHECKSUM_FUNCTION
               value: eth
             - name: DATABASE_URL
-              value: postgresql://postgres:@blockscout-postgres:5432/blockscout?ssl=false
+              value: {{ .Values.blockscout.databaseUrl }}
             - name: DECODE_NOT_A_CONTRACT_CALLS
               value: "true"
             - name: DISABLE_EXCHANGE_RATES
@@ -168,6 +171,8 @@ spec:
       port: 443
 
 ---
+{{- if .Values.blockscout.db.enabled }}
+---
 
 apiVersion: apps/v1
 kind: StatefulSet
@@ -231,3 +236,7 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+
+---
+{{- end }}
+{{- end }}
