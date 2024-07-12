@@ -350,7 +350,10 @@ fullState:
   - name: PLUGIN_PATH
     value: "/data"
   - name: PYROSCOPE_APPLICATION_NAME
-    value: main-full-state
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
   - name: PYROSCOPE_SERVER_ADDRESS
     value: http://pyroscope.pyroscope.svc.cluster.local:4040
   - name: PYROSCOPE_PROFILING_ENABLED
@@ -436,7 +439,10 @@ testHeadless1:
   - name: PLUGIN_PATH
     value: "/data"
   - name: PYROSCOPE_APPLICATION_NAME
-    value: test-headless-1
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
   - name: PYROSCOPE_SERVER_ADDRESS
     value: http://pyroscope.pyroscope.svc.cluster.local:4040
   - name: PYROSCOPE_PROFILING_ENABLED
