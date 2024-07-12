@@ -144,6 +144,35 @@ spec:
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_full-state.json
           {{- end }}
+          {{- if $.Values.global.pyroscope.enabled }}
+          - name: PYROSCOPE_APPLICATION_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: PYROSCOPE_SERVER_ADDRESS
+            value: {{ $.Values.global.pyroscope.address }}
+          - name: PYROSCOPE_PROFILING_ENABLED
+            value: "1"
+          - name: CORECLR_ENABLE_PROFILING
+            value: "1"
+          - name: CORECLR_PROFILER
+            value: "{BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}"
+          - name: CORECLR_PROFILER_PATH
+            value: "/data/Pyroscope.Profiler.Native.so"
+          - name: LD_PRELOAD
+            value: "/data/Pyroscope.Linux.ApiWrapper.x64.so"
+          - name: PYROSCOPE_PROFILING_CPU_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_EXCEPTION_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_ALLOCATION_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_LOCK_ENABLED
+            value: "true"
+          - name: OPTL_ENDPOINT
+            value: http://tempo.monitoring.svc.cluster.local:3100
+          {{- end }}
           {{- with $.Values.fullState.env }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
