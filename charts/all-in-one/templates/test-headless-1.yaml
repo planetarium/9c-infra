@@ -214,7 +214,10 @@ spec:
           {{- end }}
           {{- if $.Values.global.pyroscope.enabled }}
           - name: PYROSCOPE_APPLICATION_NAME
-            value: test-headless-1
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
           - name: PYROSCOPE_SERVER_ADDRESS
             value: {{ $.Values.global.pyroscope.address }}
           - name: PYROSCOPE_PROFILING_ENABLED
@@ -235,6 +238,8 @@ spec:
             value: "true"
           - name: PYROSCOPE_PROFILING_LOCK_ENABLED
             value: "true"
+          - name: OPTL_ENDPOINT
+            value: http://tempo.monitoring.svc.cluster.local:3100
           {{- end }}
         {{- with $.Values.testHeadless1.env }}
           {{- toYaml . | nindent 10 }}
