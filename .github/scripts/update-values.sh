@@ -56,9 +56,3 @@ echo $sources
 
 cd scripts
 python cli.py update-values $file_path $sources
-
-if [ "$DIR" = "9c-main" ] && [ "$FILE_NAME" = "general" ] && [ -n "$HEADLESS" ]; then
-    file_path="9c-main-apse1/multiplanetary/network/$FILE_NAME.yaml"
-    sources="global|planetariumhq/ninechronicles-headless:$HEADLESS"
-    python cli.py update-values $file_path "$sources"
-fi
