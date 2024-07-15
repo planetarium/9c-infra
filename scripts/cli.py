@@ -84,9 +84,6 @@ def update_apv(
 
     ApvUpdater().update(number, dir_name, file_name)
 
-    if dir_name == "9c-main" and file_name == "heimdall":
-        ApvUpdater().update(number, "9c-main-apse1", file_name)
-
 @k8s_app.command()
 def update_paev(
     paev_url: str = typer.Argument(
