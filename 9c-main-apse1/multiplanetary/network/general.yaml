@@ -1,5 +1,0 @@
-global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "v200200"
