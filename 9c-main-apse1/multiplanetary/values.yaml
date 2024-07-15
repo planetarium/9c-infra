@@ -1,6 +1,0 @@
-clusterName: "9c-main-apse1"
-
-path: "9c-main-apse1/multiplanetary"
-
-network:
-  - "heimdall"

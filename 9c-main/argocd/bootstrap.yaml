@@ -118,11 +118,6 @@ spec:
                     labels:
                       group: heimdall-explorer
                   - targets:
-                    - heimdall-rpc-1-apse1.nine-chronicles.com:80
-                    - heimdall-rpc-2-apse1.nine-chronicles.com:80
-                    labels:
-                      group: heimdall-apse1-rpc
-                  - targets:
                     - jwt-headless.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-jwt
