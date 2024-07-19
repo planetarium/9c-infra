@@ -238,7 +238,7 @@ spec:
             value: "true"
           - name: PYROSCOPE_PROFILING_LOCK_ENABLED
             value: "true"
-          - name: OPTL_ENDPOINT
+          - name: OTLP_ENDPOINT
             value: http://tempo.monitoring.svc.cluster.local:4317
           {{- end }}
         {{- with $.Values.testHeadless1.env }}

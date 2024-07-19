@@ -426,7 +426,7 @@ testHeadless1:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: OPTL_ENDPOINT
+  - name: OTLP_ENDPOINT
     value: "http://172.20.239.175:4318"
   - name: DOTNET_gcServer
     value: "1"
@@ -486,7 +486,7 @@ testHeadless2:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: OPTL_ENDPOINT
+  - name: OTLP_ENDPOINT
     value: http://172.20.239.175:4318
   - name: DOTNET_gcServer
     value: "1"
