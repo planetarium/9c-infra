@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-cdc0ff5322e9047315d12749e174b36e5b92f1e5"
+    tag: "git-1064aae17b967cc0b18c5efe4739041c48990578-v5"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -35,9 +35,9 @@ snapshot:
   slackChannel: "9c-internal"
   image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
   partition:
-    enabled: false
-  path: internal
-  uploadPath: 9c-dev
+    enabled: true
+  path: 9c-dev-v2
+  uploadPath: 9c-dev-v2/dpos
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
@@ -68,10 +68,6 @@ seed:
 
 remoteHeadless:
   count: 1
-  image:
-    pullPolicy: Always
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-cdc0ff5322e9047315d12749e174b36e5b92f1e5"
 
   loggingEnabled: true
 
@@ -89,7 +85,7 @@ remoteHeadless:
 testHeadless1:
   enabled: true
   image:
-    tag: "git-cdc0ff5322e9047315d12749e174b36e5b92f1e5"
+    tag: "git-1064aae17b967cc0b18c5efe4739041c48990578-v5"
 
   loggingEnabled: true
   
@@ -115,10 +111,6 @@ testHeadless1:
 
 validator:
   count: 4
-  image:
-    pullPolicy: Always
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-cdc0ff5322e9047315d12749e174b36e5b92f1e5"
 
   loggingEnabled: true
 
