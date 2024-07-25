@@ -85,8 +85,13 @@ seed:
   # dotnet args
   workerCount: 1000
 
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500m
+
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 validator:
   count: 4
