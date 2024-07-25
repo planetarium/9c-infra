@@ -64,6 +64,16 @@ module "common" {
       ami_type          = "AL2_ARM_64"
     }
 
+    "9c-main-m7g_l_2c" = {
+      instance_types    = ["m7g.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
+    }
+
     "9c-main-m7g_xl_2c" = {
       instance_types    = ["m7g.xlarge"]
       availability_zone = "us-east-2c"
@@ -242,6 +252,16 @@ module "common" {
 
     "heimdall-r7g_xl_2c" = {
       instance_types    = ["r7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "heimdall-m7g_l_2c" = {
+      instance_types    = ["m7g.large"]
       availability_zone = "us-east-2c"
       capacity_type     = "ON_DEMAND"
       desired_size      = 1

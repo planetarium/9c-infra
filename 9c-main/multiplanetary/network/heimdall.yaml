@@ -79,8 +79,13 @@ seed:
   # dotnet args
   workerCount: 1000
 
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
 fullState:
   enabled: true
