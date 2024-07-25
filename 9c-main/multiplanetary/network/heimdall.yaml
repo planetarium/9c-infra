@@ -579,8 +579,13 @@ blockIntervalNotifier:
 patrolRewardService:
   enabled: true
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m5_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
 acc:
   enabled: true
