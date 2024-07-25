@@ -91,6 +91,8 @@ spec:
           name: patrol-reward-service
           ports:
             - containerPort: 80
+          resources:
+          {{- toYaml $.Values.patrolRewardService.resources | nindent 12 }}
       restartPolicy: Always
       {{- with $.Values.patrolRewardService.nodeSelector }}
       nodeSelector:

@@ -561,8 +561,13 @@ blockIntervalNotifier:
 patrolRewardService:
   enabled: true
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 acc:
   enabled: true
