@@ -82,7 +82,7 @@ seed:
   resources:
     requests:
       cpu: 500m
-      memory: 500m
+      memory: 500Mi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
