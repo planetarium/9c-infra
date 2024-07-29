@@ -58,3 +58,4 @@ pyroscope:
 
 gatewayApi:
   enabled: false
+  roleName: ""
