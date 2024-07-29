@@ -12,9 +12,9 @@ spec:
     path: common/tools/gateway-api-controller
     kustomize:
       patches:
-      - target:
-          kind: ServiceAccount
-          name: gateway-api-controller
+        - target:
+            kind: ServiceAccount
+            name: gateway-api-controller
           patch: |-
             - op: add
               path: /metadata/annotations
