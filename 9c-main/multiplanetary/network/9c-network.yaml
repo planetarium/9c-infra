@@ -497,6 +497,13 @@ jwtHeadless:
 
   host: "9c-main-jwt.nine-chronicles.com"
 
+  image:
+    tag: "git-d64442010ca288b538dce42a4537620a40c9755a"
+
+  setupPyroscope: true
+
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
+
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "false"
@@ -537,7 +544,7 @@ jwtHeadless:
     value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: 9c-main-m7i_flex_2xl_2c_test
 
 remoteActionEvaluatorHeadless:
   enabled: false

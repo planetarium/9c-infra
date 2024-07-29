@@ -64,6 +64,24 @@ spec:
           - mountPath: /data
             name: jwt-headless-data
       {{- end }}
+      {{- if $.Values.jwtHeadless.setupPyroscope }}
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          apk --no-cache add curl tar
+          curl -s -L https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.14-pyroscope/pyroscope.0.8.14-glibc-x86_64.tar.gz  | tar xvz -C /data
+        image: alpine
+        imagePullPolicy: Always
+        name: setup-pyroscope
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: jwt-headless-data
+      {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -96,8 +114,10 @@ spec:
         - --chain-tip-stale-behavior-type=reboot
         - --tx-life-time=10
         - --planet={{ $.Values.global.planet }}
-        {{- if $.Values.global.headlessAppsettingsPath }}
-        - --config={{ $.Values.global.headlessAppsettingsPath }}
+        {{- if .Values.jwtHeadless.headlessAppsettingsPath }}
+        - --config={{ .Values.jwtHeadless.headlessAppsettingsPath }}
+        {{- else if .Values.global.headlessAppsettingsPath }}
+        - --config={{ .Values.global.headlessAppsettingsPath }}
         {{- end }}
         {{- with $.Values.jwtHeadless.extraArgs }}
           {{- toYaml . | nindent 8 }}
@@ -182,6 +202,35 @@ spec:
               secretKeyRef:
                 key: jwt-token
                 name: private-keys
+          {{- end }}
+          {{- if $.Values.global.pyroscope.enabled }}
+          - name: PYROSCOPE_APPLICATION_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: PYROSCOPE_SERVER_ADDRESS
+            value: {{ $.Values.global.pyroscope.address }}
+          - name: PYROSCOPE_PROFILING_ENABLED
+            value: "1"
+          - name: CORECLR_ENABLE_PROFILING
+            value: "1"
+          - name: CORECLR_PROFILER
+            value: "{BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}"
+          - name: CORECLR_PROFILER_PATH
+            value: "/data/Pyroscope.Profiler.Native.so"
+          - name: LD_PRELOAD
+            value: "/data/Pyroscope.Linux.ApiWrapper.x64.so"
+          - name: PYROSCOPE_PROFILING_CPU_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_EXCEPTION_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_ALLOCATION_ENABLED
+            value: "true"
+          - name: PYROSCOPE_PROFILING_LOCK_ENABLED
+            value: "true"
+          - name: OPTL_ENDPOINT
+            value: http://tempo.monitoring.svc.cluster.local:4317
           {{- end }}
         {{- with $.Values.jwtHeadless.env }}
           {{- toYaml . | nindent 10 }}
