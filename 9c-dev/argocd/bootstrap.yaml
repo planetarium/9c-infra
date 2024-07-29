@@ -93,7 +93,7 @@ spec:
           enabled: true
         gatewayApi:
           enabled: true
-          roleName: "eks-9c-dev-v2-gateway-api-controller"
+          roleArn: "arn:aws:iam::319679068466:role/eks-9c-dev-v2-gateway-api-controller"
 
   destination:
     server: https://kubernetes.default.svc

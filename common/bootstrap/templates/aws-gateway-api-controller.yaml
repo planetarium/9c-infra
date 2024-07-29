@@ -8,8 +8,10 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: main
+    targetRevision: feature/gateway-api-controller
     path: common/tools/gateway-api-controller
+    directory:
+      recurse: false
     kustomize:
       patches:
         - target:
@@ -19,7 +21,8 @@ spec:
             - op: add
               path: /metadata/annotations
               value:
-                eks.amazonaws.com/role-arn: {{ .Values.gatewayApi.roleName }}
+                eks.amazonaws.com/role-arn: {{ .Values.gatewayApi.roleArn | quote }}
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: aws-application-networking-system
