@@ -300,9 +300,6 @@ marketService:
 fullState:
   enabled: true
 
-  image:
-    tag: "git-d64442010ca288b538dce42a4537620a40c9755a"
-
   loggingEnabled: true
 
   useTurnServer: false
@@ -389,9 +386,6 @@ bridge:
 
 testHeadless1:
   enabled: true
-
-  image:
-    tag: "git-d64442010ca288b538dce42a4537620a40c9755a"
 
   loggingEnabled: true
 
@@ -496,9 +490,6 @@ jwtHeadless:
   loggingEnabled: true
 
   host: "9c-main-jwt.nine-chronicles.com"
-
-  image:
-    tag: "git-d64442010ca288b538dce42a4537620a40c9755a"
 
   setupPyroscope: true
 
