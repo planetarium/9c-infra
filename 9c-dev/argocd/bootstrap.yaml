@@ -91,6 +91,8 @@ spec:
           nodeGroup: general-r7g_xl_2c
         pyroscope:
           enabled: true
+        gatewayApi:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
