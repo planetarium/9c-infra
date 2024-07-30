@@ -73,8 +73,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: '11235685'
-      downstream: "2731419"
+      upstream: '11326890'
+      downstream: "2816889"
 
 bridgeServiceApi:
   enabled: true
