@@ -12,7 +12,7 @@ resource "aws_iam_role" "gateway_api_controller_assumerole" {
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "${local.irsa_url}:sub": "system:serviceaccount:kube-system:gateway-api-controller"
+          "${local.irsa_url}:sub": "system:serviceaccount:aws-application-networking-system:gateway-api-controller"
         }
       }
     }
