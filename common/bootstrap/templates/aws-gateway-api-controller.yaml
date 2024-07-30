@@ -26,8 +26,5 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: aws-application-networking-system
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
+  syncPolicy: {}
 {{- end }}
