@@ -10,8 +10,6 @@ spec:
     repoURL: https://github.com/planetarium/9c-infra
     targetRevision: main
     path: common/tools/gateway-api-controller
-    directory:
-      recurse: false
     kustomize:
       patches:
         - target:
@@ -22,6 +20,17 @@ spec:
               path: /metadata/annotations
               value:
                 eks.amazonaws.com/role-arn: {{ .Values.gatewayApi.roleArn | quote }}
+        - target:
+            version: v1
+            kind: Deployment
+            name: gateway-api-controller
+          patch: |-
+            - op: add
+              path: /spec/template/spec/containers/0/env/-
+              value:
+                - name: DEFAULT_SERVICE_NETWORK
+                  value: {{ .Values.clusterName }}-default
+              
 
   destination:
     server: 'https://kubernetes.default.svc'
