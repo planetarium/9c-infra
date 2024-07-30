@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200200/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDI6VEiYcNqHensS6fole+GG.774GQdwj.49yO4D.pLQQIgZhwmJIHJbBJmVd07YjPsGQB2s+fQOkgY1NCNOumvUds=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA3LTA5ZQ=="
+  appProtocolVersion: "200210/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDg7yokmK2aB65yT57UQg+V4agU4xgYvsYj7Lt3evKLGAIgCy0EK2DOI9idaJpYouo1VyU9lLZ2xz6M0hSLGpPXGBw=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA3LTMwZQ=="
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
