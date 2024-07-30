@@ -26,10 +26,10 @@ spec:
             name: gateway-api-controller
           patch: |-
             - op: add
-              path: /spec/template/spec/containers/0/env/-
+              path: /spec/template/spec/containers/1/env/-
               value:
-                - name: DEFAULT_SERVICE_NETWORK
-                  value: {{ .Values.clusterName }}-default
+                name: DEFAULT_SERVICE_NETWORK
+                value: {{ .Values.clusterName }}-default
               
 
   destination:
