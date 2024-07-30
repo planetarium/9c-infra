@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra
-    targetRevision: feature/gateway-api-controller
+    targetRevision: main
     path: common/tools/gateway-api-controller
     directory:
       recurse: false
