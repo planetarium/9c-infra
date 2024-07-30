@@ -8,8 +8,3 @@ patchesJson6902:
   - target:
       kind: ServiceAccount
       name: gateway-api-controller
-    patch: |-
-      - op: add
-        path: /metadata/annotations
-        value:
-          managed-by: "argocd"
