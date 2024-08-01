@@ -308,6 +308,10 @@ fullState:
 
   host: "9c-main-full-state.nine-chronicles.com"
 
+  image:
+    repository: riemannulus/ninechronicles-headless
+    tag: suho-20240801-5-amd
+
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
