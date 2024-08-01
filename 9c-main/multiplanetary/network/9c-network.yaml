@@ -310,7 +310,7 @@ fullState:
 
   image:
     repository: riemannulus/ninechronicles-headless
-    tag: suho-20240801-5-amd
+    tag: suho-20240801-8-amd
 
   extraArgs:
   - --no-reduce-store
