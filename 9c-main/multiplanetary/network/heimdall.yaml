@@ -515,6 +515,10 @@ jwtHeadless:
 
   host: "heimdall-jwt.nine-chronicles.com"
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: git-f0d3519d514552ece82daec1b165b9c5a7f7aa16
+
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
     value: "false"

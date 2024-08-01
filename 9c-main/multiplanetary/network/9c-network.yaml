@@ -495,6 +495,10 @@ jwtHeadless:
 
   host: "9c-main-jwt.nine-chronicles.com"
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: git-f0d3519d514552ece82daec1b165b9c5a7f7aa16
+
   setupPyroscope: true
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
