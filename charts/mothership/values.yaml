@@ -1,5 +1,6 @@
 externalSecret:
   enabled: false
+  region: us-east-2
 
 genesis:
   createSnapshot: false
