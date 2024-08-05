@@ -94,6 +94,10 @@ spec:
                 relabel_configs:
                 - action: labelmap
                   regex: __meta_kubernetes_pod_label_(.+)
+                  replacement: ${1}
+                - action: labelmap
+                  regex: __meta_kubernetes_namespace
+                  replacement: namespace
         loki:
           enabled: true
           bucketName: loki-dev.planetariumhq.com
