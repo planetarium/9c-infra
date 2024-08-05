@@ -391,6 +391,9 @@ bridge:
 testHeadless1:
   enabled: true
 
+  pyroscope:
+    enabled: false
+
   loggingEnabled: true
 
   host: "9c-main-test-1.nine-chronicles.com"
