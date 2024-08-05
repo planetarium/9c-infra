@@ -27,9 +27,6 @@ class PluggableActionEvaluatorUpdater:
             response = requests.get(url)
             data = response.json()
 
-            # add 1 to end_value
-            end_value = end_value + 1
-
             # Define new values for appending and updating
             start_value = 0
             new_start_value = end_value + 1
