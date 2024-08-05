@@ -395,6 +395,11 @@ testHeadless1:
 
   host: "9c-main-test-1.nine-chronicles.com"
 
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: git-d6413632f3beffb703f8a0c614c927daed1cf7c4
+
+
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
   env:
