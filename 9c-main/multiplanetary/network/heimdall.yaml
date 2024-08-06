@@ -243,8 +243,6 @@ remoteHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
