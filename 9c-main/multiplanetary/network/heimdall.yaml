@@ -136,8 +136,6 @@ fullState:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -176,8 +174,6 @@ validator:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -293,8 +289,6 @@ dataProvider:
       memory: 26Gi
 
   env:
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
   - name: NC_Planet
@@ -431,8 +425,6 @@ testHeadless1:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: OTLP_ENDPOINT
     value: "http://172.20.239.175:4318"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -491,8 +483,6 @@ testHeadless2:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: OTLP_ENDPOINT
     value: http://172.20.239.175:4318
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -536,8 +526,6 @@ jwtHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 

@@ -119,8 +119,6 @@ validator:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -195,8 +193,6 @@ remoteHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -254,8 +250,6 @@ dataProvider:
       memory: 26Gi
 
   env:
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
   - name: NC_Planet
@@ -354,8 +348,6 @@ fullState:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -416,8 +408,6 @@ testHeadless1:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -463,8 +453,6 @@ testHeadless2:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -522,8 +510,6 @@ jwtHeadless:
     value: "redis"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "acc-redis-service.9c-network.svc.cluster.local:6379"
-  - name: DOTNET_gcServer
-    value: "1"
   - name: PLUGIN_PATH
     value: "/data"
 
