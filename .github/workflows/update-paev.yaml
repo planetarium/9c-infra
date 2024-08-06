@@ -3,15 +3,20 @@ name: Update Pluggable Action Evaluator
 on:
   workflow_dispatch:
     inputs:
-      paev_url:
+      network_type:
         required: true
-        description: 'Insert the appsetting.json url to update (e.g. https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-test.json)'
-      end_value:
+        default: 'odin'
+        type: choice
+        options:
+        - odin
+        - heimdall
+        description: 'Choose the mainnet network to update the appsettings.json'
+      previous_version_block_index:
         required: true
         description: 'Insert the ending tip index of the previous version (e.g. 1115268)'
-      lib9c_plugin_url:
+      previous_version_lib9c_commit:
         required: true
-        description: 'Insert the lib9c plugin url of the previous version (e.g. https://9c-dx.s3.ap-northeast-2.amazonaws.com/Lib9c.Plugin/ff2c8ae6cfd030ffd20020e1a5bbc4e0caadfe97/linux-arm64.zip)'
+        description: 'Insert the lib9c commit of the previous version (e.g. ff2c8ae6cfd030ffd20020e1a5bbc4e0caadfe97)'
 
 jobs:
   update-paev:
@@ -33,7 +38,7 @@ jobs:
 
     - name: Update Pluggable Action Evaluator
       run: |
-        python cli.py update-paev ${{ github.event.inputs.paev_url }} ${{ github.event.inputs.end_value }} ${{ github.event.inputs.lib9c_plugin_url }}
+        python cli.py update-paev ${{ github.event.inputs.network_type }} ${{ github.event.inputs.previous_version_block_index }} ${{ github.event.inputs.previous_version_lib9c_commit }}
       working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
