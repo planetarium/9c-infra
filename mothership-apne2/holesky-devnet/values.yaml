@@ -1,18 +1,19 @@
 externalSecret:
   enabled: true
   prefix: "mothership-devnet"
+  region: "ap-northeast-2"
 
 env:
   L1_RPC: https://ethereum-holesky-rpc.publicnode.com
   L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
 
 storageClassName: gp3-extensible
-awsLoadBalancerSslCert: arn:aws:acm:us-east-2:319679068466:certificate/dbb84b9a-cb2b-407c-924a-70b3ca29e880
+awsLoadBalancerSslCert: arn:aws:acm:ap-northeast-2:533267452421:certificate/4f192f2a-0af7-442b-b5d2-2889c505135e
 
 genesis:
-  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com
+  source: https://mothership-holesky-devnet.s3.ap-northeast-2.amazonaws.com
   createSnapshot: true
-  s3SnapshotPath: mothership-devnet-holesky-genesis/snapshot
+  s3SnapshotPath: mothership-holesky-devnet/snapshot
 
 blockscout:
   enabled: true
@@ -24,10 +25,10 @@ blockscout:
       key: BLOCKSCOUT_DATABASE_URL
 
 sequencer:
-  enabled: false
+  enabled: true
   nodeIndex: "1"
   scheme: "http"
-  host: "node-1.ap-northeast-2.holesky.tests.mothership-pla.net"
+  host: "node-1"
   port:
     geth: 8545
     node: 8547
@@ -36,22 +37,22 @@ node:
   count: 2
   loadBalancerExternal: true
   hosts:
-    - node-1.us-east-2.holesky.tests.mothership-pla.net
-    - node-2.us-east-2.holesky.tests.mothership-pla.net
+    - node-1.ap-northeast-2.holesky.tests.mothership-pla.net
+    - node-2.ap-northeast-2.holesky.tests.mothership-pla.net
   opGeth:
     resources:
       requests:
-        memory: 4Gi
+        memory: 2Gi
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+    eks.amazonaws.com/nodegroup: mothership-apne2-r7i_large_2c
 
 opBatcher:
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+    eks.amazonaws.com/nodegroup: mothership-apne2-r7i_large_2c
 
 opProposer:
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+    eks.amazonaws.com/nodegroup: mothership-apne2-r7i_large_2c
 
 bundler:
   enabled: true
@@ -61,4 +62,4 @@ proxyd:
   enabled: true
   loadBalancerExternal: true
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-r7a_l_2c
+    eks.amazonaws.com/nodegroup: mothership-apne2-r7i_large_2c
