@@ -27,6 +27,12 @@ externalSecret:
   prefix: 9c-dev-v2
   pkPrefixOverride: 9c-internal-v2
 
+seed:
+  count: 0
+
+remoteHeadless:
+  count: 0
+
 validator:
   count: 1
 
