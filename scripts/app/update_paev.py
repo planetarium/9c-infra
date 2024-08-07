@@ -12,8 +12,41 @@ class PluggableActionEvaluatorUpdater:
             config.github_token, org="planetarium", repo="TEMP"
         )
 
-    def update(
+    def prep_update(
         self,
+        network_type,
+        previous_version_block_index,
+        previous_version_lib9c_commit):
+
+        # Define base URL and suffixes
+        base_url = "https://lib9c-plugin.s3.us-east-2.amazonaws.com/"
+        arm64_suffix = "/linux-arm64.zip"
+        x64_suffix = "/linux-x64.zip"
+
+        # Define URLs based on network type
+        if network_type == "odin":
+            paev_urls = [
+                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json",
+                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
+            ]
+        else:
+            paev_urls = [
+                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json",
+                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings-nodeinfra.json"
+            ]
+
+        # Iterate over each URL in the list
+        for url in paev_urls:
+            # Choose the suffix based on the presence of "nodeinfra"
+            suffix = arm64_suffix if "nodeinfra" in url else x64_suffix
+
+            # Construct the plugin URL
+            plugin_url = f"{base_url}{previous_version_lib9c_commit}{suffix}"
+            
+            # Call update function
+            self.update(url, previous_version_block_index, plugin_url)
+
+    def update(
         paev_url,
         end_value,
         lib9c_plugin_url):

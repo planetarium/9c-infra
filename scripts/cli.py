@@ -100,7 +100,7 @@ def update_paev(
     Run post deploy script
     """
 
-    PluggableActionEvaluatorUpdater().update(paev_url, end_value, lib9c_plugin_url)
+    PluggableActionEvaluatorUpdater().prep_update(network_type, previous_version_block_index, previous_version_lib9c_commit)
 
 if __name__ == "__main__":
     k8s_app()
