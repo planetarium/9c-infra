@@ -53,14 +53,5 @@ module "common" {
       min_size          = 0
       max_size          = 12
     }
-    "srdg-m7g_xl_2c-mothership" = {
-      instance_types    = ["m7g.xlarge"]
-      availability_zone = "ap-northeast-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 1
-      min_size          = 0
-      max_size          = 5
-      ami_type          = "AL2_ARM_64"
-    }
   }
 }
