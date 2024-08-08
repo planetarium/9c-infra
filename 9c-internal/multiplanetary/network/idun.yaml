@@ -53,6 +53,9 @@ bridgeService:
 
 dataProvider:
   enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: git-46c79bb6205435b4f5bc98dd604aaed9968adb53
   rwMode: false
   render: true
   migrateDatabase: false
