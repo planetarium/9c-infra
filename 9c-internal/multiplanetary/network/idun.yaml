@@ -52,7 +52,7 @@ bridgeService:
       channel: "9c-relay-bridge-bot-tmp-test"
 
 dataProvider:
-  enabled: false
+  enabled: true
   rwMode: false
   render: true
   migrateDatabase: false
