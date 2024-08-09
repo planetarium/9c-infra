@@ -6,7 +6,7 @@ global:
 
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: git-532b7e16129390de3066b411c44d27a8cbbd0133
+    tag: git-242357e03de2c6b722899cfd59451c3ed01e47de
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
 
@@ -55,7 +55,7 @@ dataProvider:
   enabled: true
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: git-ae6a1ede02a239bec751af223ab672e45e23427b
+    tag: git-3bb82f1545842a1a853b0908f560306cd30ed923
   rwMode: false
   render: true
   migrateDatabase: false
