@@ -138,6 +138,8 @@ fullState:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_GCHighMemPercent
+    value: "0x5A"
 
   tolerations:
   - effect: NoSchedule
@@ -176,6 +178,8 @@ validator:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_GCHighMemPercent
+    value: "0x5A"
 
   loggingEnabled: true
 
@@ -241,6 +245,8 @@ remoteHeadless:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_GCHighMemPercent
+    value: "0x5A"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -427,6 +433,8 @@ testHeadless1:
     value: "http://172.20.239.175:4318"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_GCHighMemPercent
+    value: "0x5A"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -524,6 +532,8 @@ jwtHeadless:
     value: "acc-redis-service.heimdall.svc.cluster.local:6379"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_GCHighMemPercent
+    value: "0x5A"
 
   extraArgs:
   - --tx-quota-per-signer=1
