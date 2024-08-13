@@ -32,6 +32,7 @@ ingress:
     marketService: "odin-internal-market.9c.gg"
     patrolRewardService: "odin-internal-patrol.9c.gg"
     worldBoss: "odin-internal-world-boss.9c.gg"
+    arenaService: "odin-internal-arena.9c.gg"
 
 snapshot:
   downloadSnapshot: true
@@ -293,3 +294,9 @@ jwtHeadless:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
+
+arenaService:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand

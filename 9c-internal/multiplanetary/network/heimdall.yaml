@@ -34,6 +34,7 @@ ingress:
     marketService: "heimdall-internal-market.9c.gg"
     patrolRewardService: "heimdall-internal-patrol.9c.gg"
     worldBoss: "heimdall-internal-world-boss.9c.gg"
+    arenaService: "heimdall-internal-arena.9c.gg"
 
 bridgeService:
   enabled: true
@@ -300,6 +301,12 @@ acc:
 
 stateMigrationService:
   enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+
+arenaService:
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand

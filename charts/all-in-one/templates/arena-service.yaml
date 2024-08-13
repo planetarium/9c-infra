@@ -1,0 +1,51 @@
+{{ if .Values.arenaService.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: arena-service
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: arena-service
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arena-service
+  serviceName: arena-service
+  template:
+    metadata:
+      labels:
+        app: arena-service
+    spec:
+      containers:
+        - args:
+            - ArenaService.dll
+          command:
+            - dotnet
+          env:
+            - name: Rpc__Host
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-host
+                  name: arena
+            - name: Redis__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  key: redis-connection-string
+                  name: arena
+          {{- with $.Values.arenaService.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ $.Values.arenaService.image.repository }}:{{ $.Values.arenaService.image.tag }}
+          name: arena-service
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      {{- with $.Values.arenaService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
+{{ end }}
