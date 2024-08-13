@@ -68,7 +68,7 @@ spec:
                   number: 80
     {{- end }}
     {{- if $.Values.arenaService.enabled }}
-    - host: {{ $.Values.ingress.hosts.arena }}
+    - host: {{ $.Values.ingress.hosts.arenaService }}
       http:
         paths:
           - path: /

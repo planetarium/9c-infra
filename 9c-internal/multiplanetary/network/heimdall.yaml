@@ -34,7 +34,7 @@ ingress:
     marketService: "heimdall-internal-market.9c.gg"
     patrolRewardService: "heimdall-internal-patrol.9c.gg"
     worldBoss: "heimdall-internal-world-boss.9c.gg"
-    arena: "heimdall-internal-arena.9c.gg"
+    arenaService: "heimdall-internal-arena.9c.gg"
 
 bridgeService:
   enabled: true
