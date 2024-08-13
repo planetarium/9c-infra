@@ -287,9 +287,9 @@ marketService:
 
   nodeSelector:
     read:
-      node.kubernetes.io/instance-type: m5.large
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
     write:
-      eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 fullState:
   enabled: true
@@ -365,7 +365,7 @@ worldBoss:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 bridge:
   enabled: true
@@ -374,7 +374,7 @@ bridge:
   bridgeStatusBotImage:
     tag: "20210913-01"
   nodeSelector:
-    node.kubernetes.io/instance-type: m5.large
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 testHeadless1:
   enabled: true
@@ -561,14 +561,14 @@ acc:
     port: 6379
 
     nodeSelector:
-      eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
     resources:
       requests:
-        memory: 8Gi
+        memory: 200Mi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-t3_medium
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 volumeRotator:
   enabled: false
@@ -602,6 +602,9 @@ rudolfService:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"
 
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
 rudolfCurrencyNotifier:
   enabled: false
 
@@ -611,16 +614,16 @@ rudolfCurrencyNotifier:
     targetAddress: "0x4c35e816c9e13628615581a436a0df38F57A08cc"
     serverName: "odin"
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 testWorldBoss:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m5_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
