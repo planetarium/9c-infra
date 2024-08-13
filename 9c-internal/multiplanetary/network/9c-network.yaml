@@ -32,6 +32,7 @@ ingress:
     marketService: "odin-internal-market.9c.gg"
     patrolRewardService: "odin-internal-patrol.9c.gg"
     worldBoss: "odin-internal-world-boss.9c.gg"
+    arena: "odin-internal-arena.9c.gg"
 
 snapshot:
   downloadSnapshot: true
