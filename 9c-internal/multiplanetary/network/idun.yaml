@@ -55,7 +55,7 @@ dataProvider:
   enabled: true
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: git-3bb82f1545842a1a853b0908f560306cd30ed923
+    tag: git-7a0691d45724f1e1b14fa23af4b2b798315d54db
   rwMode: false
   render: true
   migrateDatabase: false
