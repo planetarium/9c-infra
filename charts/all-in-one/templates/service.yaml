@@ -832,7 +832,7 @@ metadata:
 spec:
   ports:
     - name: "80"
-      port: 80
+      port: 8080
       targetPort: 80
   selector:
     app: arena-service
