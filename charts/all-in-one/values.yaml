@@ -691,3 +691,9 @@ stateMigrationService:
 
 remoteHeadlessApplication:
   enabled: false
+
+arenaService:
+  enabled: false
+
+  rpcHost: ""
+  redisConnectionString: ""

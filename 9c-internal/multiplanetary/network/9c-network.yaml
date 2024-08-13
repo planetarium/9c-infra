@@ -293,3 +293,9 @@ jwtHeadless:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
+
+arenaService:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand

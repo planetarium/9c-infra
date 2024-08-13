@@ -820,3 +820,22 @@ spec:
 ---
 {{ end }}
 {{ end }}
+
+{{ if .Values.arenaService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: arena-service
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    app: arena-service
+  type: ClusterIP
+---
+{{ end }}
