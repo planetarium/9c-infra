@@ -44,7 +44,7 @@ ingress:
     marketService: "odin-market.9c.gg"
     patrolRewardService: "odin-patrol.9c.gg"
     worldBoss: "odin-world-boss.9c.gg"
-    arena: "odin-arena.9c.gg"
+    arenaService: "odin-arena.9c.gg"
 
 snapshot:
   slackChannel: "9c-mainnet"
