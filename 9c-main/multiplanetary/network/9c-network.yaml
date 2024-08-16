@@ -44,6 +44,7 @@ ingress:
     marketService: "odin-market.9c.gg"
     patrolRewardService: "odin-patrol.9c.gg"
     worldBoss: "odin-world-boss.9c.gg"
+    arena: "odin-arena.9c.gg"
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -624,6 +625,12 @@ testWorldBoss:
 
 stateMigrationService:
   enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+arenaService:
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c

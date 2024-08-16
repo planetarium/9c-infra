@@ -63,3 +63,9 @@ stateMigrationService:
     repository: planetariumhq/state-migration-service
     pullPolicy: Always
     tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
+
+arenaService:
+  image:
+    repository: planetariumhq/arena-service
+    pullPolicy: Always
+    tag: "git-866d1a447a847698f84b22314b6267b571387b5a"
