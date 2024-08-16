@@ -35,10 +35,7 @@ spec:
                   key: redis-connection-string
                   name: arena
             - name: Redis__TimeOut
-              valueFrom:
-                secretKeyRef:
-                  key: redis-timeout
-                  name: arena
+              value: "5000"
           {{- with $.Values.arenaService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
