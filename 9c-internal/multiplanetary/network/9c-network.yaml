@@ -124,6 +124,7 @@ remoteHeadless:
   extraArgs:
   - --tx-quota-per-signer=1
   - --remote-key-value-service
+  - --arena-participants-sync=false
 
 dataProvider:
   enabled: true
