@@ -50,6 +50,17 @@ spec:
       prune: true
       selfHeal: true
 ---
+apiVersion: "external-secrets.io/v1beta1"
+kind: SecretStore
+metadata:
+  name: datadog-secretsmanager
+  namespace: datadog
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-east-2
+---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -58,7 +69,7 @@ metadata:
 spec:
   refreshInterval: 1m
   secretStoreRef:
-    name: argocd-secretsmanager
+    name: datadog-secretsmanager
     kind: SecretStore
   dataFrom:
   - extract:
