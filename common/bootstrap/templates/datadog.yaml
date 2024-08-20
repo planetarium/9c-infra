@@ -1,4 +1,10 @@
 {{- if .Values.datadog.enabled }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: datadog
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -38,7 +44,7 @@ spec:
             enabled: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: datadog
   syncPolicy:
     automated:
       prune: true
@@ -48,7 +54,7 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: datadog-secret
-  namespace: argocd
+  namespace: datadog
 spec:
   refreshInterval: 1m
   secretStoreRef:
