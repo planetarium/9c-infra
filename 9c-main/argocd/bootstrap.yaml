@@ -167,7 +167,23 @@ spec:
 
         datadog:
           enabled: true
-          nodeGroup: 9c-main-m7i_flex_2xl_2c_test
+          tolerations:
+          - effect: NoSchedule
+            key: dedicated
+            operator: Equal
+            value: remote-headless-test
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: eks.amazonaws.com/nodegroup
+                    operator: In
+                    values:
+                    - 9c-main-m7g_2xl_2c_test
+                    - 9c-main-r7g_xl_2c_validator
+                    - 9c-main-2c_spot_amd
+                    - 9c-main-m7i_flex_2xl_2c_test
 
   destination:
     server: https://kubernetes.default.svc

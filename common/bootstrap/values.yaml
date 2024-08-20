@@ -63,3 +63,5 @@ gatewayApi:
 datadog:
   enabled: false
   nodeGroup: ""
+  tolerations: []
+  affinity: {}

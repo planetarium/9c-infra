@@ -39,6 +39,14 @@ spec:
           nodeSelector:
             eks.amazonaws.com/nodegroup: {{ . }}
           {{- end }}
+          {{- with $.Values.datadog.tolerations }}
+          tolerations:
+            {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with $.Values.datadog.affinity }}
+          affinity:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
         clusterAgent:
           metricsProvider:
             enabled: true
