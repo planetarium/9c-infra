@@ -1,0 +1,68 @@
+{{- if .Values.datadog.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: datadog
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://helm.datadoghq.com
+    chart: datadog
+    targetRevision: 3.69.3
+    helm:
+      values: |-
+        datadog:
+          apiKeyExistingSecret: datadog-secret
+          appKeyExistingSecret: datadog-secret
+          site: datadoghq.com
+          apm:
+            portEnabled: true
+          processAgent:
+            enabled: true
+            processCollection: true
+          networkMonitoring:
+            enabled: true
+        agents:
+          podSecurity:
+            apparmor:
+              enabled: false
+          {{- with $.Values.datadog.nodeGroup }}
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: {{ . }}
+          {{- end }}
+        clusterAgent:
+          metricsProvider:
+            enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: datadog-secret
+  namespace: argocd
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: argocd-secretsmanager
+    kind: SecretStore
+  dataFrom:
+  - extract:
+      key: {{ .Values.clusterName }}/datadog
+  target:
+    name: datadog-secret
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/instance: datadog
+          app.kubernetes.io/part-of: datadog
+    creationPolicy: Owner
+{{- end }}

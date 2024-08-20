@@ -165,6 +165,10 @@ spec:
           replicaCount: 2
           nodeGroup: 9c-main-r7g_xl_2c
 
+        datadog:
+          enabled: true
+          nodeGroup: 9c-main-m7i_flex_2xl_2c_test
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
