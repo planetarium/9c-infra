@@ -362,6 +362,8 @@ testHeadless1:
     tag: ""
 
   loggingEnabled: false
+  datadog:
+    enabled: false
 
   extraArgs: []
   # - --key=val
@@ -437,6 +439,8 @@ jwtHeadless:
     tag: ""
 
   loggingEnabled: false
+  datadog:
+    enabled: false
 
   extraArgs: []
   # - --key=val

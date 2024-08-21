@@ -23,6 +23,9 @@ spec:
     metadata:
       labels:
         app: test-headless-1
+      annotations:
+        prometheus.io/port: '80'
+        prometheus.io/scrape: 'true'
       name: test-headless-1
     spec:
       initContainers:
@@ -64,17 +67,23 @@ spec:
         - mountPath: /data
           name: test-headless-data-1
       {{- end }}
-      {{- if $.Values.global.pyroscope.enabled }}
+      {{- if $.Values.testHeadless1.datadog.enabled }}
       - command:
           - sh
           - '-c'
           - >
             apk --no-cache add curl tar
 
-            curl -s -L https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.14-pyroscope/pyroscope.0.8.14-glibc-x86_64.tar.gz | tar xvz -C /data
+            mkdir /data/datadog
+
+            curl -s -L
+            https://github.com/DataDog/dd-trace-dotnet/releases/download/v2.57.0/datadog-dotnet-apm-2.57.0.tar.gz
+            | tar xvz -C /data/datadog
+
+            sh /data/datadog/createLogPath.sh
         image: alpine
         imagePullPolicy: Always
-        name: setup-pyroscope
+        name: setup-datadog
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -212,34 +221,31 @@ spec:
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_test-headless-1.json
           {{- end }}
-          {{- if $.Values.global.pyroscope.enabled }}
-          - name: PYROSCOPE_APPLICATION_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: PYROSCOPE_SERVER_ADDRESS
-            value: {{ $.Values.global.pyroscope.address }}
-          - name: PYROSCOPE_PROFILING_ENABLED
-            value: "1"
-          - name: CORECLR_ENABLE_PROFILING
-            value: "1"
-          - name: CORECLR_PROFILER
-            value: "{BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}"
-          - name: CORECLR_PROFILER_PATH
-            value: "/data/Pyroscope.Profiler.Native.so"
-          - name: LD_PRELOAD
-            value: "/data/Pyroscope.Linux.ApiWrapper.x64.so"
-          - name: PYROSCOPE_PROFILING_CPU_ENABLED
-            value: "true"
-          - name: PYROSCOPE_PROFILING_EXCEPTION_ENABLED
-            value: "true"
-          - name: PYROSCOPE_PROFILING_ALLOCATION_ENABLED
-            value: "true"
-          - name: PYROSCOPE_PROFILING_LOCK_ENABLED
-            value: "true"
+          {{- if $.Values.testHeadless1.datadog.enabled }}
           - name: OTLP_ENDPOINT
-            value: http://tempo.monitoring.svc.cluster.local:4317
+            value: 'http://datadog.datadog.svc.cluster.local:4317'
+          - name: CORECLR_ENABLE_PROFILING
+            value: '1'
+          - name: CORECLR_PROFILER
+            value: '{846F5F1C-F9AE-4B07-969E-05C26BC060D8}'
+          - name: CORECLR_PROFILER_PATH
+            value: /data/datadog/Datadog.Trace.ClrProfiler.Native.so
+          - name: LD_PRELOAD
+            value: /data/datadog/continuousprofiler/Datadog.Linux.ApiWrapper.x64.so
+          - name: DD_ENV
+            value: production
+          - name: DD_PROFILING_ENABLED
+            value: 'true'
+          - name: DD_PROFILING_ALLOCATION_ENABLED
+            value: 'true'
+          - name: DD_PROFILING_LOCK_ENABLED
+            value: 'true'
+          - name: DD_PROFILING_HEAP_ENABLED
+            value: 'true'
+          - name: DD_DOTNET_TRACER_HOME
+            value: /data/datadog
+          - name: DD_AGENT_HOST
+            value: datadog.datadog.svc.cluster.local
           {{- end }}
         {{- with $.Values.testHeadless1.env }}
           {{- toYaml . | nindent 10 }}

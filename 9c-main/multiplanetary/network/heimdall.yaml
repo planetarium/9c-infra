@@ -390,6 +390,9 @@ testHeadless1:
   enabled: true
   replicas: 1
 
+  datadog:
+    enabled: true
+
   host: "heimdall-test-1.nine-chronicles.com"
 
   ports:
