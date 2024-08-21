@@ -132,12 +132,6 @@ patrolRewardService:
 remoteHeadless:
   count: 1
 
-  env:
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "RestAPI"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "http://acc-service.heimdall.svc.cluster.local:80"
-
   resources:
     requests:
       cpu: 1
