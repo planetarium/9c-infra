@@ -24,8 +24,8 @@ spec:
           apiKeyExistingSecret: datadog-secret
           appKeyExistingSecret: datadog-secret
           site: datadoghq.com
-          prometheusScrape:	
-            enabled: true	
+          prometheusScrape:
+            enabled: true
             serviceEndpoints: true
           apm:
             portEnabled: true
@@ -34,14 +34,14 @@ spec:
             processCollection: true
           networkMonitoring:
             enabled: true
-          otlp:	
-            receiver:	
-              protocols:	
-                grpc:	
-                  endpoint: 0.0.0.0:4317	
-                  enabled: true	
-                http:	
-                  endpoint: 0.0.0.0:4318	
+          otlp:
+            receiver:
+              protocols:
+                grpc:
+                  endpoint: 0.0.0.0:4317
+                  enabled: true
+                http:
+                  endpoint: 0.0.0.0:4318
                   enabled: true
         agents:
           podSecurity:
