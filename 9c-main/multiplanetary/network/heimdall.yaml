@@ -253,12 +253,12 @@ remoteHeadless:
   - --arena-participants-sync-interval=4000
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-r7g_2xl_2c_test
 
   resources:
     requests:
       cpu: '5'
-      memory: 28Gi
+      memory: 50Gi
 
   tolerations:
   - effect: NoSchedule
