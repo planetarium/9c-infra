@@ -35,14 +35,14 @@ spec:
           networkMonitoring:
             enabled: true
           otlp:	
-           receiver:	
-             protocols:	
-               grpc:	
-                 endpoint: 0.0.0.0:4317	
-                 enabled: true	
-               http:	
-                 endpoint: 0.0.0.0:4318	
-                 enabled: true
+            receiver:	
+              protocols:	
+                grpc:	
+                  endpoint: 0.0.0.0:4317	
+                  enabled: true	
+                http:	
+                  endpoint: 0.0.0.0:4318	
+                  enabled: true
         agents:
           podSecurity:
             apparmor:
