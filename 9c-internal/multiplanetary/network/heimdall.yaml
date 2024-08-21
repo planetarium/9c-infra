@@ -251,10 +251,6 @@ worldBoss:
 
 testHeadless1:
   enabled: true
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-340af53a2c40049c2b202ed0a87b8841bd34f60b"
 
   host: "heimdall-internal-test-1.nine-chronicles.com"
 
