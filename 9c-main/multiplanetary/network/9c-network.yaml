@@ -382,6 +382,9 @@ testHeadless1:
 
   loggingEnabled: true
 
+  datadog:
+    enabled: true
+
   host: "9c-main-test-1.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
@@ -478,9 +481,10 @@ jwtHeadless:
 
   loggingEnabled: true
 
-  host: "9c-main-jwt.nine-chronicles.com"
+  datadog:
+    enabled: true
 
-  setupPyroscope: true
+  host: "9c-main-jwt.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 

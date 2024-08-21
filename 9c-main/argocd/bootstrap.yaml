@@ -184,6 +184,7 @@ spec:
                     - 9c-main-r7g_xl_2c_validator
                     - 9c-main-2c_spot_amd
                     - 9c-main-m7i_flex_2xl_2c_test
+                    - heimdall-2c_spot
 
   destination:
     server: https://kubernetes.default.svc
