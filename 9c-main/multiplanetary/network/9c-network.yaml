@@ -117,9 +117,9 @@ validator:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -191,9 +191,9 @@ remoteHeadless:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -342,9 +342,9 @@ fullState:
   - name: MultiAccountManaging__EnableManaging
     value: "true"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -405,9 +405,9 @@ testHeadless1:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -450,9 +450,9 @@ testHeadless2:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 
@@ -504,9 +504,9 @@ jwtHeadless:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.9c-network.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
 

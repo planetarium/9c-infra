@@ -134,9 +134,9 @@ fullState:
   - name: MultiAccountManaging__EnableManaging
     value: "true"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
   - name: DOTNET_GCHighMemPercent
@@ -174,9 +174,9 @@ validator:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
   - name: DOTNET_GCHighMemPercent
@@ -241,9 +241,9 @@ remoteHeadless:
   - name: IpRateLimiting__IpWhiteList__3
     value: "::ffff:118.131.110.197"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
   - name: DOTNET_GCHighMemPercent
@@ -430,9 +430,9 @@ testHeadless1:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: OTLP_ENDPOINT
     value: "http://172.20.239.175:4318"
   - name: PLUGIN_PATH
@@ -490,9 +490,9 @@ testHeadless2:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: OTLP_ENDPOINT
     value: http://172.20.239.175:4318
   - name: PLUGIN_PATH
@@ -531,9 +531,9 @@ jwtHeadless:
   - name: IpRateLimiting__IpBanThresholdCount
     value: "5"
   - name: Headless__AccessControlService__AccessControlServiceType
-    value: "redis"
+    value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "acc-redis-service.heimdall.svc.cluster.local:6379"
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
   - name: DOTNET_GCHighMemPercent
