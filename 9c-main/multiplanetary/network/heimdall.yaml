@@ -40,6 +40,7 @@ ingress:
     marketService: "heimdall-market.9c.gg"
     patrolRewardService: "heimdall-patrol.9c.gg"
     worldBoss: "heimdall-world-boss.9c.gg"
+    arenaService: "heimdall-arena.9c.gg"
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -646,6 +647,12 @@ rudolfCurrencyNotifier:
 
 stateMigrationService:
   enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
+
+arenaService:
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c

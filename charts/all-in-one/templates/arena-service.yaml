@@ -36,6 +36,11 @@ spec:
                   name: arena
             - name: Redis__TimeOut
               value: "5000"
+            - name: Redis__Database
+              valueFrom:
+                secretKeyRef:
+                  key: redis-database
+                  name: arena
           {{- with $.Values.arenaService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
