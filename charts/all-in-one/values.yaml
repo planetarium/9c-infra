@@ -148,6 +148,8 @@ validator:
       memory: 20Gi
 
   loggingEnabled: false
+  datadog:
+    enabled: false
 
   nodeSelector: {}
 
@@ -186,8 +188,10 @@ remoteHeadless:
       cpu: 2
       memory: 20Gi
 
-  loggingEnabled: false
   rateLimitEnabled: false
+  loggingEnabled: false
+  datadog:
+    enabled: false
 
   nodeSelector: {}
   tolerations: []
@@ -278,6 +282,9 @@ fullState:
   # - --key=val
 
   useTurnServer: true
+  loggingEnabled: false
+  datadog:
+    enabled: false
 
   host: ""
   #  - "a7ce1613cc0da437c8b06ceb4c4718f4-477884391.us-east-2.elb.amazonaws.com"
@@ -300,7 +307,6 @@ fullState:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  loggingEnabled: false
 
 worldBoss:
   enabled: false
