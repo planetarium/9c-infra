@@ -199,7 +199,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync-interval=4000
+  - --arena-participants-sync=false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
