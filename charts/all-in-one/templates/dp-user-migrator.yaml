@@ -98,6 +98,12 @@ spec:
             - $(DP_TOKEN)
             - --mysql-database
             - $(DP_DATABASE)
+            - --slack-token
+            - $(DP_SLACK_TOKEN)
+            - --slack-channel
+            - $(DP_SLACK_CHANNEL)
+            - --network
+            - $(DP_NETWORK)
             command:
             - dotnet
             env:
@@ -125,6 +131,21 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: database
+                  name: data-provider
+            - name: DP_SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: data-provider
+            - name: DP_SLACK_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel
+                  name: data-provider
+            - name: DP_NETWORK
+              valueFrom:
+                secretKeyRef:
+                  key: network
                   name: data-provider
             image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
             imagePullPolicy: Always
