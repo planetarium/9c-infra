@@ -24,9 +24,6 @@ global:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
 
-  pyroscope:
-    enabled: true
-
   networkType: Main
   planet: Odin
   consensusType: pbft
@@ -124,6 +121,8 @@ validator:
     value: "/data"
 
   loggingEnabled: true
+  datadog:
+    enabled: true
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -216,6 +215,8 @@ remoteHeadless:
     value: remote-headless-test
 
   loggingEnabled: true
+  datadog:
+    enabled: true
 
 dataProviderDataMigrator:
   enabled: true
@@ -296,10 +297,10 @@ fullState:
   enabled: true
 
   loggingEnabled: true
+  datadog:
+    enabled: true
 
   useTurnServer: false
-
-  setupPyroscope: true
 
   host: "9c-main-full-state.nine-chronicles.com"
 
