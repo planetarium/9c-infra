@@ -10,6 +10,7 @@ resources:
 patchesStrategicMerge:
   - argocd-cm.yaml
   - argocd-rbac-cm.yaml
+  - argocd-cmd-params-cm.yaml
 patchesJson6902:
   - target:
       group: argoproj.io
