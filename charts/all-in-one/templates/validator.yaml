@@ -63,6 +63,30 @@ spec:
         - mountPath: /data
           name: validator-data-{{ $index }}
       {{- end }}
+      {{- if $.Values.validator.datadog.enabled }}
+      - command:
+          - sh
+          - '-c'
+          - >
+            apk --no-cache add curl tar
+
+            mkdir /data/datadog
+
+            curl -s -L
+            https://github.com/DataDog/dd-trace-dotnet/releases/download/v2.57.0/datadog-dotnet-apm-2.57.0.arm64.tar.gz
+            | tar xvz -C /data/datadog
+
+            sh /data/datadog/createLogPath.sh
+        image: alpine
+        imagePullPolicy: Always
+        name: setup-datadog
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: validator-data-{{ $index }}
+      {{- end }}
       - command:
         - sh
         - '-c'
@@ -159,6 +183,16 @@ spec:
             value: /data/datadog
           - name: DD_AGENT_HOST
             value: datadog.datadog.svc.cluster.local
+          - name: DD_RUNTIME_METRICS_ENABLED
+            value: 'true'
+          - name: DD_DYNAMIC_INSTRUMENTATION_ENABLED
+            value: 'true'
+          - name: CORECLR_ENABLE_PROFILING
+            value: '1'
+          - name: CORECLR_PROFILER
+            value: '{846F5F1C-F9AE-4B07-969E-05C26BC060D8}'
+          - name: CORECLR_PROFILER_PATH
+            value: /data/datadog/Datadog.Trace.ClrProfiler.Native.so
           {{- end }}
           {{- with $.Values.validator.env }}
             {{- toYaml . | nindent 10 }}
