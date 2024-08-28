@@ -86,13 +86,13 @@ def update_apv(
 
 @k8s_app.command()
 def update_paev(
-    paev_url: str = typer.Argument(
+    network_type: str = typer.Argument(
         ...,
     ),
-    end_value: int = typer.Argument(
+    previous_version_block_index: int = typer.Argument(
         ...,
     ),
-    lib9c_plugin_url: str = typer.Argument(
+    previous_version_lib9c_commit: str = typer.Argument(
         ...,
     ),
 ):
