@@ -38,7 +38,7 @@ class PluggableActionEvaluatorUpdater:
         # Iterate over each URL in the list
         for url in paev_urls:
             # Choose the suffix based on the presence of "nodeinfra"
-            suffix = arm64_suffix if "nodeinfra" in url else x64_suffix
+            suffix = x64_suffix if "nodeinfra" in url else arm64_suffix
 
             # Construct the plugin URL
             plugin_url = f"{base_url}{previous_version_lib9c_commit}{suffix}"
@@ -47,6 +47,7 @@ class PluggableActionEvaluatorUpdater:
             self.update(url, previous_version_block_index, plugin_url)
 
     def update(
+        self,
         paev_url,
         end_value,
         lib9c_plugin_url):
