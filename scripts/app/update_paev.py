@@ -47,6 +47,7 @@ class PluggableActionEvaluatorUpdater:
             self.update(url, previous_version_block_index, plugin_url)
 
     def update(
+        self,
         paev_url,
         end_value,
         lib9c_plugin_url):
