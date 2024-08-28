@@ -230,6 +230,10 @@ spec:
             value: /data/datadog
           - name: DD_AGENT_HOST
             value: datadog.datadog.svc.cluster.local
+          - name: DD_RUNTIME_METRICS_ENABLED
+            value: 'true'
+          - name: DD_DYNAMIC_INSTRUMENTATION_ENABLED
+            value: 'true'
           {{- end }}
         {{- with $.Values.jwtHeadless.env }}
           {{- toYaml . | nindent 10 }}
