@@ -70,18 +70,18 @@ spec:
         {{- end }}
         {{- if $.Values.remoteHeadless.datadog.enabled }}
         - command:
-            - sh
-            - '-c'
-            - >
-              apk --no-cache add curl tar
+          - sh
+          - '-c'
+          - >
+            apk --no-cache add curl tar
 
-              mkdir /data/datadog
+            mkdir /data/datadog
 
-              curl -s -L
-              https://github.com/DataDog/dd-trace-dotnet/releases/download/v2.57.0/datadog-dotnet-apm-2.57.0.arm64.tar.gz
-              | tar xvz -C /data/datadog
+            curl -s -L
+            https://github.com/DataDog/dd-trace-dotnet/releases/download/v2.57.0/datadog-dotnet-apm-2.57.0.arm64.tar.gz
+            | tar xvz -C /data/datadog
 
-              sh /data/datadog/createLogPath.sh
+            sh /data/datadog/createLogPath.sh
           image: alpine
           imagePullPolicy: Always
           name: setup-datadog
@@ -93,34 +93,34 @@ spec:
             name: remote-headless-data-{{ $index }}
         {{- end }}
         - command:
-            - sh
-            - '-c'
-            - >
-              apk --no-cache add curl
+          - sh
+          - '-c'
+          - >
+            apk --no-cache add curl
 
-              # Endpoint to check
+            # Endpoint to check
 
-              SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+            SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
-              echo Checking: ${SEED}
+            echo Checking: ${SEED}
 
-              while [[ $(curl --silent --output /dev/null --request GET
-              --write-out "%{http_code}" ${SEED}) -ne 200 ]]; do
-                echo "Not ready"
-                sleep 5s
-              done
+            while [[ $(curl --silent --output /dev/null --request GET
+            --write-out "%{http_code}" ${SEED}) -ne 200 ]]; do
+              echo "Not ready"
+              sleep 5s
+            done
 
-              VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+            VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
 
-              echo Checking: ${VALIDATOR}
+            echo Checking: ${VALIDATOR}
 
-              while [[ $(curl --silent --output /dev/null --request GET
-              --write-out "%{http_code}" ${VALIDATOR}) -ne 200 ]]; do
-                echo "Not ready"
-                sleep 5s
-              done
+            while [[ $(curl --silent --output /dev/null --request GET
+            --write-out "%{http_code}" ${VALIDATOR}) -ne 200 ]]; do
+              echo "Not ready"
+              sleep 5s
+            done
 
-              echo Ready
+            echo Ready
           image: alpine
           imagePullPolicy: Always
           name: wait
