@@ -63,30 +63,6 @@ spec:
         - mountPath: /data
           name: validator-data-{{ $index }}
       {{- end }}
-      {{- if $.Values.validator.datadog.enabled }}
-      - command:
-          - sh
-          - '-c'
-          - >
-            apk --no-cache add curl tar
-
-            mkdir /data/datadog
-
-            curl -s -L
-            https://github.com/DataDog/dd-trace-dotnet/releases/download/v2.57.0/datadog-dotnet-apm-2.57.0.tar.gz
-            | tar xvz -C /data/datadog
-
-            sh /data/datadog/createLogPath.sh
-        image: alpine
-        imagePullPolicy: Always
-        name: setup-datadog
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /data
-          name: validator-data-{{ $index }}
-      {{- end }}
       - command:
         - sh
         - '-c'
@@ -177,24 +153,8 @@ spec:
           {{- if $.Values.validator.datadog.enabled }}
           - name: OTLP_ENDPOINT
             value: 'http://datadog.datadog.svc.cluster.local:4317'
-          - name: CORECLR_ENABLE_PROFILING
-            value: '1'
-          - name: CORECLR_PROFILER
-            value: '{846F5F1C-F9AE-4B07-969E-05C26BC060D8}'
-          - name: CORECLR_PROFILER_PATH
-            value: /data/datadog/Datadog.Trace.ClrProfiler.Native.so
-          - name: LD_PRELOAD
-            value: /data/datadog/continuousprofiler/Datadog.Linux.ApiWrapper.x64.so
           - name: DD_ENV
             value: production
-          - name: DD_PROFILING_ENABLED
-            value: 'true'
-          - name: DD_PROFILING_ALLOCATION_ENABLED
-            value: 'true'
-          - name: DD_PROFILING_LOCK_ENABLED
-            value: 'true'
-          - name: DD_PROFILING_HEAP_ENABLED
-            value: 'true'
           - name: DD_DOTNET_TRACER_HOME
             value: /data/datadog
           - name: DD_AGENT_HOST
