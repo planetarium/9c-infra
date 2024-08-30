@@ -49,7 +49,7 @@ spec:
           ports:
             - containerPort: 80
       restartPolicy: Always
-      {{- with $.Values.arenaService.nodeSelector }}
+      {{- with $.Values.arenaService.nodeSelector.write }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
