@@ -1,22 +1,22 @@
-{{ if .Values.arenaService.enabled }}
+{{ if .Values.arenaService.enabled and .Values.arenaService.rwMode }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: arena-service
+    app: arena-service-write
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: arena-service
+  name: arena-service-write
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: arena-service
-  serviceName: arena-service
+      app: arena-service-write
+  serviceName: arena-service-write
   template:
     metadata:
       labels:
-        app: arena-service
+        app: arena-service-write
     spec:
       containers:
         - args:
@@ -41,15 +41,15 @@ spec:
                 secretKeyRef:
                   key: redis-database
                   name: arena
-          {{- with $.Values.arenaService.env }}
+          {{- with $.Values.arenaService.envForWrite }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           image: {{ $.Values.arenaService.image.repository }}:{{ $.Values.arenaService.image.tag }}
-          name: arena-service
+          name: arena-service-write
           ports:
             - containerPort: 80
       restartPolicy: Always
-      {{- with $.Values.arenaService.nodeSelector.read }}
+      {{- with $.Values.arenaService.nodeSelector.write }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

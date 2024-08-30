@@ -659,6 +659,17 @@ stateMigrationService:
 
 arenaService:
   enabled: true
+  rwMode: true
+  env:
+    - name: Worker
+      value: "false"
+
+  envForWrite:
+    - name: Worker
+      value: "true"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
+    read:
+      eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
+    write:
+      eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
