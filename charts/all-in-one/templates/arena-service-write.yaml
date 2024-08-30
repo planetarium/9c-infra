@@ -1,4 +1,4 @@
-{{ if .Values.arenaService.enabled and .Values.arenaService.rwMode }}
+{{ if and .Values.arenaService.enabled .Values.arenaService.rwMode }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
