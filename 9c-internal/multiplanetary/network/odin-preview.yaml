@@ -288,7 +288,7 @@ jwtHeadless:
 
   loggingEnabled: true
 
-  host: "9c-preview-jwt.nine-chronicles.com"
+  host: "odin-preview-jwt.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
