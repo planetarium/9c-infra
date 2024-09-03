@@ -81,7 +81,7 @@ bridgeServiceApi:
   enabled: true
 
 dataProvider:
-  enabled: true
+  enabled: false
   rwMode: false
   render: true
   migrateDatabase: false
@@ -250,7 +250,7 @@ worldBoss:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
 
 testHeadless1:
-  enabled: true
+  enabled: false
 
   host: "heimdall-preview-test-1.nine-chronicles.com"
 

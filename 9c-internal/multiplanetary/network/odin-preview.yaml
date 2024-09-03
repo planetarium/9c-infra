@@ -127,7 +127,7 @@ remoteHeadless:
   - --arena-participants-sync=false
 
 dataProvider:
-  enabled: true
+  enabled: false
   migrateDatabase: true
 
   storage:
@@ -237,7 +237,7 @@ rudolfCurrencyNotifier:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
 
 volumeRotator:
-  enabled: true
+  enabled: false
 
 worldBoss:
   enabled: true
