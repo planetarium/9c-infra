@@ -37,12 +37,12 @@ ingress:
     arenaService: "heimdall-preview-arena.9c.gg"
 
 bridgeService:
-  enabled: false
+  enabled: true
 
   multiplanetary:
     registryEndpoint: "https://planets-preview.nine-chronicles.com/planets/"
-    upstream: "0x100000000003"
-    downstream: "0x100000000004"
+    upstream: "0x100000000000"
+    downstream: "0x100000000001"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
@@ -78,7 +78,7 @@ bridgeService:
       downstream: "3125739"
 
 bridgeServiceApi:
-  enabled: false
+  enabled: true
 
 dataProvider:
   enabled: false
@@ -121,7 +121,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
