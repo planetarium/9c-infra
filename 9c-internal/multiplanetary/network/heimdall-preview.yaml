@@ -44,7 +44,7 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://planets-preview.nine-chronicles.com/planets/"
+    registryEndpoint: "https://planets-internal.nine-chronicles.com/planets-preview/"
     upstream: "0x100000000000"
     downstream: "0x100000000001"
 
