@@ -2,6 +2,10 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-bbbd0e79a1067776e3abddfb27e4be7fa5112770"
+
   validatorPath: "validator-5.heimdall-preview.svc.cluster.local"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"

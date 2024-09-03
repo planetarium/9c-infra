@@ -2,6 +2,10 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-bbbd0e79a1067776e3abddfb27e4be7fa5112770"
+
   validatorPath: "validator-5.odin-preview.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
