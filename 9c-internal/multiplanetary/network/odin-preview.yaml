@@ -193,7 +193,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
