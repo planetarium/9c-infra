@@ -206,7 +206,7 @@ rudolfService:
 
   config:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
-    graphqlEndpoint: "https://9c-preview-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
     genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
 
   db:
@@ -229,7 +229,7 @@ rudolfCurrencyNotifier:
 
   config:
     schedule: "0 0 * * *"
-    graphqlEndpoint: "https://9c-preview-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
     targetAddress: "0xB5AF28837b28A9C768e9849d90646E3D6078311c"
     serverName: "9c-preview"
 
