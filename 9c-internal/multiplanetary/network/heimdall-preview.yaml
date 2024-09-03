@@ -37,7 +37,7 @@ ingress:
     arenaService: "heimdall-preview-arena.9c.gg"
 
 bridgeService:
-  enabled: true
+  enabled: false
 
   multiplanetary:
     registryEndpoint: "https://planets-preview.nine-chronicles.com/planets/"
@@ -78,7 +78,7 @@ bridgeService:
       downstream: "3125739"
 
 bridgeServiceApi:
-  enabled: true
+  enabled: false
 
 dataProvider:
   enabled: false
@@ -154,7 +154,7 @@ remoteHeadless:
   - --arena-participants-sync=false
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     graphqlEndpoint: "http://heimdall-preview-rpc-1.nine-chronicles.com/graphql"
@@ -187,7 +187,7 @@ seed:
 
 snapshot:
   partition:
-    enabled: true
+    enabled: false
     suspend: true
   slackChannel: "bot-test"
 

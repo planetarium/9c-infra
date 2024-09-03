@@ -202,7 +202,7 @@ patrolRewardService:
     local: true
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
