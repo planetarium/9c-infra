@@ -6,3 +6,5 @@ network:
   - "9c-network"
   - "heimdall"
   - "idun"
+  - "odin-preview"
+  - "heimdall-preview"
