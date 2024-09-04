@@ -230,7 +230,7 @@ validator:
   - --arena-participants-sync=false
 
 worldBoss:
-  enabled: true
+  enabled: false
   ports:
     targetPort: 5000
 
