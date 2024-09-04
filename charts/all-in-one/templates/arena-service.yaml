@@ -55,4 +55,38 @@ spec:
       {{- end }}
   updateStrategy:
     type: RollingUpdate
+{{ if .Values.arenaService.redis }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: arena-service-redis
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: arena-service-redis
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arena-service-redis
+  serviceName: arena-service-redis
+  template:
+    metadata:
+      labels:
+        app: arena-service-redis
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --appendonly
+            - "yes"
+          image: redis:6.2
+          name: arena-service-redis
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
+  updateStrategy:
+    type: RollingUpdate
+{{- end }}
 {{ end }}
