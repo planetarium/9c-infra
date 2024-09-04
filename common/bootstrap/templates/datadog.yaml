@@ -32,6 +32,7 @@ spec:
           processAgent:
             enabled: true
             processCollection: true
+            stripProcessArguments: true
           networkMonitoring:
             enabled: true
           otlp:
@@ -53,11 +54,11 @@ spec:
           {{- end }}
           {{- with $.Values.datadog.tolerations }}
           tolerations:
-            {{ toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- with $.Values.datadog.affinity }}
           affinity:
-            {{ toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
         clusterAgent:
           metricsProvider:
