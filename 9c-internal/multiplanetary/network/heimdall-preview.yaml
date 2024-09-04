@@ -29,7 +29,7 @@ global:
 
 externalSecret:
   enabled: true
-  prefix: "9c-internal-v2/heimdall"
+  prefix: "9c-internal-v2/heimdall-preview"
 
 ingress:
   enabled: true
@@ -85,17 +85,15 @@ bridgeServiceApi:
   enabled: true
 
 dataProvider:
-  enabled: false
-  rwMode: false
-  render: true
+  enabled: true
   migrateDatabase: false
 
   storage:
-    data: 1000Gi
-    log: 10Gi
+    data: 500Gi
 
   db:
     local: true
+    storage: 100Gi
     database: ""
     connectionString: ""
     host: ""

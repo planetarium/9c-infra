@@ -131,16 +131,15 @@ remoteHeadless:
   - --arena-participants-sync=false
 
 dataProvider:
-  enabled: false
-  migrateDatabase: true
+  enabled: true
+  migrateDatabase: false
 
   storage:
-    data: 1000Gi
-    log: 4Gi
+    data: 500Gi
 
   db:
     local: true
-    storage: 1000Gi
+    storage: 100Gi
     database: ''
     connectionString: ''
     host: ''
