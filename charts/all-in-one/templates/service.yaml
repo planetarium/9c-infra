@@ -846,7 +846,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: world-boss-redis
+  name: arena-service-redis
   namespace: {{ $.Release.Name }}
 spec:
   internalTrafficPolicy: Cluster
@@ -856,7 +856,7 @@ spec:
       protocol: TCP
       targetPort: 6379
   selector:
-    app: world-boss-redis
+    app: arena-service-redis
   type: ClusterIP
 
 ---
