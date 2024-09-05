@@ -4,7 +4,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-bbbd0e79a1067776e3abddfb27e4be7fa5112770"
+    tag: "193"
 
   validatorPath: "validator-5.heimdall-preview.svc.cluster.local"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
@@ -85,6 +85,10 @@ bridgeServiceApi:
   enabled: true
 
 dataProvider:
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    tag: "193"
+
   enabled: true
   migrateDatabase: false
 
