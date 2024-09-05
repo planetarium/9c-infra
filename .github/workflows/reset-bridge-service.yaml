@@ -39,11 +39,11 @@ jobs:
         fi
 
     - name: Display current kubectl context
-        run: |
-          kubectl config current-context
-          kubectl config view
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      run: |
+        kubectl config current-context
+        kubectl config view
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
 
     - name: List statefulsets
       run: |
