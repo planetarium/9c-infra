@@ -2,6 +2,15 @@ name: Reset bridge service
 
 on:
   workflow_dispatch:
+    inputs:
+      network:
+        required: true
+        description: 'network type'
+        default: 'internal'
+        type: choice
+        options:
+        - internal
+        - preview
 
 jobs:
   reset-bridge-service:
@@ -21,23 +30,44 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
 
-    - uses: actions-hub/kubectl@master
+    - name: Set namespace based on input
+      run: |
+        if [ "${{ github.event.inputs.network }}" = "internal" ]; then
+          echo "NAMESPACE=heimdall" >> $GITHUB_ENV
+        else
+          echo "NAMESPACE=heimdall-preview" >> $GITHUB_ENV
+        fi
+
+    - name: Display current kubectl context
+        run: |
+          kubectl config current-context
+          kubectl config view
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+
+    - name: List statefulsets
+      run: |
+        kubectl get statefulsets -n ${{ env.NAMESPACE }}
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
-      with:
-        args: scale --replicas=0 statefulset/bridge-service -n heimdall
 
     - uses: actions-hub/kubectl@master
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
-        args: scale --replicas=0 statefulset/bridge-service-db -n heimdall
+        args: scale --replicas=0 statefulset/bridge-service -n ${{ env.NAMESPACE }}
 
     - uses: actions-hub/kubectl@master
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       with:
-        args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=heimdall
+        args: scale --replicas=0 statefulset/bridge-service-db -n ${{ env.NAMESPACE }}
+
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=${{ env.NAMESPACE }}
 
     - uses: actions/setup-python@v2.2.2
       with:
@@ -51,7 +81,7 @@ jobs:
 
     - name: Update 'bridgeService.rdb.defaultStartBlockIndex'
       run: |
-        python cli.py update-bridge-service 9c-internal heimdall
+        python cli.py update-bridge-service 9c-internal ${{ env.NAMESPACE }}
       working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
