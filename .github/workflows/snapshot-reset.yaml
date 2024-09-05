@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   release-odin:
-    if: ${{ github.event.inputs.chain }} == 'odin' || ${{ github.event.inputs.chain }} == 'internal-all'
+    if: ${{ github.event.inputs.chain == 'odin' || github.event.inputs.chain == 'internal-all' }}
     runs-on: ubuntu-latest
     environment:
       name: internal
@@ -36,7 +36,7 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
   release-heimdall:
-    if: ${{ github.event.inputs.chain }} == 'heimdall' || ${{ github.event.inputs.chain }} == 'internal-all'
+    if: ${{ github.event.inputs.chain == 'heimdall' || github.event.inputs.chain == 'internal-all' }}
     runs-on: ubuntu-latest
     environment:
       name: internal
@@ -52,7 +52,7 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
   release-odin-preview:
-    if: ${{ github.event.inputs.chain }} == 'odin-preview' || ${{ github.event.inputs.chain }} == 'preview-all'
+    if: ${{ github.event.inputs.chain == 'odin-preview' || github.event.inputs.chain == 'preview-all' }}
     runs-on: ubuntu-latest
     environment:
       name: internal
@@ -68,7 +68,7 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
   release-heimdall-preview:
-    if: ${{ github.event.inputs.chain }} == 'heimdall-preview' || ${{ github.event.inputs.chain }} == 'preview-all'
+    if: ${{ github.event.inputs.chain == 'heimdall-preview' || github.event.inputs.chain == 'preview-all' }}
     runs-on: ubuntu-latest
     environment:
       name: internal
@@ -84,6 +84,7 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
   reset-bridge-service:
+    if: ${{ github.event.inputs.chain == 'internal-all' || github.event.inputs.chain == 'odin' || github.event.inputs.chain == 'heimdall' }}
     runs-on: ubuntu-latest
     needs: [release-odin, release-heimdall]
     steps:
@@ -128,6 +129,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
 
   reset-bridge-service-preview:
+    if: ${{ github.event.inputs.chain == 'preview-all' || github.event.inputs.chain == 'odin-preview' || github.event.inputs.chain == 'heimdall-preview' }}
     runs-on: ubuntu-latest
     needs: [release-odin-preview, release-heimdall-preview]
     steps:
