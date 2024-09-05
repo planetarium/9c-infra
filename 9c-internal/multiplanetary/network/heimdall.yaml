@@ -305,5 +305,5 @@ arenaService:
     eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
   env:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
