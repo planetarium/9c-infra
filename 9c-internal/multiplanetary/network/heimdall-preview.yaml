@@ -78,8 +78,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "11620010"
-      downstream: "3125739"
+      upstream: "11698456"
+      downstream: "3211407"
 
 bridgeServiceApi:
   enabled: true
@@ -310,5 +310,5 @@ arenaService:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
 
   env:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
