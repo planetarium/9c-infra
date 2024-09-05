@@ -51,36 +51,36 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
     release-odin-preview:
-    if: ${{ github.event.inputs.chain }} == 'odin-preview' || ${{ github.event.inputs.chain }} == 'all'
-    runs-on: ubuntu-latest
-    environment:
-      name: internal
-    steps:
-      - uses: actions/checkout@v3
-      - name: reset internal snapshot
-        run: |
-          echo "y" | bash .github/scripts/reset-snapshot.sh odin-preview
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      if: ${{ github.event.inputs.chain }} == 'odin-preview' || ${{ github.event.inputs.chain }} == 'all'
+      runs-on: ubuntu-latest
+      environment:
+        name: internal
+      steps:
+        - uses: actions/checkout@v3
+        - name: reset internal snapshot
+          run: |
+            echo "y" | bash .github/scripts/reset-snapshot.sh odin-preview
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+            SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
     release-heimdall-preview:
-    if: ${{ github.event.inputs.chain }} == 'heimdall-preview' || ${{ github.event.inputs.chain }} == 'all'
-    runs-on: ubuntu-latest
-    environment:
-      name: internal
-    steps:
-      - uses: actions/checkout@v3
-      - name: reset internal snapshot
-        run: |
-          echo "y" | bash .github/scripts/reset-snapshot.sh heimdall-preview
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      if: ${{ github.event.inputs.chain }} == 'heimdall-preview' || ${{ github.event.inputs.chain }} == 'all'
+      runs-on: ubuntu-latest
+      environment:
+        name: internal
+      steps:
+        - uses: actions/checkout@v3
+        - name: reset internal snapshot
+          run: |
+            echo "y" | bash .github/scripts/reset-snapshot.sh heimdall-preview
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+            SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
   reset-bridge-service:
     runs-on: ubuntu-latest
