@@ -97,7 +97,11 @@ reset_snapshot() {
   # reset cf path
   CF_DISTRIBUTION_ID="EAU4XRUZSBUD5"
   aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$CF_PATH"
-  curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." $"https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
+  if [ "$CHAIN" = "odin" ] || [ "$CHAIN" = "heimdall" ]; then
+    curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
+  else
+    curl --data "[9C-INFRA] Preview $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-previewnet"
+  fi
 }
 
 # Type "y" to reset the cluster with a new snapshot and "n" to just deploy the cluster.
@@ -105,15 +109,19 @@ echo "Do you want to reset the cluster with a new snapshot(y/n)?"
 read response
 CHAIN_NAME=$1
 
-if [ $response = y ]
-then
+if [ "$response" = "y" ]; then
     echo "Reset cluster with a new snapshot"
-    if [ $CHAIN_NAME = "odin" ]
-    then
-      reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" $CHAIN_NAME || true
+    
+    if [ "$CHAIN_NAME" = "odin" ]; then
+        reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" "$CHAIN_NAME" || true
+    elif [ "$CHAIN_NAME" = "heimdall" ]; then
+        reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" "$CHAIN_NAME" || true
+    elif [ "$CHAIN_NAME" = "odin-preview" ]; then
+        reset_snapshot "s3://9c-snapshots-v2/preview" "s3://9c-snapshots-v2/main/partition/internal" "$CHAIN_NAME" || true
     else
-      reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" $CHAIN_NAME || true
+        reset_snapshot "s3://9c-snapshots-v2/preview/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" "$CHAIN_NAME" || true
     fi
+
 else
     echo "Reset cluster without resetting snapshot."
 fi

@@ -14,13 +14,15 @@ logger = structlog.get_logger(__name__)
 
 GQL_QUERY = {"query": "{ nodeStatus { tip { index } } }"}
 
-Network = Literal["9c-internal"]
+Network = Literal["9c-internal", "9c-preview"]
 Planet = Literal["heimdall"]
 
 SNAPSHOT_METADATA_URL_MAP = {
     "9c-internal": {
         "odin": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/latest.json",
         "heimdall": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/heimdall/latest.json",
+        "odin-preview": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/preview/latest.json",
+        "heimdall-preview": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/preview/heimdall/latest.json",
     },
 }
 
@@ -153,5 +155,7 @@ def get_metadata_url_pair(network: Network, planet: Planet) -> Tuple[str, str]:
     match (network, planet):
         case ("9c-internal", "heimdall"):
             return (SNAPSHOT_METADATA_URL_MAP["9c-internal"]["odin"], SNAPSHOT_METADATA_URL_MAP["9c-internal"]["heimdall"])
+        case ("9c-internal", "heimdall-preview"):
+            return (SNAPSHOT_METADATA_URL_MAP["9c-internal"]["odin-preview"], SNAPSHOT_METADATA_URL_MAP["9c-internal"]["heimdall-preview"])
 
     raise TypeError(f"Not supported network and planet: {network}, {planet}")

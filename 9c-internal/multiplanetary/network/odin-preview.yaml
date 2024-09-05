@@ -46,7 +46,7 @@ snapshot:
   partition:
     enabled: true
     suspend: true
-  path: internal
+  path: preview
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_l_2c
 
