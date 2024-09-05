@@ -111,7 +111,7 @@ dataProvider:
 marketService:
   enabled: true
   image:
-    repository: planetariumhq/ninechronicles-headless
+    repository: planetariumhq/market-service
     pullPolicy: Always
     tag: "git-a96c32b4a29edf8b38dd94ff378a6b61a6816809"
 
