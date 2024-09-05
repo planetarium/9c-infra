@@ -38,19 +38,6 @@ jobs:
           echo "NAMESPACE=heimdall-preview" >> $GITHUB_ENV
         fi
 
-    - name: Display current kubectl context
-      run: |
-        kubectl config current-context
-        kubectl config view
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
-
-    - name: List statefulsets
-      run: |
-        kubectl get statefulsets -n ${{ env.NAMESPACE }}
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
-
     - uses: actions-hub/kubectl@master
       env:
         KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
