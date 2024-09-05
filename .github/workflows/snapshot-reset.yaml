@@ -143,6 +143,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
+      - name: Display current kubectl context
+        run: |
+          kubectl config current-context
+          kubectl config view
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      - name: List statefulsets in heimdall-preview
+        run: |
+          kubectl get statefulsets -n heimdall-preview
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
       - uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
