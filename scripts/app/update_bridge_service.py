@@ -14,7 +14,7 @@ logger = structlog.get_logger(__name__)
 
 GQL_QUERY = {"query": "{ nodeStatus { tip { index } } }"}
 
-Network = Literal["9c-internal", "9c-preview"]
+Network = Literal["9c-internal"]
 Planet = Literal["heimdall"]
 
 SNAPSHOT_METADATA_URL_MAP = {
