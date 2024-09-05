@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: argocd
 resources:
   - ../../common/argocd
+  - argo-workflow.yaml
   - bootstrap.yaml
   - argocd-secrets.yaml
   - argocd-secret-store.yaml
@@ -27,9 +28,9 @@ patchesJson6902:
             VAULT_ADDR: ''
           serviceAccount:
             create: true
-            name: mothership-external-secrets
+            name: mothership-use2-external-secrets
             annotations:
-              eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/eks-mothership-external-secrets
+              eks.amazonaws.com/role-arn: arn:aws:iam::533267452421:role/eks-mothership-use2-external-secrets
   - target:
       group: apps
       version: v1

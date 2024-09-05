@@ -93,7 +93,8 @@ spec:
             mv -f /data/snapshot.tar.zst.tmp /data/snapshot.tar.zst ; \
             mkdir -p /data/geth ; \
             rm -rf /data/geth/chaindata ; \
-            zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth
+            zstd -d /data/snapshot.tar.zst --stdout | tar xvf - -C /data/geth ; \
+            rm /data/snapshot.tar.zst
         env:
           - name: SNAPSHOT
             value: "{{ $.Values.genesis.s3SnapshotPath }}/latest.tar.zst"
@@ -294,7 +295,8 @@ spec:
             TIME=`date -u +%Y%m%dT%H%M%SZ` ; \
             tar cvf - chaindata -C /data/geth | zstd - -f -o /data/snapshot-$TIME.tar.zst ; \
             aws s3 cp /data/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst --acl public-read ; \
-            aws s3 cp s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/latest.tar.zst --acl public-read
+            aws s3 cp s3://$S3_SNAPSHOT_PATH/snapshot-$TIME.tar.zst s3://$S3_SNAPSHOT_PATH/latest.tar.zst --acl public-read ; \
+            rm /data/snapshot-$TIME.tar.zst
         env:
           - name: S3_SNAPSHOT_PATH
             value: "{{ $.Values.genesis.s3SnapshotPath }}"

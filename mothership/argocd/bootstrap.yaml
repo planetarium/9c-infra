@@ -29,12 +29,12 @@ spec:
     path: common/bootstrap
     helm:
       values: |
-        clusterName: mothership
+        clusterName: mothership-use2
         argocdPath: mothership
-        accountId: "319679068466"
+        accountId: "533267452421"
         prometheus:
           server:
-            nodeGroup: mothership-m7g_l_2c
+            nodeGroup: mothership-use2-m7g_large_2c
             extraScrapeConfigs:
               - job_name: 'pod monitoring'
                 honor_labels: true
@@ -77,12 +77,12 @@ spec:
               enabled: false
             scopes:
             - email
-            issuer: "https://argocd-mothership.planetarium.network/api/dex"
-            redirectUrl: "https://argo-workflows-mothership.planetarium.network/oauth2/callback"
+            issuer: "https://argocd-mothership-use2.planetarium.network/api/dex"
+            redirectUrl: "https://argo-workflows-mothership-use2.planetarium.network/oauth2/callback"
           ingress:
             enabled: true
             hosts:
-            - "argo-workflows-mothership.planetarium.network"
+            - "argo-workflows-mothership-use2.planetarium.network"
             annotations:
               kubernetes.io/ingress.class: alb
               alb.ingress.kubernetes.io/scheme: internet-facing
@@ -90,8 +90,8 @@ spec:
               alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
               alb.ingress.kubernetes.io/actions.ssl-redirect: >
                 {"Type":"redirect","RedirectConfig":{"Port":"443","Protocol":"HTTPS","StatusCode":"HTTP_302"}}
-              alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:319679068466:certificate/bdddee1c-76b1-49f0-bb85-37952d9944cc
-              alb.ingress.kubernetes.io/tags: Name=mothership-argo-workflows,Owner=jihyung,Service=argo-workflows,Team=devops,Environment=production
+              alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:533267452421:certificate/40a4a0df-6639-44b3-aa22-09625ea4a263
+              alb.ingress.kubernetes.io/tags: Name=mothership-use2-argo-workflows,Owner=jihyung,Service=argo-workflows,Team=devops,Environment=production
 
   destination:
     server: https://kubernetes.default.svc
