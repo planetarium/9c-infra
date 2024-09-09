@@ -672,4 +672,4 @@ arenaService:
     read:
       eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
     write:
-      eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
+      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
