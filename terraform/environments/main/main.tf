@@ -472,5 +472,14 @@ module "common" {
       min_size          = 0
       max_size          = 1
     }
+
+   "9c-main-m7i_flex_xl_2c_test" = {
+      instance_types    = ["m7i-flex.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 10
+    }
   }
 }
