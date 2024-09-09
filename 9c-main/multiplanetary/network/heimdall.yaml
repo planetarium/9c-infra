@@ -594,7 +594,7 @@ patrolRewardService:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
     enabled: true
