@@ -41,6 +41,10 @@ node:
     resources:
       requests:
         memory: 4Gi
+    image: ghcr.io/planetarium/op-geth:sha-3b599d6
+    extraArgs:
+    - --override.libplanet=1725592800
+
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
 
