@@ -42,7 +42,7 @@ node:
       requests:
         memory: 4Gi
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
 
 opBatcher:
   nodeSelector:
