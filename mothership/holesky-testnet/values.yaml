@@ -13,7 +13,7 @@ genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
   createSnapshot: true
   s3SnapshotPath: "mothership-holesky-devnet-use2/testnet/snapshot"
-  snapshot: https://mothership-holesky-devnet-use2.s3.us-east-2.amazonaws.com/testnet/snapshot/latest.tar.zst
+  snapshot: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet/snapshot/latest.tar.zst
 
 blockscout:
   enabled: true
@@ -42,7 +42,7 @@ node:
       requests:
         memory: 4Gi
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
 
 opBatcher:
   nodeSelector:
