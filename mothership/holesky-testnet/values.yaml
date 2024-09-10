@@ -13,6 +13,7 @@ genesis:
   source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
   createSnapshot: true
   s3SnapshotPath: "mothership-holesky-devnet-use2/testnet/snapshot"
+  snapshot: https://mothership-holesky-devnet-use2.s3.us-east-2.amazonaws.com/testnet/snapshot/latest.tar.zst
 
 blockscout:
   enabled: true
