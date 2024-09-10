@@ -560,10 +560,10 @@ patrolRewardService:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 acc:
-  enabled: true
+  enabled: false
 
   redis:
-    enabled: true
+    enabled: false
     port: 6379
 
     nodeSelector:
