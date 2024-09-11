@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  gatewayClassName: nginx
+  listeners:
+    {{- range $network := .Values.networks }}
+    {{- range $service := $network.services }}
+    {{- range $route := $service.routes | default (list dict) }}
+    {{- $obj := merge $route $service}}
+    - name: {{ $network.name }}-{{ $obj.name }}
+      port: {{ $obj.port | default "80" }}
+      hostname: {{ $service.hostname }}
+      protocol: {{ $service.protocol | default "HTTP" }}
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $network.name }}
+    {{- end }}
+    {{- end }}
+    {{- end }}

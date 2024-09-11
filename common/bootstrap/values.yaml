@@ -60,6 +60,9 @@ gatewayApi:
   enabled: false
   roleArn: ""
 
+nginxGatewayFabric:
+  enabled: false
+
 datadog:
   enabled: false
   nodeGroup: ""

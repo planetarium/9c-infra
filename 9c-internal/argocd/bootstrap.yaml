@@ -114,6 +114,8 @@ spec:
         pyroscope:
           enabled: true
           nodeGroup: 9c-internal-ondemand-r7g_l_2c
+        nginxGatewayFabric:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

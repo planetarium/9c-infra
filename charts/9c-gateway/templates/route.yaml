@@ -1,0 +1,27 @@
+{{- range $network := .Values.networks }}
+{{- range $service := $network.services }}
+{{- range $route := $service.routes | default (list dict) }}
+{{- $obj := merge $route $service}}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: {{ $obj.kind | default "HTTPRoute" }}
+metadata:
+  name: {{ $network.name }}-{{ $obj.name }}
+  namespace: {{ $network.name }}
+spec:
+  parentRefs:
+  - name: {{ $.Release.Namespace }}
+    namespace: {{ $.Release.Namespace }}
+    sectionName: {{ $network.name }}-{{ $route.name }}
+  hostnames:
+    - {{ $service.hostname }}
+  rules:
+    - backendRefs:
+      {{- range $ref := $obj.backendRefs | default (list dict) }}
+      - name: {{ $ref.name | default $obj.name }}
+        port: {{ $ref.port | default $obj.port | default "80" }}
+      {{- end }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
