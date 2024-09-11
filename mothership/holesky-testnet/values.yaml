@@ -22,10 +22,10 @@ blockscout:
     storage: 100Gi
 
 sequencer:
-  enabled: false
+  enabled: true
   nodeIndex: "1"
   scheme: "http"
-  host: "node-1.testnet.holesky.tests.mothership-pla.net"
+  host: "node-1"
   port:
     geth: 8545
     node: 8547
