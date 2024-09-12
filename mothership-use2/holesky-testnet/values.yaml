@@ -1,0 +1,66 @@
+externalSecret:
+  enabled: true
+  prefix: "mothership-testnet"
+
+env:
+  L1_RPC: https://ethereum-holesky-rpc.publicnode.com
+  L1_BEACON_RPC: https://ethereum-holesky-beacon-api.publicnode.com
+
+storageClassName: gp3-extensible
+awsLoadBalancerSslCert: arn:aws:acm:us-east-2:533267452421:certificate/6982734d-3034-4d0c-82e9-26aee4e0e6fd
+
+genesis:
+  source: https://mothership-devnet-holesky-genesis.s3.us-east-2.amazonaws.com/testnet
+  createSnapshot: true
+  s3SnapshotPath: "mothership-holesky-devnet-use2/testnet/snapshot"
+
+blockscout:
+  enabled: true
+  loadBalancerExternal: true
+  db:
+    enabled: true
+    storage: 100Gi
+
+sequencer:
+  enabled: true
+  nodeIndex: "1"
+  scheme: "http"
+  host: "node-1"
+  port:
+    geth: 8545
+    node: 8547
+
+node:
+  count: 2
+  loadBalancerExternal: true
+  hosts:
+    - node-1.v8-dev.us-east-2.testnet.holesky.tests.mothership-pla.net
+    - node-2.v8-dev.us-east-2.testnet.holesky.tests.mothership-pla.net
+  opGeth:
+    resources:
+      requests:
+        memory: 4Gi
+    image: ghcr.io/planetarium/op-geth:sha-3b599d6
+    extraArgs:
+    - --override.libplanet=1725592800
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
+
+opBatcher:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
+
+opProposer:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
+
+bundler:
+  enabled: true
+  loadBalancerExternal: true
+
+proxyd:
+  enabled: true
+  loadBalancerExternal: true
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: mothership-use2-r7a_large_2c
