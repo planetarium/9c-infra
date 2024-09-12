@@ -268,7 +268,10 @@ worldBoss:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
 
 testHeadless1:
-  enabled: false
+  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-3a807af90cd2ceb8dd72ffb11db46b7ddbe94772"
 
   host: "heimdall-preview-test-1.nine-chronicles.com"
 
