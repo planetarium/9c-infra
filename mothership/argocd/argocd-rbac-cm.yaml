@@ -9,5 +9,8 @@ metadata:
 data:
   policy.default: role:admin
   policy.csv: |
+    p, role:admin, applications, *, */*, allow
+    p, role:admin, clusters, get, *, allow
+    p, role:admin, exec, *, */*, allow  # This line enables exec access for admin
     g, planetarium:DevOps, role:admin
   scopes: "[email, group]"

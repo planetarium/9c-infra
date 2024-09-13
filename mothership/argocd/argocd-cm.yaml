@@ -10,6 +10,8 @@ data:
   url: https://argocd-mothership-use2.planetarium.network
   statusbadge.enabled: 'true'
   admin.enabled: 'true'
+  application.resourceTrackingMethod: annotation
+  exec.enabled: "true"
   dex.config: |-
     connectors:
       - type: github
