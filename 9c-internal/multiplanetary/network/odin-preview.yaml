@@ -69,10 +69,6 @@ seed:
 
 validator:
   count: 4
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-77716a7b4585559ab72958e6e885c32d186313ab"
 
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
