@@ -78,3 +78,6 @@ proxyd:
   loadBalancerExternal: false
   gethRpc: http://node-1:8545
   port: 8080
+
+libplanetConsole:
+  enabled: false

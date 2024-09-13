@@ -62,3 +62,6 @@ proxyd:
   loadBalancerExternal: true
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+
+libplanetConsole:
+  enabled: false
