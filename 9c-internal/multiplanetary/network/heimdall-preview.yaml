@@ -4,7 +4,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "193"
+    tag: "git-6ec7c596d39eed967349fcced75b31c0c713875c"
 
   validatorPath: "validator-5.heimdall-preview.svc.cluster.local"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
@@ -87,7 +87,7 @@ bridgeServiceApi:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: "193"
+    tag: "git-bfe2c460c6461ea023165a86fa49600997f4bfeb"
 
   enabled: true
   migrateDatabase: false
@@ -141,10 +141,6 @@ patrolRewardService:
 
 remoteHeadless:
   count: 1
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
-    tag: "git-77716a7b4585559ab72958e6e885c32d186313ab"
 
   resources:
     requests:
