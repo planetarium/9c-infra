@@ -4,7 +4,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-6ec7c596d39eed967349fcced75b31c0c713875c"
+    tag: "git-b4ee381e178beda23468b4fcc13d78e278a5ff5a"
 
   validatorPath: "validator-5.heimdall-preview.svc.cluster.local"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
@@ -87,7 +87,7 @@ bridgeServiceApi:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: "git-bfe2c460c6461ea023165a86fa49600997f4bfeb"
+    tag: "git-06238aa538ffe5afadfb80182de937506a3377a1"
 
   enabled: true
   migrateDatabase: false
