@@ -34,6 +34,29 @@ ingress:
     worldBoss: "odin-internal-world-boss.9c.gg"
     arenaService: "odin-internal-arena.9c.gg"
 
+nginxGateway:
+  enabled: true
+  services:
+    - hostname: 9c-internal-rpc-1.nine-chronicles.com
+      backendRefs:
+        - name: remote-headless-1
+      routes:
+        - name: remote-headless-graphql
+        - name: remote-headless-grpc
+          port: 31238
+          kind: GRPCRoute
+          sectionName: grpc
+    - name: data-provider
+      hostname: odin-internal-dp.9c.gg
+    - name: market-service
+      hostname: odin-internal-market.9c.gg
+    - name: patrol-reward-service
+      hostname: odin-internal-patrol.9c.gg
+    - name: world-boss-service
+      hostname: odin-internal-world-boss.9c.gg
+    - name: arena-service
+      hostname: odin-internal-arena.9c.gg
+
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
