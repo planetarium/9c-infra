@@ -26,13 +26,7 @@ externalSecret:
   enabled: true
 
 ingress:
-  enabled: true
-  hosts:
-    dataProvider: "odin-internal-dp.9c.gg"
-    marketService: "odin-internal-market.9c.gg"
-    patrolRewardService: "odin-internal-patrol.9c.gg"
-    worldBoss: "odin-internal-world-boss.9c.gg"
-    arenaService: "odin-internal-arena.9c.gg"
+  enabled: false
 
 nginxGateway:
   enabled: true

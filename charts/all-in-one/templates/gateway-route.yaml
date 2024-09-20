@@ -14,7 +14,9 @@ spec:
     namespace: nginx-gateway
     sectionName: {{ $obj.sectionName | default "http" }}
   hostnames:
-    - {{ $service.hostname }}
+    {{- with ($service.hostnames | default (list $service.hostname)) }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
   rules:
     - backendRefs:
       {{- range $ref := $obj.backendRefs | default (list dict) }}
