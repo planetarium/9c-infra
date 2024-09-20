@@ -68,6 +68,9 @@ volumeReclaimPolicy: "Delete"
 ingress:
   enabled: false
 
+nginxGateway:
+  enabled: false
+
 seed:
   count: 1
   useTurnServer: false
