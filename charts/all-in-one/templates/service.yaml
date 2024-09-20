@@ -87,7 +87,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
@@ -101,7 +101,7 @@ spec:
     targetPort: 80
   selector:
     app: data-provider-write
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -117,7 +117,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
@@ -131,7 +131,7 @@ spec:
     targetPort: 80
   selector:
     app: data-provider
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -359,7 +359,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
@@ -372,7 +372,7 @@ metadata:
   name: world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
   {{- end }}
@@ -390,7 +390,7 @@ spec:
     targetPort: {{ $.Values.worldBoss.ports.targetPort }}
   selector:
     app: world-boss-service
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -500,7 +500,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -522,7 +522,7 @@ spec:
       targetPort: 80
   selector:
     app: market-service
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -671,7 +671,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
@@ -693,7 +693,7 @@ spec:
       targetPort: 80
   selector:
     app: patrol-reward-service
-  {{- if not $.Values.ingress.enabled }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
