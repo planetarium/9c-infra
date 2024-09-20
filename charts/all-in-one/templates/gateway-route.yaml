@@ -1,0 +1,27 @@
+{{- if $.Values.nginxGateway.enabled }}
+{{- range $service := $.Values.nginxGateway.services }}
+{{- range $route := $service.routes | default (list dict) }}
+{{- $obj := merge $route $service }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: {{ $obj.kind | default "HTTPRoute" }}
+metadata:
+  name: 9c-gateway-{{ $obj.name }}
+  namespace: {{ $.Release.Name }}
+spec:
+  parentRefs:
+  - name: nginx-gateway
+    namespace: nginx-gateway
+    sectionName: {{ $obj.sectionName | default "http" }}
+  hostnames:
+    - {{ $service.hostname }}
+  rules:
+    - backendRefs:
+      {{- range $ref := $obj.backendRefs | default (list dict) }}
+      - name: {{ $ref.name | default $obj.name }}
+        port: {{ $ref.port | default $obj.port | default "80" }}
+      {{- end }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
