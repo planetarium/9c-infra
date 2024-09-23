@@ -27,6 +27,36 @@ spec:
       annotations:
         prometheus.io/port: '80'
         prometheus.io/scrape: 'true'
+        {{- if $.Values.remoteHeadless.datadog.enabled }}
+        ad.datadoghq.com/remote-headless-{{ $index }}.logs: |-
+          [
+            {
+            "source": "container",
+            "service": "remote-headless-{{ $index }}",
+            "log_processing_rules": [
+              {
+                "type": "include_at_match",
+                "name": "BlockEvaluationDuration",
+                "pattern" : "pre-evaluation hash"
+              },
+              {
+                "type": "exclude_at_match",
+                "name": "excludeException",
+                "pattern" : "Exception"
+              },
+              {
+                "type": "exclude_at_match",
+                "name": "excludeExceptionUndercase",
+                "pattern" : "exception"
+              },
+              {
+                "type": "exclude_at_match",
+                "name": "excludeEvaluating",
+                "pattern" : "Evaluating"
+              }
+            ]
+          }]
+        {{- end }}
       name: remote-headless-{{ $index }}
     spec:
       initContainers:
