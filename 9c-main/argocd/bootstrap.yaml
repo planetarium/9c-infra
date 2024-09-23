@@ -164,6 +164,11 @@ spec:
           enabled: true
           replicaCount: 2
           nodeGroup: 9c-main-r7g_xl_2c
+        nginxGatewayFabric:
+          enabled: true
+          awsLoadBalancerSubnets: public-us-east-2c-9c-main
+          awsLoadBalancerSslCert: >-
+            arn:aws:acm:us-east-2:319679068466:certificate/e19257bd-f1fb-41a6-ae84-bbdf6b98a62f
 
         datadog:
           enabled: true

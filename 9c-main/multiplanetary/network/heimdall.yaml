@@ -34,13 +34,33 @@ externalSecret:
   prefix: "9c-main-v2/heimdall"
 
 ingress:
+  enabled: false
+
+nginxGateway:
   enabled: true
-  hosts:
-    dataProvider: "heimdall-dp.9c.gg"
-    marketService: "heimdall-market.9c.gg"
-    patrolRewardService: "heimdall-patrol.9c.gg"
-    worldBoss: "heimdall-world-boss.9c.gg"
-    arenaService: "heimdall-arena.9c.gg"
+  services:
+    - hostname: heimdall-rpc.nine-chronicles.com
+      backendRefs:
+        - name: remote-headless-1
+        - name: remote-headless-2
+        - name: remote-headless-3
+        - name: remote-headless-4
+      routes:
+        - name: remote-headless-graphql
+        - name: remote-headless-grpc
+          port: 31238
+          kind: GRPCRoute
+          sectionName: grpc
+    - name: data-provider
+      hostname: heimdall-dp.9c.gg
+    - name: market-service
+      hostname: heimdall-market.9c.gg
+    - name: patrol-reward-service
+      hostname: heimdall-patrol.9c.gg
+    - name: world-boss-service
+      hostname: heimdall-world-boss.9c.gg
+    - name: arena-service
+      hostname: heimdall-arena.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"

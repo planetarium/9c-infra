@@ -35,13 +35,31 @@ externalSecret:
   enabled: true
 
 ingress:
+  enabled: false
+
+nginxGateway:
   enabled: true
-  hosts:
-    dataProvider: "odin-dp.9c.gg"
-    marketService: "odin-market.9c.gg"
-    patrolRewardService: "odin-patrol.9c.gg"
-    worldBoss: "odin-world-boss.9c.gg"
-    arenaService: "odin-arena.9c.gg"
+  services:
+    - hostname: 9c-main-rpc.nine-chronicles.com
+      backendRefs:
+        - name: remote-headless-1
+        - name: remote-headless-2
+      routes:
+        - name: remote-headless-graphql
+        - name: remote-headless-grpc
+          port: 31238
+          kind: GRPCRoute
+          sectionName: grpc
+    - name: data-provider
+      hostname: odin-dp.9c.gg
+    - name: market-service
+      hostname: odin-market.9c.gg
+    - name: patrol-reward-service
+      hostname: odin-patrol.9c.gg
+    - name: world-boss-service
+      hostname: odin-world-boss.9c.gg
+    - name: arena-service
+      hostname: odin-arena.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
