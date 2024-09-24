@@ -119,6 +119,8 @@ validator:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   loggingEnabled: true
   datadog:
@@ -195,6 +197,8 @@ remoteHeadless:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -256,6 +260,8 @@ dataProvider:
     value: "/data"
   - name: NC_Planet
     value: Odin
+  - name: DOTNET_gcServer
+    value: "1"
 
 explorer:
   enabled: false
@@ -348,6 +354,8 @@ fullState:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   tolerations:
   - effect: NoSchedule
@@ -411,6 +419,8 @@ testHeadless1:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -456,6 +466,8 @@ testHeadless2:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
   - --tx-quota-per-signer=1
