@@ -6,7 +6,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: {{ $obj.kind | default "HTTPRoute" }}
 metadata:
-  name: 9c-gateway-{{ $obj.name }}
+  name: gateway-{{ $obj.name }}-{{ $.Release.Name }}
   namespace: {{ $.Release.Name }}
 spec:
   parentRefs:
