@@ -270,6 +270,8 @@ worldBoss:
 acc:
   enabled: false
 
+  local: false
+
   redis:
     enabled: false
 

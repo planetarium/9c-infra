@@ -67,6 +67,7 @@ function run_headless() {
       --peer "$SEED{{ add $i 1 }}" \
       {{- end }}
       --network-type=Default \
+      --arena-participants-sync=false \
       > "$HEADLESS_LOG" 2>&1 &
 
   PID="$!"

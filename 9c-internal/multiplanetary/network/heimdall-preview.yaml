@@ -292,6 +292,8 @@ testHeadless1:
 acc:
   enabled: false
 
+  local: false
+
   redis:
     enabled: false
 
