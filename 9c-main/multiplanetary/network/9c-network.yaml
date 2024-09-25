@@ -45,7 +45,7 @@ ingress:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-26ace851e53100001efbc7ba9282478269fde0f6"
+  image: "planetariumhq/ninechronicles-snapshot:git-96c1475107e14eeb81ed2a8fbba492952fbac99c"
   path: "main/partition"
 
   fullSnapshot:
@@ -233,7 +233,7 @@ dataProviderDataMigrator:
       cpu: '5'
       memory: 56Gi
 
-  storage: 1500Gi
+  storage: 1000Gi
 
   tolerations:
   - effect: NoSchedule
@@ -573,6 +573,8 @@ patrolRewardService:
 
 acc:
   enabled: false
+
+  local: true
 
   redis:
     enabled: false
