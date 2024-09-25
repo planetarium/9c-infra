@@ -64,8 +64,8 @@ function run_headless() {
       {{- end }}
       {{- range $i, $s := $.Values.global.peerStrings }}
       --peer "$SEED{{ add $i 1 }}" \
-      --arena-participants-sync=false \
       {{- end }}
+      --arena-participants-sync=false \
       > "$HEADLESS_LOG" 2>&1 &
 
   PID="$!"
