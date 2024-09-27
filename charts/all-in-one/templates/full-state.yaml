@@ -209,6 +209,8 @@ spec:
             value: /data/datadog
           - name: DD_AGENT_HOST
             value: datadog.datadog.svc.cluster.local
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'production'
           {{- end }}
           {{- with $.Values.fullState.env }}
             {{- toYaml . | nindent 10 }}

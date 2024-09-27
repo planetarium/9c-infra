@@ -264,6 +264,8 @@ spec:
             value: /data/datadog/continuousprofiler/Datadog.Linux.ApiWrapper.x64.so
           - name: DD_ENV
             value: production
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'production'
           - name: DD_PROFILING_ENABLED
             value: 'true'
           - name: DD_PROFILING_ALLOCATION_ENABLED

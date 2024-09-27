@@ -209,6 +209,8 @@ spec:
             value: 'http://datadog.datadog.svc.cluster.local:4317'
           - name: DD_ENV
             value: production
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'production'
           - name: DD_DOTNET_TRACER_HOME
             value: /data/datadog
           - name: DD_AGENT_HOST
