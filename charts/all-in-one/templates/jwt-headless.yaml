@@ -264,6 +264,8 @@ spec:
             value: 'true'
           - name: DD_DYNAMIC_INSTRUMENTATION_ENABLED
             value: 'true'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'production'
           {{- end }}
         {{- with $.Values.jwtHeadless.env }}
           {{- toYaml . | nindent 10 }}
