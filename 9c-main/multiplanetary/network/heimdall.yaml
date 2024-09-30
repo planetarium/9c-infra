@@ -461,8 +461,6 @@ testHeadless1:
     value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: OTLP_ENDPOINT
-    value: "http://172.20.239.175:4318"
   - name: PLUGIN_PATH
     value: "/data"
   - name: DOTNET_gcServer
@@ -521,8 +519,6 @@ testHeadless2:
     value: "local"
   - name: Headless__AccessControlService__AccessControlServiceConnectionString
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: OTLP_ENDPOINT
-    value: http://172.20.239.175:4318
   - name: PLUGIN_PATH
     value: "/data"
 
