@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200220/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIFgo205fCBv8i1NFbAJVFn4jeztwzM2IJE78T5gd1oKQAiAqkKgbKN5Arl8Gyg+jDrTVIF8nTJKBBu6mhK0O8qL5iw==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA4LTI4ZQ=="
+  appProtocolVersion: "200230/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQDMi+gTOwd3ShNH8KEOj1iWTvaplSspIy.uyLtbvF9UqAIgD+yyRFbNUV24EvQxkozqtYzg2nyclWl97Noy5+FSYXU=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA5LTMwZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -40,26 +40,26 @@ ingress:
 nginxGateway:
   enabled: true
   services:
-    - hostname: 9c-main-rpc.nine-chronicles.com
-      backendRefs:
-        - name: remote-headless-1
-        - name: remote-headless-2
-      routes:
-        - name: remote-headless-graphql
-        - name: remote-headless-grpc
-          port: 31238
-          kind: GRPCRoute
-          sectionName: grpc
-    - name: data-provider
-      hostname: odin-dp.9c.gg
-    - name: market-service
-      hostname: odin-market.9c.gg
-    - name: patrol-reward-service
-      hostname: odin-patrol.9c.gg
-    - name: world-boss-service
-      hostname: odin-world-boss.9c.gg
-    - name: arena-service
-      hostname: odin-arena.9c.gg
+  - hostname: 9c-main-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    - name: remote-headless-2
+    routes:
+    - name: remote-headless-graphql
+    - name: remote-headless-grpc
+      port: 31238
+      kind: GRPCRoute
+      sectionName: grpc
+  - name: data-provider
+    hostname: odin-dp.9c.gg
+  - name: market-service
+    hostname: odin-market.9c.gg
+  - name: patrol-reward-service
+    hostname: odin-patrol.9c.gg
+  - name: world-boss-service
+    hostname: odin-world-boss.9c.gg
+  - name: arena-service
+    hostname: odin-arena.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -670,12 +670,12 @@ arenaService:
   enabled: true
   rwMode: true
   env:
-    - name: Worker
-      value: "false"
+  - name: Worker
+    value: "false"
 
   envForWrite:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
 
   nodeSelector:
     read:
