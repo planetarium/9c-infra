@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200220/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDB9jQuL9xggYsqbYZ.jrs8ZTuB104brpeQlRO4jEO+uwIgDWhITiDOAyf.O0r0cOeFc5xRgQOTJt7TrwJZD.4TQvA=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA4LTI4ZQ=="
+  appProtocolVersion: "200230/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQClapnGKZ3i9tiM9kkUoPV8ZelrrPuBUXBEtXW5XnV4WwIgHDz8eLIPZ2dvGD+C4OMgFxgwoyB838s2kj5fjitJaWI=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA5LTMwZQ=="
 
   validatorPath: "validator-5.heimdall.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
@@ -39,28 +39,28 @@ ingress:
 nginxGateway:
   enabled: true
   services:
-    - hostname: heimdall-rpc.nine-chronicles.com
-      backendRefs:
-        - name: remote-headless-1
-        - name: remote-headless-2
-        - name: remote-headless-3
-        - name: remote-headless-4
-      routes:
-        - name: remote-headless-graphql
-        - name: remote-headless-grpc
-          port: 31238
-          kind: GRPCRoute
-          sectionName: grpc
-    - name: data-provider
-      hostname: heimdall-dp.9c.gg
-    - name: market-service
-      hostname: heimdall-market.9c.gg
-    - name: patrol-reward-service
-      hostname: heimdall-patrol.9c.gg
-    - name: world-boss-service
-      hostname: heimdall-world-boss.9c.gg
-    - name: arena-service
-      hostname: heimdall-arena.9c.gg
+  - hostname: heimdall-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    - name: remote-headless-2
+    - name: remote-headless-3
+    - name: remote-headless-4
+    routes:
+    - name: remote-headless-graphql
+    - name: remote-headless-grpc
+      port: 31238
+      kind: GRPCRoute
+      sectionName: grpc
+  - name: data-provider
+    hostname: heimdall-dp.9c.gg
+  - name: market-service
+    hostname: heimdall-market.9c.gg
+  - name: patrol-reward-service
+    hostname: heimdall-patrol.9c.gg
+  - name: world-boss-service
+    hostname: heimdall-world-boss.9c.gg
+  - name: arena-service
+    hostname: heimdall-arena.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -685,12 +685,12 @@ arenaService:
   enabled: true
   rwMode: true
   env:
-    - name: Worker
-      value: "false"
+  - name: Worker
+    value: "false"
 
   envForWrite:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
 
   nodeSelector:
     read:
