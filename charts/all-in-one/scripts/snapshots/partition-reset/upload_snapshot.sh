@@ -91,12 +91,14 @@ function make_and_upload_snapshot() {
   mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
   unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
   unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
-  7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
-  7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
 
-  "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/latest.7z" --quiet --acl public-read
-  "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/$2/state_latest.7z" --quiet --acl public-read
+  # Disable 7z snapshot
+  # 7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
+  # 7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
+
+  # "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
+  # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/latest.7z" --quiet --acl public-read
+  # "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/$2/state_latest.7z" --quiet --acl public-read
 
   "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
   "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
@@ -104,8 +106,8 @@ function make_and_upload_snapshot() {
 
   rm "$LATEST_SNAPSHOT"
   rm "$LATEST_STATE"
-  rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
-  rm "/data/snapshots/7z/partition/state_latest.7z"
+  # rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
+  # rm "/data/snapshots/7z/partition/state_latest.7z"
   rm -r "$PARTITION_DIR/partition-snapshot"
   rm -r "$STATE_DIR/state-snapshot"
   rm -r "$METADATA_DIR"

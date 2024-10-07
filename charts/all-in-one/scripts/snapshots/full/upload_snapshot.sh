@@ -77,10 +77,12 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/$2/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
   invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME"
-  7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
-  "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
-  invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME_7Z"
-  rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
+
+  # Disable 7z snapshot
+  # 7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
+  # "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
+  # invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME_7Z"
+  # rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
   rm "$LATEST_FULL_SNAPSHOT"
 }
 
