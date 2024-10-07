@@ -2,6 +2,8 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: "200"
+  
+  loadBalancerSubnets: public-us-east-2c-9c-internal
 
 seed:
   image:

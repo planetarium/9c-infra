@@ -15,6 +15,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -56,6 +59,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -93,6 +99,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   {{- end }}
 spec:
   ports:
@@ -123,6 +132,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   {{- end }}
 spec:
   ports:
@@ -152,6 +164,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-db
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   ports:
   - name: tcp
@@ -180,6 +195,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=explorer
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -214,6 +232,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=main-full-state
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -253,6 +274,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-1
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -292,6 +316,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-2
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -331,6 +358,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -368,6 +398,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   {{- end }}
   name: world-boss-service
   namespace: {{ $.Release.Name }}
@@ -409,6 +442,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   name: world-boss-db
   namespace: {{ $.Release.Name }}
 spec:
@@ -436,6 +472,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   name: world-boss-redis
   namespace: {{ $.Release.Name }}
 spec:
@@ -468,6 +507,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-world-boss-service
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   name: test-world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
@@ -509,6 +551,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   {{- end }}
 spec:
   ports:
@@ -544,6 +589,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-db
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   ports:
     - name: "5432"
@@ -572,6 +620,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -612,6 +663,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-action-evaluator-headless
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -651,6 +705,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=lib9c-state-service
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   ports:
   - name: http
@@ -680,6 +737,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
   {{- end }}
 spec:
   ports:
@@ -715,6 +775,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-db
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   ports:
     - name: "5432"

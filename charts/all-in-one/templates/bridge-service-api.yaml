@@ -45,6 +45,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=dogeon,Service=bridge-service-api,Name=bridge-service-api
+    {{- with $.Values.global.loadBalancerSubnets }}
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
+    {{- end }}
 spec:
   ports:
     - name: http
