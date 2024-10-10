@@ -199,7 +199,7 @@ seed:
   count: 1
 
   hosts:
-  - "tcp-seed-1.heimdall.svc.cluster.local"
+  - "heimdall-internal-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
@@ -269,7 +269,7 @@ worldBoss:
     eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
 
 testHeadless1:
-  enabled: true
+  enabled: false
 
   host: "heimdall-internal-test-1.nine-chronicles.com"
 

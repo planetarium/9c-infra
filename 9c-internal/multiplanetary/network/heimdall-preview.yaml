@@ -190,7 +190,7 @@ seed:
   count: 1
 
   hosts:
-  - "tcp-seed-1.heimdall-preview.svc.cluster.local"
+  - "heimdall-preview-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
