@@ -24,6 +24,29 @@ data:
         rewrite name heimdall-full-state.nine-chronicles.com main-full-state.heimdall.svc.cluster.local.
         rewrite name heimdall-jwt.nine-chronicles.com jwt-headless.heimdall.svc.cluster.local.
         {{- end }}
+
+        {{- if eq $.Values.clusterName "9c-internal-v2" }}
+        rewrite name regex odin-internal-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.9c-network.svc.cluster.local.
+        rewrite name regex odin-internal-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.9c-network.svc.cluster.local.
+        rewrite name regex odin-internal-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.9c-network.svc.cluster.local.
+        rewrite name regex odin-internal-validator-(\d+)\.nine-chronicles\.com\.$ validator-{1}.9c-network.svc.cluster.local.
+
+        rewrite name regex heimdall-internal-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall.svc.cluster.local.
+        rewrite name regex heimdall-internal-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall.svc.cluster.local.
+        rewrite name regex heimdall-internal-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall.svc.cluster.local.
+        rewrite name regex heimdall-internal-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local.
+
+        rewrite name regex odin-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.odin-preview.svc.cluster.local.
+        rewrite name regex odin-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.odin-preview.svc.cluster.local.
+        rewrite name regex odin-preview-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.odin-preview.svc.cluster.local.
+        rewrite name regex odin-preview-validator-(\d+)\.nine-chronicles\.com\.$ validator-{1}.odin-preview.svc.cluster.local.
+
+        rewrite name regex heimdall-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall-preview.svc.cluster.local.
+        rewrite name regex heimdall-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall-preview.svc.cluster.local.
+        rewrite name regex heimdall-preview-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall-preview.svc.cluster.local.
+        rewrite name regex heimdall-preview-validator-1.nine-chronicles.com validator-5.heimdall-preview.svc.cluster.local.
+        {{- end }}
+
         prometheus :9153
         forward . /etc/resolv.conf
         cache 30
