@@ -150,6 +150,7 @@ validator:
   - --consensus-target-block-interval=7500
   - --consensus-propose-second-base=30
   - --arena-participants-sync=false
+  - --max-transaction-per-block=150
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
