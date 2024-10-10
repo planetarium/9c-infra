@@ -408,6 +408,9 @@ bridge:
 testHeadless1:
   enabled: true
 
+  pyroscope:
+    enabled: false
+
   loggingEnabled: true
 
   datadog:
