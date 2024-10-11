@@ -33,7 +33,7 @@ spec:
           enabled: false
         ports:
           websecure:
-            targetPort: "8000"
+            targetPort: 8000
           grpc:
             port: "31238"
             expose:
@@ -60,7 +60,7 @@ spec:
   gatewayClassName: traefik
   listeners:
     - name: http
-      port: 80
+      port: 8000
       protocol: HTTP
       allowedRoutes:
         namespaces:
