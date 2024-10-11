@@ -30,7 +30,7 @@ externalSecret:
 ingress:
   enabled: false
 
-nginxGateway:
+gateway:
   enabled: true
   services:
     - hostnames:

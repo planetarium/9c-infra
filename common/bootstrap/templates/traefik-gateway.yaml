@@ -1,57 +1,63 @@
-{{- if .Values.nginxGatewayFabric.enabled }}
+{{- if .Values.traefik.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: nginx-gateway
+  name: traefik
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx-gateway-fabric
+  name: traefik
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: nginx-gateway
+    namespace: traefik
   source:
-    repoURL: https://github.com/nginxinc/nginx-gateway-fabric
-    path: charts/nginx-gateway-fabric
-    targetRevision: v1.4.0
+    repoURL: https://github.com/traefik/traefik-helm-chart/
+    path: traefik
+    targetRevision: v32.1.0
     helm:
       values: |
+        image:
+          tag: v3.2.0-rc2
+        providers:
+          kubernetesGateway:
+            enabled: true
+            experimentalChannel: true
+        experimental:
+          kubernetesGateway:
+            enabled: true
+        gateway:
+          enabled: false
+        ports:
+          websecure:
+            targetPort: "8000"
+          grpc:
+            port: "31238"
+            expose:
+              default: true
         service:
           type: LoadBalancer
           annotations:
             service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
             service.beta.kubernetes.io/aws-load-balancer-type: external
-            {{- with .Values.nginxGatewayFabric.awsLoadBalancerSslCert }}
+            {{- with .Values.traefik.awsLoadBalancerSslCert }}
             service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ . }}
             service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
             {{- end }}
-            {{- with .Values.nginxGatewayFabric.awsLoadBalancerSubnets }}
+            {{- with .Values.traefik.awsLoadBalancerSubnets }}
             service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
             {{- end }}
-          ports:
-          {{- if .Values.nginxGatewayFabric.awsLoadBalancerSslCert }}
-          - name: https
-            port: 443
-            targetPort: 80
-          {{- end }}
-          - name: http
-            port: 80
-            targetPort: 80
-          - name: grpc
-            port: 31238
-            targetPort: 31238
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: nginx-gateway
-  namespace: nginx-gateway
+  name: traefik
+  namespace: traefik
 spec:
-  gatewayClassName: nginx
+  gatewayClassName: traefik
   listeners:
     - name: http
       port: 80

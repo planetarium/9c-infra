@@ -60,7 +60,7 @@ gatewayApi:
   enabled: false
   roleArn: ""
 
-nginxGatewayFabric:
+traefik:
   enabled: false
 
 datadog:

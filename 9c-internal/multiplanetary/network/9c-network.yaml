@@ -28,7 +28,7 @@ externalSecret:
 ingress:
   enabled: false
 
-nginxGateway:
+gateway:
   enabled: true
   services:
     - hostname: 9c-internal-rpc-1.nine-chronicles.com
