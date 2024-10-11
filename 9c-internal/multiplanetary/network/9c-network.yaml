@@ -31,7 +31,7 @@ ingress:
 gateway:
   enabled: true
   services:
-    - hostname: 9c-internal-rpc-1.nine-chronicles.com
+    - hostname: 9c-internal-rpc.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
       routes:
@@ -40,6 +40,10 @@ gateway:
           port: 31238
           kind: GRPCRoute
           sectionName: grpc
+        - name: remote-headless-netmq
+          port: 31234
+          kind: TCPRoute
+          sectionName: netmq-odin
     - name: data-provider
       hostname: odin-internal-dp.9c.gg
     - name: market-service

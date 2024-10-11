@@ -62,6 +62,10 @@ gatewayApi:
 
 traefik:
   enabled: false
+  ports:
+    web:
+      external: 80
+      internal: 8000
 
 datadog:
   enabled: false

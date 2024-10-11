@@ -33,9 +33,7 @@ ingress:
 gateway:
   enabled: true
   services:
-    - hostnames:
-        - heimdall-internal-remote-headless.9c.gg
-        - heimdall-internal-rpc-1.nine-chronicles.com
+    - hostname: heimdall-internal-rpc.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
       routes:
@@ -44,6 +42,10 @@ gateway:
           port: 31238
           kind: GRPCRoute
           sectionName: grpc
+        - name: remote-headless-netmq
+          port: 31234
+          kind: TCPRoute
+          sectionName: netmq-heimdall
     - name: data-provider
       hostname: heimdall-internal-dp.9c.gg
     - name: market-service

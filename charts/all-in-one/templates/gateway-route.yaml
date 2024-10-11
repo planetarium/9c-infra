@@ -3,20 +3,22 @@
 {{- range $route := $service.routes | default (list dict) }}
 {{- $obj := merge $route $service }}
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1{{ if eq $obj.kind "TCPRoute" }}alpha2{{ end }}
 kind: {{ $obj.kind | default "HTTPRoute" }}
 metadata:
-  name: gateway-{{ $obj.name }}-{{ $.Release.Name }}
+  name: gateway-{{ $obj.name }}
   namespace: {{ $.Release.Name }}
 spec:
   parentRefs:
-  - name: traefik
+  - name: traefik-gateway
     namespace: traefik
-    sectionName: {{ $obj.sectionName | default "http" }}
+    sectionName: {{ $obj.sectionName | default "web" }}
+  {{- if not (eq $obj.kind "TCPRoute") }}
   hostnames:
-    {{- with ($service.hostnames | default (list $service.hostname)) }}
+    {{- with ($obj.hostnames | default (list $obj.hostname)) }}
     {{ toYaml . | nindent 4 }}
     {{- end }}
+  {{- end }}
   rules:
     - backendRefs:
       {{- range $ref := $obj.backendRefs | default (list dict) }}
