@@ -8,7 +8,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
     {{- if index $.Values.seed.hosts $idx }}

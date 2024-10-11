@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-d58616b6e4225d844c8d7c4dfa12a892fb8ca100"
+    tag: "200"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -21,6 +21,16 @@ global:
 
   resetSnapshot: true
   rollbackSnapshot: true
+
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-subnets: public-us-east-2c-9c-dev
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: >-
+        arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 
 ingress:
   enabled: true
@@ -128,7 +138,7 @@ validator:
   - --consensus-target-block-interval=6500
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-dev-r6g_xl_2c
 
 dataProvider:
   enabled: true
