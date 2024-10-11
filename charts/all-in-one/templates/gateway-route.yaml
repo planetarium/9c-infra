@@ -1,5 +1,5 @@
-{{- if $.Values.nginxGateway.enabled }}
-{{- range $service := $.Values.nginxGateway.services }}
+{{- if $.Values.gateway.enabled }}
+{{- range $service := $.Values.gateway.services }}
 {{- range $route := $service.routes | default (list dict) }}
 {{- $obj := merge $route $service }}
 ---
@@ -10,8 +10,8 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   parentRefs:
-  - name: nginx-gateway
-    namespace: nginx-gateway
+  - name: traefik
+    namespace: traefik
     sectionName: {{ $obj.sectionName | default "http" }}
   hostnames:
     {{- with ($service.hostnames | default (list $service.hostname)) }}

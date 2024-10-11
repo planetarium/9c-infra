@@ -36,7 +36,7 @@ externalSecret:
 ingress:
   enabled: false
 
-nginxGateway:
+gateway:
   enabled: true
   services:
   - hostname: heimdall-rpc.nine-chronicles.com

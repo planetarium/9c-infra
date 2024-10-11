@@ -164,7 +164,7 @@ spec:
           enabled: true
           replicaCount: 2
           nodeGroup: 9c-main-r7g_xl_2c
-        nginxGatewayFabric:
+        traefik:
           enabled: true
           awsLoadBalancerSubnets: public-us-east-2c-9c-main
           awsLoadBalancerSslCert: >-

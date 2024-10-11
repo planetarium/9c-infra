@@ -87,7 +87,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
@@ -99,7 +99,7 @@ spec:
     targetPort: 80
   selector:
     app: data-provider-write
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -115,7 +115,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
@@ -127,7 +127,7 @@ spec:
     targetPort: 80
   selector:
     app: data-provider
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -349,7 +349,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
@@ -357,7 +357,7 @@ metadata:
   name: world-boss-service
   namespace: {{ $.Release.Name }}
 spec:
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
   {{- end }}
@@ -375,7 +375,7 @@ spec:
     targetPort: {{ $.Values.worldBoss.ports.targetPort }}
   selector:
     app: world-boss-service
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -472,7 +472,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
@@ -489,7 +489,7 @@ spec:
       targetPort: 80
   selector:
     app: market-service
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP
@@ -620,7 +620,7 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
@@ -637,7 +637,7 @@ spec:
       targetPort: 80
   selector:
     app: patrol-reward-service
-  {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
+  {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   type: LoadBalancer
   {{- else }}
   type: ClusterIP

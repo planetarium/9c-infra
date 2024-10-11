@@ -114,7 +114,7 @@ spec:
         pyroscope:
           enabled: true
           nodeGroup: 9c-internal-ondemand-r7g_l_2c
-        nginxGatewayFabric:
+        traefik:
           enabled: true
           awsLoadBalancerSubnets: public-us-east-2c-9c-internal
           awsLoadBalancerSslCert: >-

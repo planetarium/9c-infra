@@ -71,7 +71,7 @@ volumeReclaimPolicy: "Delete"
 ingress:
   enabled: false
 
-nginxGateway:
+gateway:
   enabled: false
 
 seed:
