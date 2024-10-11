@@ -32,6 +32,9 @@ global:
   pyroscope:
     enabled: false
     address: "http://pyroscope.pyroscope.svc.cluster.local:4040"
+  
+  service:
+    annotations: {}
 
 externalSecret:
   enabled: false

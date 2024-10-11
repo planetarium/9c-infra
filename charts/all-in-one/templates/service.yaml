@@ -8,17 +8,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
     {{- if index $.Values.seed.hosts $idx }}
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.seed.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -53,17 +49,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
     {{- if index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -97,9 +89,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
   {{- end }}
 spec:
@@ -127,9 +117,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
   {{- end }}
 spec:
@@ -156,9 +144,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-db
 spec:
   ports:
@@ -181,11 +167,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=explorer
 spec:
@@ -215,17 +197,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=main-full-state
     {{- with $.Values.fullState.host }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=main-full-state
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -258,17 +236,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-1
     {{- with $.Values.testHeadless1.host }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-1
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -301,17 +275,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-2
     {{- with $.Values.testHeadless2.host }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-2
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -344,17 +314,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
     {{- with $.Values.jwtHeadless.host }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -385,12 +351,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
   {{- end }}
   name: world-boss-service
@@ -429,10 +390,6 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
   name: world-boss-db
   namespace: {{ $.Release.Name }}
 spec:
@@ -456,10 +413,6 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
   name: world-boss-redis
   namespace: {{ $.Release.Name }}
 spec:
@@ -485,12 +438,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-world-boss-service
   name: test-world-boss-service
   namespace: {{ $.Release.Name }}
@@ -526,12 +474,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
   {{- end }}
 spec:
@@ -564,9 +507,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-db
 spec:
   ports:
@@ -589,11 +530,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
 spec:
@@ -629,11 +566,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-action-evaluator-headless
 spec:
@@ -667,14 +600,6 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=lib9c-state-service
 spec:
   ports:
   - name: http
@@ -697,12 +622,7 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.nginxGateway.enabled) }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/4312c1a7-51c4-4442-8ae4-c8f3f2bce4f0
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
   {{- end }}
 spec:
@@ -735,9 +655,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-db
 spec:
   ports:
