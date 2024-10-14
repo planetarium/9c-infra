@@ -4,3 +4,5 @@ apps:
   - volume-rotator
   - market-service
   - world-boss
+
+global: {}

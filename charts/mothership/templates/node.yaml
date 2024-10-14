@@ -10,6 +10,7 @@ spec:
   selector:
     matchLabels:
       name: node-{{ $index }}
+  serviceName: node-{{ $index }}
   replicas: 1
   template:
     metadata:
@@ -306,7 +307,6 @@ spec:
     - name: op-node-rpc-port
       targetPort: op-node-rpc
       port: {{ $.Values.node.opNode.port.rpc }}
-      targetPort: {{ $.Values.node.opNode.port.rpc }}
     - name: op-node-p2p-port-tcp
       targetPort: op-node-p2p-tcp
       protocol: TCP

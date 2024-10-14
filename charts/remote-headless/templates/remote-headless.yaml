@@ -65,12 +65,14 @@ spec:
           - mountPath: /data
             name: remote-headless-data-{{ $index }}
         {{- end }}
+        {{- if or $.Values.seed $.Values.validatorPath }}
         - command:
             - sh
             - '-c'
             - >
               apk --no-cache add curl
 
+              {{- if $.Values.seed }}
               # Endpoint to check
 
               SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
@@ -82,7 +84,9 @@ spec:
                 echo "Not ready"
                 sleep 5s
               done
+              {{- end }}
 
+              {{- if $.Values.validatorPath }}
               VALIDATOR="http://{{ $.Values.validatorPath }}/ui/playground"
 
               echo Checking: ${VALIDATOR}
@@ -92,6 +96,7 @@ spec:
                 echo "Not ready"
                 sleep 5s
               done
+              {{- end }}
 
               echo Ready
           image: alpine
@@ -100,6 +105,7 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+        {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
