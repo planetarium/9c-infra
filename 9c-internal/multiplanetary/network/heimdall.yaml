@@ -72,7 +72,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   account:
     type: "kms"
@@ -121,7 +121,7 @@ dataProvider:
     password: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 marketService:
   enabled: true
@@ -131,7 +131,7 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
   - name: DOTNET_gcServer
@@ -145,7 +145,7 @@ patrolRewardService:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   db:
     local: true
@@ -165,7 +165,7 @@ remoteHeadless:
   - "heimdall-internal-rpc-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   loggingEnabled: true
 
@@ -204,7 +204,7 @@ seed:
   - "heimdall-internal-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 snapshot:
   partition:
@@ -222,7 +222,7 @@ snapshot:
       memory: 10Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 validator:
   count: 1
@@ -234,7 +234,7 @@ validator:
   - "heimdall-internal-validator-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-internal-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   resources:
     requests:
@@ -268,7 +268,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 testHeadless1:
   enabled: false
@@ -290,7 +290,7 @@ testHeadless1:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   loggingEnabled: true
 
@@ -306,7 +306,7 @@ acc:
     enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-t3_medium
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
   - name: AccessControlServiceType
@@ -318,14 +318,14 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 arenaService:
   enabled: true
   rwMode: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-internal-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
     - name: Worker

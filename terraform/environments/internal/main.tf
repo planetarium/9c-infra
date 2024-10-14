@@ -152,6 +152,26 @@ node_groups = {
       max_size          = 1
     }
 
+    "heimdall-spot_2c" = {
+      instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "9c-internal-spot_2c" = {
+      instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
     "heimdall-preview-r7g_l_2c" = {
       instance_types    = ["r7g.large"]
       availability_zone = "us-east-2c"
