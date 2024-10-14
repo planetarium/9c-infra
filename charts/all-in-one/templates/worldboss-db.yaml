@@ -89,6 +89,10 @@ spec:
           name: world-boss-redis
           ports:
             - containerPort: 6379
+      {{- with $.Values.worldBoss.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate
