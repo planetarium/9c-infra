@@ -198,6 +198,9 @@ rudolfService:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
 
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
+
 seed:
   count: 1
 

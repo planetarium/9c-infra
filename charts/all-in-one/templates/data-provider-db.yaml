@@ -40,6 +40,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: data-provider-db-data
+      {{- with $.Values.dataProvider.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
   volumeClaimTemplates:
     - metadata:

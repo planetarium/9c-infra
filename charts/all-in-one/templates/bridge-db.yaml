@@ -44,6 +44,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: bridge-service-db-data
+      {{- with $.Values.bridgeService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate
