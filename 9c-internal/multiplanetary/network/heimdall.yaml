@@ -100,6 +100,8 @@ bridgeService:
 
 bridgeServiceApi:
   enabled: true
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 dataProvider:
   enabled: true
