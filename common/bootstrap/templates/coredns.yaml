@@ -34,7 +34,7 @@ data:
         rewrite name regex heimdall-internal-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall.svc.cluster.local.
         rewrite name regex heimdall-internal-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall.svc.cluster.local.
         rewrite name regex heimdall-internal-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall.svc.cluster.local.
-        rewrite name regex heimdall-internal-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local.
+        rewrite name heimdall-internal-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local.
 
         rewrite name regex odin-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.odin-preview.svc.cluster.local.
         rewrite name regex odin-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.odin-preview.svc.cluster.local.
@@ -44,7 +44,7 @@ data:
         rewrite name regex heimdall-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall-preview.svc.cluster.local.
         rewrite name regex heimdall-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall-preview.svc.cluster.local.
         rewrite name regex heimdall-preview-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall-preview.svc.cluster.local.
-        rewrite name regex heimdall-preview-validator-1.nine-chronicles.com validator-5.heimdall-preview.svc.cluster.local.
+        rewrite name heimdall-preview-validator-1.nine-chronicles.com validator-5.heimdall-preview.svc.cluster.local.
         {{- end }}
 
         prometheus :9153
