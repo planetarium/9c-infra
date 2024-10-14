@@ -22,25 +22,50 @@ spec:
       values: |
         image:
           tag: v3.2.0-rc2
+        globalArguments: []
         providers:
+          kubernetesCRD:
+            enabled: false
+          kubernetesIngress:
+            enabled: false
           kubernetesGateway:
             enabled: true
             experimentalChannel: true
-        experimental:
-          kubernetesGateway:
-            enabled: true
+        ingressClass:
+          enabled: false
         gateway:
           enabled: false
         ports:
           websecure:
-            targetPort: 8000
-          grpc:
-            port: "31238"
+            targetPort: {{ .Values.traefik.ports.web.internal }}
             expose:
               default: true
+              {{- range $planet := .Values.traefik.planets }}
+              {{ $planet }}: true
+              {{- end }}
+          {{- range $service, $_portConfig := .Values.traefik.ports }}
+          {{- $portConfig := kindIs "map" $_portConfig | ternary $_portConfig (dict "external" $_portConfig "internal" $_portConfig) }}
+          {{- if kindIs "map" $portConfig.internal }}
+          {{- range $planet, $port := $portConfig.internal }}
+          {{ $service }}-{{ $planet }}:
+            exposedPort: {{ $portConfig.external }}
+            port: {{ $port }}
+            expose:
+              {{ $planet }}: true
+          {{- end }}
+          {{- else }}
+          {{ $service }}:
+            exposedPort: {{ $portConfig.external }}
+            port: {{ $portConfig.internal }}
+            expose:
+              default: true
+              {{- range $planet := $.Values.traefik.planets }}
+              {{ $planet }}: true
+              {{- end }}
+          {{- end }}
+          {{- end }}
         service:
-          type: LoadBalancer
-          annotations:
+          annotations: &service-annotations
             service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
             service.beta.kubernetes.io/aws-load-balancer-type: external
             {{- with .Values.traefik.awsLoadBalancerSslCert }}
@@ -50,25 +75,40 @@ spec:
             {{- with .Values.traefik.awsLoadBalancerSubnets }}
             service.beta.kubernetes.io/aws-load-balancer-subnets: {{ . }}
             {{- end }}
+          additionalServices:
+            {{- range $planet := .Values.traefik.planets }}
+            {{ $planet }}:
+              annotations:
+                <<: *service-annotations
+            {{- end }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: traefik
+  name: traefik-gateway
   namespace: traefik
 spec:
   gatewayClassName: traefik
   listeners:
-    - name: http
-      port: 8000
-      protocol: HTTP
+    {{- range $service, $_portConfig := .Values.traefik.ports }}
+    {{- $portConfig := kindIs "map" $_portConfig | ternary $_portConfig (dict "external" $_portConfig "internal" $_portConfig) }}
+    {{- if kindIs "map" $portConfig.internal }}
+    {{- range $planet, $port := $portConfig.internal }}
+    - name: {{ $service }}-{{ $planet }}
+      port: {{ $port }}
+      protocol: {{ $portConfig.protocol | default "HTTP" }}
       allowedRoutes:
         namespaces:
           from: All
-    - name: grpc
-      port: 31238
-      protocol: HTTP
+    {{- end }}
+    {{- else }}
+    - name: {{ $service }}
+      port: {{ $portConfig.internal }}
+      protocol: {{ $portConfig.protocol | default "HTTP" }}
       allowedRoutes:
         namespaces:
           from: All
+    {{- end }}
+    {{- end }}
+---
 {{- end }}

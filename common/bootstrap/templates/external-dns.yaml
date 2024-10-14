@@ -16,6 +16,9 @@ spec:
         sources:
           - service
           - ingress
+          - gateway-httproute
+          - gateway-grpcroute
+          - gateway-tcproute
         aws:
           region: {{ .Values.region }}
         policy: sync

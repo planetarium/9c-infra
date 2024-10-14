@@ -119,6 +119,17 @@ spec:
           awsLoadBalancerSubnets: public-us-east-2c-9c-internal
           awsLoadBalancerSslCert: >-
             arn:aws:acm:us-east-2:319679068466:certificate/e19257bd-f1fb-41a6-ae84-bbdf6b98a62f
+          planets:
+            - odin
+            - heimdall
+          ports:
+            grpc: 31238
+            netmq:
+              protocol: TCP
+              external: 31234
+              internal:
+                odin: 31234
+                heimdall: 31235
 
   destination:
     server: https://kubernetes.default.svc

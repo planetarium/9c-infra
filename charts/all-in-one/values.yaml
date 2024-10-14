@@ -73,6 +73,7 @@ ingress:
 
 gateway:
   enabled: false
+  gatewayClassName: traefik
 
 seed:
   count: 1
