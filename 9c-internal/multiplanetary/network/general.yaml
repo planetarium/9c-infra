@@ -41,7 +41,7 @@ worldBoss:
   image:
     repository: planetariumhq/world-boss-service
     pullPolicy: Always
-    tag: "git-9e59091be2ef1a013804a928f8c05350591c4f03"
+    tag: "git-5f9bb64e03c9f4d01806aaaf88f6a8662484a187"
 
 marketService:
   image:
