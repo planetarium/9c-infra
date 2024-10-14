@@ -42,6 +42,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql
               name: world-boss-db-data
+      {{- with $.Values.worldBoss.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate

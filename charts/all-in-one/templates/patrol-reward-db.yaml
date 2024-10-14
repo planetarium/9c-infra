@@ -44,6 +44,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: patrol-reward-db-data
+      {{- with $.Values.patrolRewardService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate
