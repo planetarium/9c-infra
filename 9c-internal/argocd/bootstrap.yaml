@@ -36,7 +36,7 @@ spec:
         accountId: "319679068466"
         prometheus:
           server:
-            nodeGroup: 9c-internal-ondemand-r7g_l_2c
+            nodeGroup: 9c-internal-spot_2c
             extraScrapeConfigs:
               - job_name: scrape-headlesses
                 metrics_path: /metrics
@@ -103,17 +103,17 @@ spec:
           bucketName: loki-dev.planetariumhq.com
           write:
             count: 2
-            nodeGroup: 9c-internal-ondemand-r7g_l_2c
+            nodeGroup: 9c-internal-spot_2c
           read:
             count: 3
-            nodeGroup: 9c-internal-ondemand-r7g_l_2c
+            nodeGroup: 9c-internal-spot_2c
         opentelemetry:
           enabled: true
         tempo:
           enabled: true
         pyroscope:
           enabled: true
-          nodeGroup: 9c-internal-ondemand-r7g_l_2c
+          nodeGroup: 9c-internal-spot_2c
         traefik:
           enabled: true
           awsLoadBalancerSubnets: public-us-east-2c-9c-internal
