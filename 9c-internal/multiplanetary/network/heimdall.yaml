@@ -131,7 +131,8 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-spot_2c
+    read:
+      eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
   - name: DOTNET_gcServer
@@ -325,7 +326,8 @@ arenaService:
   rwMode: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-spot_2c
+    read:
+      eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
     - name: Worker
