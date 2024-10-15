@@ -34,7 +34,7 @@ spec:
         accountId: "319679068466"
         prometheus:
           server:
-            nodeGroup: 9c-main-r6g_xl_2c
+            nodeGroup: 9c-main-spot_2c
             extraScrapeConfigs:
               - job_name: 'kube-state-metrics'
                 static_configs:
@@ -135,14 +135,14 @@ spec:
           bucketName: loki.planetariumhq.com
           write:
             count: 3
-            nodeGroup: 9c-main-r6g_xl_2c
+            nodeGroup: 9c-main-spot_2c
             resources:
               requests:
                 cpu: 1500m
                 memory: 6Gi
           read:
             count: 3
-            nodeGroup: 9c-main-r6g_xl_2c
+            nodeGroup: 9c-main-spot_2c
             resources:
               requests:
                 cpu: 2000m
@@ -153,17 +153,17 @@ spec:
         memcached:
           enabled: false
           memory: 16Gi
-          nodeGroup: 9c-main-r6g_xl_2c
+          nodeGroup: 9c-main-spot_2c
         opentelemetry:
           enabled: true
-          nodeGroup: 9c-main-r7g_xl_2c
+          nodeGroup: 9c-main-spot_2c
         tempo:
           enabled: true
-          nodeGroup: 9c-main-r7g_xl_2c
+          nodeGroup: 9c-main-spot_2c
         pyroscope:
           enabled: true
           replicaCount: 2
-          nodeGroup: 9c-main-r7g_xl_2c
+          nodeGroup: 9c-main-spot_2c
         traefik:
           enabled: true
           awsLoadBalancerSubnets: public-us-east-2c-9c-main
