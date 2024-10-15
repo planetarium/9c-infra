@@ -37,122 +37,17 @@ module "common" {
 
   # node group
 node_groups = {
-    "9c-internal-c5_4xl_2c" = {
-      instance_types    = ["c5d.4xlarge"]
+    "heimdall-spot_2c" = {
+      instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 1
-    }
-
-    "9c-internal-m5d_l_2c" = {
-      instance_types    = ["m5d.large"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 20
-    }
-
-    "9c-internal-m5d_2xl_2c" = {
-      instance_types    = ["m5d.2xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 5
-    }
-
-    "9c-internal-m5d_xl_2c" = {
-      instance_types    = ["m5d.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 5
-      min_size          = 5
-      max_size          = 16
-    }
-
-    "9c-internal-m5_xl_2c_ondemand" = {
-      instance_types    = ["m5.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 2
-      min_size          = 0
-      max_size          = 10
-    }
-
-    "9c-internal-m7g_2xl_2c" = {
-      instance_types    = ["m7g.2xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 2
-      min_size          = 2
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-internal-r6g_l_2c" = {
-      instance_types    = ["r6g.large"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 25
-      ami_type          = "AL2_ARM_64"
-    }
-
-
-    "9c-internal-r6g_xl_2c" = {
-      instance_types    = ["r6g.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 5
-      min_size          = 5
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-internal-c7g_4xl_2c" = {
-      instance_types    = ["c7g.4xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "SPOT"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 10
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-internal-ondemand-r7g_l_2c" = {
-      instance_types    = ["r7g.large"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 6
-      min_size          = 0
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-internal-ondemand-r7g_xl_2c" = {
-      instance_types    = ["r7g.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 15
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-internal-t3_medium" = {
-      instance_types    = ["t3.medium"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
       desired_size      = 1
       min_size          = 0
-      max_size          = 1
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
     }
 
-    "heimdall-spot_2c" = {
+    "heimdall-preview-spot_2c" = {
       instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
@@ -172,43 +67,24 @@ node_groups = {
       ami_type          = "AL2_ARM_64"
     }
 
-    "heimdall-preview-r7g_l_2c" = {
-      instance_types    = ["r7g.large"]
+    "odin-spot_2c" = {
+      instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
       availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 1
-      min_size          = 0
-      max_size          = 10
-      ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-preview-ondemand-r7g_l_2c" = {
-      instance_types    = ["r7g.large"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
+      capacity_type     = "SPOT"
       desired_size      = 1
       min_size          = 0
       max_size          = 15
       ami_type          = "AL2_ARM_64"
     }
 
-    "9c-preview-ondemand-r7g_xl_2c" = {
-      instance_types    = ["r7g.xlarge"]
+    "odin-preview-spot_2c" = {
+      instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
       availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
+      capacity_type     = "SPOT"
       desired_size      = 1
       min_size          = 0
       max_size          = 15
       ami_type          = "AL2_ARM_64"
-    }
-
-    "9c-preview-m5_xl_2c_ondemand" = {
-      instance_types    = ["m5.xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 1
-      min_size          = 0
-      max_size          = 10
     }
   }
 }

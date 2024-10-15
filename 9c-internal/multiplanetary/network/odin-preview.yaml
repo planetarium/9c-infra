@@ -48,7 +48,7 @@ snapshot:
     suspend: true
   path: preview
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -65,7 +65,7 @@ seed:
   - "odin-preview-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 validator:
   count: 4
@@ -88,7 +88,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   loggingEnabled: true
 
@@ -115,7 +115,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   loggingEnabled: true
 
@@ -146,7 +146,7 @@ dataProvider:
     password: ''
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   resources:
     requests:
@@ -169,7 +169,7 @@ explorer:
       memory: 4Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -187,7 +187,8 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    read:
+      eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   env:
   - name: DOTNET_gcServer
@@ -201,7 +202,7 @@ patrolRewardService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   db:
     local: true
@@ -229,6 +230,9 @@ rudolfService:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
 
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
+
 rudolfCurrencyNotifier:
   enabled: false
 
@@ -239,7 +243,7 @@ rudolfCurrencyNotifier:
     serverName: "9c-preview"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 volumeRotator:
   enabled: false
@@ -265,7 +269,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 acc:
   enabled: false
@@ -276,7 +280,7 @@ acc:
     enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-t3_medium
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   env:
   - name: AccessControlServiceType
@@ -288,7 +292,7 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 jwtHeadless:
   enabled: false
@@ -299,7 +303,7 @@ jwtHeadless:
   - --tx-quota-per-signer=1
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 arenaService:
   enabled: true
@@ -309,7 +313,8 @@ arenaService:
     enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    read:
+      eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
   env:
     - name: Worker
