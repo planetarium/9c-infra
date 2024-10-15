@@ -55,7 +55,7 @@ bridgeService:
     size: "50Gi"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   account:
     type: "kms"
@@ -83,6 +83,8 @@ bridgeService:
 
 bridgeServiceApi:
   enabled: true
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 dataProvider:
   image:
@@ -93,7 +95,7 @@ dataProvider:
   migrateDatabase: false
 
   storage:
-    data: 500Gi
+    data: 300Gi
 
   db:
     local: true
@@ -106,7 +108,7 @@ dataProvider:
     password: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-preview-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 marketService:
   enabled: true
@@ -120,7 +122,8 @@ marketService:
     size: 1Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    read:
+      eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   env:
   - name: DOTNET_gcServer
@@ -134,7 +137,7 @@ patrolRewardService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   db:
     local: true
@@ -148,13 +151,13 @@ remoteHeadless:
       memory: 12Gi
 
   storage:
-    data: 500Gi
+    data: 300Gi
 
   hosts:
   - "heimdall-preview-rpc-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-preview-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   loggingEnabled: true
 
@@ -186,6 +189,9 @@ rudolfService:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
 
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
+
 seed:
   count: 1
 
@@ -193,7 +199,7 @@ seed:
   - "heimdall-preview-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 snapshot:
   partition:
@@ -211,7 +217,7 @@ snapshot:
       memory: 10Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-preview-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 validator:
   count: 1
@@ -223,7 +229,7 @@ validator:
   - "heimdall-preview-validator-1.nine-chronicles.com"
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-preview-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   resources:
     requests:
@@ -257,7 +263,7 @@ worldBoss:
     slackSigningSecret: ""
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 testHeadless1:
   enabled: false
@@ -273,7 +279,7 @@ testHeadless1:
     rpc: 31238
 
   storage:
-    data: 500Gi
+    data: 300Gi
     accessModes: "ReadWriteMany"
 
   resources:
@@ -282,7 +288,7 @@ testHeadless1:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-ondemand-r7g_l_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   loggingEnabled: true
 
@@ -298,7 +304,7 @@ acc:
     enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-t3_medium
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   env:
   - name: AccessControlServiceType
@@ -310,7 +316,7 @@ stateMigrationService:
   enabled: false
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
 arenaService:
   enabled: true
@@ -320,7 +326,8 @@ arenaService:
     enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-preview-m5_xl_2c_ondemand
+    read:
+      eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   env:
   - name: Worker
