@@ -33,11 +33,10 @@ sequencer:
     node: 8547
 
 node:
-  count: 2
+  count: 1
   loadBalancerExternal: true
   hosts:
     - node-1.v8-dev.us-east-2.holesky.tests.mothership-pla.net
-    - node-2.v8-dev.us-east-2.holesky.tests.mothership-pla.net
   opGeth:
     resources:
       requests:
