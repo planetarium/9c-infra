@@ -30,6 +30,7 @@ ingress:
 
 gateway:
   enabled: true
+  hostname: gateway-internal-odin.planetarium.network
   services:
     - hostname: 9c-internal-rpc.nine-chronicles.com
       backendRefs:

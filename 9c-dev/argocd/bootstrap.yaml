@@ -91,9 +91,6 @@ spec:
           nodeGroup: general-r7g_xl_2c
         pyroscope:
           enabled: true
-        gatewayApi:
-          enabled: true
-          roleArn: "arn:aws:iam::319679068466:role/eks-9c-dev-v2-gateway-api-controller"
 
   destination:
     server: https://kubernetes.default.svc
