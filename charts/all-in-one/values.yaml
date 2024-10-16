@@ -73,7 +73,12 @@ ingress:
 
 gateway:
   enabled: false
-  gatewayClassName: traefik
+  ports:
+    netmq:
+      port: 31234
+      gatewayProtocol: TCP
+    grpc:
+      port: 31238
 
 seed:
   count: 1

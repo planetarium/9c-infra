@@ -32,10 +32,12 @@ ingress:
 
 gateway:
   enabled: true
+  hostname: gateway-internal-heimdall.planetarium.network
   services:
     - hostname: heimdall-internal-rpc.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
+        - name: validator-5
       routes:
         - name: remote-headless-graphql
         - name: remote-headless-grpc

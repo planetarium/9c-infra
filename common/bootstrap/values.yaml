@@ -56,17 +56,6 @@ pyroscope:
   replicaCount: 2
   nodeGroup: ""
 
-gatewayApi:
-  enabled: false
-  roleArn: ""
-
-traefik:
-  enabled: false
-  ports:
-    web:
-      external: 80
-      internal: 8000
-
 datadog:
   enabled: false
   nodeGroup: ""
