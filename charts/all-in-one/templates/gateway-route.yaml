@@ -55,6 +55,7 @@ spec:
             {{ $name }}:
               port: {{ $config.port | quote }}
               protocol: {{ $config.gatewayProtocol | default "HTTP" }}
+            {{- end }}
 ---
 {{- range $service := $.Values.gateway.services }}
 {{- range $route := $service.routes | default (list dict) }}
