@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: argocd
 resources:
   - ../../common/argocd
-  - argo-workflow.yaml
   - bootstrap.yaml
   - argocd-secrets.yaml
   - argocd-secret-store.yaml
