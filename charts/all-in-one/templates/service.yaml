@@ -146,7 +146,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-db
 spec:
   ports:
@@ -155,7 +154,7 @@ spec:
     targetPort: 3306
   selector:
     app: data-provider-db
-  type: LoadBalancer
+  type: ClusterIP
 ---
 {{ end }}
 {{ end }}
@@ -509,7 +508,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-db
 spec:
   ports:
@@ -518,7 +516,7 @@ spec:
       targetPort: 5432
   selector:
     app: market-db
-  type: LoadBalancer
+  type: ClusterIP
 ---
 {{ end }}
 
@@ -661,7 +659,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-db
 spec:
   ports:
@@ -670,7 +667,7 @@ spec:
       targetPort: 5432
   selector:
     app: patrol-reward-db
-  type: LoadBalancer
+  type: ClusterIP
 ---
 {{ end }}
 
