@@ -44,7 +44,7 @@ spec:
           {{- range $name, $config := $.Values.gateway.ports }}
           {{ $name }}:
             port: {{ $config.port | quote }}
-            protocol: {{ $config.portProtocol | default TCP }}
+            protocol: {{ $config.portProtocol | default "TCP" }}
           {{- end }}
         gateway:
           listeners:
@@ -54,7 +54,7 @@ spec:
             {{- range $name, $config := $.Values.gateway.ports }}
             {{ $name }}:
               port: {{ $config.port | quote }}
-              protocol: {{ $config.gatewayProtocol | default HTTP }}
+              protocol: {{ $config.gatewayProtocol | default "HTTP" }}
 ---
 {{- range $service := $.Values.gateway.services }}
 {{- range $route := $service.routes | default (list dict) }}
