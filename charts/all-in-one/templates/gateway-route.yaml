@@ -68,7 +68,7 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   parentRefs:
-  - name: traefik
+  - name: traefik-gateway
     namespace: {{ $.Release.Name }}
     sectionName: {{ $obj.sectionName | default "web" }}
   {{- if not (eq $obj.kind "TCPRoute") }}
