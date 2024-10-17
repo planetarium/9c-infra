@@ -22,17 +22,20 @@ spec:
       values: |
         image:
           tag: v3.2.0-rc2
-        globalArguments: []
+        globalArguments:
+          - --providers.kubernetesgateway.statusaddress.service.name=traefik-{{ $.Release.Name }}
+          - --providers.kubernetesgateway.statusaddress.service.namespace={{ $.Release.Name }}
+        ingressClass:
+          enabled: false
         providers:
+          kubernetesIngress:
+            enabled: false
+          kubernetesCRD:
+            enabled: false
           kubernetesGateway:
             enabled: true
             experimentalChannel: true
-          kubernetesCRD:
-            enabled: false
-          kubernetesIngress:
-            enabled: false
-        ingressClass:
-          enabled: false
+            labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}
         gatewayClass:
           name: traefik-{{ $.Release.Name }}
         service:

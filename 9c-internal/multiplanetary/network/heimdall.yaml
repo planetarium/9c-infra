@@ -47,7 +47,7 @@ gateway:
         - name: remote-headless-netmq
           port: 31234
           kind: TCPRoute
-          sectionName: netmq-heimdall
+          sectionName: netmq
     - name: data-provider
       hostname: heimdall-internal-dp.9c.gg
     - name: market-service

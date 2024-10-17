@@ -32,7 +32,7 @@ gateway:
   enabled: true
   hostname: gateway-internal-odin.planetarium.network
   services:
-    - hostname: 9c-internal-rpc.nine-chronicles.com
+    - hostname: odin-internal-rpc.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
       routes:
@@ -44,7 +44,7 @@ gateway:
         - name: remote-headless-netmq
           port: 31234
           kind: TCPRoute
-          sectionName: netmq-odin
+          sectionName: netmq
     - name: data-provider
       hostname: odin-internal-dp.9c.gg
     - name: market-service
