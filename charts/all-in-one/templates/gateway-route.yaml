@@ -7,6 +7,10 @@ metadata:
   namespace: argocd
 spec:
   project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}
@@ -19,8 +23,6 @@ spec:
         image:
           tag: v3.2.0-rc2
         globalArguments: []
-        rbac:
-          namespaced: true
         providers:
           kubernetesGateway:
             enabled: true
@@ -31,6 +33,8 @@ spec:
             enabled: false
         ingressClass:
           enabled: false
+        gatewayClass:
+          name: traefik-{{ $.Release.Name }}
         service:
           annotations:
             {{- toYaml $.Values.global.service.annotations | nindent 12 }}
@@ -43,7 +47,7 @@ spec:
             targetPort: web
           {{- range $name, $config := $.Values.gateway.ports }}
           {{ $name }}:
-            port: {{ $config.port | quote }}
+            port: {{ $config.port }}
             protocol: {{ $config.portProtocol | default "TCP" }}
           {{- end }}
         gateway:
@@ -53,7 +57,7 @@ spec:
               protocol: HTTP
             {{- range $name, $config := $.Values.gateway.ports }}
             {{ $name }}:
-              port: {{ $config.port | quote }}
+              port: {{ $config.port }}
               protocol: {{ $config.gatewayProtocol | default "HTTP" }}
             {{- end }}
 ---
