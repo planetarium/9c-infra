@@ -70,6 +70,13 @@ kind: {{ $obj.kind | default "HTTPRoute" }}
 metadata:
   name: gateway-{{ $obj.name }}
   namespace: {{ $.Release.Name }}
+  annotations:
+    {{- if eq $obj.kind "TCPRoute" }}
+    {{- with $obj.hostname }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
+    external-dns.alpha.kubernetes.io/ttl: '60'
+    {{- end }}
+    {{- end }}
 spec:
   parentRefs:
   - name: traefik-gateway
