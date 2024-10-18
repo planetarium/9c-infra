@@ -7,10 +7,6 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}
@@ -22,9 +18,6 @@ spec:
       values: |
         image:
           tag: v3.2.0-rc2
-        globalArguments:
-          - --providers.kubernetesgateway.statusaddress.service.name=traefik-{{ $.Release.Name }}
-          - --providers.kubernetesgateway.statusaddress.service.namespace={{ $.Release.Name }}
         ingressClass:
           enabled: false
         providers:
@@ -38,13 +31,12 @@ spec:
             labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}
         gatewayClass:
           name: traefik-{{ $.Release.Name }}
+        globalArguments:
+          - --providers.kubernetesgateway.statusaddress.service.name=traefik-{{ $.Release.Name }}
+          - --providers.kubernetesgateway.statusaddress.service.namespace={{ $.Release.Name }}
         service:
           annotations:
             {{- toYaml $.Values.global.service.annotations | nindent 12 }}
-            {{- with $.Values.gateway.hostname }}
-            external-dns.alpha.kubernetes.io/hostname: {{ . }}
-            external-dns.alpha.kubernetes.io/ttl: '60'
-            {{- end }}
         ports:
           websecure:
             targetPort: web
@@ -54,6 +46,11 @@ spec:
             protocol: {{ $config.portProtocol | default "TCP" }}
           {{- end }}
         gateway:
+          annotations:
+            {{- with $.Values.gateway.hostname }}
+            external-dns.alpha.kubernetes.io/hostname: {{ . }}
+            external-dns.alpha.kubernetes.io/ttl: '60'
+            {{- end }}
           listeners:
             web:
               port: 8000
@@ -62,6 +59,8 @@ spec:
             {{ $name }}:
               port: {{ $config.port }}
               protocol: {{ $config.gatewayProtocol | default "HTTP" }}
+              expose:
+                default: true
             {{- end }}
 ---
 {{- range $service := $.Values.gateway.services }}
