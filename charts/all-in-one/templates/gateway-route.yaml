@@ -44,13 +44,10 @@ spec:
           {{ $name }}:
             port: {{ $config.port }}
             protocol: {{ $config.portProtocol | default "TCP" }}
+            expose:
+              default: true
           {{- end }}
         gateway:
-          annotations:
-            {{- with $.Values.gateway.hostname }}
-            external-dns.alpha.kubernetes.io/hostname: {{ . }}
-            external-dns.alpha.kubernetes.io/ttl: '60'
-            {{- end }}
           listeners:
             web:
               port: 8000
@@ -59,8 +56,6 @@ spec:
             {{ $name }}:
               port: {{ $config.port }}
               protocol: {{ $config.gatewayProtocol | default "HTTP" }}
-              expose:
-                default: true
             {{- end }}
 ---
 {{- range $service := $.Values.gateway.services }}
