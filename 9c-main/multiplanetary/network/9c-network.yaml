@@ -147,7 +147,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
-  - --consensus-target-block-interval=5500
+  - --consensus-target-block-interval=6000
   - --arena-participants-sync=false
   - --maximum-transaction-per-block=150
 
