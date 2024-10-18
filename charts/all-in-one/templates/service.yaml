@@ -8,17 +8,16 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- with $.Values.global.service.annotations }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- if not $.Values.gateway.enabled }}
+    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=tcp-seed-{{ $index }}
     {{- if index $.Values.seed.hosts $idx }}
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.seed.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
-  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.seed.ports.node }}
     targetPort: {{ $.Values.seed.ports.node }}
@@ -36,7 +35,12 @@ spec:
     name: gossip
   selector:
     app: tcp-seed-{{ $index }}
+  {{- if not $.Values.gateway.enabled }}
   type: LoadBalancer
+  externalTrafficPolicy: Local
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 ---
 {{ end }}
 
@@ -51,6 +55,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- if not $.Values.gateway.enabled }}
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
@@ -58,8 +63,8 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
-  externalTrafficPolicy: Local
   ports:
   - name: graphql
     port: {{ $.Values.remoteHeadless.ports.graphql }}
@@ -75,7 +80,12 @@ spec:
     targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
   selector:
     app: remote-headless-{{ $index }}
+  {{- if not $.Values.gateway.enabled }}
   type: LoadBalancer
+  externalTrafficPolicy: Local
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 ---
 {{ end }}
@@ -530,6 +540,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- if not $.Values.gateway.enabled }}
     {{- toYaml $.Values.global.service.annotations | nindent 4 }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
@@ -537,8 +548,8 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.validator.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
-  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.validator.ports.headless }}
     targetPort: {{ $.Values.validator.ports.headless }}
@@ -555,7 +566,12 @@ spec:
     protocol: TCP
   selector:
     app: validator-{{ $index }}
+  {{- if not $.Values.gateway.enabled }}
   type: LoadBalancer
+  externalTrafficPolicy: Local
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 
 ---
 {{ end }}

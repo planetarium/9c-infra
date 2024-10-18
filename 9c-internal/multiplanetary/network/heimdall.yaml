@@ -32,7 +32,6 @@ ingress:
 
 gateway:
   enabled: true
-  hostname: gateway-internal-heimdall.planetarium.network
   services:
     - hostname: heimdall-internal-rpc.nine-chronicles.com
       backendRefs:
