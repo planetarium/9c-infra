@@ -32,7 +32,7 @@ global:
   pyroscope:
     enabled: false
     address: "http://pyroscope.pyroscope.svc.cluster.local:4040"
-  
+
   service:
     annotations: {}
 
@@ -74,6 +74,9 @@ ingress:
 gateway:
   enabled: false
   ports:
+    zmq:
+      kind: TCPRoute
+      port: 31234
     grpc:
       kind: GRPCRoute
       port: 31238

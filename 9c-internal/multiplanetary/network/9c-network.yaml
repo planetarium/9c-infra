@@ -10,10 +10,10 @@ global:
   appProtocolVersion: "200190/54684Ac4ee5B933e72144C4968BEa26056880d71/MEUCIQCNQmMSk4nnbOXSpe9yk0Q2ecyoQYrnZpQxmMeVz+Ve0wIgb9v1jf4R6DL8iikurLgzH9gYQJ+zvEBsEqQqmS55nPc=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTA2LTE3ZQ=="
 
   peerStrings:
-  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.9c-network.svc.cluster.local,31234"
+    - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.9c-network.svc.cluster.local,31234"
 
   iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+    - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
   networkType: Internal
   planet: OdinInternal
@@ -71,7 +71,7 @@ seed:
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
 
   hosts:
-  - "odin-internal-tcp-seed-1.nine-chronicles.com"
+    - "odin-internal-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
@@ -83,13 +83,13 @@ validator:
     pullPolicy: Always
 
   consensusSeedStrings:
-  - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
+    - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
 
   hosts:
-  - "odin-internal-validator-5.nine-chronicles.com"
-  - "odin-internal-validator-6.nine-chronicles.com"
-  - "odin-internal-validator-7.nine-chronicles.com"
-  - "odin-internal-validator-8.nine-chronicles.com"
+    - "odin-internal-validator-5.nine-chronicles.com"
+    - "odin-internal-validator-6.nine-chronicles.com"
+    - "odin-internal-validator-7.nine-chronicles.com"
+    - "odin-internal-validator-8.nine-chronicles.com"
 
   storage:
     data: 500Gi
@@ -105,9 +105,9 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
-  - --tx-life-time=2000000000
+    - --tx-quota-per-signer=1
+    - --arena-participants-sync=false
+    - --tx-life-time=2000000000
 
 remoteHeadless:
   image:
@@ -115,7 +115,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "odin-internal-rpc-1.nine-chronicles.com"
+    - "odin-internal-rpc-1.nine-chronicles.com"
 
   ports:
     headless: 31234
@@ -136,9 +136,9 @@ remoteHeadless:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
-  - --remote-key-value-service
-  - --arena-participants-sync=false
+    - --tx-quota-per-signer=1
+    - --remote-key-value-service
+    - --arena-participants-sync=false
 
 dataProvider:
   enabled: true
@@ -151,12 +151,12 @@ dataProvider:
   db:
     local: true
     storage: 100Gi
-    database: ''
-    connectionString: ''
-    host: ''
+    database: ""
+    connectionString: ""
+    host: ""
     port: 3306
     user: user
-    password: ''
+    password: ""
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
@@ -185,8 +185,8 @@ explorer:
     eks.amazonaws.com/nodegroup: odin-spot_2c
 
   extraArgs:
-  - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
+    - --tx-quota-per-signer=1
+    - --arena-participants-sync=false
 
 marketService:
   enabled: true
@@ -200,12 +200,12 @@ marketService:
       eks.amazonaws.com/nodegroup: odin-spot_2c
 
   env:
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: WorkerConfig__SyncShop
-    value: "true"
-  - name: WorkerConfig__SyncProduct
-    value: "true"
+    - name: DOTNET_gcServer
+      value: "1"
+    - name: WorkerConfig__SyncShop
+      value: "true"
+    - name: WorkerConfig__SyncProduct
+      value: "true"
 
 patrolRewardService:
   enabled: true
@@ -236,8 +236,8 @@ rudolfService:
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0c865006315f5b9f0"
-    - "sg-0343e5c4514681670"
+      - "sg-0c865006315f5b9f0"
+      - "sg-0343e5c4514681670"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
@@ -292,10 +292,10 @@ acc:
     eks.amazonaws.com/nodegroup: odin-spot_2c
 
   env:
-  - name: AccessControlServiceType
-    value: "sqlite"
-  - name: AccessControlServiceConnectionString
-    value: "Data Source=/data/acc.db"
+    - name: AccessControlServiceType
+      value: "sqlite"
+    - name: AccessControlServiceConnectionString
+      value: "Data Source=/data/acc.db"
 
 stateMigrationService:
   enabled: false
@@ -309,7 +309,7 @@ jwtHeadless:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+    - --tx-quota-per-signer=1
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c

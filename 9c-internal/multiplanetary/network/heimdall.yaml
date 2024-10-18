@@ -9,7 +9,7 @@ global:
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
   peerStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
   trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
 
@@ -131,12 +131,12 @@ marketService:
       eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: WorkerConfig__SyncShop
-    value: "true"
-  - name: WorkerConfig__SyncProduct
-    value: "true"
+    - name: DOTNET_gcServer
+      value: "1"
+    - name: WorkerConfig__SyncShop
+      value: "true"
+    - name: WorkerConfig__SyncProduct
+      value: "true"
 
 patrolRewardService:
   enabled: true
@@ -159,7 +159,7 @@ remoteHeadless:
     data: 500Gi
 
   hosts:
-  - "heimdall-internal-rpc-1.nine-chronicles.com"
+    - "heimdall-internal-rpc-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -167,9 +167,9 @@ remoteHeadless:
   loggingEnabled: true
 
   extraArgs:
-  - --planet=HeimdallInternal
-  - --remote-key-value-service
-  - --arena-participants-sync=false
+    - --planet=HeimdallInternal
+    - --remote-key-value-service
+    - --arena-participants-sync=false
 
 rudolfService:
   enabled: true
@@ -191,8 +191,8 @@ rudolfService:
   service:
     enabled: true
     securityGroupIds:
-    - "sg-0c865006315f5b9f0"
-    - "sg-0343e5c4514681670"
+      - "sg-0c865006315f5b9f0"
+      - "sg-0343e5c4514681670"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -201,7 +201,7 @@ seed:
   count: 1
 
   hosts:
-  - "heimdall-internal-tcp-seed-1.nine-chronicles.com"
+    - "heimdall-internal-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -228,10 +228,10 @@ validator:
   count: 1
 
   consensusSeedStrings:
-  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
+    - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
   hosts:
-  - "heimdall-internal-validator-1.nine-chronicles.com"
+    - "heimdall-internal-validator-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -244,9 +244,9 @@ validator:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-life-time=2000000000
-  - --planet=HeimdallInternal
-  - --arena-participants-sync=false
+    - --tx-life-time=2000000000
+    - --planet=HeimdallInternal
+    - --arena-participants-sync=false
 
 worldBoss:
   enabled: true
@@ -295,7 +295,7 @@ testHeadless1:
   loggingEnabled: true
 
   extraArgs:
-  - --tx-quota-per-signer=1
+    - --tx-quota-per-signer=1
 
 acc:
   enabled: false
@@ -309,10 +309,10 @@ acc:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   env:
-  - name: AccessControlServiceType
-    value: "sqlite"
-  - name: AccessControlServiceConnectionString
-    value: "Data Source=/data/acc.db"
+    - name: AccessControlServiceType
+      value: "sqlite"
+    - name: AccessControlServiceConnectionString
+      value: "Data Source=/data/acc.db"
 
 stateMigrationService:
   enabled: false
