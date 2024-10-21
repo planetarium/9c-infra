@@ -59,7 +59,6 @@ seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
 
   hosts:
   - "odin-preview-tcp-seed-1.nine-chronicles.com"
