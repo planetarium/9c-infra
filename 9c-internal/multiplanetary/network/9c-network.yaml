@@ -107,7 +107,7 @@ validator:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-spot_2c
+    eks.amazonaws.com/nodegroup: odin-spot_xl_2c
 
   loggingEnabled: true
 
@@ -138,7 +138,7 @@ remoteHeadless:
       memory: 12Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-spot_2c
+    eks.amazonaws.com/nodegroup: odin-spot_xl_2c
 
   loggingEnabled: true
 
@@ -166,7 +166,7 @@ dataProvider:
     password: ''
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-spot_2c
+    eks.amazonaws.com/nodegroup: odin-spot_xl_2c
 
   resources:
     requests:
