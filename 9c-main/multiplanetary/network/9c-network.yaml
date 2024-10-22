@@ -110,7 +110,7 @@ seed:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 validator:
-  count: 4
+  count: 1
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -158,9 +158,6 @@ validator:
 
   hosts:
   - "9c-main-validator-5.nine-chronicles.com"
-  - "9c-main-validator-6.nine-chronicles.com"
-  - "9c-main-validator-7.nine-chronicles.com"
-  - "9c-main-validator-8.nine-chronicles.com"
 
   tolerations:
   - effect: NoSchedule
