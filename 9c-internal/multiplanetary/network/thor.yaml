@@ -226,8 +226,8 @@ snapshot:
 
   resources:
     requests:
-      cpu: 1300m
-      memory: 10Gi
+      cpu: 50m
+      memory: 300Mi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
