@@ -1,0 +1,27 @@
+logLevel: "debug"
+
+clusterName: "9c-dev-v2"
+namespace: "heimdall-internal-tcproute-20241022"
+
+image:
+  tag: "200"
+
+appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
+trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings.json"
+
+peerStrings:
+- "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,heimdall-internal-rpc.nine-chronicles.com,31234"
+
+useTurnServer: false
+count: 1
+hosts:
+- "9c-dev-heimdall-internal-rpc-1.planetarium.network"
+
+networkType: Internal
+planet: HeimdallInternal
+consensusType: pbft
+
+storage:
+  class: gp3-extensible

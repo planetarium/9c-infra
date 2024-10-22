@@ -197,9 +197,6 @@ spec:
         - mountPath: /app/logs
           name: json-log
         {{- end }}
-        - mountPath: /app/appsettings.configmap.json
-          name: appsettings
-          subPath: appsettings.json
         env:
           {{- if $.Values.loggingEnabled }}
           - name: POD_NAME
@@ -243,10 +240,6 @@ spec:
           type: DirectoryOrCreate
         name: json-log
       {{- end }}
-      - name: appsettings
-        configMap:
-          defaultMode: 0700
-          name: appsettings
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
