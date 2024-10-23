@@ -7,6 +7,10 @@ metadata:
   namespace: argocd
 spec:
   project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}
@@ -43,9 +47,12 @@ spec:
           {{- range $name, $config := $.Values.gateway.ports }}
           {{ $name }}:
             port: {{ $config.port }}
-            protocol: {{ $config.portProtocol | default "TCP" }}
             expose:
               default: true
+            {{- with $config.transport }}
+            transport:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- end }}
         gateway:
           listeners:
@@ -55,21 +62,22 @@ spec:
             {{- range $name, $config := $.Values.gateway.ports }}
             {{ $name }}:
               port: {{ $config.port }}
-              protocol: {{ $config.gatewayProtocol | default "HTTP" }}
+              protocol: {{ eq $config.kind "TCPRoute" | ternary "TCP" "HTTP" }}
             {{- end }}
 ---
 {{- range $service := $.Values.gateway.services }}
-{{- range $route := $service.routes | default (list dict) }}
-{{- $obj := merge $route $service }}
+{{- range $protocol := $service.protocols | default (list "web") }}
+{{- range $p, $obj := merge (dict "web" dict) ($.Values.gateway.ports) }}
+{{- if eq $protocol $p }}
 ---
 apiVersion: gateway.networking.k8s.io/v1{{ if eq $obj.kind "TCPRoute" }}alpha2{{ end }}
 kind: {{ $obj.kind | default "HTTPRoute" }}
 metadata:
-  name: gateway-{{ $obj.name }}
+  name: gateway-route-{{ $service.name }}-{{ $protocol }}
   namespace: {{ $.Release.Name }}
   annotations:
     {{- if eq $obj.kind "TCPRoute" }}
-    {{- with $obj.hostname }}
+    {{- with $service.hostname }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
@@ -78,20 +86,22 @@ spec:
   parentRefs:
   - name: traefik-gateway
     namespace: {{ $.Release.Name }}
-    sectionName: {{ $obj.sectionName | default "web" }}
+    sectionName: {{ $protocol }}
   {{- if not (eq $obj.kind "TCPRoute") }}
   hostnames:
-    {{- with ($obj.hostnames | default (list $obj.hostname)) }}
+    {{- with ($service.hostnames | default (list $service.hostname)) }}
     {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
   rules:
     - backendRefs:
-      {{- range $ref := $obj.backendRefs | default (list dict) }}
-      - name: {{ $ref.name | default $obj.name }}
+      {{- range $ref := $service.backendRefs | default (list dict) }}
+      - name: {{ $ref.name | default $service.name }}
         port: {{ $ref.port | default $obj.port | default "80" }}
       {{- end }}
 ---
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 ---

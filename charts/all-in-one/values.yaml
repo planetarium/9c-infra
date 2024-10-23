@@ -74,11 +74,12 @@ ingress:
 gateway:
   enabled: false
   ports:
-    netmq:
-      port: 31234
-      gatewayProtocol: TCP
     grpc:
+      kind: GRPCRoute
       port: 31238
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
 
 seed:
   count: 1
