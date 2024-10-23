@@ -60,7 +60,7 @@ gateway:
       hostname: thor-internal-arena.9c.gg
 
 bridgeService:
-  enabled: false
+  enabled: true
 
   multiplanetary:
     registryEndpoint: "https://planets-internal.nine-chronicles.com/planets/"
@@ -101,12 +101,12 @@ bridgeService:
       downstream: "3415778"
 
 bridgeServiceApi:
-  enabled: false
+  enabled: true
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
 dataProvider:
-  enabled: false
+  enabled: true
   rwMode: false
   render: true
   migrateDatabase: false
@@ -128,7 +128,7 @@ dataProvider:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
 marketService:
-  enabled: false
+  enabled: true
 
   db:
     local: true
@@ -147,7 +147,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
@@ -180,7 +180,7 @@ remoteHeadless:
   - --arena-participants-sync=false
 
 rudolfService:
-  enabled: false
+  enabled: true
 
   config:
     graphqlEndpoint: "http://thor-internal-rpc-1.nine-chronicles.com/graphql"
@@ -197,7 +197,7 @@ rudolfService:
     roleArn: "arn:aws:iam::319679068466:role/thor-internal-9c-rudolf-signer"
 
   service:
-    enabled: false
+    enabled: true
     securityGroupIds:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
@@ -260,7 +260,7 @@ validator:
   - --arena-participants-sync=false
 
 worldBoss:
-  enabled: false
+  enabled: true
   ports:
     targetPort: 5000
 
@@ -332,7 +332,7 @@ stateMigrationService:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
 arenaService:
-  enabled: false
+  enabled: true
   rwMode: false
 
   nodeSelector:
