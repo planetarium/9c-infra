@@ -60,7 +60,7 @@ gateway:
       hostname: thor-internal-arena.9c.gg
 
 bridgeService:
-  enabled: true
+  enabled: false
 
   multiplanetary:
     registryEndpoint: "https://planets-internal.nine-chronicles.com/planets/"
@@ -101,7 +101,7 @@ bridgeService:
       downstream: "3415778"
 
 bridgeServiceApi:
-  enabled: true
+  enabled: false
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
