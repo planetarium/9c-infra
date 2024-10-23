@@ -156,7 +156,7 @@ patrolRewardService:
     local: true
 
 remoteHeadless:
-  count: 0
+  count: 1
 
   resources:
     requests:
@@ -175,7 +175,7 @@ remoteHeadless:
   loggingEnabled: true
 
   extraArgs:
-  - --planet=thorInternal
+  - --planet=HeimdallInternal
   - --remote-key-value-service
   - --arena-participants-sync=false
 
@@ -256,7 +256,7 @@ validator:
 
   extraArgs:
   - --tx-life-time=2000000000
-  - --planet=thorInternal
+  - --planet=HeimdallInternal
   - --arena-participants-sync=false
 
 worldBoss:
