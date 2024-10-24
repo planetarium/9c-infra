@@ -36,7 +36,7 @@ spec:
         - migrate
         - deploy
         command:
-        - /usr/local/bin/yarn
+        - /usr/local/bin/npx
         image: {{ $.Values.bridgeService.image.repository }}:{{ $.Values.bridgeService.image.tag }}
         name: run-prisma-migrate-deploy
         env:
