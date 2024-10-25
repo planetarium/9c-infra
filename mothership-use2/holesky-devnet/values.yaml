@@ -40,17 +40,17 @@ node:
   opGeth:
     resources:
       requests:
-        memory: 4Gi
+        memory: 2Gi
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-r7g_medium_2c_node
 
 opBatcher:
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-r7g_medium_2c_node
 
 opProposer:
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-r7g_medium_2c_node
 
 bundler:
   enabled: true
@@ -60,4 +60,4 @@ proxyd:
   enabled: true
   loadBalancerExternal: true
   nodeSelector:
-    eks.amazonaws.com/nodegroup: mothership-use2-r7i_large_2c
+    eks.amazonaws.com/nodegroup: mothership-use2-m7a_medium_2c
