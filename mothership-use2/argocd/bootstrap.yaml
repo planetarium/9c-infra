@@ -34,7 +34,7 @@ spec:
         accountId: "533267452421"
         prometheus:
           server:
-            nodeGroup: mothership-use2-m7g_large_2c
+            nodeGroup: mothership-use2-m7a_medium_2c
             extraScrapeConfigs:
               - job_name: 'pod monitoring'
                 honor_labels: true
@@ -50,7 +50,6 @@ spec:
                 static_configs:
                   - targets:
                     - node-1.holesky-devnet.svc.cluster.local:7300
-                    - node-2.holesky-devnet.svc.cluster.local:7300
                     labels:
                       group: op-node
         grafana:
