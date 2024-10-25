@@ -23,7 +23,7 @@ node:
   count: 1
   loadBalancerExternal: false
   opGeth:
-    image: &op-geth-image ghcr.io/planetarium/op-geth:v1.101315.2
+    image: &op-geth-image ghcr.io/planetarium/op-geth:v1.101411.0-mothership
     port: &op-geth-port
       rpc: 8545
       wsrpc: 8546
@@ -35,7 +35,7 @@ node:
       storage: 100Gi
     extraArgs: []
   opNode:
-    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.7.7
+    image: &op-node-image us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.9.4
     port: &op-node-port
       rpc: 8547
       p2p:
@@ -46,12 +46,12 @@ node:
       storage: 100Mi
 
 opBatcher:
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.7.7
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.9.4
   port:
     rpc: 8548
 
 opProposer:
-  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.7.7
+  image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.9.4
   port:
     rpc: 8560
 
