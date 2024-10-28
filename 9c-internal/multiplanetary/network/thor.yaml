@@ -33,23 +33,23 @@ ingress:
 gateway:
   enabled: true
   services:
-    - name: remote-headless
-      hostname: thor-internal-rpc.nine-chronicles.com
-      backendRefs:
-        - name: remote-headless-1
-      protocols:
-        - web
-        - grpc
-    - name: data-provider
-      hostname: thor-internal-dp.9c.gg
-    - name: market-service
-      hostname: thor-internal-market.9c.gg
-    - name: patrol-reward-service
-      hostname: thor-internal-patrol.9c.gg
-    - name: world-boss-service
-      hostname: thor-internal-world-boss.9c.gg
-    - name: arena-service
-      hostname: thor-internal-arena.9c.gg
+  - name: remote-headless
+    hostname: thor-internal-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    protocols:
+    - web
+    - grpc
+  - name: data-provider
+    hostname: thor-internal-dp.9c.gg
+  - name: market-service
+    hostname: thor-internal-market.9c.gg
+  - name: patrol-reward-service
+    hostname: thor-internal-patrol.9c.gg
+  - name: world-boss-service
+    hostname: thor-internal-world-boss.9c.gg
+  - name: arena-service
+    hostname: thor-internal-arena.9c.gg
 
 bridgeService:
   enabled: true

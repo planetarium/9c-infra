@@ -40,16 +40,14 @@ ingress:
 gateway:
   enabled: true
   services:
-  - hostname: odin-rpc.nine-chronicles.com
+  - name: remote-headless
+    hostname: odin-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     - name: remote-headless-2
-    routes:
-    - name: remote-headless-graphql
-    - name: remote-headless-grpc
-      port: 31238
-      kind: GRPCRoute
-      sectionName: grpc
+    protocols:
+    - web
+    - grpc
   - name: data-provider
     hostname: odin-dp.9c.gg
   - name: market-service
