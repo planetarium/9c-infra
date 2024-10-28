@@ -31,10 +31,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/preload_headless.sh
