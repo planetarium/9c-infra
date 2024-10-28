@@ -107,7 +107,7 @@ seed:
       memory: 500Mi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
 validator:
   count: 4

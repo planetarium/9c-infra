@@ -79,11 +79,11 @@ snapshot:
 
   resources:
     requests:
-      cpu: '3'
-      memory: 28Gi
+      cpu: '2'
+      memory: 10Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -106,7 +106,7 @@ seed:
       memory: 500Mi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
 fullState:
   enabled: true
@@ -220,6 +220,9 @@ validator:
   hosts:
   - "heimdall-validator-1.nine-chronicles.com"
 
+  storage:
+    data: 300Gi
+
   tolerations:
   - effect: NoSchedule
     key: dedicated
@@ -284,6 +287,9 @@ remoteHeadless:
       cpu: '3'
       memory: 25Gi
 
+  storage:
+    data: 300Gi
+
   tolerations:
   - effect: NoSchedule
     key: dedicated
@@ -298,14 +304,14 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
   resources:
     requests:
-      cpu: '3'
-      memory: 26Gi
+      cpu: '2'
+      memory: 10Gi
 
-  storage: 1000Gi
+  storage: 300Gi
 
 dataProvider:
   enabled: true
@@ -313,12 +319,12 @@ dataProvider:
   render: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
   resources:
     requests:
-      cpu: '3'
-      memory: 26Gi
+      cpu: '2'
+      memory: 10Gi
 
   env:
   - name: PLUGIN_PATH
@@ -327,6 +333,9 @@ dataProvider:
     value: Heimdall
   - name: DOTNET_gcServer
     value: "1"
+
+  storage:
+    data: 300Gi
 
 explorer:
   enabled: false
@@ -429,15 +438,15 @@ testHeadless1:
     rpc: 31238
 
   storage:
-    data: 500Gi
+    data: 300Gi
 
   resources:
     requests:
-      cpu: 3
-      memory: 25Gi
+      cpu: 2
+      memory: 10Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-2c_spot
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
   loggingEnabled: true
 
@@ -487,12 +496,12 @@ testHeadless2:
     rpc: 31238
 
   storage:
-    data: 500Gi
+    data: 300Gi
 
   resources:
     requests:
-      cpu: 3
-      memory: 25Gi
+      cpu: 2
+      memory: 10Gi
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-2c_spot
@@ -570,6 +579,9 @@ jwtHeadless:
     requests:
       cpu: 3
       memory: 25Gi
+
+  storage:
+    data: 300Gi
 
   tolerations:
   - effect: NoSchedule
