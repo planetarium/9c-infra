@@ -85,6 +85,8 @@ snapshot:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
+  storage: 300Gi
+
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
 
