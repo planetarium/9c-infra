@@ -74,10 +74,10 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-token
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: 1300m
-                memory: 20Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: script-volume
               mountPath: /bin/upload_snapshot.sh
