@@ -77,7 +77,7 @@ seed:
     eks.amazonaws.com/nodegroup: odin-spot_2c
 
 validator:
-  count: 4
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -87,9 +87,6 @@ validator:
 
   hosts:
   - "odin-internal-validator-5.nine-chronicles.com"
-  - "odin-internal-validator-6.nine-chronicles.com"
-  - "odin-internal-validator-7.nine-chronicles.com"
-  - "odin-internal-validator-8.nine-chronicles.com"
 
   storage:
     data: 500Gi
