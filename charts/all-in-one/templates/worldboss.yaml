@@ -118,6 +118,11 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-algorithm
                   name: world-boss-env
+            - name: PLANET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: planet-id
+                  name: world-boss-env
           image: {{ $.Values.worldBoss.image.repository }}:{{ $.Values.worldBoss.image.tag }}
           name: world-boss-service
           ports:
