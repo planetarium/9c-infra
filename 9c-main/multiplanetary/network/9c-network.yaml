@@ -13,9 +13,9 @@ global:
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json"
 
   peerStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31234"
-  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31234"
-  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31234"
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.9c-network.svc.cluster.local,31234"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,tcp-seed-2.9c-network.svc.cluster.local,31234"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,tcp-seed-3.9c-network.svc.cluster.local,31234"
 
   iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
@@ -40,7 +40,7 @@ ingress:
 gateway:
   enabled: true
   services:
-  - hostname: 9c-main-rpc.nine-chronicles.com
+  - hostname: odin-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     - name: remote-headless-2
@@ -92,9 +92,9 @@ seed:
   useTurnServer: false
 
   hosts:
-  - "9c-main-tcp-seed-1.planetarium.dev"
-  - "9c-main-tcp-seed-2.planetarium.dev"
-  - "9c-main-tcp-seed-3.planetarium.dev"
+  - "odin-tcp-seed-1.nine-chronicles.com"
+  - "odin-tcp-seed-2.nine-chronicles.com"
+  - "odin-tcp-seed-3.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -152,12 +152,12 @@ validator:
   - --maximum-transaction-per-block=150
 
   consensusSeedStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-main-tcp-seed-1.planetarium.dev,31235"
-  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-main-tcp-seed-2.planetarium.dev,31235"
-  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-main-tcp-seed-3.planetarium.dev,31235"
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.9c-network.svc.cluster.local,31235"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,tcp-seed-2.9c-network.svc.cluster.local,31235"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,tcp-seed-3.9c-network.svc.cluster.local,31235"
 
   hosts:
-  - "9c-main-validator-5.nine-chronicles.com"
+  - "odin-validator-5.nine-chronicles.com"
 
   tolerations:
   - effect: NoSchedule
@@ -180,8 +180,8 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-  - "9c-main-rpc-1.nine-chronicles.com"
-  - "9c-main-rpc-2.nine-chronicles.com"
+  - "odin-rpc-1.nine-chronicles.com"
+  - "odin-rpc-2.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -323,7 +323,7 @@ fullState:
 
   useTurnServer: false
 
-  host: "9c-main-full-state.nine-chronicles.com"
+  host: "odin-full-state.nine-chronicles.com"
 
   extraArgs:
   - --no-reduce-store
@@ -409,7 +409,7 @@ testHeadless1:
   datadog:
     enabled: true
 
-  host: "9c-main-test-1.nine-chronicles.com"
+  host: "odin-test-1.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
@@ -488,7 +488,7 @@ testHeadless2:
   - --tx-quota-per-signer=1
   - --arena-participants-sync=false
 
-  host: "9c-main-test-2.nine-chronicles.com"
+  host: "odin-test-2.nine-chronicles.com"
 
   resources:
     requests:
@@ -512,7 +512,7 @@ jwtHeadless:
   datadog:
     enabled: true
 
-  host: "9c-main-jwt.nine-chronicles.com"
+  host: "odin-jwt.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
@@ -563,7 +563,7 @@ remoteActionEvaluatorHeadless:
 
   useTurnServer: true
 
-  host: "9c-main-remote-aev-test.nine-chronicles.com"
+  host: "odin-remote-aev-test.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
