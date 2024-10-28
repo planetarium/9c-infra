@@ -14,7 +14,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ $.Values.snapshot.storage }}
   storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem
 {{ end }}
@@ -36,7 +36,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ $.Values.snapshot.storage }}
   storageClassName: {{ $.Release.Name }}-gp3
   volumeMode: Filesystem
 {{ end }}
