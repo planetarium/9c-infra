@@ -77,7 +77,7 @@ snapshot:
 
   resources:
     requests:
-      cpu: '2'
+      cpu: '1'
       memory: 10Gi
 
   nodeSelector:
@@ -308,7 +308,7 @@ dataProviderDataMigrator:
 
   resources:
     requests:
-      cpu: '2'
+      cpu: '1'
       memory: 10Gi
 
   storage: 300Gi
@@ -323,7 +323,7 @@ dataProvider:
 
   resources:
     requests:
-      cpu: '2'
+      cpu: '1'
       memory: 10Gi
 
   env:
