@@ -267,7 +267,7 @@ dataProvider:
 
   resources:
     requests:
-      cpu: '2'
+      cpu: '1'
       memory: 10Gi
 
   env:
