@@ -48,7 +48,7 @@ gateway:
     protocols:
     - web
     - grpc
-  - name: data-provider
+  - name: data-provider-write
     hostname: odin-dp.9c.gg
   - name: market-service
     hostname: odin-market.9c.gg

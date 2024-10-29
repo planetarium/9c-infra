@@ -45,11 +45,10 @@ gateway:
     - name: remote-headless-1
     - name: remote-headless-2
     - name: remote-headless-3
-    - name: remote-headless-4
     protocols:
     - web
     - grpc
-  - name: data-provider
+  - name: data-provider-write
     hostname: heimdall-dp.9c.gg
   - name: market-service
     hostname: heimdall-market.9c.gg
