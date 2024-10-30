@@ -17,11 +17,11 @@ spec:
   source:
     repoURL: https://github.com/traefik/traefik-helm-chart/
     path: traefik
-    targetRevision: b8725498c2445da8ecc06f156ca69ddc1a56cce4
+    targetRevision: master
     helm:
       values: |
         image:
-          tag: v3.2.0-rc2
+          tag: v3.2.0
         ingressClass:
           enabled: false
         providers:
@@ -41,12 +41,23 @@ spec:
         service:
           annotations:
             {{- toYaml $.Values.global.service.annotations | nindent 12 }}
+            service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
         ports:
           websecure:
             targetPort: web
+          web: &trustedIPs
+            {{- with $.Values.gateway.trustedIPs }}
+            forwardedHeaders:
+              trustedIPs:
+                {{- toYaml . | nindent 16 }}
+            proxyProtocol:
+              trustedIPs:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
           {{- range $name, $config := $.Values.gateway.ports }}
           {{ $name }}:
             port: {{ $config.port }}
+            <<: *trustedIPs
             expose:
               default: true
             {{- with $config.transport }}
