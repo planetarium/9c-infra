@@ -33,7 +33,7 @@ worldBoss:
 marketService:
   image:
     repository: planetariumhq/market-service
-    tag: "git-1ae3311f83cf43f03d6c2b862675349001c78bae"
+    tag: "git-eae69fe2f88418514fadfa67d62825d298aefe60"
 
 patrolRewardService:
   image:
