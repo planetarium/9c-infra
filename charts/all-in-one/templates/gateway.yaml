@@ -17,7 +17,7 @@ spec:
   source:
     repoURL: https://github.com/traefik/traefik-helm-chart/
     path: traefik
-    targetRevision: master
+    targetRevision: v33.0.0
     helm:
       values: |
         image:
@@ -40,7 +40,9 @@ spec:
           - --providers.kubernetesgateway.statusaddress.service.namespace={{ $.Release.Name }}
         service:
           annotations:
-            {{- toYaml $.Values.global.service.annotations | nindent 12 }}
+            {{- with $.Values.global.service.annotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
             service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
         ports:
           websecure:
