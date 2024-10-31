@@ -26,11 +26,9 @@ spec:
   - port: {{ $.Values.seed.ports.graphql }}
     targetPort: {{ $.Values.seed.ports.graphql }}
     name: graphql
-  {{- if ne $.Values.global.networkType "Main" }}
   - port: 443
     targetPort: {{ $.Values.seed.ports.graphql }}
     name: https
-  {{- end }}
   - port: {{ $.Values.seed.ports.gossip }}
     targetPort: {{ $.Values.seed.ports.gossip }}
     name: gossip
@@ -51,7 +49,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
     {{- if index $.Values.remoteHeadless.hosts $idx }}
@@ -91,7 +91,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider-write
   {{- end }}
 spec:
@@ -119,7 +121,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=kidon,Service={{ $.Release.Name }},Name=data-provider
   {{- end }}
 spec:
@@ -168,7 +172,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=explorer
 spec:
@@ -198,7 +204,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=main-full-state
     {{- with $.Values.fullState.host }}
@@ -237,7 +245,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-1
     {{- with $.Values.testHeadless1.host }}
@@ -276,7 +286,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-headless-2
     {{- with $.Values.testHeadless2.host }}
@@ -315,7 +327,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
     {{- with $.Values.jwtHeadless.host }}
@@ -352,7 +366,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=world-boss-service
   {{- end }}
   name: world-boss-service
@@ -439,7 +455,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=test-world-boss-service
   name: test-world-boss-service
   namespace: {{ $.Release.Name }}
@@ -475,7 +493,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=market-service
   {{- end }}
 spec:
@@ -530,7 +550,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
     {{- if index $.Values.validator.hosts $idx }}
@@ -570,7 +592,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-action-evaluator-headless
 spec:
@@ -626,7 +650,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   {{- if and (not $.Values.ingress.enabled) (not $.Values.gateway.enabled) }}
   annotations:
-    {{- toYaml $.Values.global.service.annotations | nindent 4 }}
+    {{- with $.Values.global.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=patrol-reward-service
   {{- end }}
 spec:
