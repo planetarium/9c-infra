@@ -76,16 +76,20 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
+    {{- with $.Values.global.service.annotations }}
+      {{ $_ := unset . "service.beta.kubernetes.io/aws-load-balancer-scheme" }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     {{- if .Values.rudolfService.service.public }}
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     {{- if .Values.rudolfService.service.securityGroupIds }}
     service.beta.kubernetes.io/aws-load-balancer-security-groups: {{ join "," .Values.rudolfService.service.securityGroupIds }}
     {{- end }}
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-type: external
+    {{- with .Values.rudolfService.service.hostname }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
+    external-dns.alpha.kubernetes.io/ttl: '60'
+    {{- end }}
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer

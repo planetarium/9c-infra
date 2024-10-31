@@ -663,6 +663,7 @@ rudolfService:
 
   service:
     enabled: true
+    hostname: heimdall-rudolf.9c.gg
     securityGroupIds:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"

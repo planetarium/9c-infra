@@ -92,6 +92,10 @@
                   "public": {
                     "type": "boolean",
                     "description": "Expose the service to the public."
+                  },
+                  "hostname": {
+                    "type": "string",
+                    "description": "Hostname assigned to the service to sync with externalDNS."
                   }
                 },
                 "additionalProperties": false,

@@ -190,6 +190,7 @@ rudolfService:
 
   service:
     enabled: true
+    hostname: thor-internal-rudolf.9c.gg
     securityGroupIds:
     - "sg-0c865006315f5b9f0"
     - "sg-0343e5c4514681670"
