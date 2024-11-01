@@ -9,7 +9,7 @@ global:
   validatorPath: "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "200"
+    tag: "git-1d07d68ad3b961fb193d374db6f005b36b8adcdc"
 
   appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -43,10 +43,10 @@ ingress:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-5045cdd4b11d8ce880bd44f8feb5c2014da330a1"
+  image: "planetariumhq/ninechronicles-snapshot:git-96c1475107e14eeb81ed2a8fbba492952fbac99c"
   partition:
     enabled: true
-  path: 9c-dev-v2
+  path: main/partition
   uploadPath: 9c-dev-v2/dpos
   nodeSelector:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
