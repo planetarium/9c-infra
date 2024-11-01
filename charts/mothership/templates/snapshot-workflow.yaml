@@ -22,7 +22,7 @@ spec:
         storageClassName: {{ .Release.Name }}-gp3
         resources:
           requests:
-            storage: 100Mi
+            storage: {{ $.Values.genesis.volume.storage }}
     - metadata:
         name: snapshot-data-volume
       spec:
@@ -30,7 +30,7 @@ spec:
         storageClassName: {{ .Release.Name }}-gp3
         resources:
           requests:
-            storage: 100Gi   
+            storage: {{ $.Values.node.opGeth.volume.storage }}
 
     templates:
     - name: mothership-snapshot

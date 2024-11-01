@@ -42,8 +42,6 @@ node:
         tcp: 9003
         udp: 9003
       metrics: 7300
-    volume: &op-node-volume
-      storage: 100Mi
 
 opBatcher:
   image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.9.4

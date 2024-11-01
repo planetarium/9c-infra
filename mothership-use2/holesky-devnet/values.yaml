@@ -41,6 +41,8 @@ node:
     resources:
       requests:
         memory: 2Gi
+    volume:
+      storage: 200Gi
   nodeSelector:
     eks.amazonaws.com/nodegroup: mothership-use2-r7g_medium_2c_node
 
