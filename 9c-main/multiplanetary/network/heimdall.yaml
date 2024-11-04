@@ -170,7 +170,7 @@ fullState:
     value: remote-headless-test
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_2xl_2c_test
+    eks.amazonaws.com/nodegroup: heimdall-2c_spot
 
 validator:
   count: 1
