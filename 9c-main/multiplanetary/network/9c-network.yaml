@@ -80,7 +80,7 @@ snapshot:
       memory: 28Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
 
   storage: 1000Gi
 
@@ -241,7 +241,7 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c_dp
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
 
   resources:
     requests:

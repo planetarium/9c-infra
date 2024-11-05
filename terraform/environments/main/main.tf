@@ -116,22 +116,6 @@ module "common" {
       }]
     }
 
-    "9c-main-r7g_2xl_2c_dp" = {
-      instance_types    = ["r7g.2xlarge"]
-      availability_zone = "us-east-2c"
-      capacity_type     = "ON_DEMAND"
-      desired_size      = 0
-      min_size          = 0
-      max_size          = 10
-      ami_type          = "AL2_ARM_64"
-      disk_size         = 50
-      taints = [{
-        key    = "dedicated"
-        value  = "remote-headless-test"
-        effect = "NO_SCHEDULE"
-      }]
-    }
-
     "9c-main-r7g_2xl_2c" = {
       instance_types    = ["r7g.2xlarge"]
       availability_zone = "us-east-2c"
@@ -484,6 +468,16 @@ module "common" {
   
     "9c-main-spot_2c" = {
       instance_types    = ["r7g.large", "r6g.large", "m8g.xlarge", "m7g.xlarge", "m6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 0
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+    }
+
+    "9c-main-spot-xl_2c" = {
+      instance_types    = ["r7g.xlarge", "r6g.xlarge", "m7g.2xlarge", "m6g.2xlarge"]
       availability_zone = "us-east-2c"
       capacity_type     = "SPOT"
       desired_size      = 0
