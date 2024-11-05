@@ -21,8 +21,8 @@ module "common" {
   create_vpc = true
 
   addon_versions = {
-    "coredns"            = "v1.10.1-eksbuild.15"
-    "kube-proxy"         = "v1.28.12-eksbuild.9"
+    "coredns"            = "v1.11.3-eksbuild.2"
+    "kube-proxy"         = "v1.31.1-eksbuild.2"
     "vpc_cni"            = "v1.18.5-eksbuild.1"
     "aws_ebs_csi_driver" = "v1.36.0-eksbuild.1"
   }
