@@ -24,10 +24,20 @@ spec:
           command:
             - dotnet
           env:
-            - name: Rpc__Host
+            - name: Rpc__Host__0
               valueFrom:
                 secretKeyRef:
-                  key: rpc-host
+                  key: rpc-host-0
+                  name: arena
+            - name: Rpc__Host__1
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-host-1
+                  name: arena
+            - name: Rpc__Host__2
+              valueFrom:
+                secretKeyRef:
+                  key: rpc-host-2
                   name: arena
             - name: Redis__ConnectionString
               valueFrom:
