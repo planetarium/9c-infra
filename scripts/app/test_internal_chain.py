@@ -1,38 +1,25 @@
 import aiohttp
 import asyncio
-import sys
-import os
 import requests
 
 from urllib.parse import urljoin
 from app.client import GithubClient
 from app.config import config
 
-Network = str
-Offset = int
-Limit = int
-Delay = int
-
 class InternalChainTester:
     def __init__(self) -> None:
         self.github_client = GithubClient(
             config.github_token, org="planetarium", repo="TEMP"
         )
-    
-    def test(
-        self,
-        network: Network,
-        offset: Offset,
-        limit: Limit,
-        delay: Delay
-    ):
+
+    def test(self, network: str, offset: int, limit: int, delay: int):
         # mainnet headless URL and initial setup
-        mainnet_headless = "odin-full-state.nine-chronicles.com"
-        internal_target_validator = "odin-internal-validator-5.nine-chronicles.com"
+        stripped_network = network.removesuffix("-internal")
+        validator_target = 5 if stripped_network == "odin" else 1
+
+        mainnet_headless = f"{stripped_network}-full-state.nine-chronicles.com"
+        internal_target_validator = f"{stripped_network}-internal-validator-{validator_target}.nine-chronicles.com"
         sleep_time = delay
-        if network == "heimdall-internal":
-            mainnet_headless = "heimdall-full-state.nine-chronicles.com"
-            internal_target_validator = "heimdall-internal-validator-1.nine-chronicles.com"
         mainnet_headless_url = urljoin(f"http://{mainnet_headless}", "graphql")
         target_validator_url = urljoin(f"http://{internal_target_validator}", "graphql")
 
@@ -65,7 +52,7 @@ class InternalChainTester:
             response = requests.post(mainnet_headless_url, json={'query': mainnet_headless_query}, headers={'content-type': 'application/json'})
             data = response.json()
             blocks = data['data']['chainQuery']['blockQuery']['blocks']
-            
+
             # Process the blocks here (e.g., print them out or handle them as needed)
             print(f"Fetched {len(blocks)} blocks starting from offset {offset}")
 
@@ -91,7 +78,7 @@ class InternalChainTester:
             offset += current_limit
 
         if hasattr(config, 'slack_token') and config.slack_token:
-          url = f'https://planetariumhq.slack.com/services/hooks/slackbot?token={config.slack_token}&channel=%23{config.slack_channel}'
-          data = f"[9C-INFRA] Finished testing `{network}` network from `#{original_offset}` to `#{tip_index}`."
-          headers = {'Content-Type': 'text/plain'}
-          response = requests.post(url, data=data, headers=headers)
+            url = f"https://planetariumhq.slack.com/services/hooks/slackbot?token={config.slack_token}&channel=%23{config.slack_channel}"
+            data = f"[9C-INFRA] Finished testing `{network}` network from `#{original_offset}` to `#{tip_index}`."
+            headers = {"Content-Type": "text/plain"}
+            response = requests.post(url, data=data, headers=headers)

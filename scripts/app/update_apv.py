@@ -4,7 +4,7 @@ import structlog
 
 from app.config import config
 from app.tools.planet import Apv, Planet
-from app.constants import MAIN_HEIMDALL_SIGNER, MAIN_ODIN_SIGNER
+from app.constants import MAIN_SIGNERS
 
 logger = structlog.get_logger(__name__)
 from tempfile import TemporaryFile
@@ -124,10 +124,8 @@ def update_apv(contents: str, apv: Apv):
     return new_doc
 
 def check_correct_signer(dir_name:str, file_name: str):
-    if "9c-main" in dir_name and file_name == "heimdall":
-        assert config.key_address == MAIN_HEIMDALL_SIGNER
-    if "9c-main" in dir_name and file_name == "odin":
-        assert config.key_address == MAIN_ODIN_SIGNER
+    if "9c-main" in dir_name:
+        assert config.key_address == MAIN_SIGNERS[file_name]
 
 def generate_apv(planet: Planet, number: int) -> Apv:
     timestamp = datetime.utcnow().strftime("%Y-%m-%d")

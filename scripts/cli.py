@@ -48,7 +48,7 @@ def update_bridge_service(
 def test_internal_chain(
     network: str = typer.Argument(
         ...,
-        help="odin-internal or heimdall-internal",
+        help="odin-internal, heimdall-internal, ...",
     ),
     offset: int = typer.Argument(
         ...,

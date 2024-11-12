@@ -8,24 +8,10 @@ from ruamel.yaml import YAML
 
 from app.client import GithubClient
 from app.config import config
-from app.dockerhub.image import check_image_exists
 
 logger = structlog.get_logger(__name__)
 
 GQL_QUERY = {"query": "{ nodeStatus { tip { index } } }"}
-
-Network = Literal["9c-internal"]
-Planet = Literal["heimdall"]
-
-SNAPSHOT_METADATA_URL_MAP = {
-    "9c-internal": {
-        "odin": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/latest.json",
-        "heimdall": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/internal/heimdall/latest.json",
-        "odin-preview": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/preview/latest.json",
-        "heimdall-preview": "https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/preview/heimdall/latest.json",
-    },
-}
-
 
 class BridgeServiceUpdater:
     def __init__(self) -> None:
@@ -33,11 +19,7 @@ class BridgeServiceUpdater:
             config.github_token, org="planetarium", repo="TEMP"
         )
 
-    def update(
-        self,
-        dir_name: Network,
-        file_name: Planet
-    ):
+    def update(self, dir_name, file_name):
         new_branch = f"update-bridge-service-{int(time())}"
         file_path = f"{dir_name}/multiplanetary/network/{file_name}.yaml"
 
@@ -151,11 +133,16 @@ def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_i
     return new_doc
 
 
-def get_metadata_url_pair(network: Network, planet: Planet) -> Tuple[str, str]:
-    match (network, planet):
-        case ("9c-internal", "heimdall"):
-            return (SNAPSHOT_METADATA_URL_MAP["9c-internal"]["odin"], SNAPSHOT_METADATA_URL_MAP["9c-internal"]["heimdall"])
-        case ("9c-internal", "heimdall-preview"):
-            return (SNAPSHOT_METADATA_URL_MAP["9c-internal"]["odin-preview"], SNAPSHOT_METADATA_URL_MAP["9c-internal"]["heimdall-preview"])
+def get_metadata_url(network: str, planet: str) -> str:
+    if network != "9c-internal":
+        raise TypeError(f"Not supported network and planet: {network}, {planet}")
 
-    raise TypeError(f"Not supported network and planet: {network}, {planet}")
+    stripped_planet = planet.removesuffix("-preview")
+    internal_or_preview = "preview" if planet.endswith("-preview") else "internal"
+    chain_path = "" if stripped_planet is "odin" else f"/{stripped_planet}"
+
+    return f"https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/{internal_or_preview}{chain_path}/latest.json"
+
+
+def get_metadata_url_pair(network, planet) -> Tuple[str, str]:
+    return (get_metadata_url(network, "odin"), get_metadata_url(network, planet))

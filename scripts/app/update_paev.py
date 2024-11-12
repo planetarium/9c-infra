@@ -1,4 +1,4 @@
-import boto3
+import boto3  # type: ignore
 import requests
 import json
 
@@ -24,16 +24,10 @@ class PluggableActionEvaluatorUpdater:
         x64_suffix = "/linux-x64.zip"
 
         # Define URLs based on network type
-        if network_type == "odin":
-            paev_urls = [
-                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json",
-                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
-            ]
-        else:
-            paev_urls = [
-                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings.json",
-                "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings-nodeinfra.json"
-            ]
+        paev_urls = [
+            f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings.json",
+            f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings-nodeinfra.json",
+        ]
 
         # Iterate over each URL in the list
         for url in paev_urls:
@@ -42,7 +36,7 @@ class PluggableActionEvaluatorUpdater:
 
             # Construct the plugin URL
             plugin_url = f"{base_url}{previous_version_lib9c_commit}{suffix}"
-            
+
             # Call update function
             self.update(url, previous_version_block_index, plugin_url)
 
@@ -89,7 +83,7 @@ class PluggableActionEvaluatorUpdater:
                     pairs.insert(insert_index, value_to_append)
                 else:
                     raise Exception("The specified range was not found in the pairs.")
-                
+
             else:
                 raise Exception("The specified structure does not exist in the provided JSON data.")
 

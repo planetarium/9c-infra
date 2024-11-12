@@ -10,6 +10,7 @@ on:
         options:
         - odin
         - heimdall
+        - thor
         description: 'Choose the mainnet network to update the appsettings.json'
       previous_version_block_index:
         required: true

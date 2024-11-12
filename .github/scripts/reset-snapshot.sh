@@ -4,10 +4,12 @@ set -ex
 BASEDIR=$(dirname "$0")
 echo "$BASEDIR"
 
+BUCKET="s3://9c-snapshots-v2"
+
 # AWS configuration must be already set on your environment
 reset_snapshot() {
   CHAIN=$3
-  PREFIX="s3://9c-snapshots-v2/"
+  PREFIX="$BUCKET/"
   PREVIOUS_MAINNET_EPOCH_PATH="${1#$PREFIX}"
   BASE_URL_PATH="${2#$PREFIX}"
   NEW_SNAPSHOT_TIP=0
@@ -90,14 +92,13 @@ reset_snapshot() {
 
   fi
 
-  BUCKET="s3://9c-snapshots-v2"
   BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
   CF_PATH=$(echo $1/ | sed -e "s/^$BUCKET_PREFIX//" | sed "s/.*/&*/")
 
   # reset cf path
   CF_DISTRIBUTION_ID="EAU4XRUZSBUD5"
   aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$CF_PATH"
-  if [ "$CHAIN" = "odin" ] || [ "$CHAIN" = "heimdall" ]; then
+  if [[ $CHAIN != *-preview ]]; then
     curl --data "[9C-INFRA] Internal $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-internal"
   else
     curl --data "[9C-INFRA] Preview $CHAIN snapshot file reset complete. New tip: \`#$NEW_SNAPSHOT_TIP\`." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-previewnet"
@@ -107,20 +108,16 @@ reset_snapshot() {
 # Type "y" to reset the cluster with a new snapshot and "n" to just deploy the cluster.
 echo "Do you want to reset the cluster with a new snapshot(y/n)?"
 read response
-CHAIN_NAME=$1
+CHAIN=$1
 
 if [ "$response" = "y" ]; then
     echo "Reset cluster with a new snapshot"
-    
-    if [ "$CHAIN_NAME" = "odin" ]; then
-        reset_snapshot "s3://9c-snapshots-v2/internal" "s3://9c-snapshots-v2/main/partition/internal" "$CHAIN_NAME" || true
-    elif [ "$CHAIN_NAME" = "heimdall" ]; then
-        reset_snapshot "s3://9c-snapshots-v2/internal/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" "$CHAIN_NAME" || true
-    elif [ "$CHAIN_NAME" = "odin-preview" ]; then
-        reset_snapshot "s3://9c-snapshots-v2/preview" "s3://9c-snapshots-v2/main/partition/internal" "$CHAIN_NAME" || true
-    else
-        reset_snapshot "s3://9c-snapshots-v2/preview/heimdall" "s3://9c-snapshots-v2/main/heimdall/partition/internal" "$CHAIN_NAME" || true
-    fi
+
+    INTERNAL_OR_PREVIEW=$([[ $CHAIN != *-preview ]] && echo "internal" || echo "preview")
+    CHAIN_NAME=${CHAIN%-preview}
+    CHAIN_PATH=$([[ $CHAIN_NAME = odin ]] && echo "" || echo "/$CHAIN_NAME")
+
+    reset_snapshot "$BUCKET/$INTERNAL_OR_PREVIEW$CHAIN_PATH" "$BUCKET/main$CHAIN_PATH/partition/internal" "$CHAIN_NAME" || true
 
 else
     echo "Reset cluster without resetting snapshot."

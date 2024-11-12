@@ -10,7 +10,7 @@ done
 
 # Check multiplanetary networks manually
 CLUSTERS=("9c-main" "9c-internal")
-NETWORKS=("9c-network" "heimdall" "idun")
+NETWORKS=("9c-network" "heimdall" "thor" "idun")
 for cluster in "${CLUSTERS[@]}"; do
     for network in "${NETWORKS[@]}"; do
         helm template --values "$cluster/multiplanetary/network/$network.yaml" \
