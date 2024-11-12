@@ -145,7 +145,7 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
-  schedule: 0 */12 * * *
+  schedule: 0 0 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   suspend: {{ $.Values.snapshot.partition.suspend }}
