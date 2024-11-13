@@ -2,16 +2,18 @@ name: Reset bridge service
 
 on:
   workflow_dispatch:
-    inputs:
+    inputs: &workflow-inputs
       network:
         required: true
         description: 'network type'
-        default: 'internal'
+        default: 'heimdall-internal'
         type: choice
         options:
         - heimdall-internal
         - thor-internal
         - heimdall-preview
+  workflow_call:
+    inputs: *workflow-inputs
 
 jobs:
   reset-bridge-service:
@@ -33,7 +35,8 @@ jobs:
 
     - name: Set namespace based on input
       run: |
-        echo ${${{ github.event.inputs.network }}%"-internal"} >> $GITHUB_ENV
+        NETWORK="${{ github.event.inputs.network }}"
+        echo "NAMESPACE=${NETWORK%"-internal"}" >> $GITHUB_ENV
 
     - uses: actions-hub/kubectl@master
       env:
