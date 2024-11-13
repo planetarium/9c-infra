@@ -6,7 +6,7 @@ global:
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings.json"
 
-  appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
+  appProtocolVersion: "100337/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIE4Ew3P9Sxra3fg5504JNMZ7irmYAZ2AlnRa2+Sh3xx7AiAl7p3e2ICYD6h6sKy7m+vAilav9zZxL0Ma2+ydcKCAqQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTExLTEzZQ=="
 
   peerStrings:
   - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.thor.svc.cluster.local,31234"
@@ -240,7 +240,7 @@ validator:
     requests:
       cpu: 1500m
       memory: 12Gi
-  
+
   storage:
     data: 50Gi
 
@@ -332,5 +332,5 @@ arenaService:
       eks.amazonaws.com/nodegroup: thor-spot_2c
 
   env:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
