@@ -19,6 +19,7 @@ on:
         - general
         - 9c-network
         - heimdall
+        - thor
         - idun
       headless:
         description: 'Dockerhub tag for headless (e.g. 30, git-5db812731f7fef1156b00a90ff0267e95dd31820)'

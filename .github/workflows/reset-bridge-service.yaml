@@ -9,8 +9,9 @@ on:
         default: 'internal'
         type: choice
         options:
-        - internal
-        - preview
+        - heimdall-internal
+        - thor-internal
+        - heimdall-preview
 
 jobs:
   reset-bridge-service:
@@ -32,11 +33,7 @@ jobs:
 
     - name: Set namespace based on input
       run: |
-        if [ "${{ github.event.inputs.network }}" = "internal" ]; then
-          echo "NAMESPACE=heimdall" >> $GITHUB_ENV
-        else
-          echo "NAMESPACE=heimdall-preview" >> $GITHUB_ENV
-        fi
+        echo ${${{ github.event.inputs.network }}%"-internal"} >> $GITHUB_ENV
 
     - uses: actions-hub/kubectl@master
       env:

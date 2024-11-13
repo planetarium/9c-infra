@@ -8,12 +8,13 @@ on:
         default: 'odin'
         type: choice
         options:
+        - internal-all
         - odin
         - heimdall
+        - thor
+        - preview-all
         - odin-preview
         - heimdall-preview
-        - internal-all
-        - preview-all
 
 concurrency:
   group: release
@@ -45,6 +46,22 @@ jobs:
       - name: reset internal snapshot
         run: |
           echo "y" | bash .github/scripts/reset-snapshot.sh heimdall
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+
+  release-thor:
+    if: ${{ github.event.inputs.chain == 'thor' || github.event.inputs.chain == 'internal-all' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: internal
+    steps:
+      - uses: actions/checkout@v3
+      - name: reset internal snapshot
+        run: |
+          echo "y" | bash .github/scripts/reset-snapshot.sh thor
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -83,7 +100,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
-  reset-bridge-service:
+  reset-bridge-service-heimdall:
     if: ${{ github.event.inputs.chain == 'internal-all' || github.event.inputs.chain == 'odin' || github.event.inputs.chain == 'heimdall' }}
     runs-on: ubuntu-latest
     needs: [release-odin, release-heimdall]
@@ -124,6 +141,51 @@ jobs:
       - name: Update 'bridgeService.rdb.defaultStartBlockIndex'
         run: |
           python cli.py update-bridge-service 9c-internal heimdall
+        working-directory: ./scripts
+        env:
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+
+  reset-bridge-service-thor:
+    if: ${{ github.event.inputs.chain == 'internal-all' || github.event.inputs.chain == 'odin' || github.event.inputs.chain == 'thor' }}
+    runs-on: ubuntu-latest
+    needs: [release-odin, release-thor]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'v1.29.0'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+        with:
+          args: scale --replicas=0 statefulset/bridge-service -n thor
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+        with:
+          args: scale --replicas=0 statefulset/bridge-service-db -n thor
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+        with:
+          args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=thor
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.10.13
+      - run: |
+          python -m pip install -r requirements.txt
+          flit install
+        name: install dependencies
+        working-directory: ./scripts
+      - name: Update 'bridgeService.rdb.defaultStartBlockIndex'
+        run: |
+          python cli.py update-bridge-service 9c-internal thor
         working-directory: ./scripts
         env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}

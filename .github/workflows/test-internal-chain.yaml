@@ -11,6 +11,7 @@ on:
         options:
         - odin-internal
         - heimdall-internal
+        - thor-internal
       offset:
         required: true
         description: 'Insert the snapshot tip index of the internal network (e.g. 1115268)'
