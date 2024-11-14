@@ -167,7 +167,6 @@ remoteHeadless:
   loggingEnabled: true
 
   extraArgs:
-  - --planet=HeimdallInternal
   - --remote-key-value-service
 
 rudolfService:
@@ -247,7 +246,6 @@ validator:
 
   extraArgs:
   - --tx-life-time=2000000000
-  - --planet=HeimdallInternal
 
 worldBoss:
   enabled: true
