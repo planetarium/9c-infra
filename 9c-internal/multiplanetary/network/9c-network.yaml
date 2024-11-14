@@ -103,7 +103,6 @@ validator:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
   - --tx-life-time=2000000000
 
 remoteHeadless:
@@ -135,7 +134,6 @@ remoteHeadless:
   extraArgs:
   - --tx-quota-per-signer=1
   - --remote-key-value-service
-  - --arena-participants-sync=false
 
 dataProvider:
   enabled: true
@@ -183,7 +181,6 @@ explorer:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
 marketService:
   enabled: true
