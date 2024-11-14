@@ -121,7 +121,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -211,7 +210,6 @@ validator:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
   - --consensus-target-block-interval=8000
-  - --arena-participants-sync=false
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.heimdall.svc.cluster.local,31235"
@@ -276,7 +274,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c_test
@@ -475,7 +472,6 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   tolerations:
   - effect: NoSchedule
@@ -531,7 +527,6 @@ testHeadless2:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   tolerations:
   - effect: NoSchedule
@@ -572,7 +567,6 @@ jwtHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   resources:
     requests:

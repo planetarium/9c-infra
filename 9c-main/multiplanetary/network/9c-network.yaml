@@ -148,7 +148,6 @@ validator:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
   - --consensus-target-block-interval=8000
-  - --arena-participants-sync=false
   - --maximum-transaction-per-block=150
 
   consensusSeedStrings:
@@ -217,7 +216,6 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
@@ -328,7 +326,6 @@ fullState:
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
@@ -439,7 +436,6 @@ testHeadless1:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   resources:
     requests:
@@ -486,7 +482,6 @@ testHeadless2:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   host: "odin-test-2.nine-chronicles.com"
 
@@ -540,7 +535,6 @@ jwtHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --arena-participants-sync=false
 
   resources:
     requests:

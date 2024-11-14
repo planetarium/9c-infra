@@ -169,7 +169,6 @@ remoteHeadless:
   extraArgs:
   - --planet=HeimdallInternal
   - --remote-key-value-service
-  - --arena-participants-sync=false
 
 rudolfService:
   enabled: true
@@ -240,7 +239,7 @@ validator:
     requests:
       cpu: 1500m
       memory: 12Gi
-  
+
   storage:
     data: 50Gi
 
@@ -249,7 +248,6 @@ validator:
   extraArgs:
   - --tx-life-time=2000000000
   - --planet=HeimdallInternal
-  - --arena-participants-sync=false
 
 worldBoss:
   enabled: true
