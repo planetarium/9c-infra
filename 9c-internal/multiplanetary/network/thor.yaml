@@ -14,7 +14,7 @@ global:
   trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
 
   networkType: Internal
-  planet: HeimdallInternal
+  planet: ThorInternal
   consensusType: pbft
 
   resetSnapshot: false
