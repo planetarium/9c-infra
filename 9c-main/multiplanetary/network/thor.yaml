@@ -43,8 +43,6 @@ gateway:
     hostname: thor-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
-    - name: remote-headless-2
-    - name: remote-headless-3
     protocols:
     - web
     - grpc
@@ -334,14 +332,6 @@ dataProvider:
 explorer:
   enabled: false
 
-  loggingEnabled: true
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-r7g_xl_2c
-
 marketService:
   enabled: true
   rwMode: true
@@ -383,7 +373,7 @@ bridgeService:
   multiplanetary:
     registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
     upstream: "0x000000000000"
-    downstream: "0x000000000001"
+    downstream: "0x000000000003"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
@@ -418,119 +408,10 @@ bridgeServiceApi:
   enabled: true
 
 testHeadless1:
-  enabled: true
-  replicas: 1
-
-  datadog:
-    enabled: true
-
-  host: "thor-test-1.nine-chronicles.com"
-
-  ports:
-    headless: 31234
-    graphql: 80
-    rpc: 31238
-
-  storage:
-    data: 300Gi
-
-  resources:
-    requests:
-      cpu: 1
-      memory: 10Gi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
-
-  loggingEnabled: true
-
-  env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-  - name: IpRateLimiting__IpBanMinute
-    value: "10"
-  - name: IpRateLimiting__IpBanThresholdCount
-    value: "5"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-  - name: DOTNET_gcServer
-    value: "1"
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
+  enabled: false
 
 testHeadless2:
   enabled: false
-  replicas: 1
-
-  host: "thor-test-2.nine-chronicles.com"
-
-  ports:
-    headless: 31234
-    graphql: 80
-    rpc: 31238
-
-  storage:
-    data: 300Gi
-
-  resources:
-    requests:
-      cpu: 2
-      memory: 10Gi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-2c_spot
-
-  loggingEnabled: true
-
-  env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-  - name: IpRateLimiting__IpBanMinute
-    value: "10"
-  - name: IpRateLimiting__IpBanThresholdCount
-    value: "5"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
 
 jwtHeadless:
   enabled: true
@@ -586,18 +467,6 @@ jwtHeadless:
 remoteActionEvaluatorHeadless:
   enabled: false
 
-  loggingEnabled: true
-
-  useTurnServer: true
-
-  host: "thor-main-remote-aev-test.nine-chronicles.com"
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-r7g_xl_2c
-
 blockIntervalNotifier:
   enabled: true
   group: thor-validator
@@ -616,25 +485,8 @@ patrolRewardService:
 acc:
   enabled: false
 
-  local: true
-
-  redis:
-    enabled: false
-    port: 6379
-
-    nodeSelector:
-      eks.amazonaws.com/nodegroup: thor-m7g_l_2c
-
-    resources:
-      requests:
-        memory: 200Mi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-m7g_l_2c
-
 volumeRotator:
   enabled: false
-  nodeSelectorValue: "thor-r7g_xl_2c"
 
 rudolfService:
   enabled: true
@@ -664,20 +516,6 @@ rudolfService:
 
 rudolfCurrencyNotifier:
   enabled: false
-
-  config:
-    schedule: "0 0 * * *"
-    graphqlEndpoint: "https://thor-full-state.nine-chronicles.com/graphql"
-    targetAddress: "0xec48c68198dA91e89d6CA4eff93C23441e167358"
-    serverName: "thor"
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-m7g_l_2c
-
-stateMigrationService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-m7g_l_2c
 
 arenaService:
   enabled: true
