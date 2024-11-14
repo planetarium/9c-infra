@@ -8,7 +8,7 @@ global:
   appProtocolVersion: "200240/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQCOAt0QJngeHcaIypabSru0Gw2c4dzVdfI6CpCfv4RYRAIgCKx6jtZJuQejFml6c7EnJJIH07iIZdmQniD5ff9paLE=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTEwLTI5ZQ=="
 
   validatorPath: "validator-5.thor.svc.cluster.local"
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000003/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/thor/appsettings.json"
 
@@ -23,7 +23,7 @@ global:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.nine-chronicles.com:3478"
 
   networkType: Main
-  planet: Heimdall
+  planet: Thor
   consensusType: pbft
 
   resetSnapshot: false
