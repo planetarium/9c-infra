@@ -41,7 +41,7 @@ worldBoss:
   image:
     repository: planetariumhq/world-boss-service
     pullPolicy: Always
-    tag: "git-8524a2b8d83a1b87821252d3f7365091e658c55e"
+    tag: "git-5582d71c3463de763d2776b1de486f1ee7a2e5dc"
 
 marketService:
   image:
@@ -53,7 +53,7 @@ patrolRewardService:
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
-    tag: "git-efdc62837e653125bf0ace3be32a514c20c91782"
+    tag: "git-dde67dc01204e76f0df6d132bb476ef9c12df938"
 
 rudolfService:
   image:
