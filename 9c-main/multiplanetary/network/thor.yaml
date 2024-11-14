@@ -80,7 +80,7 @@ snapshot:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
-  storage: 300Gi
+  storage: 100Gi
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -169,6 +169,8 @@ fullState:
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-2c_spot
 
+  storage: 100Gi
+
 validator:
   count: 1
 
@@ -216,7 +218,7 @@ validator:
   - "thor-validator-1.nine-chronicles.com"
 
   storage:
-    data: 300Gi
+    data: 100Gi
 
   tolerations:
   - effect: NoSchedule
@@ -280,7 +282,7 @@ remoteHeadless:
       memory: 25Gi
 
   storage:
-    data: 300Gi
+    data: 100Gi
 
   tolerations:
   - effect: NoSchedule
@@ -327,7 +329,7 @@ dataProvider:
     value: "1"
 
   storage:
-    data: 300Gi
+    data: 100Gi
 
 explorer:
   enabled: false
@@ -453,7 +455,7 @@ jwtHeadless:
       memory: 25Gi
 
   storage:
-    data: 300Gi
+    data: 100Gi
 
   tolerations:
   - effect: NoSchedule
@@ -532,4 +534,4 @@ arenaService:
     read:
       eks.amazonaws.com/nodegroup: thor-m7g_l_2c
     write:
-      eks.amazonaws.com/nodegroup: thor-m7g_xl_2c
+      eks.amazonaws.com/nodegroup: thor-m7g_l_2c
