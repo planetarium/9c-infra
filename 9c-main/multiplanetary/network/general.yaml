@@ -2,7 +2,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "210"
+    tag: "211"
 
   service:
     annotations:
@@ -23,7 +23,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "210"
+    tag: "211"
 
 worldBoss:
   image:
