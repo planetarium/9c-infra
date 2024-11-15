@@ -61,3 +61,6 @@ datadog:
   nodeGroup: ""
   tolerations: []
   affinity: {}
+
+corednsRewrite:
+  enabled: false

@@ -3,48 +3,32 @@ data:
   Corefile: |
     .:53 {
         errors
-        health
+        health {
+            lameduck 5s
+          }
         ready
         kubernetes cluster.local in-addr.arpa ip6.arpa {
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
         }
-        {{- if eq $.Values.clusterName "9c-main-v2" }}
-        rewrite name regex 9c-main-tcp-seed-(\d+)\.planetarium\.dev\.$ tcp-seed-{1}.9c-network.svc.cluster.local.
-        rewrite name regex 9c-main-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.9c-network.svc.cluster.local.
-        rewrite name regex 9c-main-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.9c-network.svc.cluster.local.
-        rewrite name regex 9c-main-validator-(\d+)\.nine-chronicles\.com\.$ validator-{1}.9c-network.svc.cluster.local.
-        rewrite name 9c-main-full-state.nine-chronicles.com main-full-state.9c-network.svc.cluster.local.
-        rewrite name 9c-main-jwt.nine-chronicles.com jwt-headless.9c-network.svc.cluster.local.
 
-        rewrite name regex heimdall-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall.svc.cluster.local.
-        rewrite name regex heimdall-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall.svc.cluster.local.
-        rewrite name regex heimdall-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall.svc.cluster.local.
-        rewrite name heimdall-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local.
-        rewrite name heimdall-full-state.nine-chronicles.com main-full-state.heimdall.svc.cluster.local.
-        rewrite name heimdall-jwt.nine-chronicles.com jwt-headless.heimdall.svc.cluster.local.
+        {{- if $.Values.corednsRewrite.enabled }}
+        {{- range $planet, $planetConfig := $.Values.corednsRewrite.planets }}
+        {{- range $type, $config := $planetConfig.services }}
+        {{- $suffix := $config.suffix | default $planetConfig.suffix | default $.Values.corednsRewrite.suffix }}
+        {{- $service := $config.service | default $type }}
+        {{- $namespace := $config.namespace | default $planetConfig.namespace | default $planet }}
+        {{- if $config.count }}
+        {{- range $idx := until (int $config.count) }}
+        {{- $didx := add $idx ($config.domainOffset | default 1) }}
+        {{- $sidx := add $idx ($config.serviceOffset | default 1) }}
+        rewrite name {{ printf "%s-%s-%d.%s %s-%d.%s.svc.cluster.local." $planet $type $didx $suffix $service $sidx $namespace }}
         {{- end }}
-
-        {{- if eq $.Values.clusterName "9c-internal-v2" }}
-        rewrite name regex odin-internal-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.9c-network.svc.cluster.local.
-        rewrite name regex odin-internal-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.9c-network.svc.cluster.local.
-        rewrite name regex odin-internal-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.9c-network.svc.cluster.local.
-        rewrite name regex odin-internal-validator-(\d+)\.nine-chronicles\.com\.$ validator-{1}.9c-network.svc.cluster.local.
-
-        rewrite name regex heimdall-internal-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall.svc.cluster.local.
-        rewrite name regex heimdall-internal-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall.svc.cluster.local.
-        rewrite name regex heimdall-internal-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall.svc.cluster.local.
-        rewrite name heimdall-internal-validator-1.nine-chronicles.com validator-5.heimdall.svc.cluster.local.
-
-        rewrite name regex odin-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.odin-preview.svc.cluster.local.
-        rewrite name regex odin-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.odin-preview.svc.cluster.local.
-        rewrite name regex odin-preview-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.odin-preview.svc.cluster.local.
-        rewrite name regex odin-preview-validator-(\d+)\.nine-chronicles\.com\.$ validator-{1}.odin-preview.svc.cluster.local.
-
-        rewrite name regex heimdall-preview-tcp-seed-(\d+)\.nine-chronicles\.com\.$ tcp-seed-{1}.heimdall-preview.svc.cluster.local.
-        rewrite name regex heimdall-preview-rpc-(\d+)\.nine-chronicles\.com\.$ remote-headless-{1}.heimdall-preview.svc.cluster.local.
-        rewrite name regex heimdall-preview-test-(\d+)\.nine-chronicles\.com\.$ test-headless-{1}.heimdall-preview.svc.cluster.local.
-        rewrite name heimdall-preview-validator-1.nine-chronicles.com validator-5.heimdall-preview.svc.cluster.local.
+        {{- else }}
+        rewrite name {{ printf "%s-%s.%s %s.%s.svc.cluster.local." $planet $type $suffix $service $namespace }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
         {{- end }}
 
         prometheus :9153
