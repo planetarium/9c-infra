@@ -72,7 +72,7 @@ spec:
           value: 'true'
         - name: NC_Render
           value: 'false'
-        - name: NC_NetworkType
+        - name: NC_Planet
           value: "{{ $.Values.global.planet }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
           value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
@@ -239,7 +239,7 @@ spec:
           value: 'true'
         - name: NC_Render
           value: "{{ $.Values.dataProvider.render }}"
-        - name: NC_NetworkType
+        - name: NC_Planet
           value: "{{ $.Values.global.planet }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
           value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
@@ -447,7 +447,7 @@ spec:
           value: 'true'
         - name: NC_Render
           value: "{{ $.Values.dataProvider.render }}"
-        - name: NC_NetworkType
+        - name: NC_Planet
           value: "{{ $.Values.global.planet }}"
         - name: NC_TrustedAppProtocolVersionSigners__0
           value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
