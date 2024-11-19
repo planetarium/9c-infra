@@ -32,13 +32,28 @@ externalSecret:
   prefix: "9c-internal-v2/heimdall-preview"
 
 ingress:
+  enabled: false
+
+gateway:
   enabled: true
-  hosts:
-    dataProvider: "heimdall-preview-dp.9c.gg"
-    marketService: "heimdall-preview-market.9c.gg"
-    patrolRewardService: "heimdall-preview-patrol.9c.gg"
-    worldBoss: "heimdall-preview-world-boss.9c.gg"
-    arenaService: "heimdall-preview-arena.9c.gg"
+  services:
+  - name: remote-headless
+    hostname: heimdall-preview-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    protocols:
+    - web
+    - grpc
+  - name: data-provider
+    hostname: heimdall-preview-dp.9c.gg
+  - name: market-service
+    hostname: heimdall-preview-market.9c.gg
+  - name: patrol-reward-service
+    hostname: heimdall-preview-patrol.9c.gg
+  - name: world-boss-service
+    hostname: heimdall-preview-world-boss.9c.gg
+  - name: arena-service
+    hostname: heimdall-preview-arena.9c.gg
 
 bridgeService:
   enabled: true
@@ -112,10 +127,6 @@ dataProvider:
 
 marketService:
   enabled: true
-  image:
-    repository: planetariumhq/market-service
-    pullPolicy: Always
-    tag: "git-a96c32b4a29edf8b38dd94ff378a6b61a6816809"
 
   db:
     local: true
