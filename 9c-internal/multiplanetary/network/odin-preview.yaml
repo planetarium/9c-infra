@@ -214,7 +214,7 @@ rudolfService:
 
   config:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
-    graphqlEndpoint: "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://odin-preview-validator-5.nine-chronicles.com/graphql"
     genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
 
   db:
