@@ -37,13 +37,6 @@ ingress:
 gateway:
   enabled: true
   services:
-  - name: remote-headless
-    hostname: thor-preview-rpc.nine-chronicles.com
-    backendRefs:
-    - name: remote-headless-1
-    protocols:
-    - web
-    - grpc
   - name: data-provider
     hostname: thor-preview-dp.9c.gg
   - name: market-service
@@ -156,7 +149,7 @@ patrolRewardService:
     local: true
 
 remoteHeadless:
-  count: 1
+  count: 0
 
   resources:
     requests:

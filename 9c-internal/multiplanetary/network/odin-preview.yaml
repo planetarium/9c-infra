@@ -36,13 +36,6 @@ ingress:
 gateway:
   enabled: true
   services:
-  - name: remote-headless
-    hostname: odin-preview-rpc.nine-chronicles.com
-    backendRefs:
-    - name: remote-headless-1
-    protocols:
-    - web
-    - grpc
   - name: data-provider
     hostname: odin-preview-dp.9c.gg
   - name: market-service
@@ -108,7 +101,7 @@ validator:
   - --tx-life-time=2000000000
 
 remoteHeadless:
-  count: 1
+  count: 0
 
   hosts:
   - "odin-preview-rpc-1.nine-chronicles.com"
