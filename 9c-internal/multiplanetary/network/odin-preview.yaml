@@ -83,6 +83,9 @@ validator:
   hosts:
   - "odin-preview-validator-5.nine-chronicles.com"
 
+  ports:
+    rpc: 31238
+
   storage:
     data: 500Gi
 
@@ -99,6 +102,10 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=2000000000
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
 
 remoteHeadless:
   count: 0

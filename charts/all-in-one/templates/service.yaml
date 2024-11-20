@@ -568,6 +568,11 @@ spec:
   - port: {{ $.Values.validator.ports.graphql }}
     targetPort: {{ $.Values.validator.ports.graphql }}
     name: gql
+  {{- if $.Values.validator.ports.rpc }}
+  - name: rpc
+    port: {{ $.Values.validator.ports.rpc }}
+    targetPort: {{ $.Values.validator.ports.rpc }}
+  {{- end }}
   - port: {{ $.Values.validator.ports.gossip }}
     targetPort: {{ $.Values.validator.ports.gossip }}
     name: gossip
