@@ -145,6 +145,15 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: bridge-service-data
+          dnsPolicy: ClusterFirst
+          dnsConfig:
+            nameservers:
+            - 1.1.1.1
+            - 8.8.8.8
+            searches:
+            - nine-chronicles.com
+            options:
+            - ndots: 3
       {{- with $.Values.bridgeService.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
