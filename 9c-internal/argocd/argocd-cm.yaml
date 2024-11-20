@@ -9,6 +9,7 @@ metadata:
 data:
   url: https://argocd-internal.planetarium.network
   statusbadge.enabled: 'true'
+  ui.cssurl: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/css/argocd.css"
   admin.enabled: 'true'
   dex.config: |-
     connectors:
