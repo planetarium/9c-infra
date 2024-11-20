@@ -9,3 +9,4 @@ network:
   - "odin-preview"
   - "heimdall-preview"
   - "thor"
+  - "thor-preview"
