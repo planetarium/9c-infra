@@ -31,13 +31,21 @@ externalSecret:
   prefix: "9c-internal-v2/odin-preview"
 
 ingress:
+  enabled: false
+
+gateway:
   enabled: true
-  hosts:
-    dataProvider: "odin-preview-dp.9c.gg"
-    marketService: "odin-preview-market.9c.gg"
-    patrolRewardService: "odin-preview-patrol.9c.gg"
-    worldBoss: "odin-preview-world-boss.9c.gg"
-    arenaService: "odin-preview-arena.9c.gg"
+  services:
+  - name: data-provider
+    hostname: odin-preview-dp.9c.gg
+  - name: market-service
+    hostname: odin-preview-market.9c.gg
+  - name: patrol-reward-service
+    hostname: odin-preview-patrol.9c.gg
+  - name: world-boss-service
+    hostname: odin-preview-world-boss.9c.gg
+  - name: arena-service
+    hostname: odin-preview-arena.9c.gg
 
 snapshot:
   downloadSnapshot: true
@@ -67,16 +75,13 @@ seed:
     eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 validator:
-  count: 4
+  count: 1
 
   consensusSeedStrings:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
 
   hosts:
   - "odin-preview-validator-5.nine-chronicles.com"
-  - "odin-preview-validator-6.nine-chronicles.com"
-  - "odin-preview-validator-7.nine-chronicles.com"
-  - "odin-preview-validator-8.nine-chronicles.com"
 
   storage:
     data: 500Gi
@@ -96,6 +101,8 @@ validator:
   - --tx-life-time=2000000000
 
 remoteHeadless:
+  count: 0
+
   hosts:
   - "odin-preview-rpc-1.nine-chronicles.com"
 
@@ -195,8 +202,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: false
-
+  enabled: true
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
@@ -208,7 +214,7 @@ rudolfService:
 
   config:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
-    graphqlEndpoint: "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
+    graphqlEndpoint: "https://odin-preview-validator-5.nine-chronicles.com/graphql"
     genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
 
   db:
@@ -232,20 +238,11 @@ rudolfService:
 rudolfCurrencyNotifier:
   enabled: false
 
-  config:
-    schedule: "0 0 * * *"
-    graphqlEndpoint: "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
-    targetAddress: "0xB5AF28837b28A9C768e9849d90646E3D6078311c"
-    serverName: "9c-preview"
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
-
 volumeRotator:
   enabled: false
 
 worldBoss:
-  enabled: false
+  enabled: true
 
   ports:
     targetPort: 5000
@@ -270,36 +267,11 @@ worldBoss:
 acc:
   enabled: false
 
-  local: false
-
-  redis:
-    enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
-
-  env:
-  - name: AccessControlServiceType
-    value: "sqlite"
-  - name: AccessControlServiceConnectionString
-    value: "Data Source=/data/acc.db"
-
 stateMigrationService:
   enabled: false
 
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
-
 jwtHeadless:
   enabled: false
-
-  loggingEnabled: true
-
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
 
 arenaService:
   enabled: true
