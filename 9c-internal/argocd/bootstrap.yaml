@@ -131,6 +131,7 @@ spec:
                   count: 1
                   service: remote-headless
             heimdall-internal:
+              namespace: heimdall
               services:
                 tcp-seed:
                   count: 1
@@ -141,6 +142,7 @@ spec:
                   count: 1
                   service: remote-headless
             thor-internal:
+              namespace: thor
               services:
                 tcp-seed:
                   count: 1
