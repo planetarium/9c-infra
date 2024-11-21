@@ -104,7 +104,7 @@ dataProvider:
   migrateDatabase: false
 
   storage:
-    data: 1000Gi
+    data: 500Gi
     log: 10Gi
 
   db:
