@@ -76,7 +76,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
-    {{- with $.Values.global.service.annotations }}
+    {{- with (deepCopy $.Values.global.service.annotations) }}
       {{ $_ := unset . "service.beta.kubernetes.io/aws-load-balancer-scheme" }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
