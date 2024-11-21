@@ -235,6 +235,9 @@ validator:
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
+  ports:
+    rpc: 31238
+
   resources:
     requests:
       cpu: 1500m
@@ -247,6 +250,10 @@ validator:
 
   extraArgs:
   - --tx-life-time=2000000000
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
 
 worldBoss:
   enabled: true
