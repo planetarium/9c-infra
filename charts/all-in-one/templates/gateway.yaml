@@ -35,9 +35,9 @@ spec:
             labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}
         gatewayClass:
           name: traefik-{{ $.Release.Name }}
-        globalArguments:
-          - --providers.kubernetesgateway.statusaddress.service.name=traefik-{{ $.Release.Name }}
-          - --providers.kubernetesgateway.statusaddress.service.namespace={{ $.Release.Name }}
+        logs:
+          access:
+            enabled: true
         service:
           annotations:
             {{- with $.Values.global.service.annotations }}
