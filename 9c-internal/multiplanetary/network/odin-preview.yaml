@@ -4,7 +4,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-9399c490854f0af7989de1e3de70b177c319c740"
+    tag: "git-17bf17a6cc3aa78e6884680d9d50732d1770aef1"
 
   validatorPath: "validator-5.odin-preview.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -138,7 +138,7 @@ remoteHeadless:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: "git-3a22ff55634d42e73cf2c1f46fb008b1d0bcf06e"
+    tag: "git-47e58c91c31cb57dcf21cfd506e418c2a05acfe9"
 
   enabled: true
   migrateDatabase: false
