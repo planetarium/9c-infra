@@ -114,7 +114,64 @@ spec:
         pyroscope:
           enabled: true
           nodeGroup: 9c-internal-spot_2c
-
+        corednsRewrite:
+          enabled: true
+          suffix: nine-chronicles.com
+          planets:
+            odin-internal:
+              namespace: 9c-network
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  domainOffset: 5
+                  serviceOffset: 5
+                rpc:
+                  count: 1
+                  service: remote-headless
+            heimdall-internal:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  serviceOffset: 5
+                rpc:
+                  count: 1
+                  service: remote-headless
+            thor-internal:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  serviceOffset: 5
+                rpc:
+                  count: 1
+                  service: remote-headless
+            odin-preview:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  domainOffset: 5
+                  serviceOffset: 5
+            heimdall-preview:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  serviceOffset: 5
+            thor-preview:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  serviceOffset: 5
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

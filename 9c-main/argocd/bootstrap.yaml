@@ -164,6 +164,47 @@ spec:
           enabled: true
           replicaCount: 2
           nodeGroup: 9c-main-spot_2c
+        corednsRewrite:
+          enabled: true
+          suffix: nine-chronicles.com
+          planets:
+            odin:
+              namespace: 9c-network
+              services:
+                tcp-seed:
+                  count: 3
+                  suffix: planetarium.dev
+                validator:
+                  count: 1
+                  domainOffset: 5
+                  serviceOffset: 5
+                rpc:
+                  count: 2
+                  service: remote-headless
+                test:
+                  count: 1
+                  service: test-headless
+                full-state:
+                  service: main-full-state
+                jwt:
+                  service: jwt-headless
+            heimdall:
+              services:
+                tcp-seed:
+                  count: 1
+                validator:
+                  count: 1
+                  serviceOffset: 5
+                rpc:
+                  count: 3
+                  service: remote-headless
+                test:
+                  count: 1
+                  service: test-headless
+                full-state:
+                  service: main-full-state
+                jwt:
+                  service: jwt-headless
         datadog:
           enabled: true
           tolerations:
