@@ -239,7 +239,7 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
 
   resources:
     requests:
