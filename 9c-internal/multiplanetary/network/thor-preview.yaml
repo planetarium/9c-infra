@@ -76,7 +76,7 @@ bridgeService:
   notification:
     slack:
       bot:
-        username: "Relay Bridge Test (Odin ↔ Thor)"
+        username: "Relay Bridge Test (Odin Preview ↔ Thor Preview)"
       channel: "9c-relay-bridge-bot-test-rdb"
 
   db:
@@ -86,8 +86,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "12418363"
-      downstream: "1"
+      upstream: "12473971"
+      downstream: "557"
 
 bridgeServiceApi:
   enabled: false
