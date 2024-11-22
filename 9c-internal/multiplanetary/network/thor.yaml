@@ -55,7 +55,7 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets-internal.json"
+    registryEndpoint: "https://planets-internal.nine-chronicles.com/planets/"
     upstream: "0x100000000000"
     downstream: "0x100000000003"
 
@@ -89,8 +89,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "12418363"
-      downstream: "1"
+      upstream: "12516557"
+      downstream: "22519"
 
 bridgeServiceApi:
   enabled: false
