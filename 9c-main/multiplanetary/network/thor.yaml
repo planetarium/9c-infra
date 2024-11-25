@@ -9,11 +9,11 @@ global:
 
   validatorPath: "validator-5.thor.svc.cluster.local"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000003/genesis"
-  trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
+  trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/thor/appsettings.json"
 
   peerStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.thor.svc.cluster.local,31234"
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.thor.svc.cluster.local,31234"
 
   iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
@@ -397,7 +397,7 @@ bridgeService:
   notification:
     slack:
       bot:
-        username: "Relay Bridge (Odin ↔ Heimdall)"
+        username: "Relay Bridge (Odin ↔ Thor)"
       channel: "9c-relay-bridge-bot-rdb"
 
   rdb:
