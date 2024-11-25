@@ -138,7 +138,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
@@ -170,7 +170,7 @@ remoteHeadless:
   - --remote-key-value-service
 
 rudolfService:
-  enabled: false
+  enabled: true
 
   config:
     graphqlEndpoint: "http://heimdall-preview-validator-1.nine-chronicles.com/graphql"
@@ -253,7 +253,7 @@ validator:
   - --rpc-listen-port=31238
 
 worldBoss:
-  enabled: false
+  enabled: true
   ports:
     targetPort: 5000
 
