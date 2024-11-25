@@ -485,5 +485,63 @@ module "common" {
       max_size          = 15
       ami_type          = "AL2_ARM_64"
     }
+
+    "thor-2c_spot" = {
+      instance_types    = ["r7g.xlarge", "m7g.2xlarge", "r6g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 15
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "remote-headless-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "thor-r7g_xl_2c_validator" = {
+      instance_types    = ["r7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "validator-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "thor-r7g_xl_2c_test" = {
+      instance_types    = ["r7g.xlarge"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "SPOT"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
+      disk_size         = 50
+      taints = [{
+        key    = "dedicated"
+        value  = "remote-headless-test"
+        effect = "NO_SCHEDULE"
+      }]
+    }
+
+    "thor-m7g_l_2c" = {
+      instance_types    = ["m7g.large"]
+      availability_zone = "us-east-2c"
+      capacity_type     = "ON_DEMAND"
+      desired_size      = 1
+      min_size          = 0
+      max_size          = 5
+      ami_type          = "AL2_ARM_64"
+    }
   }
 }
