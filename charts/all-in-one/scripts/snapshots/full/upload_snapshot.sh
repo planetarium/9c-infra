@@ -47,7 +47,7 @@ function make_and_upload_snapshot() {
     echo "URL does not exist: $URL"
   fi
 
-  rm -r "$FULL_DIR/*"
+  rm -r "$FULL_DIR/*" || true
 
   if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$1" --snapshot-type "full"; then
     senderr "Snapshot creation failed." "$SLACK_WEBHOOK"
