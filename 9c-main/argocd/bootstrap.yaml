@@ -109,6 +109,27 @@ spec:
                     - jwt-headless.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-jwt
+                  - targets:
+                    - validator-5.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-validator
+                  - targets:
+                    - remote-headless-1.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-rpc
+                  - targets:
+                    - main-full-state.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-full-state
+                  - targets:
+                    - jwt-headless.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-jwt
+                  - targets:
+                    - data-provider-db.thor.svc.cluster.local:80
+                    - data-provider-write.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-data-provider
                 tls_config:
                   insecure_skip_verify: true
               - job_name: scrape-9c-rudolf
