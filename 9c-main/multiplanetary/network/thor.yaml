@@ -7,7 +7,7 @@ logLevel: "debug"
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-17bf17a6cc3aa78e6884680d9d50732d1770aef1"
+    tag: "git-fe83b203bbe1741f4f0dd16ac07b280af38d036b"
 
   appProtocolVersion: "200240/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEUCIQCcSWuUAHsHajmPIUyvdonwuBZ8RrqYqBmlIw2u46VY2QIgZD99uMlengBg.eIlvzNy59Q+fjY7jRsnTinpWoWro2k=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTExLTI1ZQ=="
 
@@ -315,7 +315,7 @@ dataProviderDataMigrator:
 dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
-    tag: "git-47e58c91c31cb57dcf21cfd506e418c2a05acfe9"
+    tag: "git-6c843462cd0e32fd5c7d14965b725dc6734ae014"
 
   enabled: true
   rwMode: true
