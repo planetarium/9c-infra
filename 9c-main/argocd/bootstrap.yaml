@@ -56,6 +56,10 @@ spec:
                     labels:
                       group: heimdall-validator
                   - targets:
+                    - validator-5.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-validator
+                  - targets:
                     - remote-headless-1.9c-network.svc.cluster.local:80
                     - remote-headless-2.9c-network.svc.cluster.local:80
                     labels:
@@ -67,6 +71,10 @@ spec:
                     - remote-headless-4.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-rpc
+                  - targets:
+                    - remote-headless-1.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-rpc
                   - targets:
                     - test-headless-1.9c-network.svc.cluster.local:80
                     labels:
@@ -92,6 +100,10 @@ spec:
                     labels:
                       group: heimdall-full-state
                   - targets:
+                    - main-full-state.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-full-state
+                  - targets:
                     - data-provider-db.9c-network.svc.cluster.local:80
                     - data-provider-write.9c-network.svc.cluster.local:80
                     labels:
@@ -102,6 +114,10 @@ spec:
                     labels:
                       group: heimdall-data-provider
                   - targets:
+                    - data-provider-write.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-data-provider
+                  - targets:
                     - jwt-headless.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-jwt
@@ -109,6 +125,10 @@ spec:
                     - jwt-headless.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-jwt
+                  - targets:
+                    - jwt-headless.thor.svc.cluster.local:80
+                    labels:
+                      group: thor-jwt
                 tls_config:
                   insecure_skip_verify: true
               - job_name: scrape-9c-rudolf
