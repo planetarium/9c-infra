@@ -125,7 +125,8 @@ def update_apv(contents: str, apv: Apv):
 
 def check_correct_signer(dir_name:str, file_name: str):
     if "9c-main" in dir_name:
-        assert config.key_address == MAIN_SIGNERS[file_name]
+        network_name = "odin" if file_name == "9c-network" else file_name
+        assert config.key_address == MAIN_SIGNERS[network_name]
 
 def generate_apv(planet: Planet, number: int) -> Apv:
     timestamp = datetime.utcnow().strftime("%Y-%m-%d")
