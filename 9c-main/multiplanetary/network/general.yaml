@@ -2,7 +2,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "214"
+    tag: "220"
 
   service:
     annotations:
@@ -23,17 +23,17 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "215"
+    tag: "220"
 
 worldBoss:
   image:
     repository: planetariumhq/world-boss-service
-    tag: "git-5582d71c3463de763d2776b1de486f1ee7a2e5dc"
+    tag: "git-201df547889b4bbc3f47f4af86657a29d2064074"
 
 marketService:
   image:
     repository: planetariumhq/market-service
-    tag: "git-eae69fe2f88418514fadfa67d62825d298aefe60"
+    tag: "git-6013d52122ec914f84cc05865123c8ae55f0bc15"
 
 patrolRewardService:
   image:
