@@ -333,7 +333,7 @@ dataProvider:
   - name: PLUGIN_PATH
     value: "/data"
   - name: NC_Planet
-    value: Heimdall
+    value: Thor
   - name: DOTNET_gcServer
     value: "1"
 
