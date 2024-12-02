@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^0x[0-9a-fA-F]{12}$"
+      },
+      "name": {
+        "type": "string"
+      },
+      "genesisHash": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{40,64}$"
+      },
+      "genesisUri": {
+        "type": "string",
+        "format": "uri"
+      },
+      "9cscanUrl": {
+        "type": "string",
+        "format": "uri"
+      },
+      "rpcEndpoints": {
+        "type": "object",
+        "properties": {
+          "dp.gql": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "9cscan.rest": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "headless.gql": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "headless.grpc": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "market.rest": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "world-boss.rest": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "patrol-reward.gql": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "arena.gql": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          }
+        },
+        "additionalProperties": false
+      },
+      "bridges": {
+        "type": "object",
+        "patternProperties": {
+          "^0x[0-9a-fA-F]{12}$": {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]+$"
+              },
+              "avatar": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]+$"
+              }
+            },
+            "required": ["agent", "avatar"],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "genesisHash",
+      "genesisUri",
+      "9cscanUrl",
+      "rpcEndpoints",
+      "bridges"
+    ],
+    "additionalProperties": false
+  }
+}
