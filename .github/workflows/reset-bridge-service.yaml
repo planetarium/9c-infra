@@ -17,14 +17,6 @@ on:
     inputs:
       network:
         required: true
-        description: "network type"
-        default: "heimdall-internal"
-        type: choice
-        options:
-          - heimdall-internal
-          - thor-internal
-          - heimdall-preview
-          - thor-preview
 
 jobs:
   reset-bridge-service:
