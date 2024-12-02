@@ -49,13 +49,14 @@ jobs:
           fi
         fi
 
-        echo "snapshot_chains={\"include\":$(echo $SNAPSHOT_CHAINS)}" >> $GITHUB_OUTPUT
-        echo "bridge_chains={\"include\":$(echo $BRIDGE_CHAINS)}" >> $GITHUB_OUTPUT
+        echo "snapshot_chains=$(echo $SNAPSHOT_CHAINS)" >> $GITHUB_OUTPUT
+        echo "bridge_chains=$(echo $BRIDGE_CHAINS)" >> $GITHUB_OUTPUT
 
   reset-snapshot:
     needs: [set-targets]
     strategy:
-      matrix: ${{ fromJson(needs.set-targets.outputs.snapshot_chains) }}
+      matrix:
+        snapshot_chains: ${{ fromJson(needs.set-targets.outputs.snapshot_chains) }}
     runs-on: ubuntu-latest
     environment:
       name: internal
@@ -63,7 +64,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: reset internal snapshot
         run: |
-          echo "y" | bash .github/scripts/reset-snapshot.sh ${{ matrix }}
+          echo "y" | bash .github/scripts/reset-snapshot.sh ${{ matrix.snapshot_chains }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -73,7 +74,8 @@ jobs:
   reset-bridge-service:
     needs: [reset-snapshot, set-targets]
     strategy:
-      matrix: ${{ fromJson(needs.set-targets.outputs.bridge_chains) }}
+      matrix:
+        bridge_chains: ${{ fromJson(needs.set-targets.outputs.bridge_chains) }}
     uses: ./.github/workflows/reset-bridge-service.yaml
     with:
-      network: ${{ matrix }}
+      network: ${{ matrix.bridge_chains }}

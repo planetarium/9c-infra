@@ -39,7 +39,7 @@ jobs:
 
     - name: Set namespace based on input
       run: |
-        NETWORK="${{ github.event.inputs.network }}"
+        NETWORK="${{ inputs.network }}"
         echo "NAMESPACE=${NETWORK%"-internal"}" >> $GITHUB_ENV
 
     - uses: actions-hub/kubectl@master
