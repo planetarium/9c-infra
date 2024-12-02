@@ -17,6 +17,7 @@ on:
     inputs:
       network:
         required: true
+        type: string
 
 jobs:
   reset-bridge-service:
