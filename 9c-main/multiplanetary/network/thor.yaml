@@ -5,10 +5,6 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-c086531ba392db9cd6663758c5698f432c4b1fc7"
-
   appProtocolVersion: "200250/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEUCIQDHiEWqr+ySeDPaBbvu7acGO53c68ikkI6YBE+5RmhgCAIgdZODIkw1MZKqXhHHbEDMbJ9hI.EDXqmR+.WVaUs7r1Q=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTExLTI4ZQ=="
 
   validatorPath: "validator-5.thor.svc.cluster.local"
@@ -313,9 +309,6 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProvider:
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    tag: "git-d15456adff0ed3f4019ac9cdb536daed58cf42a2"
 
   enabled: true
   rwMode: true
