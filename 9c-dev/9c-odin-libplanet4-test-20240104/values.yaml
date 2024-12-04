@@ -130,7 +130,7 @@ validator:
   - "validator-5.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   - "validator-6.9c-odin-libplanet4-test-20240104.svc.cluster.local"
   - "validator-7.9c-odin-libplanet4-test-20240104.svc.cluster.local"
-  - "validator-8.9c-odin-libplanet4-test-20240104.svc.cluster.local"
+  - "odin-validator-8-libplanet4-test.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
