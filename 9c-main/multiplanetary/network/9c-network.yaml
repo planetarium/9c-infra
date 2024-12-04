@@ -532,6 +532,8 @@ jwtHeadless:
     value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
   - name: PLUGIN_PATH
     value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
   - --tx-quota-per-signer=1
