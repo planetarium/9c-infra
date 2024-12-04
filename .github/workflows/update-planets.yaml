@@ -1,0 +1,28 @@
+name: Update planets config
+
+on:
+  pull_request:
+    paths:
+      - planets/index.json
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  validate-planets-config:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/validate-planets.yaml
+  update-planets-config:
+    needs: [validate-planets-config]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      - run: |
+          aws s3 cp planets/index.json s3://planets.nine-chronicles.com/planets/index.json
+          aws cloudfront create-invalidation --distribution-id EP1JH2OWQMIKM --paths "/*"
