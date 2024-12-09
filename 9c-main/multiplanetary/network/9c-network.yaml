@@ -254,6 +254,17 @@ dataProviderDataMigrator:
     operator: Equal
     value: remote-headless-test
 
+dataProviderDailyMetric:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 28Gi
+
 dataProvider:
   enabled: true
 
