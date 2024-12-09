@@ -1,4 +1,4 @@
-{{ if $.Values.dataProviderDailyMetric.enabled }}
+{{- if $.Values.dataProviderDailyMetric.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -92,4 +92,4 @@ spec:
   schedule: 0 20 * * *
   successfulJobsHistoryLimit: 1
   suspend: false
-
+{{- end }}

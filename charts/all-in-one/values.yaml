@@ -248,6 +248,9 @@ dataProvider:
 
   nodeSelector: {}
 
+dataProviderDailyMetric:
+  enabled: false
+
 explorer:
   enabled: false
   image:
