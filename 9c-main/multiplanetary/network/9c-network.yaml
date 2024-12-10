@@ -45,6 +45,7 @@ gateway:
     backendRefs:
     - name: remote-headless-1
     - name: remote-headless-2
+    - name: main-full-state
     protocols:
     - web
     - grpc
@@ -213,6 +214,11 @@ remoteHeadless:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -379,6 +385,11 @@ fullState:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   tolerations:
   - effect: NoSchedule

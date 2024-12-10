@@ -43,6 +43,7 @@ gateway:
     hostname: thor-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
+    - name: main-full-state
     protocols:
     - web
     - grpc
@@ -159,6 +160,11 @@ fullState:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   tolerations:
   - effect: NoSchedule
@@ -270,6 +276,11 @@ remoteHeadless:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   extraArgs:
   - --tx-quota-per-signer=1
