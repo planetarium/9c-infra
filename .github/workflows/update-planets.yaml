@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request_target:
     paths:
-      - planets/index.json
+      - planets/*.json
     branches:
       - main
     types:
@@ -14,6 +14,12 @@ jobs:
   validate-planets-config:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/validate-planets.yaml
+- uses: dorny/paths-filter@v3
+  id: paths
+  with:
+    list-files: shell
+    filters: |
+      planets: planets/*.json
   update-planets-config:
     needs: [validate-planets-config]
     runs-on: ubuntu-latest
@@ -23,7 +29,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
       - run: |
-          aws s3 cp planets/index.json s3://planets.nine-chronicles.com/planets/index.json
-          aws cloudfront create-invalidation --distribution-id EP1JH2OWQMIKM --paths "/*"
+          FILES=(${{ steps.paths.outputs.planets_files }})
+          for FILE in "${FILES[@]}"; do
+            echo "$FILE"
+          done

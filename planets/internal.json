@@ -1,0 +1,29 @@
+[
+  {
+    "id": "0x100000000001",
+    "name": "heimdall (internal)",
+    "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
+    "genesisHash": "729fa26958648a35b53e8e3905d11ec53b1b4929bf5f499884aed7df616f5913",
+    "9cscanUrl": "https://heimdall.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": ["http://heimdall-internal-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-planet1.9cscan.com"],
+      "headless.gql": [
+        "https://heimdall-internal-validator-1.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://heimdall-internal-validator-1.nine-chronicles.com:31238"
+      ],
+      "market.rest": ["http://heimdall-internal-market.9c.gg"],
+      "world-boss.rest": ["http://heimdall-internal-world-boss.9c.gg"],
+      "patrol-reward.gql": ["http://heimdall-internal-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://heimdall-internal-arena.9c.gg/graphql"]
+    },
+    "bridges": {
+      "0x100000000000": {
+        "agent": "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f",
+        "avatar": "0x41aEFE4cdDFb57C9dFfd490e17e571705c593dDc"
+      }
+    }
+  }
+]

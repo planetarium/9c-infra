@@ -1,0 +1,87 @@
+[
+  {
+    "id": "0x100000000000",
+    "name": "odin (preview)",
+    "genesisHash": "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce",
+    "genesisUri": "https://release.nine-chronicles.com/genesis-block-9c-main",
+    "9cscanUrl": "https://preview.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": ["http://odin-preview-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-odin-preview.9cscan.com"],
+      "headless.gql": [
+        "https://odin-preview-validator-5.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://odin-preview-validator-5.nine-chronicles.com:31238"
+      ],
+      "market.rest": ["http://odin-preview-market.9c.gg"],
+      "world-boss.rest": ["https://odin-preview-world-boss.9c.gg"],
+      "patrol-reward.gql": ["http://odin-preview-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://odin-preview-arena.9c.gg/graphql"]
+    },
+    "bridges": {
+      "0x100000000001": {
+        "agent": "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f",
+        "avatar": "0x41aEFE4cdDFb57C9dFfd490e17e571705c593dDc"
+      },
+      "0x100000000003": {
+        "agent": "0x3e498a6A5cDbE027769F9502026c37Cb8613186e",
+        "avatar": "0x41E9Dc57F04cC561B68378490528e22a386ba9e1"
+      }
+    }
+  },
+  {
+    "id": "0x100000000001",
+    "name": "heimdall (preview)",
+    "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
+    "genesisHash": "729fa26958648a35b53e8e3905d11ec53b1b4929bf5f499884aed7df616f5913",
+    "9cscanUrl": "https://heimdall-preview.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": ["http://heimdall-preview-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-heimdall-preview.9cscan.com"],
+      "headless.gql": [
+        "https://heimdall-preview-validator-1.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://heimdall-preview-validator-1.nine-chronicles.com:31238"
+      ],
+      "market.rest": ["http://heimdall-preview-market.9c.gg"],
+      "world-boss.rest": ["http://heimdall-preview-world-boss.9c.gg"],
+      "patrol-reward.gql": ["http://heimdall-preview-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://heimdall-preview-arena.9c.gg/graphql"]
+    },
+    "bridges": {
+      "0x100000000000": {
+        "agent": "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f",
+        "avatar": "0x41aEFE4cdDFb57C9dFfd490e17e571705c593dDc"
+      }
+    }
+  },
+  {
+    "id": "0x100000000003",
+    "name": "thor (preview)",
+    "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000003/genesis",
+    "genesisHash": "bde462fd59de5ccba8495ebb163b124bf77ddc82cfc8b2f9fb57c00fc6e133b7",
+    "9cscanUrl": "https://thor-preview.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": ["http://thor-preview-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-thor-preview.9cscan.com"],
+      "headless.gql": [
+        "https://thor-preview-validator-1.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://thor-preview-validator-1.nine-chronicles.com:31238"
+      ],
+      "market.rest": ["http://thor-preview-market.9c.gg"],
+      "world-boss.rest": ["http://thor-preview-world-boss.9c.gg"],
+      "patrol-reward.gql": ["http://thor-preview-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://thor-preview-arena.9c.gg/graphql"]
+    },
+    "bridges": {
+      "0x100000000000": {
+        "agent": "0x3e498a6A5cDbE027769F9502026c37Cb8613186e",
+        "avatar": "0x41E9Dc57F04cC561B68378490528e22a386ba9e1"
+      }
+    }
+  }
+]
