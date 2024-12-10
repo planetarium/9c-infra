@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request_target:
     paths:
-      - planets/*.json
+      - planets/index.json
     branches:
       - main
     types:
@@ -23,14 +23,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - uses: dorny/paths-filter@v3
-        id: paths
-        with:
-          list-files: shell
-          filters: |
-            planets: planets/*.json
+          aws-region: us-east-2
       - run: |
-          FILES=(${{ steps.paths.outputs.planets_files }})
-          for FILE in "${FILES[@]}"; do
-            echo "$FILE"
-          done
+          aws s3 cp planets/index.json s3://planets.nine-chronicles.com/planets/index.json
+          aws cloudfront create-invalidation --distribution-id EP1JH2OWQMIKM --paths "/*"
