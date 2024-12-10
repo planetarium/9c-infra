@@ -1,7 +1,7 @@
 name: Update planets config
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - planets/index.json
     branches:
