@@ -53,7 +53,7 @@ snapshot:
 
 externalSecret:
   enabled: true
-  prefix: 9c-dev-v2
+  prefix: 9c-dev-v2/heimdall
 
 seed:
   count: 1
