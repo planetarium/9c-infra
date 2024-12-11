@@ -33,7 +33,7 @@ global:
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 
 ingress:
-  enabled: true
+  enabled: false
   hosts:
     dataProvider: "dev-heimdall-dp.9c.gg"
     marketService: "dev-heimdall-market.9c.gg"
@@ -92,7 +92,7 @@ remoteHeadless:
     eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
 
 testHeadless1:
-  enabled: true
+  enabled: false
   image:
     tag: "222"
 
@@ -119,7 +119,7 @@ testHeadless1:
 
 
 validator:
-  count: 4
+  count: 1
 
   loggingEnabled: true
 
@@ -140,7 +140,7 @@ validator:
     eks.amazonaws.com/nodegroup: 9c-dev-r6g_xl_2c
 
 dataProvider:
-  enabled: true
+  enabled: false
   migrateDatabase: true
 
   storage:
@@ -171,7 +171,7 @@ dataProvider:
       memory: 4Gi
 
 worldBoss:
-  enabled: true
+  enabled: false
 
   image:
     repository: planetariumhq/world-boss-service
@@ -199,7 +199,7 @@ worldBoss:
     eks.amazonaws.com/nodegroup: general-m5d_xl_2c
 
 marketService:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
@@ -221,7 +221,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
@@ -234,7 +234,7 @@ patrolRewardService:
     local: true
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   image:
     tag: "git-1f93812f5c1a5626298eb97a59e97dececa052ab"
