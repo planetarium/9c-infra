@@ -72,7 +72,7 @@ spec:
 
           # Endpoint to check
 
-          SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+          SEED="http://{{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts 0)) }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
           echo Checking: ${SEED}
 
@@ -105,7 +105,7 @@ spec:
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ $.Values.testHeadless2.host }}
+        - --host={{ regexFind "^[^,]+" (toString $.Values.testHeadless2.host) }}
         {{- end }}
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}

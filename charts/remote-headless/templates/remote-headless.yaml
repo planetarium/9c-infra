@@ -75,7 +75,7 @@ spec:
               {{- if $.Values.seed }}
               # Endpoint to check
 
-              SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+              SEED="http://{{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts 0)) }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
               echo Checking: ${SEED}
 

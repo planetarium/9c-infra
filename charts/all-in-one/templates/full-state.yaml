@@ -95,7 +95,7 @@ spec:
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ $.Values.fullState.host }}
+        - --host={{ regexFind "^[^,]+" (toString $.Values.fullState.host) }}
         {{- end }}
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}

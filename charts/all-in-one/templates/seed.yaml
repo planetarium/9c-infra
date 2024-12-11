@@ -30,7 +30,7 @@ spec:
         {{- if $.Values.seed.useTurnServer }}
         - --ice-server={{ index $.Values.global.iceServers $idx }}
         {{- else }}
-        - --host={{ index $.Values.seed.hosts $idx }}
+        - --host={{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts $idx)) }}
         {{- end }}
         - --port={{ $.Values.seed.ports.node }}
         - --private-key=$(PRIVATE_KEY)
