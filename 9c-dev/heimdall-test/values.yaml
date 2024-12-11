@@ -34,11 +34,6 @@ global:
 
 ingress:
   enabled: false
-  hosts:
-    dataProvider: "dev-heimdall-dp.9c.gg"
-    marketService: "dev-heimdall-market.9c.gg"
-    patrolRewardService: "dev-heimdall-patrol.9c.gg"
-    worldBoss: "dev-heimdall-world-boss.9c.gg"
 
 snapshot:
   downloadSnapshot: true
@@ -83,7 +78,7 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-  - "remote-headless-1.heimdall-test.svc.cluster.local"
+  - "remote-headless-1.heimdall-test"
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -93,30 +88,6 @@ remoteHeadless:
 
 testHeadless1:
   enabled: false
-  image:
-    tag: "222"
-
-  loggingEnabled: true
-  
-  host: "dev-heimdall-test-headless-1.nine-chronicles.com"
-  
-  extraArgs:
-  - --tx-quota-per-signer=1
-
-  resources:
-    requests:
-      cpu: 3
-      memory: 25Gi
-
-  tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
-
 
 validator:
   count: 1
@@ -141,118 +112,15 @@ validator:
 
 dataProvider:
   enabled: false
-  migrateDatabase: true
-
-  storage:
-    data: 1000Gi
-    log: 4Gi
-
-  image:
-    repository: planetariumhq/ninechronicles-dataprovider
-    pullPolicy: Always
-    tag: "222"
-
-  db:
-    local: true
-    storage: 1000Gi
-    database: ''
-    connectionString: ''
-    host: ''
-    port: 3306
-    user: user
-    password: ''
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m7g_xl_2c
-
-  resources:
-    requests:
-      cpu: 1
-      memory: 4Gi
 
 worldBoss:
   enabled: false
 
-  image:
-    repository: planetariumhq/world-boss-service
-    pullPolicy: Always
-    tag: "git-347bff74afa2b056ce1c1714807d91c64c976d87"
-
-  ports:
-    targetPort: 5000
-
-  db:
-    local: true
-    size: 5Gi
-
-  worldBossEnv:
-    databaseUrl: ""
-    redisHost: ""
-    redisPort: ""
-    kmsKeyId: ""
-    slackToken: ""
-    celeryBrokerUrl: ""
-    celeryResultBackend: ""
-    slackSigningSecret: ""
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m5d_xl_2c
-
 marketService:
   enabled: false
-  image:
-    repository: planetariumhq/market-service
-    pullPolicy: Always
-    tag: git-5f0411a8e23ee3788244b2d68c6723f3539b46e5
-
-  db:
-    local: true
-    size: 1Gi
-
-  nodeSelector:
-    node.kubernetes.io/instance-type: m5d.large
-
-  env:
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: WorkerConfig__SyncShop
-    value: "true"
-  - name: WorkerConfig__SyncProduct
-    value: "true"
 
 patrolRewardService:
   enabled: false
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: git-cc830dd9bf0052feb624a81fbcde7e4a901e392c
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m5d_xl_2c
-
-  db:
-    local: true
 
 rudolfService:
   enabled: false
-
-  image:
-    tag: "git-1f93812f5c1a5626298eb97a59e97dececa052ab"
-
-  config:
-    graphqlEndpoint: "http://remote-headless-1.9c-odin-libplanet4-test-20240104.svc.cluster.local/graphql"
-    genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
-
-  db:
-    local: true
-
-  kms:
-    keyId: "3a301c8e-96c5-4b13-8dee-16575ba637c6"
-    publicKey: "04d237239d672698c89fc0788918b4c8610de8b65c5d02ebf3e1f31dcb891683410a97b51f59c05c41c141ad3a05324ba2c5afe32d5e4909e63fd4a700cd36cc53"
-
-  serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/heimdall-internal-9c-rudolf-signer"
-
-  service:
-    enabled: true
-    public: true
