@@ -99,9 +99,6 @@ validator:
 
   hosts:
   - "validator-5.heimdall-test.svc.cluster.local"
-  - "validator-6.heimdall-test.svc.cluster.local"
-  - "validator-7.heimdall-test.svc.cluster.local"
-  - "validator-8.heimdall-test.svc.cluster.local"
 
   extraArgs:
   - --tx-quota-per-signer=1
