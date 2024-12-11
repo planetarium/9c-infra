@@ -1,0 +1,123 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-dev-v2"
+logLevel: "debug"
+
+global:
+  validatorPath: "validator-5.heimdall-test.svc.cluster.local"
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "222"
+
+  appProtocolVersion: "1/fe4829C1650d3d5FC552516576731DBE74A5f3B1/MEQCID.oqBAHrJRhQ0myPP6eAMjnoPKz0mMn+btIdHdQ94QxAiAdV2L0l8GfQ0nat7g.6xClCWW9ue2rmarV5hBESUcwbQ=="
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
+  trustedAppProtocolVersionSigner: "02dac8e104ec5dec045dddb9939d83722cc0e1df523795bface7ed10ae56187638"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-dev/appsettings_heimdall.json"
+
+  peerStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31234"
+
+  resetSnapshot: true
+  rollbackSnapshot: true
+
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-subnets: public-us-east-2c-9c-dev
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: >-
+        arn:aws:acm:us-east-2:319679068466:certificate/2481ac9e-2037-4331-9234-4b3f86d50ad3
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+
+ingress:
+  enabled: false
+
+snapshot:
+  downloadSnapshot: true
+  slackChannel: "9c-internal"
+  image: "planetariumhq/ninechronicles-snapshot:git-96c1475107e14eeb81ed2a8fbba492952fbac99c"
+  partition:
+    enabled: true
+  path: 9c-dev-v2/heimdall
+  uploadPath: 9c-dev-v2/heimdall
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+
+externalSecret:
+  enabled: true
+  prefix: 9c-dev-v2/heimdall
+
+seed:
+  count: 1
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-22bed8ef41ab09258e6404462ec8e07cd038d089"
+
+  hosts:
+  - "tcp-seed-1.heimdall-test.svc.cluster.local"
+
+  loggingEnabled: true
+
+  # dotnet args
+  workerCount: 1000
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: m5d.large
+
+remoteHeadless:
+  count: 1
+
+  loggingEnabled: true
+
+  useTurnServer: false
+
+  hosts:
+  - "9c-dev-heimdall-rpc-1.nine-chronicles.com"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: general-m7g_2xl_2c
+
+testHeadless1:
+  enabled: false
+
+validator:
+  count: 1
+
+  loggingEnabled: true
+
+  consensusSeedStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235"
+
+  hosts:
+  - "validator-5.heimdall-test.svc.cluster.local"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --consensus-target-block-interval=6500
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-dev-r6g_xl_2c
+
+dataProvider:
+  enabled: false
+
+worldBoss:
+  enabled: false
+
+marketService:
+  enabled: false
+
+patrolRewardService:
+  enabled: false
+
+rudolfService:
+  enabled: false
