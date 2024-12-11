@@ -2,7 +2,7 @@
 # Declare variables to be passed into your templates.
 
 
-clusterName: "heimdall-test"
+clusterName: "9c-dev-v2"
 logLevel: "debug"
 
 global:
