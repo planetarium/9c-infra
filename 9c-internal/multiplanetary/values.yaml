@@ -5,8 +5,4 @@ path: "9c-internal/multiplanetary"
 network:
   - "9c-network"
   - "heimdall"
-  - "idun"
-  - "odin-preview"
-  - "heimdall-preview"
   - "thor"
-  - "thor-preview"
