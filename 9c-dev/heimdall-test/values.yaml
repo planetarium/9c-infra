@@ -78,7 +78,7 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-  - "remote-headless-1.heimdall-test"
+  - "9c-dev-heimdall-rpc-1.nine-chronicles.com"
 
   extraArgs:
   - --tx-quota-per-signer=1
