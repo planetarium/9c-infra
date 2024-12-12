@@ -4,7 +4,7 @@ on:
   workflow_call:
   pull_request:
     paths:
-      - planets/index.json
+      - planets/*.json
 
 jobs:
   validate-planets-config:
@@ -14,4 +14,4 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno -A .github/scripts/validate-planets.js planets/index.json
+      - run: deno -A .github/scripts/validate-planets.js planets/*.json

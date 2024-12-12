@@ -26,18 +26,10 @@
         "http://phx-nc-1.ninodes.com:31238",
         "http://nld-nc-1.ninodes.com:31238"
       ],
-      "market.rest": [
-        "https://odin-market.9c.gg"
-      ],
-      "world-boss.rest": [
-        "https://odin-world-boss.9c.gg"
-      ],
-      "patrol-reward.gql": [
-        "https://odin-patrol.9c.gg/graphql"
-      ],
-      "arena.gql": [
-        "http://odin-arena.9c.gg/graphql"
-      ]
+      "market.rest": ["https://odin-market.9c.gg"],
+      "world-boss.rest": ["https://odin-world-boss.9c.gg"],
+      "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://odin-arena.9c.gg/graphql"]
     },
     "bridges": {
       "0x000000000001": {
@@ -57,12 +49,8 @@
     "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
     "9cscanUrl": "https://heimdall.9cscan.com",
     "rpcEndpoints": {
-      "dp.gql": [
-        "http://heimdall-dp.9c.gg/graphql"
-      ],
-      "9cscan.rest": [
-        "https://api-heimdall.9cscan.com"
-      ],
+      "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-heimdall.9cscan.com"],
       "headless.gql": [
         "https://heimdall-rpc-1.nine-chronicles.com/graphql",
         "https://heimdall-rpc-2.nine-chronicles.com/graphql",
@@ -73,18 +61,10 @@
         "http://heimdall-rpc-2.nine-chronicles.com:31238",
         "http://heimdall-rpc-3.nine-chronicles.com:31238"
       ],
-      "market.rest": [
-        "http://heimdall-market.9c.gg"
-      ],
-      "world-boss.rest": [
-        "http://heimdall-world-boss.9c.gg"
-      ],
-      "patrol-reward.gql": [
-        "https://heimdall-patrol.9c.gg/graphql"
-      ],
-      "arena.gql": [
-        "http://heimdall-arena.9c.gg/graphql"
-      ]
+      "market.rest": ["http://heimdall-market.9c.gg"],
+      "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
+      "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://heimdall-arena.9c.gg/graphql"]
     },
     "bridges": {
       "0x000000000000": {
@@ -100,12 +80,8 @@
     "genesisHash": "bde462fd59de5ccba8495ebb163b124bf77ddc82cfc8b2f9fb57c00fc6e133b7",
     "9cscanUrl": "https://thor.9cscan.com",
     "rpcEndpoints": {
-      "dp.gql": [
-        "http://thor-dp.9c.gg/graphql"
-      ],
-      "9cscan.rest": [
-        "https://api-thor.9cscan.com"
-      ],
+      "dp.gql": ["http://thor-dp.9c.gg/graphql"],
+      "9cscan.rest": ["https://api-thor.9cscan.com"],
       "headless.gql": [
         "https://thor-rpc-1.nine-chronicles.com/graphql",
         "https://thor-rpc-2.nine-chronicles.com/graphql"
@@ -114,18 +90,10 @@
         "http://thor-rpc-1.nine-chronicles.com:31238",
         "http://thor-rpc-2.nine-chronicles.com:31238"
       ],
-      "market.rest": [
-        "http://thor-market.9c.gg"
-      ],
-      "world-boss.rest": [
-        "http://thor-world-boss.9c.gg"
-      ],
-      "patrol-reward.gql": [
-        "http://thor-patrol.9c.gg/graphql"
-      ],
-      "arena.gql": [
-        "http://thor-arena.9c.gg/graphql"
-      ]
+      "market.rest": ["http://thor-market.9c.gg"],
+      "world-boss.rest": ["http://thor-world-boss.9c.gg"],
+      "patrol-reward.gql": ["http://thor-patrol.9c.gg/graphql"],
+      "arena.gql": ["http://thor-arena.9c.gg/graphql"]
     },
     "bridges": {
       "0x000000000000": {
