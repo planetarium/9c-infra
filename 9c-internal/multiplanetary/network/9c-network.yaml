@@ -32,22 +32,34 @@ gateway:
   enabled: true
   services:
   - name: remote-headless
-    hostname: odin-internal-rpc.nine-chronicles.com
+    hostnames:
+      - odin-internal-rpc.nine-chronicles.com
+      - odin-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
     - web
     - grpc
   - name: data-provider
-    hostname: odin-internal-dp.9c.gg
+    hostnames:
+      - odin-internal-dp.9c.gg
+      - odin-preview-dp.9c.gg
   - name: market-service
-    hostname: odin-internal-market.9c.gg
+    hostnames:
+      - odin-internal-market.9c.gg
+      - odin-preview-market.9c.gg
   - name: patrol-reward-service
-    hostname: odin-internal-patrol.9c.gg
+    hostnames:
+      - odin-internal-patrol.9c.gg
+      - odin-preview-patrol.9c.gg
   - name: world-boss-service
-    hostname: odin-internal-world-boss.9c.gg
+    hostnames:
+      - odin-internal-world-boss.9c.gg
+      - odin-preview-world-boss.9c.gg
   - name: arena-service
-    hostname: odin-internal-arena.9c.gg
+    hostnames:
+      - odin-internal-arena.9c.gg
+      - odin-preview-arena.9c.gg
 
 snapshot:
   downloadSnapshot: true
@@ -71,7 +83,7 @@ seed:
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
 
   hosts:
-  - "odin-internal-tcp-seed-1.nine-chronicles.com"
+  - "odin-internal-tcp-seed-1.nine-chronicles.com,odin-preview-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
@@ -86,7 +98,7 @@ validator:
   - 033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1,31235
 
   hosts:
-  - "odin-internal-validator-5.nine-chronicles.com"
+  - "odin-internal-validator-5.nine-chronicles.com,odin-preview-validator-5.nine-chronicles.com"
 
   storage:
     data: 500Gi
@@ -118,7 +130,7 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "odin-internal-rpc-1.nine-chronicles.com"
+  - "odin-internal-rpc-1.nine-chronicles.com,odin-preview-rpc-1.nine-chronicles.com"
 
   ports:
     headless: 31234

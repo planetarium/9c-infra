@@ -134,7 +134,7 @@ spec:
         - --ice-server={{ . }}
         {{- end }}
         {{- else }}
-        - --host={{ $.Values.jwtHeadless.host }}
+        - --host={{ regexFind "^[^,]+" (toString $.Values.jwtHeadless.host) }}
         {{- end }}
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}

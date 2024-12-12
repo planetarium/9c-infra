@@ -125,7 +125,7 @@ spec:
 
           # Endpoint to check
 
-          SEED="http://{{ index $.Values.seed.hosts 0 }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+          SEED="http://{{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts 0)) }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
           echo Checking: ${SEED}
 
@@ -150,7 +150,7 @@ spec:
         - --trusted-app-protocol-version-signer={{ $.Values.global.trustedAppProtocolVersionSigner }}
         - --genesis-block-path={{ $.Values.global.genesisBlockPath }}
         {{- if eq $.Values.global.consensusType "pbft" }}
-        - --host={{ index $.Values.validator.hosts $idx }}
+        - --host={{ regexFind "^[^,]+" (toString (index $.Values.validator.hosts $idx)) }}
         {{- else }}
         {{- range $.Values.global.iceServers }}
         - --ice-server={{ . }}
