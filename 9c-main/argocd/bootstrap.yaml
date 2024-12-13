@@ -144,13 +144,6 @@ spec:
                       group: 9c-rudolf
                 tls_config:
                   insecure_skip_verify: true
-              - job_name: 'pod monitoring'
-                honor_labels: true
-                kubernetes_sd_configs:
-                - role: pod
-                relabel_configs:
-                - action: labelmap
-                  regex: __meta_kubernetes_pod_label_(.+)
         loki:
           enabled: true
           bucketName: loki.planetariumhq.com
