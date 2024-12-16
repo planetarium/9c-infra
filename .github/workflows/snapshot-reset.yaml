@@ -74,6 +74,7 @@ jobs:
   reset-bridge-service:
     needs: [reset-snapshot, set-targets]
     strategy:
+      fail-fast: false
       matrix:
         bridge_chain: ${{ fromJson(needs.set-targets.outputs.bridge_chains) }}
     uses: ./.github/workflows/reset-bridge-service.yaml
