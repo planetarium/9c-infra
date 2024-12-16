@@ -123,6 +123,7 @@ validator:
   - --rpc-remote-server
   - --rpc-listen-host=0.0.0.0
   - --rpc-listen-port=31238
+  - --consensus-enter-precommit-delay=300
 
 remoteHeadless:
   image:
