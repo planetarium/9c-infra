@@ -8,40 +8,43 @@ on:
         default: 'odin'
         type: choice
         options:
-        - odin
-        - heimdall
-        - thor
+          - odin
+          - heimdall
+          - thor
         description: 'Choose the mainnet network to update the appsettings.json'
-      previous_version_block_index:
+      new_start_value:
         required: true
-        description: 'Insert the ending tip index of the previous version (e.g. 1115268)'
-      previous_version_lib9c_commit:
+        description: 'The new start index (e.g. 20000000)'
+      new_plugin_url:
         required: true
-        description: 'Insert the lib9c commit of the previous version (e.g. ff2c8ae6cfd030ffd20020e1a5bbc4e0caadfe97)'
+        description: 'The plugin URL for the newly added evaluator (e.g. https://lib9c-plugin.s3.us-east-2.amazonaws.com/678ac90398f376698ee75da63ed089fe678d11e6/linux-arm64.zip)'
 
 jobs:
   update-paev:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - uses: actions/setup-python@v2.2.2
-      with:
-        python-version: 3.10.13
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.10.13
 
-    - run: |
-        python -m pip install -r requirements.txt
-        flit install
-      name: install dependencies
-      working-directory: ./scripts
+      - name: install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          flit install
+        working-directory: ./scripts
 
-    - name: Update Pluggable Action Evaluator
-      run: |
-        python cli.py update-paev ${{ github.event.inputs.network_type }} ${{ github.event.inputs.previous_version_block_index }} ${{ github.event.inputs.previous_version_lib9c_commit }}
-      working-directory: ./scripts
-      env:
-        GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Update Pluggable Action Evaluator
+        run: |
+          python cli.py update-paev \
+            ${{ github.event.inputs.network_type }} \
+            ${{ github.event.inputs.new_start_value }} \
+            ${{ github.event.inputs.new_plugin_url }}
+        working-directory: ./scripts
+        env:
+          GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

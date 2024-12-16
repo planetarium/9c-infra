@@ -14,92 +14,100 @@ class PluggableActionEvaluatorUpdater:
 
     def prep_update(
         self,
-        network_type,
-        previous_version_block_index,
-        previous_version_lib9c_commit):
+        network_type: str,
+        new_start_value: int,
+        new_plugin_url: str
+    ):
+        """
+        Prepares and updates the PAEV configuration for both appsettings.json 
+        and appsettings-nodeinfra.json by computing cutoff_value automatically.
+        """
+        cutoff_value = new_start_value - 1  # always set cutoff_value to new_start_value - 1
 
-        # Define base URL and suffixes
-        base_url = "https://lib9c-plugin.s3.us-east-2.amazonaws.com/"
-        arm64_suffix = "/linux-arm64.zip"
-        x64_suffix = "/linux-x64.zip"
-
-        # Define URLs based on network type
         paev_urls = [
             f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings.json",
             f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings-nodeinfra.json",
         ]
 
-        # Iterate over each URL in the list
         for url in paev_urls:
-            # Choose the suffix based on the presence of "nodeinfra"
-            suffix = x64_suffix if "nodeinfra" in url else arm64_suffix
-
-            # Construct the plugin URL
-            plugin_url = f"{base_url}{previous_version_lib9c_commit}{suffix}"
-
-            # Call update function
-            self.update(url, previous_version_block_index, plugin_url)
+            self.update(url, cutoff_value, new_start_value, new_plugin_url)
 
     def update(
         self,
-        paev_url,
-        end_value,
-        lib9c_plugin_url):
+        paev_url: str,
+        cutoff_value: int,
+        new_start_value: int,
+        new_plugin_url: str,
+        bucket_name: str = "9c-cluster-config"
+    ):
+        """
+        1. Download the appsettings.json from paev_url.
+        2. Modify the last evaluator so that its end = cutoff_value.
+        3. Append a new evaluator that starts at new_start_value and ends at a very large number.
+        4. Upload updated JSON back to S3.
+        """
 
-        # Check if both URLs exist
-        if url_exists(paev_url) and url_exists(lib9c_plugin_url):
-            print("Both URLs are valid and accessible.")
+        # Example logic adapted to your code:
+        import boto3
+        import requests
+        import json
+        from urllib.parse import urlparse
 
-            # Download the file
-            url = paev_url
-            response = requests.get(url)
-            data = response.json()
+        def url_exists(url):
+            try:
+                resp = requests.head(url, allow_redirects=True)
+                return resp.status_code == 200
+            except requests.exceptions.RequestException as e:
+                print(f"Error checking URL {url}: {e}")
+                return False
 
-            # Define new values for appending and updating
-            start_value = 0
-            new_start_value = end_value + 1
+        def extract_path_from_url(url):
+            parsed = urlparse(url)
+            return parsed.path.lstrip('/')
 
-            # Navigate to the correct location
-            if 'pairs' in data['Headless']['ActionEvaluator']:
+        if not url_exists(paev_url):
+            raise Exception(f"URL not accessible: {paev_url}")
+        if not url_exists(new_plugin_url):
+            raise Exception(f"Plugin URL not accessible: {new_plugin_url}")
 
-                # Append the new value
-                pairs = data['Headless']['ActionEvaluator']['pairs']
-                insert_index = next((i for i, pair in enumerate(pairs) if pair['actionEvaluator'].get('type') == 'Default'), None)
-                start_value = pairs[insert_index - 1]['range']['end'] + 1
+        resp = requests.get(paev_url)
+        if resp.status_code != 200:
+            raise Exception(f"Failed to download JSON from {paev_url}, status: {resp.status_code}")
 
-                value_to_append = {
-                    "range": {
-                        "start": start_value,
-                        "end": end_value
-                    },
-                    "actionEvaluator": {
-                        "type": "PluggedActionEvaluator",
-                        "pluginPath": lib9c_plugin_url
-                    }
-                }
+        data = resp.json()
 
-                if insert_index is not None:
-                    pairs[insert_index]['range']['start'] = new_start_value
-                    pairs.insert(insert_index, value_to_append)
-                else:
-                    raise Exception("The specified range was not found in the pairs.")
+        pairs = data.get('Headless', {}).get('ActionEvaluator', {}).get('pairs', [])
+        if not pairs:
+            raise Exception("No pairs found in ActionEvaluator configuration.")
 
-            else:
-                raise Exception("The specified structure does not exist in the provided JSON data.")
+        # Modify the last pair
+        last_pair = pairs[-1]
+        last_pair['range']['end'] = cutoff_value
 
-            # Upload the modified file back to S3
-            s3_resource = boto3.resource('s3')
-            bucket_name = '9c-cluster-config'  # Replace with your actual bucket name
-            file_name = extract_path_from_url(paev_url)  # Replace with the S3 path for the upload
+        # Append the new pair
+        new_pair = {
+            "range": {
+                "start": new_start_value,
+                "end": 9223372036854775807
+            },
+            "actionEvaluator": {
+                "type": "PluggedActionEvaluator",
+                "pluginPath": new_plugin_url
+            }
+        }
+        pairs.append(new_pair)
 
-            # Convert the modified data back to JSON string
-            file_content = json.dumps(data, indent=4)
-            s3_resource.Object(bucket_name, file_name).put(Body=file_content, ContentType='application/json')
+        # Upload updated JSON back to S3
+        s3_resource = boto3.resource('s3')
+        file_content = json.dumps(data, indent=4)
+        file_name = extract_path_from_url(paev_url)
 
-            print(data)
-            print(f"File uploaded successfully to {paev_url}.")
-        else:
-            raise Exception("One or both URLs are not accessible. Please check the URLs and try again.")
+        s3_resource.Object(bucket_name, file_name).put(
+            Body=file_content,
+            ContentType='application/json'
+        )
+
+        print(f"Successfully updated {paev_url} with new evaluator from {cutoff_value} to {new_start_value}.")
 
 def url_exists(url):
     try:
