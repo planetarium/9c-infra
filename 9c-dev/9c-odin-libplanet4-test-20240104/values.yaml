@@ -135,6 +135,7 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --consensus-target-block-interval=6500
+  - --consensus-enter-precommit-delay=300
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-dev-r6g_xl_2c
