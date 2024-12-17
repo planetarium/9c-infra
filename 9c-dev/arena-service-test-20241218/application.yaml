@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arena-service-test-20241218
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arena-service-test-20241218

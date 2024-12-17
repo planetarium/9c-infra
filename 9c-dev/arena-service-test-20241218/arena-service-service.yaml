@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: arena-service
+    app.kubernetes.io/instance: arena-service-test-20241218
+  name: arena-service-service
+  namespace: arena-service-test-20241218
+spec:
+  type: ClusterIP
+  selector:
+    app: arena-service
+  ports:
+    - port: 80
+      targetPort: 80

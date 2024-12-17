@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: arena-service
+    app.kubernetes.io/instance: arena-service-test-20241218
+  name: arena-service-deployment
+  namespace: arena-service-test-20241218
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: arena-service
+  template:
+    metadata:
+      labels:
+        app: arena-service
+    spec:
+      containers:
+        - name: arena-service
+          image: planetariumhq/arena-service:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              value: "Host=psql-service;Database=arena;Username=testuser;Password=$(POSTGRES_PASSWORD)"
+            - name: Logging__LogLevel__Default
+              value: "Information"
+            - name: Logging__LogLevel__Microsoft.AspNetCore
+              value: "Warning"
+            - name: AllowedHosts
+              value: "*"
+          envFrom:
+            - secretRef:
+                name: arena-service-secret
