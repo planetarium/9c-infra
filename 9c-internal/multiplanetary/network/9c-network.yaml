@@ -165,13 +165,6 @@ dataProvider:
 
   db:
     local: false
-    storage: 100Gi
-    database: ''
-    connectionString: ''
-    host: ''
-    port: 3306
-    user: user
-    password: ''
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
