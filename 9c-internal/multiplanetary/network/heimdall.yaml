@@ -120,7 +120,7 @@ dataProvider:
     log: 10Gi
 
   db:
-    local: true
+    local: false
     database: ""
     connectionString: ""
     host: ""

@@ -164,7 +164,7 @@ dataProvider:
     log: 4Gi
 
   db:
-    local: true
+    local: false
     storage: 100Gi
     database: ''
     connectionString: ''
