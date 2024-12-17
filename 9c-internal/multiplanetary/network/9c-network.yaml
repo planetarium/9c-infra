@@ -164,14 +164,7 @@ dataProvider:
     log: 4Gi
 
   db:
-    local: true
-    storage: 100Gi
-    database: ''
-    connectionString: ''
-    host: ''
-    port: 3306
-    user: user
-    password: ''
+    local: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
