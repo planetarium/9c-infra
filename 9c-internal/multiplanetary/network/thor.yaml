@@ -125,6 +125,12 @@ dataProvider:
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
+dataProviderDailyMetric:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: thor-spot_2c
+
 marketService:
   enabled: true
 
