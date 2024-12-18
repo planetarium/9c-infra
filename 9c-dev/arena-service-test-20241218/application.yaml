@@ -8,6 +8,7 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: main
+    path: 9c-dev/arena-service-test-20241218
   destination:
     server: https://kubernetes.default.svc
     namespace: arena-service-test-20241218
