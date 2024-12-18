@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: psql
+    app.kubernetes.io/instance: arena-service-test-20241218
+  name: psql-service
+  namespace: arena-service-test-20241218
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jiwon,Service=arena-service-test-20241218,Name=psql
+spec:
+  externalTrafficPolicy: Local
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: psql
+  type: LoadBalancer

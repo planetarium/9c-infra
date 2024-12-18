@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: psql
+    app.kubernetes.io/instance: arena-service-test-20241218
+  name: psql-deployment
+  namespace: arena-service-test-20241218
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: psql
+  template:
+    metadata:
+      labels:
+        app: psql
+    spec:
+      containers:
+        - name: psql
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "arena"
+            - name: POSTGRES_USER
+              value: "testuser"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arena-service-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: psql-data
+      volumes:
+        - name: psql-data
+          emptyDir: {}
