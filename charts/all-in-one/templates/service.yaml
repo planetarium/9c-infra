@@ -269,6 +269,9 @@ spec:
   - name: https
     port: 443
     targetPort: {{ $.Values.testHeadless1.ports.graphql }}
+  - name: libplanet-remote-kv-rpc
+    port: {{ $.Values.testHeadless1.remoteKv.port }}
+    targetPort: {{ $.Values.testHeadless.remoteKv.port }}
   selector:
     app: test-headless-1
   type: LoadBalancer

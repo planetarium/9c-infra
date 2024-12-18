@@ -3,6 +3,11 @@ global:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
     tag: "git-25d383fc0d2cc75a7e262329b6587c2bd40bd6d1"
+  
+  remoteKv:
+    image:
+      repository: planetariumhq/libplanet-remote-kv
+      tag: "git-3a20dd33221894be5764e38a0024a29ecb1a023b"
 
   service:
     annotations:
