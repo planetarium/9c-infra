@@ -386,6 +386,12 @@ testHeadless1:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
+  remoteKv:
+    image:
+      repository: ""
+      tag: ""
+    port: 5000
+
   loggingEnabled: false
   datadog:
     enabled: false
