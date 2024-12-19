@@ -22,14 +22,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: ConnectionStrings__DefaultConnection
-              value: "Host=psql-service;Database=arena;Username=testuser;Password=$(POSTGRES_PASSWORD)"
-            - name: Logging__LogLevel__Default
-              value: "Information"
-            - name: Logging__LogLevel__Microsoft.AspNetCore
-              value: "Warning"
-            - name: AllowedHosts
-              value: "*"
-          envFrom:
-            - secretRef:
-                name: arena-service-secret
+            - name: POSTGRES_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: arena-service-secret
+                  key: POSTGRES_CONNECTION_STRING
