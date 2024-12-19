@@ -16,4 +16,4 @@ spec:
     app: arena-service
   ports:
     - port: 80
-      targetPort: 7096
+      targetPort: 8080
