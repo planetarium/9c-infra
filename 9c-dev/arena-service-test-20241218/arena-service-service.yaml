@@ -10,7 +10,6 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jiwon,Service=arena-service-test-20241218,Name=arena-service
 spec:
-  externalTrafficPolicy: Local
   type: LoadBalancer
   selector:
     app: arena-service
