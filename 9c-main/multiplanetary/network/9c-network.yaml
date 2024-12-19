@@ -425,6 +425,9 @@ testHeadless1:
 
   loggingEnabled: true
 
+  remoteKv: 
+    port: 5000
+
   datadog:
     enabled: true
 
