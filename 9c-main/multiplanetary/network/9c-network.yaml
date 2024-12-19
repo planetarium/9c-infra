@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200250/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIDIRS2B0is95ygWBjL9jDisXkGMUxCjDFFUzMQmPnh64AiAE+CmQ0U0xwXfPf2TM11go2U0CPbYD8AKLOZc7hCJClQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTExLTI4ZQ=="
+  appProtocolVersion: "200260/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIGvqtafvRDgh2A3hvaVchhfEq0oXt.Z0uVzTlJyuQvsIAiBE6ol23fZ.LxXLBMsN245aCTYIWHda3JvgZfgLRIn7Jw==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI0LTEyLTE5ZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -425,7 +425,7 @@ testHeadless1:
 
   loggingEnabled: true
 
-  remoteKv: 
+  remoteKv:
     port: 5000
 
   datadog:
