@@ -7,7 +7,7 @@ global:
   remoteKv:
     image:
       repository: planetariumhq/libplanet-remote-kv
-      tag: "git-3a20dd33221894be5764e38a0024a29ecb1a023b"
+      tag: "git-2031acb93249abb275c89f5019a34b22f303a74a"
 
   service:
     annotations:

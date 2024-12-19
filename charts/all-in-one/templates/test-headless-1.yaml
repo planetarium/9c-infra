@@ -285,6 +285,8 @@ spec:
       - args:
         - Libplanet.Store.Remote.Executable.dll
         - /data/headless/states
+        - --port
+        - "{{ $.Values.testHeadless1.remoteKv.port }}"
         command:
         - dotnet
         image: {{ $.Values.testHeadless1.remoteKv.image.repository | default $.Values.global.remoteKv.image.repository }}:{{ $.Values.testHeadless1.remoteKv.image.tag | default $.Values.global.remoteKv.image.tag }}
@@ -306,8 +308,6 @@ spec:
           name: json-log
         {{- end }}
         env:
-          - name: ASPNETCORE_URLS
-            value: http://*:{{ $.Values.testHeadless1.remoteKv.port }}/
           {{- if $.Values.testHeadless1.loggingEnabled }}
           - name: POD_NAME
             valueFrom:
