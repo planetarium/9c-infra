@@ -20,7 +20,7 @@ spec:
         - name: arena-service
           image: planetariumhq/arena-service:git-eb849c21d287be4ffefd276264fc53a2391dee7f
           ports:
-            - containerPort: 7096
+            - containerPort: 8080
           env:
             - name: ConnectionStrings__DefaultConnection
               value: "Host=psql-service;Database=arena;Username=testuser;Password=$(POSTGRES_PASSWORD)"
