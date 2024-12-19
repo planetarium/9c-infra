@@ -7,6 +7,7 @@ metadata:
   name: arena-service-service
   namespace: arena-service-test-20241218
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment=development,Team=game,Owner=jiwon,Service=arena-service-test-20241218,Name=arena-service
 spec:
   externalTrafficPolicy: Local
