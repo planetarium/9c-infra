@@ -286,9 +286,9 @@ spec:
         - Libplanet.Store.Remote.Executable.dll
         - /data/headless/states
         - --port
-        - "{{ $.Values.testHeadless1.remoteKv.port }}"
+        - "{{ $.Values.testHeadless1.remoteKv.ports.rpc }}"
         - --http-port
-        - "{{ $.Values.testHeadless1.remoteKv.port }}"
+        - "{{ $.Values.testHeadless1.remoteKv.ports.http }}"
         command:
         - dotnet
         image: {{ $.Values.testHeadless1.remoteKv.image.repository | default $.Values.global.remoteKv.image.repository }}:{{ $.Values.testHeadless1.remoteKv.image.tag | default $.Values.global.remoteKv.image.tag }}
