@@ -425,8 +425,10 @@ testHeadless1:
 
   loggingEnabled: true
 
-  remoteKv:
-    port: 5000
+  remoteKv: 
+    ports:
+      rpc: 5000
+      http: 5001
 
   datadog:
     enabled: true

@@ -390,7 +390,9 @@ testHeadless1:
     image:
       repository: ""
       tag: ""
-    port: 5000
+    ports:
+      rpc: 5000
+      http: 5001
 
   loggingEnabled: false
   datadog:

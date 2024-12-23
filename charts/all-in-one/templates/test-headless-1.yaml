@@ -287,14 +287,19 @@ spec:
         - /data/headless/states
         - --port
         - "{{ $.Values.testHeadless1.remoteKv.port }}"
+        - --http-port
+        - "{{ $.Values.testHeadless1.remoteKv.port }}"
         command:
         - dotnet
         image: {{ $.Values.testHeadless1.remoteKv.image.repository | default $.Values.global.remoteKv.image.repository }}:{{ $.Values.testHeadless1.remoteKv.image.tag | default $.Values.global.remoteKv.image.tag }}
         imagePullPolicy: Always
         name: test-headless-1-remote-kv
         ports:
-        - containerPort: {{ $.Values.testHeadless1.remoteKv.port }}
+        - containerPort: {{ $.Values.testHeadless1.remoteKv.ports.rpc }}
           name: rpc
+          protocol: TCP
+        - containerPort: {{ $.Values.testHeadless1.remoteKv.ports.http }}
+          name: http
           protocol: TCP
         resources:
           {{- toYaml $.Values.testHeadless1.remoteKv.resources | nindent 10 }}
