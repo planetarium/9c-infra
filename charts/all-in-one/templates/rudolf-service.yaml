@@ -52,6 +52,8 @@ spec:
               value: {{ .Values.rudolfService.kms.keyId }}
             - name: AWS_KMS_PUBLIC_KEY
               value: {{ .Values.rudolfService.kms.publicKey }}
+            - name: DEFAULT_START_NONCE
+              value: {{ .Values.rudolfService.config.defaultNextNonce }}
           image: {{ $.Values.rudolfService.image.repository }}:{{ $.Values.rudolfService.image.tag }}
           ports:
             - containerPort: 3000

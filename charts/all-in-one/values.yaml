@@ -624,6 +624,8 @@ acc:
 
 rudolfService:
   enabled: false
+  config:
+    defaultNextNonce: 0
   image:
     repository: planetariumhq/9c-rudolf
     pullPolicy: Always

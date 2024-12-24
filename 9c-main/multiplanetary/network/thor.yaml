@@ -520,6 +520,7 @@ rudolfService:
   config:
     graphqlEndpoint: "http://thor-full-state.nine-chronicles.com/graphql"
     genesisBlockHash: "bde462fd59de5ccba8495ebb163b124bf77ddc82cfc8b2f9fb57c00fc6e133b7"
+    defaultNextNonce: 1
 
   db:
     local: false
