@@ -519,14 +519,14 @@ rudolfService:
 
   config:
     graphqlEndpoint: "http://thor-full-state.nine-chronicles.com/graphql"
-    genesisBlockHash: "729fa26958648a35b53e8e3905d11ec53b1b4929bf5f499884aed7df616f5913"
+    genesisBlockHash: "bde462fd59de5ccba8495ebb163b124bf77ddc82cfc8b2f9fb57c00fc6e133b7"
 
   db:
     local: false
 
   kms:
-    keyId: "8a959850-46d4-4dda-bf1c-058ef6975b63"
-    publicKey: "0441319181d5e47bce52402f46502dacf5ba63ee7e3f81271c2e266e3086c31a5e56d999857f69b9db132810f69ede7cc2b3e832ff61759ce101e2e5d86c702938"
+    keyId: "d75f4c8e-2727-44ca-975d-73b5a56d5233"
+    publicKey: "0421ed41e6804af308035055cfd02ef6962f792ec1eed52a286bf2bfe714e769d22dacc26ced66e2ac553a1ceaca1400dff9dff7a5417473b820bf36875481d901"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/thor-main-9c-rudolf-signer"
