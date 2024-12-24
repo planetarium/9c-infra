@@ -104,6 +104,8 @@ spec:
             - $(DP_SLACK_CHANNEL)
             - --network
             - $(DP_NETWORK)
+            - --bulk-files-folder
+            - /data
             command:
             - dotnet
             env:
