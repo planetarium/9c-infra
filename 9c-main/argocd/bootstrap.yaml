@@ -140,6 +140,7 @@ spec:
                   - targets:
                     - rudolf-service.9c-network.svc.cluster.local:3000
                     - rudolf-service.heimdall.svc.cluster.local:3000
+                    - rudolf-service.thor.svc.cluster.local:3000
                     labels:
                       group: 9c-rudolf
                 tls_config:
