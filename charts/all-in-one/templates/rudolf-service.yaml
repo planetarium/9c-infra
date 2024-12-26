@@ -80,6 +80,7 @@ metadata:
   annotations:
     {{- with (deepCopy $.Values.global.service.annotations) }}
       {{ $_ := unset . "service.beta.kubernetes.io/aws-load-balancer-scheme" }}
+      {{ $_ := unset . "service.beta.kubernetes.io/aws-load-balancer-subnets" }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- if .Values.rudolfService.service.public }}
