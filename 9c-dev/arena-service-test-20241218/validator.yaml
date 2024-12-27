@@ -84,7 +84,6 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage:
-            data: 100Gi
+          storage: 100Gi
       storageClassName: arena-service-test-20241218-gp3
       volumeMode: Filesystem
