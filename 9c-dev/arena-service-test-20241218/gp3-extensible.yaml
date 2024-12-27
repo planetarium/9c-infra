@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: arena-service-test-20241218-gp3
+  labels:
+    app.kubernetes.io/instance: arena-service-test-20241218
+parameters:
+  fsType: ext4
+  type: gp3
+provisioner: ebs.csi.aws.com
+reclaimPolicy: "Delete"
+allowVolumeExpansion: true
