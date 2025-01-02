@@ -7,7 +7,7 @@ metadata:
   name: arena-service-deployment
   namespace: arena-service-test-20241218
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: arena-service
