@@ -22,7 +22,7 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: POSTGRES_CONNECTION_STRING
+            - name: ConnectionStrings__DefaultConnection
               valueFrom:
                 secretKeyRef:
                   name: arena-service-secret
