@@ -8,8 +8,8 @@ metadata:
   namespace: arena-service-test-20241218
 spec:
   ports:
-    - port: 31280
-      targetPort: 31280
+    - port: 31238
+      targetPort: 31238
   selector:
     app: validator
   type: ClusterIP
