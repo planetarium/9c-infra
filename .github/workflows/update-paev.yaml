@@ -15,9 +15,9 @@ on:
       new_start_value:
         required: true
         description: 'The new start index (e.g. 20000000)'
-      new_plugin_url:
+      new_lib9c_commit:
         required: true
-        description: 'The plugin URL for the newly added evaluator (e.g. https://lib9c-plugin.s3.us-east-2.amazonaws.com/678ac90398f376698ee75da63ed089fe678d11e6/linux-arm64.zip)'
+        description: 'The lib9c commit for the newly added evaluator (e.g. 678ac90398f376698ee75da63ed089fe678d11e6)'
 
 jobs:
   update-paev:
@@ -42,7 +42,7 @@ jobs:
           python cli.py update-paev \
             ${{ github.event.inputs.network_type }} \
             ${{ github.event.inputs.new_start_value }} \
-            ${{ github.event.inputs.new_plugin_url }}
+            ${{ github.event.inputs.new_lib9c_commit }}
         working-directory: ./scripts
         env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}

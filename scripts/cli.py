@@ -88,14 +88,14 @@ def update_apv(
 def update_paev(
     network_type: str = typer.Argument(..., help="e.g. mainnet, internal, etc."),
     new_start_value: int = typer.Argument(..., help="The start index for the newly added evaluator (e.g. 20000000)"),
-    new_plugin_url: str = typer.Argument(..., help="The plugin URL for the newly added evaluator"),
+    new_lib9c_commit: str = typer.Argument(..., help="The new lib9c commit for the newly added evaluator"),
 ):
     """
     Update the PluggableActionEvaluator (PAEV) configuration.
     This modifies the last evaluator so that it ends at new_start_value - 1,
     then appends a new evaluator starting at new_start_value.
     """
-    PluggableActionEvaluatorUpdater().prep_update(network_type, new_start_value, new_plugin_url)
+    PluggableActionEvaluatorUpdater().prep_update(network_type, new_start_value, new_lib9c_commit)
 
 if __name__ == "__main__":
     k8s_app()
