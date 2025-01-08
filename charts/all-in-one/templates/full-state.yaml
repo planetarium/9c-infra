@@ -242,8 +242,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.fullState.storage.volumeName }}
+      - name: main-full-state-data
+        persistentVolumeClaim:
+          claimName: {{ $.Values.fullState.storage.volumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: main-full-state-data
@@ -255,5 +258,8 @@ spec:
           storage: {{ $.Values.fullState.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 ---
 {{ end }}
