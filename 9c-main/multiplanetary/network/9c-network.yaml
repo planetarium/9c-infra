@@ -159,6 +159,10 @@ validator:
   hosts:
   - "odin-validator-5.nine-chronicles.com"
 
+  storage:
+    volumeNames:
+    - "validator-data-5-validator-5-1"
+
   tolerations:
   - effect: NoSchedule
     key: dedicated
@@ -230,6 +234,11 @@ remoteHeadless:
     requests:
       cpu: '5'
       memory: 25Gi
+
+  storage:
+    volumeNames:
+    - "remote-headless-data-1-remote-headless-1-1"
+    - "remote-headless-data-2-remote-headless-2-1"
 
   tolerations:
   - effect: NoSchedule
@@ -569,6 +578,9 @@ jwtHeadless:
     requests:
       cpu: 3
       memory: 25Gi
+
+  storage:
+    volumeName: "jwt-headless-data-jwt-headless-1"
 
   tolerations:
   - effect: NoSchedule
