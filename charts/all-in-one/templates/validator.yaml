@@ -283,6 +283,9 @@ spec:
         {{- toYaml $.Values.validator.tolerations | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
           defaultMode: 448
@@ -302,14 +305,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-      imagePullSecrets:
-      - name: acr-regcred
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-  updateStrategy:
-    type: RollingUpdate
+      {{- if (index $.Values.validator.storage.volumeNames $idx) }}
+      - name: validator-data-{{ $index }}
+        persistentVolumeClaim:
+          claimName: {{ index $.Values.validator.storage.volumeNames $idx }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: validator-data-{{ $index }}
@@ -321,5 +321,8 @@ spec:
           storage: {{ $.Values.validator.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 ---
 {{ end }}

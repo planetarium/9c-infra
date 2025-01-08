@@ -145,8 +145,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.dataProvider.storage.readVolumeName }}
+      - name: data-provider-read-data
+        persistentVolumeClaim:
+          claimName: {{ $.Values.dataProvider.storage.readVolumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data-provider-read-data
@@ -158,6 +161,9 @@ spec:
           storage: {{ $.Values.dataProvider.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -339,8 +345,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.dataProvider.storage.writeVolumeName }}
+      - name: data-provider-write-data
+        persistentVolumeClaim:
+          claimName: {{ $.Values.dataProvider.storage.writeVolumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data-provider-write-data
@@ -352,6 +361,9 @@ spec:
           storage: {{ $.Values.dataProvider.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 ---
 {{ else }}
 apiVersion: apps/v1
@@ -554,8 +566,11 @@ spec:
         configMap:
           defaultMode: 488
           name: {{ $.Release.Name }}-data-provider-script
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.dataProvider.storage.volumeName }}
+      - name: data-provider-data
+        persistentVolumeClaim:
+          claimName: {{ $.Values.dataProvider.storage.volumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data-provider-data
@@ -567,5 +582,8 @@ spec:
           storage: {{ $.Values.dataProvider.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 {{ end }}
 {{ end }}
