@@ -301,8 +301,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.jwtHeadless.storage.volumeName }}
+      - name: jwt-headless-data
+        persistentVolumeClaim:
+          claimName: {{ $.Values.jwtHeadless.storage.volumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: jwt-headless-data
@@ -314,4 +317,7 @@ spec:
           storage: {{ $.Values.jwtHeadless.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 {{ end }}

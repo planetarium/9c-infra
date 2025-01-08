@@ -356,8 +356,11 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-  updateStrategy:
-    type: RollingUpdate
+      {{- if $.Values.testHeadless1.storage.volumeName }}
+      - name: test-headless-data-1
+        persistentVolumeClaim:
+          claimName: {{ $.Values.testHeadless1.storage.volumeName }}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: test-headless-data-1
@@ -369,4 +372,7 @@ spec:
           storage: {{ $.Values.testHeadless1.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
 {{ end }}
