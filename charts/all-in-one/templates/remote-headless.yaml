@@ -62,7 +62,7 @@ spec:
       initContainers:
         {{- if $.Values.global.resetSnapshot }}
         - args:
-          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/headless
           - $(RESET_SNAPSHOT_OPTION)
           - remote-headless-{{ $index }}
@@ -71,7 +71,7 @@ spec:
           command:
           - /bin/download_snapshot.sh
           env:
-          - name: RESET_SNAPSHOT_OPTION
+          - name: RESET_SNAPSHOT_OPTION  
             value: "{{ $.Values.global.resetSnapshot }}"
           - name: SNAPSHOT_ROLLBACK_OPTION
             value: "{{ $.Values.global.rollbackSnapshot }}"
@@ -324,7 +324,7 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-      {{- if (index $.Values.remoteHeadless.storage.volumeNames $idx) }}
+      {{- if and $.Values.remoteHeadless.storage.volumeNames (gt (len $.Values.remoteHeadless.storage.volumeNames) $idx) (ne (index $.Values.remoteHeadless.storage.volumeNames $idx) "") }}
       - name: remote-headless-data-{{ $index }}
         persistentVolumeClaim:
           claimName: {{ index $.Values.remoteHeadless.storage.volumeNames $idx }}
