@@ -283,11 +283,8 @@ spec:
         {{- toYaml $.Values.validator.tolerations | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-      - name: acr-regcred
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
