@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: arena-service
-          image: planetariumhq/arena-service:git-41e6c8daca70540f2254197ec9d1c4c08dffe8a5
+          image: planetariumhq/arena-service:git-69a51ce5005f0e2570ab6d691ef5be2cbe1b131a
           ports:
             - containerPort: 8080
           env:
@@ -27,3 +27,5 @@ spec:
                 secretKeyRef:
                   name: arena-service-secret
                   key: POSTGRES_CONNECTION_STRING
+            - name: Redis__Host
+              value: redis-service
