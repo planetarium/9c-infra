@@ -149,7 +149,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
