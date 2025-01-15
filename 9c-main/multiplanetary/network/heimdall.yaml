@@ -336,12 +336,12 @@ dataProvider:
   render: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
 
   resources:
     requests:
-      cpu: '1'
-      memory: 10Gi
+      cpu: '3'
+      memory: 28Gi
 
   env:
   - name: PLUGIN_PATH
