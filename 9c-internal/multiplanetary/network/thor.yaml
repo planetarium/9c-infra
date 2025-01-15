@@ -2,10 +2,6 @@ clusterName: "9c-internal-v2"
 logLevel: "debug"
 
 global:
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: "git-08308b1134eaaa7a593350ebe59f12021b33fae7"
-
   validatorPath: "validator-5.thor.svc.cluster.local"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings.json"
