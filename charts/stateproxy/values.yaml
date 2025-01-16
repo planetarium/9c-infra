@@ -7,51 +7,31 @@ clusterName: "9c-sample"
 logLevel: "debug"
 
 namespace: "9c-sample"
-nameOverwrite: "explorer"
-
-appProtocolVersion: "200000/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQD4MxYR4lSu69b+TYUB91k.Ns5cJHlK0B6SzU60g16OOgIgUwg3wJNKSO7A68sKn.rDQiuHAjftT1fPOmwiLEZyvJE=/ZHU4OmxhdW5jaGVydTQyOjEvMDZmZmYwZGVlM2Q4NGIwNzhkMjNlZDgxZGRjODgxOWM4ZGU1ZmY5MHU2OnBsYXllcnU0MjoxLzhjYWI5NjYwYTk2MzIyMDk4MjU5OWZjYjc0MjMyNjI2MzA5ZTIwZmF1OTp0aW1lc3RhbXB1MTA6MjAyMy0wNC0wNWU="
-genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
-trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
-
-peerStrings:
-- "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,9c-sample-tcp-seed-1.planetarium.dev,31234"
-- "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,9c-sample-tcp-seed-2.planetarium.dev,31234"
-- "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,9c-sample-tcp-seed-3.planetarium.dev,31234"
-
-iceServers:
-- "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
-
-networkType: Default
-consensusType: pbft
+nameOverwrite: "stateProxy"
 
 resetSnapshot: false
-rollbackSnapshot: false
-
-useExternalSecret: false
-slackToken: ""
-slackWebHookUrl: ""
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
 
 count: 1
 image:
-  repository: planetariumhq/ninechronicles-headless
+  repository: planetariumhq/ninechronicles-stateproxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "git-ed113c0838261d12a6ed716fc427d948b6da30f2"
+  tag: "git-6277213487340ebf5d788f1c5a6bb94598d3bcb0"
 
 snapshot:
-  path: internal
+  path: internal/heimdall
+
+upstream: "http://remote-headless-1.heimdall.svc.cluster.local/"
 
 # dotnet args
 extraArgs: []
 # - --key=val
 
-useTurnServer: false
-
 hosts:
-- "9c-sample-rpc-1.nine-chronicles.com"
+- "stateproxy-1.nine-chronicles.com"
 
 ports:
   headless: 31234
@@ -60,13 +40,16 @@ ports:
 
 storage:
   class: "9c-network-gp3"
-  data: 1000Gi
+  data: 100Gi
 
 resources:
   requests:
     cpu: 2
-    memory: 20Gi
+    memory: 14Gi
 
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+service:
+  annotations: {}

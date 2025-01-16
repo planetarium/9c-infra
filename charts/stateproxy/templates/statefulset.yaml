@@ -27,20 +27,17 @@ spec:
       name: stateproxy-{{ $index }}
     spec:
       initContainers:
-        {{- if $.Values.global.resetSnapshot }}
+        {{- if $.Values.resetSnapshot }}
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
-          - /data/headless
+          - /data/stateproxy
           - $(RESET_SNAPSHOT_OPTION)
           - stateproxy-{{ $index }}
-          - $(SNAPSHOT_ROLLBACK_OPTION)
           command:
           - /bin/download_snapshot.sh
           env:
           - name: RESET_SNAPSHOT_OPTION  
-            value: "{{ $.Values.global.resetSnapshot }}"
-          - name: SNAPSHOT_ROLLBACK_OPTION
-            value: "{{ $.Values.global.rollbackSnapshot }}"
+            value: "{{ $.Values.resetSnapshot }}"
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: Always
           name: reset-snapshot
@@ -63,12 +60,12 @@ spec:
 
             # Endpoint to check
 
-            VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+            UPSTREAM="{{ $.Values.upstream }}/ui/playground"
 
-            echo Checking: ${VALIDATOR}
+            echo Checking: ${UPSTREAM}
 
             while [[ $(curl --silent --output /dev/null --request GET
-            --write-out "%{http_code}" ${VALIDATOR}) -ne 200 ]]; do
+            --write-out "%{http_code}" ${UPSTREAM}) -ne 200 ]]; do
               echo "Not ready"
               sleep 5s
             done
@@ -82,25 +79,25 @@ spec:
           terminationMessagePolicy: File
       containers:
       - args:
-        - NineChronicles.Headless.Executable.dll
+        - NineChronicles.StateProxy.dll
         - run
-        - --config={{ $.Values.global.AppsettingsPath }}
-        {{- with $.Values.stateProxy.extraArgs }}
+        - --config={{ $.Values.AppsettingsPath }}
+        {{- with $.Values.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         command:
         - dotnet
-        image: {{ $.Values.stateProxy.image.repository }}:{{ $.Values.stateProxy.image.tag }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: Always
         name: stateproxy-{{ $index }}
         ports:
-        - containerPort: {{ $.Values.stateProxy.ports.graphql }}
+        - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
           protocol: TCP
-        - containerPort: {{ $.Values.stateProxy.ports.headless }}
+        - containerPort: {{ $.Values.ports.headless }}
           name: headless
           protocol: TCP
-        - containerPort: {{ $.Values.stateProxy.ports.rpc }}
+        - containerPort: {{ $.Values.ports.rpc }}
           name: rpc
           protocol: TCP
         livenessProbe:
@@ -119,7 +116,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 10
         resources:
-          {{- toYaml $.Values.stateProxy.resources | nindent 10 }}
+          {{- toYaml $.Values.resources | nindent 10 }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -142,14 +139,14 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-        {{- with $.Values.stateProxy.env }}
+        {{- with $.Values.env }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
-      {{- with $.Values.stateProxy.nodeSelector }}
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.stateProxy.tolerations }}
+      {{- with $.Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -166,10 +163,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
-      {{- if and $.Values.stateProxy.storage.volumeNames (gt (len $.Values.stateProxy.storage.volumeNames) $idx) (ne (index $.Values.stateProxy.storage.volumeNames $idx) "") }}
+      {{- if and $.Values.storage.volumeNames (gt (len $.Values.storage.volumeNames) $idx) (ne (index $.Values.storage.volumeNames $idx) "") }}
       - name: stateproxy-data-{{ $index }}
         persistentVolumeClaim:
-          claimName: {{ index $.Values.stateProxy.storage.volumeNames $idx }}
+          claimName: {{ index $.Values.storage.volumeNames $idx }}
       {{- else }}
   volumeClaimTemplates:
   - metadata:
@@ -179,7 +176,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ $.Values.stateProxy.storage.data }}
+          storage: {{ $.Values.storage.data }}
       storageClassName: {{ $.Release.Name }}-gp3
       volumeMode: Filesystem
       {{- end }}
