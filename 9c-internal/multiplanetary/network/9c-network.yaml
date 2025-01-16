@@ -215,7 +215,7 @@ marketService:
     value: "true"
 
 patrolRewardService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: odin-spot_2c
