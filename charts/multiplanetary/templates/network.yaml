@@ -1,4 +1,4 @@
-{{ range $.Values.network }}
+{{- range $.Values.network }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,16 +7,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: main
+    repoURL: {{ $.Values.repoURL | default "https://github.com/planetarium/9c-infra.git" }}
+    targetRevision: {{ $.Values.targetRevision | default "main" }}
     path: charts/all-in-one
     helm:
       valueFiles:
-        - "../../{{ $.Values.path }}/network/general.yaml"
-        - "../../{{ $.Values.path }}/network/{{ . }}.yaml"
-
+      - /{{ $.Values.path }}/network/general.yaml
+      - /{{ $.Values.path }}/network/{{ . }}.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ . }}
 ---
-{{ end }}
+{{- end }}

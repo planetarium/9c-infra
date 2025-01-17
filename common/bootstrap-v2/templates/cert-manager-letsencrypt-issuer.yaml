@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cert-manager-letsencrypt-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: "{{ .Values.certManager.issuer.email }}"
+    privateKeySecretRef:
+      name: cert-manager-letsencrypt-issuer-secret
+    solvers:
+      - dns01:
+          route53:
+            region: us-east-2

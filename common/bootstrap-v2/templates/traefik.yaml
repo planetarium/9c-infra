@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  project: infra
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  source:
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 34.1.0
+    helm:
+      values: |-
+        service:
+          annotations:
+            {{- with .Values.global.service.annotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+        tlsStore:
+          default:
+            defaultCertificate:
+              secretName: certificate-secret

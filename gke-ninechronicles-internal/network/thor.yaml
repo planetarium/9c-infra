@@ -1,0 +1,94 @@
+global:
+  validatorPath: "thor-internal-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings.json"
+
+  appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
+
+  peerStrings:
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.thor.svc.cluster.local,31234"
+
+  trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
+
+  networkType: Internal
+  planet: ThorInternal
+  consensusType: pbft
+
+  resetSnapshot: true
+  rollbackSnapshot: false
+
+externalSecret:
+  enabled: true
+  prefix: "ninechronicles-internal-test-1_thor"
+
+ingress:
+  enabled: false
+
+gateway:
+  enabled: true
+  services:
+  - name: remote-headless
+    hostnames:
+      - thor-internal-gke-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    protocols:
+    - web
+    - grpc
+
+snapshot:
+  downloadSnapshot: true
+  slackChannel: "9c-internal"
+  image: "planetariumhq/ninechronicles-snapshot:git-45205b5ed6d978bb0dda6ad0b84fb0a393015711"
+  partition:
+    enabled: false
+    suspend: true
+  path: internal
+  nodeSelector:
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
+seed:
+  count: 1
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+
+  hosts:
+  - "thor-internal-gke-tcp-seed-1.nine-chronicles.com"
+
+  nodeSelector:
+
+remoteHeadless:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+
+  hosts:
+  - "thor-internal-gke-rpc-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 500Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  nodeSelector:
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --remote-key-value-service
+
+validator:
+  count: 0
