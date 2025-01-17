@@ -1,7 +1,7 @@
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-5681ee3a468d8c550d70e0ebed6eb530a5caf82a"
+    tag: "git-51370980066351211d9e91b1bc9aa24dbe71dd1e"
 
   service:
     annotations:
@@ -23,7 +23,7 @@ bridgeService:
   image:
     repository: planetariumhq/9c-bridge
     pullPolicy: Always
-    tag: "git-0f30871bdbc1765388e80b2f64f5a92400592c14"
+    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
 
 bridgeServiceApi:
   image:
@@ -35,7 +35,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-97c64b0755c1891ec2a12bef87d326851bf75f93"
+    tag: "git-2a5cb73b67c2f382809c8a4cdb178a30fdb48f5b"
 
 worldBoss:
   image:
