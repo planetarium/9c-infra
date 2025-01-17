@@ -140,7 +140,7 @@ spec:
               sleep 5s
             done
 
-            VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+            VALIDATOR="{{ $.Values.global.validatorPath }}/ui/playground"
 
             echo Checking: ${VALIDATOR}
 
@@ -338,7 +338,9 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.remoteHeadless.storage.data }}
+      {{- if eq $.Values.provider "AWS" }}
       storageClassName: {{ $.Release.Name }}-gp3
+      {{- end }}
       volumeMode: Filesystem
       {{- end }}
   updateStrategy:

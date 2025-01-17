@@ -1,0 +1,29 @@
+clusterName: ninechronicles-internal-test-1
+provider: GCP
+GCP:
+  projectID: devops-test-445104
+global:
+  service:
+    annotations:
+      cloud.google.com/network-tier: Standard
+argocd:
+  domain: argocd-internal-gke.planetarium.network
+externalSecrets:
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: external-secrets@devops-test-445104.iam.gserviceaccount.com
+externalDns:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
+certManager:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
+  dnsNames:
+    - "*.nine-chronicles.com"
+    - "*.planetarium.network"
+  issuer:
+    email: devops@planetariumhq.com
+  replicateNamespaces:
+    - thor

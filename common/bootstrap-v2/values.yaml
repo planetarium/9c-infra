@@ -1,0 +1,24 @@
+clusterName:
+provider:
+
+global:
+  service:
+    annotations:
+
+argocd:
+  domain:
+
+externalSecrets:
+  serviceAccount:
+    annotations:
+
+externalDns:
+  serviceAccount:
+    annotations:
+
+certManager:
+  serviceAccount:
+    annotations:
+  dnsNames:
+  issuer:
+    email:
