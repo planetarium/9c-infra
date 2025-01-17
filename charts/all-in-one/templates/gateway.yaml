@@ -15,13 +15,11 @@ spec:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}
   source:
-    repoURL: https://github.com/traefik/traefik-helm-chart/
-    path: traefik
-    targetRevision: v33.0.0
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 34.1.0
     helm:
       values: |
-        image:
-          tag: v3.2.0
         ingressClass:
           enabled: false
         providers:
@@ -44,6 +42,12 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
             service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
+        {{- with $.Values.gateway.defaultCertificate }}
+        tlsStore:
+          default:
+            defaultCertificate:
+              secretName: {{ . }}
+        {{- end }}
         ports:
           websecure:
             targetPort: web
