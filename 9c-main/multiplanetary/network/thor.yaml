@@ -546,6 +546,9 @@ rudolfCurrencyNotifier:
   enabled: false
 
 arenaService:
+  image:
+    tag: "git-9ae74c7d4ad52829497ffa338bd9c4ddfc310563"
+
   enabled: true
   rwMode: true
   env:
