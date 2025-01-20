@@ -469,6 +469,8 @@ jwtHeadless:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  - name: JWT__EnableJwtAuthentication
+    value: 'false'
 
   extraArgs:
   - --tx-quota-per-signer=1
