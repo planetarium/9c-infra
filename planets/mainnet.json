@@ -84,11 +84,13 @@
       "9cscan.rest": ["https://api-thor.9cscan.com"],
       "headless.gql": [
         "https://thor-rpc-1.nine-chronicles.com/graphql",
-        "https://thor-rpc-2.nine-chronicles.com/graphql"
+        "https://thor-rpc-2.nine-chronicles.com/graphql",
+        "https://thor-rpc-3.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://thor-rpc-1.nine-chronicles.com:31238",
-        "http://thor-rpc-2.nine-chronicles.com:31238"
+        "http://thor-rpc-2.nine-chronicles.com:31238",
+        "http://thor-rpc-3.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://thor-market.9c.gg"],
       "world-boss.rest": ["http://thor-world-boss.9c.gg"],
