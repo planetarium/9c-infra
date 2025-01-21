@@ -52,31 +52,17 @@ spec:
           - mountPath: /data
             name: stateproxy-data-{{ $index }}
         {{- end }}
-        - command:
-          - sh
-          - '-c'
-          - >
-            apk --no-cache add curl
-
-            # Endpoint to check
-
-            UPSTREAM="{{ $.Values.upstream }}/ui/playground"
-
-            echo Checking: ${UPSTREAM}
-
-            while [[ $(curl --silent --output /dev/null --request GET
-            --write-out "%{http_code}" ${UPSTREAM}) -ne 200 ]]; do
-              echo "Not ready"
-              sleep 5s
-            done
-
-            echo Ready
-          image: alpine
+        - args:
+          - ef database update
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: Always
-          name: wait
+          name: migrate-database
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: stateproxy-data-{{ $index }}
       containers:
       - args:
         - NineChronicles.StateProxy.dll
