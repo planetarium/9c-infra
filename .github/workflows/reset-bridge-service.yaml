@@ -42,23 +42,29 @@ jobs:
         NETWORK="${{ inputs.network }}"
         echo "NAMESPACE=${NETWORK%"-internal"}" >> $GITHUB_ENV
 
-    - uses: actions-hub/kubectl@master
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
       with:
-        args: scale --replicas=0 statefulset/bridge-service -n ${{ env.NAMESPACE }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
 
-    - uses: actions-hub/kubectl@master
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
-      with:
-        args: scale --replicas=0 statefulset/bridge-service-db -n ${{ env.NAMESPACE }}
+    - name: Generate kubeconfig for the cluster
+      run: |
+        aws eks update-kubeconfig --name 9c-internal-v2 --region us-east-2
 
-    - uses: actions-hub/kubectl@master
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
-      with:
-        args: delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=${{ env.NAMESPACE }}
+    - name: Check pods
+      run: |
+        kubectl get pods --all-namespaces
+
+    - name: Scale down bridge-service
+      run: kubectl scale --replicas=0 statefulset/bridge-service -n ${{ env.NAMESPACE }}
+
+    - name: Scale down bridge-service-db
+      run: kubectl scale --replicas=0 statefulset/bridge-service-db -n ${{ env.NAMESPACE }}
+
+    - name: Delete PVC
+      run: kubectl delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=${{ env.NAMESPACE }}
 
     - uses: actions/setup-python@v2.2.2
       with:
