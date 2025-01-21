@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: arena-service
-          image: planetariumhq/arena-service:git-4bd34fcf2fb67bb955f107323285d0bd684c9843
+          image: planetariumhq/arena-service:git-1c1369e671ddc6da18855e9184e2958d624036cf
           ports:
             - containerPort: 8080
           env:
