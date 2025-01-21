@@ -9,10 +9,10 @@
       "dp.gql": ["http://odin-preview-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-odin-preview.9cscan.com"],
       "headless.gql": [
-        "https://odin-preview-validator-5.nine-chronicles.com/graphql"
+        "https://odin-preview-rpc-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://odin-preview-validator-5.nine-chronicles.com:31238"
+        "http://odin-preview-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://odin-preview-market.9c.gg"],
       "world-boss.rest": ["https://odin-preview-world-boss.9c.gg"],
@@ -40,10 +40,10 @@
       "dp.gql": ["http://heimdall-preview-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-heimdall-preview.9cscan.com"],
       "headless.gql": [
-        "https://heimdall-preview-validator-1.nine-chronicles.com/graphql"
+        "https://heimdall-preview-rpc-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://heimdall-preview-validator-1.nine-chronicles.com:31238"
+        "http://heimdall-preview-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://heimdall-preview-market.9c.gg"],
       "world-boss.rest": ["http://heimdall-preview-world-boss.9c.gg"],
@@ -67,10 +67,10 @@
       "dp.gql": ["http://thor-preview-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-thor-preview.9cscan.com"],
       "headless.gql": [
-        "https://thor-preview-validator-1.nine-chronicles.com/graphql"
+        "https://thor-preview-rpc-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://thor-preview-validator-1.nine-chronicles.com:31238"
+        "http://thor-preview-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://thor-preview-market.9c.gg"],
       "world-boss.rest": ["http://thor-preview-world-boss.9c.gg"],
