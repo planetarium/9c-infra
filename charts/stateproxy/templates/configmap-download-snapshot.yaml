@@ -45,3 +45,18 @@ data:
       echo "Unzipping $snapshot_zip_filename"
       unzip -o "$snapshot_zip_filename" -d "$save_dir"
     fi
+  database_update.sh: |-
+    #!/usr/bin/env bash
+
+    apt-get install -y sqlite3 jq
+
+    dotnet /app/NineChronicles.StateProxy.dll ef database update
+    index=$(cat /data/stateproxy/mainnet_latest.json | jq ".Index")
+
+    DB_FILE="blockindex.db"
+    
+    SQL_QUERY="INSERT INTO BlockIndex (Id, Value) VALUES (0, $index);"
+    
+    RESULT=$(sqlite3 "$DB_FILE" "$SQL_QUERY")
+    
+    echo "$RESULT"

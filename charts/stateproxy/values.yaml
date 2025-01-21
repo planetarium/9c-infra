@@ -7,9 +7,7 @@ clusterName: "9c-sample"
 logLevel: "debug"
 
 namespace: "9c-sample"
-nameOverwrite: "stateProxy"
-
-resetSnapshot: false
+nameOverwrite: "stateproxy"
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Delete"
@@ -19,9 +17,10 @@ image:
   repository: planetariumhq/ninechronicles-stateproxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "git-6277213487340ebf5d788f1c5a6bb94598d3bcb0"
+  tag: "git-4fbe12e96637e37ab770bc686ca538930ad60c6a"
 
 snapshot:
+  reset: false
   path: internal/heimdall
 
 upstream: "http://remote-headless-1.heimdall.svc.cluster.local/"
@@ -31,10 +30,9 @@ extraArgs: []
 # - --key=val
 
 hosts:
-- "stateproxy-1.nine-chronicles.com"
+- "stateproxy-internal-1.nine-chronicles.com"
 
 ports:
-  headless: 31234
   graphql: 80
   rpc: 31238
 
@@ -49,7 +47,6 @@ resources:
 
 nodeSelector: {}
 tolerations: []
-affinity: {}
 
 service:
   annotations: {}

@@ -163,7 +163,7 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.storage.data }}
-      storageClassName: {{ $.Release.Name }}-gp3
+      storageClassName: {{ $.Values.storage.class }}
       volumeMode: Filesystem
       {{- end }}
   updateStrategy:

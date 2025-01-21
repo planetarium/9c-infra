@@ -27,9 +27,6 @@ spec:
   - name: rpc
     port: {{ $.Values.ports.rpc }}
     targetPort: {{ $.Values.ports.rpc }}
-  - name: headless
-    port: {{ $.Values.ports.headless }}
-    targetPort: {{ $.Values.ports.headless }}
   - name: https
     port: 443
     targetPort: {{ $.Values.ports.graphql }}
