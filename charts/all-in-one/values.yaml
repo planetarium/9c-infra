@@ -744,9 +744,12 @@ stateproxy:
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: "git-722f71e94fc7a0c3b140530b541e9dd1c684d02a"
+  appsettingsPath: "appsettings.json"
   upstream: ""
   snapshot:
+    reset: false
     path: ""
+  hosts: []
   ports:
     graphql: 80
     rpc: 31238

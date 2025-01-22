@@ -71,7 +71,7 @@ spec:
       - args:
         - NineChronicles.StateProxy.dll
         - run
-        - --config={{ $.Values.AppsettingsPath }}
+        - --config={{ $.Values.appsettingsPath }}
         {{- with $.Values.extraArgs }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

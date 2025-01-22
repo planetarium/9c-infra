@@ -23,6 +23,7 @@ snapshot:
   reset: false
   path: internal/heimdall
 
+appsettingsPath: "appsettings.json"
 upstream: "http://remote-headless-1.heimdall.svc.cluster.local/"
 
 # dotnet args

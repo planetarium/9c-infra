@@ -340,6 +340,26 @@ stateMigrationService:
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
+stateproxy:
+  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-stateproxy
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-4f9344024012bb09d8b83fd3d88fa62aec4e7823"
+  appsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/stateproxy/appsettings.json"
+  upstream: "remote-headless-1.thor.svc.cluster.local"
+  snapshot:
+    reset: true
+    path: "internal/thor"
+  hosts:
+  - "thor-stateproxy-1.nine-chronicles.com"
+  ports:
+    graphql: 80
+    rpc: 31238
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: thor-preview-spot_2c
+
 arenaService:
   enabled: true
   rwMode: false
