@@ -549,7 +549,7 @@ rudolfCurrencyNotifier:
 
 arenaService:
   image:
-    tag: "git-9ae74c7d4ad52829497ffa338bd9c4ddfc310563"
+    tag: "git-27c23f90a6fe3f859b078838e64c77afe34b80ab"
 
   enabled: true
   rwMode: true
