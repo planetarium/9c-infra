@@ -1,0 +1,173 @@
+{{ range $idx := until (int .Values.count) }}
+{{ $index := add $idx 1 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: stateproxy-{{ $index }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: stateproxy-{{ $index }}
+  namespace: {{ $.Release.Name }}
+spec:
+  podManagementPolicy: OrderedReady
+  {{- if $.Values.replicas }}
+  replicas: {{ $.Values.replicas }}
+  {{- else }}
+  replicas: 1
+  {{- end }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: stateproxy-{{ $index }}
+  serviceName: stateproxy-{{ $index }}
+  template:
+    metadata:
+      labels:
+        app: stateproxy-{{ $index }}
+      name: stateproxy-{{ $index }}
+    spec:
+      initContainers:
+        {{- if $.Values.resetSnapshot }}
+        - args:
+          - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
+          - /data/stateproxy
+          - $(RESET_SNAPSHOT_OPTION)
+          - stateproxy-{{ $index }}
+          command:
+          - /bin/download_snapshot.sh
+          env:
+          - name: RESET_SNAPSHOT_OPTION  
+            value: "{{ $.Values.resetSnapshot }}"
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          imagePullPolicy: Always
+          name: reset-snapshot
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bin/download_snapshot.sh
+            name: download-snapshot-script
+            readOnly: true
+            subPath: download_snapshot.sh
+          - mountPath: /data
+            name: stateproxy-data-{{ $index }}
+        {{- end }}
+        - command:
+          - /bin/database_udpate.sh
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          imagePullPolicy: Always
+          name: migrate-database
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bin/database_update.sh
+            name: database-update-script
+            readOnly: true
+            subPath: database_udpate.sh
+          - mountPath: /data
+            name: stateproxy-data-{{ $index }}
+      containers:
+      - args:
+        - NineChronicles.StateProxy.dll
+        - run
+        - --config={{ $.Values.appsettingsPath }}
+        {{- with $.Values.extraArgs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        command:
+        - dotnet
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: Always
+        name: stateproxy-{{ $index }}
+        ports:
+        - containerPort: {{ $.Values.ports.graphql }}
+          name: graphql
+          protocol: TCP
+        - containerPort: {{ $.Values.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/liveness_probe.sh
+          failureThreshold: 5
+          initialDelaySeconds: 1800
+          periodSeconds: 60
+          timeoutSeconds: 60
+        readinessProbe:
+          exec:
+            command:
+            - /bin/readiness_probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          {{- toYaml $.Values.resources | nindent 10 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data
+          name: stateproxy-data-{{ $index }}
+        - mountPath: /bin/liveness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: liveness_probe.sh
+        - mountPath: /bin/readiness_probe.sh
+          name: probe-script
+          readOnly: true
+          subPath: readiness_probe.sh
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        {{- with $.Values.env }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 448
+          name: {{ $.Release.Name }}-probe-script
+        name: probe-script
+      - name: download-snapshot-script
+        configMap:
+          defaultMode: 0700
+          name: {{ $.Release.Name }}-download-snapshot-script
+      {{- if and $.Values.storage.volumeNames (gt (len $.Values.storage.volumeNames) $idx) (ne (index $.Values.storage.volumeNames $idx) "") }}
+      - name: stateproxy-data-{{ $index }}
+        persistentVolumeClaim:
+          claimName: {{ index $.Values.storage.volumeNames $idx }}
+      {{- else }}
+  volumeClaimTemplates:
+  - metadata:
+      name: stateproxy-data-{{ $index }}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ $.Values.storage.data }}
+      storageClassName: {{ $.Values.storage.class }}
+      volumeMode: Filesystem
+      {{- end }}
+  updateStrategy:
+    type: RollingUpdate
+---
+{{ end }}

@@ -736,6 +736,36 @@ stateMigrationService:
 remoteHeadlessApplication:
   enabled: false
 
+stateproxy:
+  enabled: false
+  count: 1
+  image:
+    repository: planetariumhq/ninechronicles-stateproxy
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "git-722f71e94fc7a0c3b140530b541e9dd1c684d02a"
+  appsettingsPath: "appsettings.json"
+  upstream: ""
+  snapshot:
+    reset: false
+    path: ""
+  hosts: []
+  ports:
+    graphql: 80
+    rpc: 31238
+  storage:
+    class: "9c-network-gp3"
+    data: 50Gi
+  resources:
+    requests:
+      cpu: 2
+      memory: 14Gi
+  nodeSelector: {}
+  tolerations: []
+  
+  service:
+    annotations: {}
+
 arenaService:
   enabled: false
   rwMode: false

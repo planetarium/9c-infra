@@ -1,0 +1,53 @@
+# Default values for libplanet-seed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+clusterName: "9c-sample"
+logLevel: "debug"
+
+namespace: "9c-sample"
+nameOverwrite: "stateproxy"
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Delete"
+
+count: 1
+image:
+  repository: planetariumhq/ninechronicles-stateproxy
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "git-4fbe12e96637e37ab770bc686ca538930ad60c6a"
+
+snapshot:
+  reset: false
+  path: internal/heimdall
+
+appsettingsPath: "appsettings.json"
+upstream: "http://remote-headless-1.heimdall.svc.cluster.local/"
+
+# dotnet args
+extraArgs: []
+# - --key=val
+
+hosts:
+- "stateproxy-internal-1.nine-chronicles.com"
+
+ports:
+  graphql: 80
+  rpc: 31238
+
+storage:
+  class: "9c-network-gp3"
+  data: 100Gi
+
+resources:
+  requests:
+    cpu: 2
+    memory: 14Gi
+
+nodeSelector: {}
+tolerations: []
+
+service:
+  annotations: {}

@@ -1,0 +1,38 @@
+{{ range $idx := until (int .Values.count) }}
+{{ $index := add $idx 1 }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: stateproxy-{{ $index }}
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    {{- with $.Values.service.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=stateproxy-{{ $index }}
+    {{- if index $.Values.hosts $idx }}
+    external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.hosts $idx }}
+    external-dns.alpha.kubernetes.io/ttl: '60'
+    {{- end }}
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: graphql
+    port: {{ $.Values.ports.graphql }}
+    targetPort: {{ $.Values.ports.graphql }}
+  - name: rpc
+    port: {{ $.Values.ports.rpc }}
+    targetPort: {{ $.Values.ports.rpc }}
+  - name: https
+    port: 443
+    targetPort: {{ $.Values.ports.graphql }}
+  selector:
+    app: stateproxy-{{ $index }}
+  type: LoadBalancer
+
+---
+{{ end }}

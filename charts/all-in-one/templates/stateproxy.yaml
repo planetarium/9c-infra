@@ -1,0 +1,64 @@
+{{- if $.Values.stateproxy.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stateproxy
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/stateproxy
+    helm:
+      values: |-
+        namespace: {{ $.Release.Name }}
+        image:
+          repository: {{ $.Values.stateproxy.image.repository }}
+          tag: {{ $.Values.stateproxy.image.tag }}
+
+        snapshot:
+          reset: {{ $.Values.stateproxy.snapshot.reset }}
+          path: {{ $.Values.stateproxy.snapshot.path }}
+
+        upstream: {{ $.Values.stateproxy.upstream }}
+
+        {{- with $.Values.stateproxy.extraArgs }}
+        extraArgs:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        {{- with $.Values.stateproxy.hosts }}
+        hosts:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        ports:
+          graphql: {{ $.Values.stateproxy.ports.graphql }}
+          rpc: {{ $.Values.stateproxy.ports.rpc }}
+
+        storage:
+          class: {{ $.Values.stateproxy.storage.class }}
+          data: {{ $.Values.stateproxy.storage.data }}
+
+        {{- with $.Values.stateproxy.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        
+        {{- with $.Values.stateproxy.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        {{- with $.Values.stateproxy.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $.Release.Name }}
+---
+{{- end }}
