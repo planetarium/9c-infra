@@ -51,12 +51,19 @@ data:
     apt-get install -y sqlite3 jq
 
     dotnet /app/NineChronicles.StateProxy.dll ef database update
-    index=$(cat /data/stateproxy/mainnet_latest.json | jq ".Index")
+    snapshot_index=$(cat /data/stateproxy/mainnet_latest.json | jq ".Index")
 
     DB_FILE="blockindex.db"
-    
-    SQL_QUERY="INSERT INTO BlockIndex (Id, Value) VALUES (0, $index);"
-    
-    RESULT=$(sqlite3 "$DB_FILE" "$SQL_QUERY")
+
+    index=$(sqlite3 "DB_FILE" "SELECT Value from BlockIndex;")
+
+    if [ -z "$index" ]; then
+      index=0
+    fi
+
+    if [ $index -lt $snapshot_index ]; then
+
+      RESULT=$(sqlite3 "$DB_FILE" "INSERT OR REPLACE INTO BlockIndex (Id, Value) VALUES (0, $snapshot_index);")
+    fi
     
     echo "$RESULT"

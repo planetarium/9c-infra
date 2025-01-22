@@ -52,8 +52,8 @@ spec:
           - mountPath: /data
             name: stateproxy-data-{{ $index }}
         {{- end }}
-        - args:
-          - ef database update
+        - command:
+          - /bin/database_udpate.sh
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: Always
           name: migrate-database
@@ -61,6 +61,10 @@ spec:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
+          - mountPath: /bin/database_update.sh
+            name: database-update-script
+            readOnly: true
+            subPath: database_udpate.sh
           - mountPath: /data
             name: stateproxy-data-{{ $index }}
       containers:
@@ -79,9 +83,6 @@ spec:
         ports:
         - containerPort: {{ $.Values.ports.graphql }}
           name: graphql
-          protocol: TCP
-        - containerPort: {{ $.Values.ports.headless }}
-          name: headless
           protocol: TCP
         - containerPort: {{ $.Values.ports.rpc }}
           name: rpc
