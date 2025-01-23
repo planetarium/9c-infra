@@ -346,7 +346,7 @@ stateproxy:
     repository: planetariumhq/ninechronicles-stateproxy
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "git-4f9344024012bb09d8b83fd3d88fa62aec4e7823"
+    tag: "git-59ccbebf88b5ecda0fa3a897cfadc753104d2d3d"
   appsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/stateproxy/appsettings.json"
   upstream: "remote-headless-1.thor.svc.cluster.local"
   snapshot:
