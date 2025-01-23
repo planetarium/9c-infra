@@ -52,21 +52,6 @@ spec:
           - mountPath: /data
             name: stateproxy-data-{{ $index }}
         {{- end }}
-        - command:
-          - /bin/database_update.sh
-          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-          imagePullPolicy: Always
-          name: migrate-database
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /bin/database_update.sh
-            name: download-snapshot-script
-            readOnly: true
-            subPath: database_update.sh
-          - mountPath: /data
-            name: stateproxy-data-{{ $index }}
       containers:
       - args:
         - NineChronicles.StateProxy.dll
