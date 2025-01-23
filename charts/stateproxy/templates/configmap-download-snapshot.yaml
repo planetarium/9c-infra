@@ -44,4 +44,8 @@ data:
       aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
       echo "Unzipping $snapshot_zip_filename"
       unzip -o "$snapshot_zip_filename" -d "$save_dir"
+
+      rm $snapshot_zip_filename
+      rm $save_dir/blockindex.db 2>/dev/null
+      cat $save_dir/$mainnet_snapshot_json_filename | jq ".Index" > $save_dir/tip
     fi
