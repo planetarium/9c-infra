@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: arena-service
-          image: planetariumhq/arena-service:git-ba2426746e48d127a87f7a090ad00e16b87b4fc1
+          image: planetariumhq/arena-service:git-6997d15d8a2cd77a3d352183a67b95a0f0cd9a3d
           ports:
             - containerPort: 8080
           env:
@@ -31,3 +31,7 @@ spec:
               value: redis-service
             - name: Headless__HeadlessEndpoint
               value: "https://odin-internal-validator-5.nine-chronicles.com/graphql"
+            - name: OpsConfig__RecipientAddress
+              value: "8Cb3f3Adf5c0D46af98Eb11cE8103A6E8DD4Fd3f"
+            - name: OpsConfig__ArenaProviderName
+              value: "PLANETARIUM"
