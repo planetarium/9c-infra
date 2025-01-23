@@ -47,8 +47,15 @@ data:
     fi
   database_update.sh: |-
     #!/usr/bin/env bash
+    until apt-get -y update
+    do
+      echo "Try again"
+    done
 
-    apt-get install -y sqlite3 jq
+    until apt-get -y install sqlite3 jq
+    do
+      echo "Try again"
+    done
 
     dotnet /app/NineChronicles.StateProxy.dll ef database update
     snapshot_index=$(cat /data/stateproxy/mainnet_latest.json | jq ".Index")
