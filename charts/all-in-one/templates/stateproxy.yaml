@@ -22,6 +22,8 @@ spec:
           reset: {{ $.Values.stateproxy.snapshot.reset }}
           path: {{ $.Values.stateproxy.snapshot.path }}
 
+        appsettingsPath: {{ $.Values.stateproxy.appsettingsPath }}
+
         upstream: {{ $.Values.stateproxy.upstream }}
 
         {{- with $.Values.stateproxy.extraArgs }}
