@@ -7,7 +7,7 @@ metadata:
     app: stateproxy-{{ $index }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: stateproxy-{{ $index }}
-  namespace: {{ $.Release.Name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   podManagementPolicy: OrderedReady
   {{- if $.Values.replicas }}
