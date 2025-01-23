@@ -62,7 +62,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
           - mountPath: /bin/database_update.sh
-            name: database-update-script
+            name: download-snapshot-script
             readOnly: true
             subPath: database_udpate.sh
           - mountPath: /data
