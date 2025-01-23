@@ -47,5 +47,5 @@ data:
 
       rm $snapshot_zip_filename
       rm $save_dir/blockindex.db 2>/dev/null
-      cat $save_dir/$mainnet_snapshot_json_filename | jq ".Index" > $save_dir/tip
+      curl $base_url/$mainnet_snapshot_json_filename | jq ".Index" > $save_dir/tip
     fi
