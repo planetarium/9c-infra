@@ -27,7 +27,7 @@ spec:
       name: stateproxy-{{ $index }}
     spec:
       initContainers:
-        {{- if $.Values.resetSnapshot }}
+        {{- if $.Values.snapshot.reset }}
         - args:
           - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
           - /data/stateproxy
@@ -37,7 +37,7 @@ spec:
           - /bin/download_snapshot.sh
           env:
           - name: RESET_SNAPSHOT_OPTION  
-            value: "{{ $.Values.resetSnapshot }}"
+            value: "{{ $.Values.snapshot.reset }}"
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: Always
           name: reset-snapshot
