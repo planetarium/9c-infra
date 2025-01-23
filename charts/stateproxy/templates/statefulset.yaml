@@ -53,7 +53,7 @@ spec:
             name: stateproxy-data-{{ $index }}
         {{- end }}
         - command:
-          - /bin/database_udpate.sh
+          - /bin/database_update.sh
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: Always
           name: migrate-database
@@ -64,7 +64,7 @@ spec:
           - mountPath: /bin/database_update.sh
             name: download-snapshot-script
             readOnly: true
-            subPath: database_udpate.sh
+            subPath: database_update.sh
           - mountPath: /data
             name: stateproxy-data-{{ $index }}
       containers:
