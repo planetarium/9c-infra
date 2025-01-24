@@ -48,6 +48,12 @@ spec:
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+
+        service:
+          {{- with $.Values.global.service.annotations }}
+          annotations:
+            {{- toYaml . | nindent 4 }}
+          {{- end }}
         
         {{- with $.Values.stateproxy.nodeSelector }}
         nodeSelector:
