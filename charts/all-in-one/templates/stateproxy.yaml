@@ -49,11 +49,11 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
+        {{- with $.Values.global.service.annotations }}
         service:
-          {{- with $.Values.global.service.annotations }}
           annotations:
-            {{- toYaml . | nindent 4 }}
-          {{- end }}
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
         
         {{- with $.Values.stateproxy.nodeSelector }}
         nodeSelector:
