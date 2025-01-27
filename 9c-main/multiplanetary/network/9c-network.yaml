@@ -148,8 +148,9 @@ validator:
   extraArgs:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
-  - --consensus-target-block-interval=7800
+  - --consensus-target-block-interval=7500
   - --maximum-transaction-per-block=150
+  - --consensus-enter-precommit-delay=300
 
   consensusSeedStrings:
   - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.9c-network.svc.cluster.local,31235"
