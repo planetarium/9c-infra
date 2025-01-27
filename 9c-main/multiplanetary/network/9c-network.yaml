@@ -408,7 +408,7 @@ fullState:
 
   resources:
     requests:
-      cpu: '5'	
+      cpu: '5'
       memory: 56Gi
 
   nodeSelector:
