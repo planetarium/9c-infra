@@ -2,7 +2,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "230"
+    tag: "240"
   remoteKv:
     image:
       repository: planetariumhq/libplanet-remote-kv
@@ -27,7 +27,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-4ce425ff75477846cd18fa0e639b5fd45da38461"
+    tag: "240"
 
 worldBoss:
   image:
