@@ -37,7 +37,7 @@ worldBoss:
 marketService:
   image:
     repository: planetariumhq/market-service
-    tag: "git-6013d52122ec914f84cc05865123c8ae55f0bc15"
+    tag: "git-bb126180a9e879ac3e926b60f79a93953f00264a"
 
 patrolRewardService:
   image:
@@ -63,7 +63,7 @@ bridgeService:
   image:
     repository: planetariumhq/9c-bridge
     pullPolicy: Always
-    tag: "git-0f30871bdbc1765388e80b2f64f5a92400592c14"
+    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
 
 bridgeServiceApi:
   image:
