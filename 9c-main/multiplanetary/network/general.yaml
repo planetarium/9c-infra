@@ -40,6 +40,7 @@ marketService:
     tag: "git-bb126180a9e879ac3e926b60f79a93953f00264a"
 
 patrolRewardService:
+  enabled: false
   image:
     repository: planetariumhq/patrol-reward-service
     pullPolicy: Always
