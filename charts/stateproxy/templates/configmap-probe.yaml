@@ -27,7 +27,7 @@ data:
           | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'
       )"
       last_timestamp="$(date +%s -u --date="$last_block")"
-      now="$(date +%s -u)"	
+      now="$(date +%s -u)"
       [[ $(( now - last_timestamp )) -lt 400 ]]
     fi
   readiness_probe.sh: |-
