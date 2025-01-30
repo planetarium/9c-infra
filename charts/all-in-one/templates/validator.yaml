@@ -58,7 +58,7 @@ spec:
       {{- if $.Values.global.resetSnapshot }}
       - args:
         - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'  
-        - /data/validator
+        - {{ $.Values.validator.storePath | default "/data/validator" }}
         - $(RESET_SNAPSHOT_OPTION)
         - validator-{{ $index }}
         - $(SLACK_WEBHOOK_URL)
@@ -157,7 +157,7 @@ spec:
         {{- end }}
         {{- end }}
         - --port={{ $.Values.validator.ports.headless }}
-        - --store-path=/data/validator
+        - --store-path={{ $.Values.validator.storePath | default "/data/validator" }}
         - --store-type=rocksdb
         {{- range $.Values.global.peerStrings }}
         - --peer={{ . }}

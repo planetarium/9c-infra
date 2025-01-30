@@ -25,7 +25,7 @@ spec:
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
-        - /data/data-provider
+        - {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - $(RESET_SNAPSHOT_OPTION)
         - data-provider
         - $(SLACK_WEBHOOK_URL)
@@ -57,7 +57,7 @@ spec:
         - -c
         env:
         - name: NC_StorePath
-          value: /data/data-provider
+          value: {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - name: NC_AppProtocolVersionToken
           value: {{ $.Values.global.appProtocolVersion }}
         - name: NC_Confirmations
@@ -190,7 +190,7 @@ spec:
       initContainers:
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
-        - /data/data-provider
+        - {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - $(RESET_SNAPSHOT_OPTION)
         - data-provider
         - $(SLACK_WEBHOOK_URL)
@@ -230,7 +230,7 @@ spec:
         - -c
         env:
         - name: NC_StorePath
-          value: /data/data-provider
+          value: {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - name: NC_AppProtocolVersionToken
           value: {{ $.Values.global.appProtocolVersion }}
         - name: NC_Confirmations
@@ -391,7 +391,7 @@ spec:
       {{- if $.Values.global.resetSnapshot }}
       - args:
         - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
-        - /data/data-provider
+        - {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - $(RESET_SNAPSHOT_OPTION)
         - data-provider
         - $(SLACK_WEBHOOK_URL)
@@ -442,7 +442,7 @@ spec:
         - -c
         env:
         - name: NC_StorePath
-          value: /data/data-provider
+          value: {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
         - name: NC_AppProtocolVersionToken
           value: {{ $.Values.global.appProtocolVersion }}
         - name: NC_Confirmations
