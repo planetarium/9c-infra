@@ -225,7 +225,11 @@ validator:
   - "thor-validator-1.nine-chronicles.com"
 
   storage:
+    volumeNames:
+    - "remote-headless-data-1-remote-headless-1-1"
     data: 100Gi
+
+  storePath: /data/headless
 
   tolerations:
   - effect: NoSchedule
@@ -353,7 +357,10 @@ dataProvider:
     value: "1"
 
   storage:
+    writeVolumeName: "remote-headless-data-1-remote-headless-1-2"
     data: 100Gi
+
+  storePath: /data/headless
 
 explorer:
   enabled: false
