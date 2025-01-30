@@ -357,8 +357,7 @@ dataProvider:
     value: "1"
 
   storage:
-    writeVolumeName:
-    - "remote-headless-data-1-remote-headless-1-2"
+    writeVolumeName: "remote-headless-data-1-remote-headless-1-2"
     data: 100Gi
 
   storePath: /data/headless
