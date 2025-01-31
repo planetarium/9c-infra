@@ -78,7 +78,6 @@ jobs:
       matrix:
         bridge_chain: ${{ fromJson(needs.set-targets.outputs.bridge_chains) }}
     uses: ./.github/workflows/reset-bridge-service.yaml
+    secrets: inherit
     with:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       network: ${{ matrix.bridge_chain }}
