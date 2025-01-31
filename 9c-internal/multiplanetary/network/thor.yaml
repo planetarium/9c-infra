@@ -35,8 +35,8 @@ gateway:
   services:
   - name: remote-headless
     hostnames:
-      - thor-internal-rpc.nine-chronicles.com
-      - thor-preview-rpc.nine-chronicles.com
+    - thor-internal-rpc.nine-chronicles.com
+    - thor-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -44,24 +44,24 @@ gateway:
     - grpc
   - name: data-provider
     hostnames:
-      - thor-internal-dp.9c.gg
-      - thor-preview-dp.9c.gg
+    - thor-internal-dp.9c.gg
+    - thor-preview-dp.9c.gg
   - name: market-service
     hostnames:
-      - thor-internal-market.9c.gg
-      - thor-preview-market.9c.gg
+    - thor-internal-market.9c.gg
+    - thor-preview-market.9c.gg
   - name: patrol-reward-service
     hostnames:
-      - thor-internal-patrol.9c.gg
-      - thor-preview-patrol.9c.gg
+    - thor-internal-patrol.9c.gg
+    - thor-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
-      - thor-internal-world-boss.9c.gg
-      - thor-preview-world-boss.9c.gg
+    - thor-internal-world-boss.9c.gg
+    - thor-preview-world-boss.9c.gg
   - name: arena-service
     hostnames:
-      - thor-internal-arena.9c.gg
-      - thor-preview-arena.9c.gg
+    - thor-internal-arena.9c.gg
+    - thor-preview-arena.9c.gg
 
 bridgeService:
   enabled: true
@@ -101,8 +101,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "13154240"
-      downstream: "580751"
+      upstream: "13255002"
+      downstream: "688003"
 
 bridgeServiceApi:
   enabled: false
@@ -369,5 +369,5 @@ arenaService:
       eks.amazonaws.com/nodegroup: thor-spot_2c
 
   env:
-    - name: Worker
-      value: "true"
+  - name: Worker
+    value: "true"
