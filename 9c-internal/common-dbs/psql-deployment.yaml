@@ -39,7 +39,7 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
     - metadata:
-        name: common-dbs-data
+        name: psql-data
       spec:
         accessModes:
           - ReadWriteOnce
