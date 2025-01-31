@@ -13,5 +13,5 @@ spec:
       protocol: TCP
       targetPort: 6379
   selector:
-    app: redis-service
+    app: redis
   type: ClusterIP
