@@ -46,5 +46,5 @@ spec:
         resources:
           requests:
             storage: 10Gi
-        storageClassName: 9c-network-gp3
+        storageClassName: common-dbs-gp3
         volumeMode: Filesystem
