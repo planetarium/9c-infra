@@ -39,12 +39,12 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
     - metadata:
-        name: bridge-service-db-data
+        name: common-dbs-data
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 10Gi
-        storageClassName: common-dbs-gp3
+        storageClassName: 9c-network-gp3
         volumeMode: Filesystem
