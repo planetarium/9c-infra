@@ -12,13 +12,14 @@ spec:
   selector:
     matchLabels:
       app: arena-service
-  serviceName: arena-service
   template:
     metadata:
       labels:
         app: arena-service
     spec:
       containers:
+        - name: arena-service
+          image: {{ $.Values.arenaService.image.repository }}:{{ $.Values.arenaService.image.tag }}
           ports:
             - containerPort: 8080
           env:
@@ -27,21 +28,22 @@ spec:
                 secretKeyRef:
                   name: arena
                   key: POSTGRES_CONNECTION_STRING
-            - name: Redis__Host
-              value: redis-service
+            - name: Redis__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: REDIS_CONNECTION_STRING
             - name: Headless__HeadlessEndpoint
               value: {{ .Values.arenaService.graphqlEndpoint }}
             - name: OpsConfig__RecipientAddress
-              value: "8Cb3f3Adf5c0D46af98Eb11cE8103A6E8DD4Fd3f"
+              value: {{ .Values.arenaService.recipientAddress }}
             - name: OpsConfig__ArenaProviderName
               value: "PLANETARIUM"
           {{- with $.Values.arenaService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ $.Values.arenaService.image.repository }}:{{ $.Values.arenaService.image.tag }}
-          name: arena-service
       restartPolicy: Always
-      {{- with $.Values.arenaService.nodeSelector.read }}
+      {{- with $.Values.arenaService.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
