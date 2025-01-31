@@ -358,12 +358,10 @@ stateproxy:
 
 arenaService:
   enabled: true
-  rwMode: false
 
   nodeSelector:
     read:
       eks.amazonaws.com/nodegroup: thor-spot_2c
 
-  env:
-    - name: Worker
-      value: "true"
+  graphqlEndpoint: "https://thor-internal-test-1.nine-chronicles.com/graphql"
+  recipientAddress: "0xf392d97E4D1757070Fd5b4dB9cdB9bD024F2c00e"
