@@ -822,25 +822,4 @@ spec:
 
 ---
 
-{{ if .Values.arenaService.redis }}
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: arena-service-redis
-  namespace: {{ $.Release.Name }}
-spec:
-  internalTrafficPolicy: Cluster
-  ports:
-    - name: redis
-      port: 6379
-      protocol: TCP
-      targetPort: 6379
-  selector:
-    app: arena-service-redis
-  type: ClusterIP
-
----
-{{ end }}
 {{ end }}
