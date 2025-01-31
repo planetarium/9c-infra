@@ -18,13 +18,13 @@ spec:
     spec:
       containers:
         - name: redis
-        - args:
+          image: redis:7
+          args:
             - redis-server
             - --appendonly
             - "yes"
-          image: redis:7
           ports:
             - containerPort: 6379
       restartPolicy: Always
-  updateStrategy:
+  strategy:
     type: RollingUpdate
