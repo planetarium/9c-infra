@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: main
+    targetRevision: new-arena-service
     path: charts/multiplanetary
     helm:
       valueFiles:
