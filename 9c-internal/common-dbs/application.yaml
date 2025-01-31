@@ -1,19 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: multiplanetary
+  name: common-dbs
   namespace: argocd
-  annotations:
-    notifications.argoproj.io/subscribe.slack: bot-test
 spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: new-arena-service
-    path: charts/multiplanetary
-    helm:
-      valueFiles:
-        - ../../9c-internal/multiplanetary/values.yaml
+    path: 9c-internal/common-dbs
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-network
+    namespace: common-dbs
