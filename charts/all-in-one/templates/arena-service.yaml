@@ -47,6 +47,6 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  updateStrategy:
+  strategy:
     type: RollingUpdate
 {{ end }}
