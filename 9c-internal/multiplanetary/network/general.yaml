@@ -79,4 +79,4 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-160b2c825b9f6b3dca05c4635bd4320e27f1fb75"
+    tag: "git-672bfc15b110786e7100e9da724ec8c97ffe9f68"
