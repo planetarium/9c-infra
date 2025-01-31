@@ -19,7 +19,7 @@
       "market.rest": ["http://thor-internal-market.9c.gg"],
       "world-boss.rest": ["http://thor-internal-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://thor-internal-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://thor-internal-arena.9c.gg/graphql"]
+      "arena.rest": ["http://thor-internal-arena.9c.gg"]
     },
     "bridges": {
       "0x100000000000": {
