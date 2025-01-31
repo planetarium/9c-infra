@@ -80,4 +80,4 @@ jobs:
     uses: ./.github/workflows/reset-bridge-service.yaml
     secrets: inherit
     with:
-      network: ${{ matrix.bridge_chain }}
+      network: ${{ matrix.bridge_chain == 'odin' && '9c-network' || matrix.bridge_chain }}
