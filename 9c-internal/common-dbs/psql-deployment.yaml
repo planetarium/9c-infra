@@ -1,13 +1,14 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: psql
     app.kubernetes.io/instance: common-dbs
-  name: psql-deployment
+  name: psql
   namespace: common-dbs
 spec:
   replicas: 1
+  serviceName: psql
   selector:
     matchLabels:
       app: psql
@@ -29,9 +30,21 @@ spec:
                 secretKeyRef:
                   name: db-secrets
                   key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: psql-data
-      volumes:
-        - name: psql-data
-          emptyDir: {}
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: bridge-service-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: common-dbs-gp3
+        volumeMode: Filesystem
