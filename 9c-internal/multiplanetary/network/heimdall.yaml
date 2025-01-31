@@ -35,8 +35,8 @@ gateway:
   services:
   - name: remote-headless
     hostnames:
-      - heimdall-internal-rpc.nine-chronicles.com
-      - heimdall-preview-rpc.nine-chronicles.com
+    - heimdall-internal-rpc.nine-chronicles.com
+    - heimdall-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -44,24 +44,24 @@ gateway:
     - grpc
   - name: data-provider
     hostnames:
-      - heimdall-internal-dp.9c.gg
-      - heimdall-preview-dp.9c.gg
+    - heimdall-internal-dp.9c.gg
+    - heimdall-preview-dp.9c.gg
   - name: market-service
     hostnames:
-      - heimdall-internal-market.9c.gg
-      - heimdall-preview-market.9c.gg
+    - heimdall-internal-market.9c.gg
+    - heimdall-preview-market.9c.gg
   - name: patrol-reward-service
     hostnames:
-      - heimdall-internal-patrol.9c.gg
-      - heimdall-preview-patrol.9c.gg
+    - heimdall-internal-patrol.9c.gg
+    - heimdall-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
-      - heimdall-internal-world-boss.9c.gg
-      - heimdall-preview-world-boss.9c.gg
+    - heimdall-internal-world-boss.9c.gg
+    - heimdall-preview-world-boss.9c.gg
   - name: arena-service
     hostnames:
-      - heimdall-internal-arena.9c.gg
-      - heimdall-preview-arena.9c.gg
+    - heimdall-internal-arena.9c.gg
+    - heimdall-preview-arena.9c.gg
 
 bridgeService:
   enabled: true
@@ -101,8 +101,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "13105451"
-      downstream: "4647436"
+      upstream: "13255002"
+      downstream: "4798077"
 
 bridgeServiceApi:
   enabled: true
