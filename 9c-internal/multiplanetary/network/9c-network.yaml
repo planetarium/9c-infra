@@ -340,6 +340,6 @@ arenaService:
 
   redis:
     host: redis-service.common-dbs.svc.cluster.local
-    port: 6379
-    hangfireDbNumber: 0
-    rankingDbNumber: 1
+    port: "6379"
+    hangfireDbNumber: "0"
+    rankingDbNumber: "1"
