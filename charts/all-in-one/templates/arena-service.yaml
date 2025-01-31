@@ -29,13 +29,13 @@ spec:
                   name: arena
                   key: POSTGRES_CONNECTION_STRING
             - name: Redis__Host
-              value: {{ .Values.arenaService.redis.host }}
+              value: "{{ .Values.arenaService.redis.host }}"
             - name: Redis__Port
-              value: {{ .Values.arenaService.redis.port }}
+              value: "{{ .Values.arenaService.redis.port }}"
             - name: Redis__HangfireDbNumber
-              value: {{ .Values.arenaService.redis.hangfireDbNumber }}
+              value: "{{ .Values.arenaService.redis.hangfireDbNumber }}"
             - name: Redis__RankingDbNumber
-              value: {{ .Values.arenaService.redis.rankingDbNumber }}
+              value: "{{ .Values.arenaService.redis.rankingDbNumber }}"
             - name: Redis__Password
               valueFrom:
                 secretKeyRef:
