@@ -9,10 +9,12 @@
       "dp.gql": ["http://thor-internal-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-thor-internal.9cscan.com"],
       "headless.gql": [
-        "https://thor-internal-rpc-1.nine-chronicles.com/graphql"
+        "https://thor-internal-rpc-1.nine-chronicles.com/graphql",
+        "https://thor-stateproxy-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://thor-internal-rpc-1.nine-chronicles.com:31238"
+        "http://thor-internal-rpc-1.nine-chronicles.com:31238",
+        "http://thor-stateproxy-1.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://thor-internal-market.9c.gg"],
       "world-boss.rest": ["http://thor-internal-world-boss.9c.gg"],
