@@ -353,6 +353,8 @@ stateproxy:
     rpc: 31238
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-preview-spot_2c
+  storage:
+    class: "thor-gp3"
 
 arenaService:
   enabled: true
