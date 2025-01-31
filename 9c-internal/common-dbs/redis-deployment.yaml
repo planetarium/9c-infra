@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: redis-deployment
+    app: redis
     app.kubernetes.io/instance: common-dbs
-  name: redis-deployment
+  name: redis
   namespace: common-dbs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-deployment
+      app: redis
   template:
     metadata:
       labels:
-        app: redis-deployment
+        app: redis
     spec:
       containers:
         - name: redis
