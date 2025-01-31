@@ -371,3 +371,9 @@ arenaService:
 
   graphqlEndpoint: "https://thor-internal-test-1.nine-chronicles.com/graphql"
   recipientAddress: "0xf392d97E4D1757070Fd5b4dB9cdB9bD024F2c00e"
+
+  redis:
+    host: redis-service.common-dbs.svc.cluster.local
+    port: 6379
+    hangfireDbNumber: 4
+    rankingDbNumber: 5
