@@ -36,7 +36,6 @@ gateway:
   - name: remote-headless
     hostnames:
       - thor-internal-rpc.nine-chronicles.com
-      - thor-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -45,23 +44,18 @@ gateway:
   - name: data-provider
     hostnames:
       - thor-internal-dp.9c.gg
-      - thor-preview-dp.9c.gg
   - name: market-service
     hostnames:
       - thor-internal-market.9c.gg
-      - thor-preview-market.9c.gg
   - name: patrol-reward-service
     hostnames:
       - thor-internal-patrol.9c.gg
-      - thor-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
       - thor-internal-world-boss.9c.gg
-      - thor-preview-world-boss.9c.gg
   - name: arena-service
     hostnames:
       - thor-internal-arena.9c.gg
-      - thor-preview-arena.9c.gg
 
 bridgeService:
   enabled: true
@@ -171,7 +165,7 @@ remoteHeadless:
     data: 50Gi
 
   hosts:
-  - "thor-internal-rpc-1.nine-chronicles.com,thor-preview-rpc-1.nine-chronicles.com"
+  - "thor-internal-rpc-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
@@ -212,7 +206,7 @@ seed:
   count: 1
 
   hosts:
-  - "thor-internal-tcp-seed-1.nine-chronicles.com,thor-preview-tcp-seed-1.nine-chronicles.com"
+  - "thor-internal-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
@@ -242,7 +236,7 @@ validator:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.thor.svc.cluster.local,31235"
 
   hosts:
-  - "thor-internal-validator-1.nine-chronicles.com,thor-preview-validator-1.nine-chronicles.com"
+  - "thor-internal-validator-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-spot_2c
@@ -293,7 +287,7 @@ worldBoss:
 testHeadless1:
   enabled: false
 
-  host: "thor-internal-test-1.nine-chronicles.com,thor-preview-test-1.nine-chronicles.com"
+  host: "thor-internal-test-1.nine-chronicles.com"
 
   ports:
     headless: 31234
