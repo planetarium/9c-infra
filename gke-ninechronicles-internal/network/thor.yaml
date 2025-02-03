@@ -1,7 +1,7 @@
 global:
   validatorPath: "thor-internal-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
-  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings.json"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings-x64.json"
 
   appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
 
