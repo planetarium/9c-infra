@@ -6,7 +6,7 @@ global:
   appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
 
   peerStrings:
-  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.thor.svc.cluster.local,31234"
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,thor-internal-tcp-seed-1.nine-chronicles.com,31234"
 
   trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
 
