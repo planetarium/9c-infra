@@ -8,15 +8,14 @@ externalSecret:
   separator: _
 
 gateway:
-  defaultCertificate: certificate-secret
+  certificate:
+    name: certificate-secret
+    namespace: traefik
 
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-5681ee3a468d8c550d70e0ebed6eb530a5caf82a"
-
-  service:
-    annotations:
+    tag: "git-2497665095c251ba2a7f0f4534d0360a567fb7ae"
 
 seed:
   image:

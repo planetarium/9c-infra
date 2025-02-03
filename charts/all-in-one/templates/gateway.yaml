@@ -30,7 +30,7 @@ spec:
           kubernetesGateway:
             enabled: true
             experimentalChannel: true
-            labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}
+            labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}-{{ $.Release.Name }}
         gatewayClass:
           name: traefik-{{ $.Release.Name }}
         logs:
@@ -42,15 +42,7 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
             service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
-        {{- with $.Values.gateway.defaultCertificate }}
-        tlsStore:
-          default:
-            defaultCertificate:
-              secretName: {{ . }}
-        {{- end }}
         ports:
-          websecure:
-            targetPort: web
           web: &trustedIPs
             {{- with $.Values.gateway.trustedIPs }}
             forwardedHeaders:
@@ -59,6 +51,11 @@ spec:
             proxyProtocol:
               trustedIPs:
                 {{- toYaml . | nindent 16 }}
+            {{- end }}
+          websecure:
+            port: 8443
+            {{- if not $.Values.gateway.certificate }}
+            targetPort: web
             {{- end }}
           {{- range $name, $config := $.Values.gateway.ports }}
           {{ $name }}:
@@ -76,6 +73,16 @@ spec:
             web:
               port: 8000
               protocol: HTTP
+            {{- with $.Values.gateway.certificate }}
+            websecure:
+              port: 8443
+              protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: {{ .name }}
+                    namespace: {{ .namespace }}
+            {{- end }}
             {{- range $name, $config := $.Values.gateway.ports }}
             {{ $name }}:
               port: {{ $config.port }}

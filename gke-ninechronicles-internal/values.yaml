@@ -25,5 +25,3 @@ certManager:
     - "*.planetarium.network"
   issuer:
     email: devops@planetariumhq.com
-  replicateNamespaces:
-    - thor
