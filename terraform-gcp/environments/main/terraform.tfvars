@@ -1,4 +1,4 @@
-project_id               = "devops-test-445104"
+project_id               = "nine-chronicles-449809"
 env_name                 = "dev"
 network                  = "gke-network"
 subnet_ip                = "10.10.20.0/24"
