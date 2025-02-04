@@ -20,12 +20,57 @@ spec:
     targetRevision: 34.1.0
     helm:
       values: |-
+        providers:
+          kubernetesGateway:
+            enabled: true
+        tlsStore:
+          default:
+            defaultCertificate:
+              secretName: certificate-secret
+        logs:
+          access:
+            enabled: true
         service:
           annotations:
             {{- with .Values.global.service.annotations }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
-        tlsStore:
-          default:
-            defaultCertificate:
-              secretName: certificate-secret
+        ports:
+          web: &trustedIPs
+            {{- with $.Values.traefik.trustedIPs }}
+            forwardedHeaders:
+              trustedIPs:
+                {{- toYaml . | nindent 16 }}
+            proxyProtocol:
+              trustedIPs:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+          {{- range $name, $config := $.Values.traefik.ports }}
+          {{ $name }}:
+            port: {{ $config.port }}
+            <<: *trustedIPs
+            expose:
+              default: true
+            {{- with $config.transport }}
+            transport:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+          {{- end }}
+        gateway:
+          listeners:
+            web:
+              port: 8000
+              protocol: HTTP
+              namespacePolicy: All
+            websecure:
+              port: 8443
+              protocol: HTTPS
+              namespacePolicy: All
+              certificateRefs:
+                - name: certificate-secret
+            {{- range $name, $config := $.Values.traefik.ports }}
+            {{ $name }}:
+              port: {{ $config.port }}
+              protocol: {{ eq $config.kind "TCPRoute" | ternary "TCP" "HTTP" }}
+              namespacePolicy: All
+            {{- end }}

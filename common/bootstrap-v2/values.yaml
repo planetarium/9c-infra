@@ -8,6 +8,18 @@ global:
 argocd:
   domain:
 
+traefik:
+  trustedIPs:
+  - 10.0.0.0/8
+  - 172.0.0.0/8
+  ports:
+    grpc:
+      kind: GRPCRoute
+      port: 31238
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
+
 externalSecrets:
   serviceAccount:
     annotations:
