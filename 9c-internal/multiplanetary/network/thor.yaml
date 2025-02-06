@@ -17,7 +17,7 @@ global:
   planet: ThorInternal
   consensusType: pbft
 
-  resetSnapshot: false
+  resetSnapshot: true
   rollbackSnapshot: false
 
   pyroscope:
