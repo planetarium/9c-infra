@@ -15,10 +15,14 @@ gateway:
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-2497665095c251ba2a7f0f4534d0360a567fb7ae"
+    tag: "git-f039a404940893414c12a5e4dffafd4cac4d44ec"
 
 seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always
     tag: "git-67d0ef91c52a71a9772cd7fdb241c9fc37b165b8"
+
+remoteHeadless:
+  ingress:
+    enabled: true
