@@ -54,12 +54,17 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
-    {{- if index $.Values.remoteHeadless.hosts $idx }}
+    {{- if and (index $.Values.remoteHeadless.hosts $idx) (not $.Values.remoteHeadless.ingress.enabled) }}
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
 spec:
+  {{- if $.Values.remoteHeadless.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
   externalTrafficPolicy: Local
+  type: LoadBalancer
+  {{- end }}
   ports:
   - name: graphql
     port: {{ $.Values.remoteHeadless.ports.graphql }}
@@ -75,7 +80,6 @@ spec:
     targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
   selector:
     app: remote-headless-{{ $index }}
-  type: LoadBalancer
 
 ---
 {{ end }}

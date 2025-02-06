@@ -1,5 +1,5 @@
-{{ range $idx := until (int .Values.remoteHeadless.count) }}
-{{ $index := add $idx 1 }}
+{{- range $idx := until (int .Values.remoteHeadless.count) }}
+{{- $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -346,4 +346,26 @@ spec:
   updateStrategy:
     type: RollingUpdate
 ---
-{{ end }}
+{{- if $.Values.remoteHeadless.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remote-headless-{{ $index }}-ingress
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/affinity: "true"
+spec:
+  rules:
+    - host: {{ index $.Values.remoteHeadless.hosts $idx }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remote-headless-{{ $index }}
+                port:
+                  number: 80
+---
+{{- end }}
+{{- end }}
