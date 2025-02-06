@@ -36,6 +36,7 @@ gateway:
   - name: remote-headless
     hostnames:
     - heimdall-internal-rpc.nine-chronicles.com
+    - heimdall-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -44,18 +45,23 @@ gateway:
   - name: data-provider
     hostnames:
     - heimdall-internal-dp.9c.gg
+    - heimdall-preview-dp.9c.gg
   - name: market-service
     hostnames:
     - heimdall-internal-market.9c.gg
+    - heimdall-preview-market.9c.gg
   - name: patrol-reward-service
     hostnames:
     - heimdall-internal-patrol.9c.gg
+    - heimdall-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
     - heimdall-internal-world-boss.9c.gg
+    - heimdall-preview-world-boss.9c.gg
   - name: arena-service
     hostnames:
     - heimdall-internal-arena.9c.gg
+    - heimdall-preview-arena.9c.gg
 
 bridgeService:
   enabled: true
@@ -165,7 +171,7 @@ remoteHeadless:
     data: 500Gi
 
   hosts:
-  - "heimdall-internal-rpc-1.nine-chronicles.com"
+  - "heimdall-internal-rpc-1.nine-chronicles.com,heimdall-preview-rpc-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -207,7 +213,7 @@ seed:
   count: 1
 
   hosts:
-  - "heimdall-internal-tcp-seed-1.nine-chronicles.com"
+  - "heimdall-internal-tcp-seed-1.nine-chronicles.com,heimdall-preview-tcp-seed-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -237,7 +243,7 @@ validator:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
   hosts:
-  - "heimdall-internal-validator-1.nine-chronicles.com"
+  - "heimdall-internal-validator-1.nine-chronicles.com,heimdall-preview-validator-1.nine-chronicles.com"
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
@@ -286,7 +292,7 @@ worldBoss:
 testHeadless1:
   enabled: false
 
-  host: "heimdall-internal-test-1.nine-chronicles.com"
+  host: "heimdall-internal-test-1.nine-chronicles.com,heimdall-preview-test-1.nine-chronicles.com"
 
   ports:
     headless: 31234
