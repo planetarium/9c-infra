@@ -1,23 +1,126 @@
 [
   {
+    "id": "0x100000000000",
+    "name": "odin (internal)",
+    "genesisHash": "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce",
+    "genesisUri": "https://release.nine-chronicles.com/genesis-block-9c-main",
+    "9cscanUrl": "https://internal.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": [
+        "http://odin-internal-dp.9c.gg/graphql"
+      ],
+      "9cscan.rest": [
+        "https://api-odin-internal.9cscan.com"
+      ],
+      "headless.gql": [
+        "https://odin-internal-rpc-1.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://odin-internal-rpc-1.nine-chronicles.com:31238"
+      ],
+      "market.rest": [
+        "http://odin-internal-market.9c.gg"
+      ],
+      "world-boss.rest": [
+        "https://odin-internal-world-boss.9c.gg"
+      ],
+      "patrol-reward.gql": [
+        "http://odin-internal-patrol.9c.gg/graphql"
+      ],
+      "arena.rest": [
+        "http://odin-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://odin-internal-arena.9c.gg/graphql"
+      ]
+    },
+    "bridges": {
+      "0x100000000001": {
+        "agent": "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f",
+        "avatar": "0x41aEFE4cdDFb57C9dFfd490e17e571705c593dDc"
+      },
+      "0x100000000003": {
+        "agent": "0x3e498a6A5cDbE027769F9502026c37Cb8613186e",
+        "avatar": "0x41E9Dc57F04cC561B68378490528e22a386ba9e1"
+      }
+    }
+  },
+  {
+    "id": "0x100000000001",
+    "name": "heimdall (internal)",
+    "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
+    "genesisHash": "729fa26958648a35b53e8e3905d11ec53b1b4929bf5f499884aed7df616f5913",
+    "9cscanUrl": "https://heimdall-internal.9cscan.com",
+    "rpcEndpoints": {
+      "dp.gql": [
+        "http://heimdall-internal-dp.9c.gg/graphql"
+      ],
+      "9cscan.rest": [
+        "https://api-heimdall-internal.9cscan.com"
+      ],
+      "headless.gql": [
+        "https://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
+      ],
+      "headless.grpc": [
+        "http://heimdall-internal-rpc-1.nine-chronicles.com:31238"
+      ],
+      "market.rest": [
+        "http://heimdall-internal-market.9c.gg"
+      ],
+      "world-boss.rest": [
+        "http://heimdall-internal-world-boss.9c.gg"
+      ],
+      "patrol-reward.gql": [
+        "http://heimdall-internal-patrol.9c.gg/graphql"
+      ],
+      "arena.rest": [
+        "http://heimdall-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://heimdall-internal-arena.9c.gg/graphql"
+      ]
+    },
+    "bridges": {
+      "0x100000000000": {
+        "agent": "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f",
+        "avatar": "0x41aEFE4cdDFb57C9dFfd490e17e571705c593dDc"
+      }
+    }
+  },
+  {
     "id": "0x100000000003",
     "name": "thor (internal)",
     "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000003/genesis",
     "genesisHash": "bde462fd59de5ccba8495ebb163b124bf77ddc82cfc8b2f9fb57c00fc6e133b7",
     "9cscanUrl": "https://thor-internal.9cscan.com",
     "rpcEndpoints": {
-      "dp.gql": ["http://thor-internal-dp.9c.gg/graphql"],
-      "9cscan.rest": ["https://api-thor-internal.9cscan.com"],
+      "dp.gql": [
+        "http://thor-internal-dp.9c.gg/graphql"
+      ],
+      "9cscan.rest": [
+        "https://api-thor-internal.9cscan.com"
+      ],
       "headless.gql": [
         "https://thor-internal-rpc-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://thor-internal-rpc-1.nine-chronicles.com:31238"
       ],
-      "market.rest": ["http://thor-internal-market.9c.gg"],
-      "world-boss.rest": ["http://thor-internal-world-boss.9c.gg"],
-      "patrol-reward.gql": ["http://thor-internal-patrol.9c.gg/graphql"],
-      "arena.rest": ["http://thor-internal-arena.9c.gg"]
+      "market.rest": [
+        "http://thor-internal-market.9c.gg"
+      ],
+      "world-boss.rest": [
+        "http://thor-internal-world-boss.9c.gg"
+      ],
+      "patrol-reward.gql": [
+        "http://thor-internal-patrol.9c.gg/graphql"
+      ],
+      "arena.rest": [
+        "http://thor-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://thor-internal-arena.9c.gg/graphql"
+      ]
     },
     "bridges": {
       "0x100000000000": {
