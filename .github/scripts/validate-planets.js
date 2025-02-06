@@ -4,7 +4,7 @@ import Ajv2019 from "npm:ajv/dist/2019.js";
 import addFormats from "npm:ajv-formats";
 
 const baseUrl =
-  "https://planetarium.github.io/json-schema/NineChronicles/2024-12/";
+  "https://planetarium.github.io/json-schema/NineChronicles/2025-02/";
 const fetchJsonSchema = async (name) =>
   await (await fetch(path.join(baseUrl, `/${name}.schema.json`))).json();
 
