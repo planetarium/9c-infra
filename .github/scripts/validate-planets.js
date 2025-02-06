@@ -8,7 +8,7 @@ const baseUrl =
 const fetchJsonSchema = async (name) =>
   await (await fetch(path.join(baseUrl, `/${name}.schema.json`))).json();
 
-const ajv = new Ajv2019({ allErrors: true });
+const ajv = new Ajv2019({ allErrors: true, allowMatchingProperties: true });
 addFormats(ajv);
 
 ajv.addSchema(await fetchJsonSchema("PlanetSpec"), "PlanetSpec.schema.json");
