@@ -17,7 +17,12 @@
       "market.rest": ["http://odin-preview-market.9c.gg"],
       "world-boss.rest": ["https://odin-preview-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://odin-preview-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://odin-preview-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://odin-preview-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://odin-preview-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x100000000001": {
@@ -48,7 +53,12 @@
       "market.rest": ["http://heimdall-preview-market.9c.gg"],
       "world-boss.rest": ["http://heimdall-preview-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://heimdall-preview-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://heimdall-preview-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://heimdall-preview-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://heimdall-preview-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x100000000000": {
@@ -75,7 +85,12 @@
       "market.rest": ["http://thor-preview-market.9c.gg"],
       "world-boss.rest": ["http://thor-preview-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://thor-preview-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://thor-preview-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://thor-preview-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://thor-preview-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x100000000000": {
