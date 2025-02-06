@@ -176,7 +176,7 @@ fullState:
     eks.amazonaws.com/nodegroup: thor-2c_spot
 
   storage:
-    data: 100Gi
+    data: 150Gi
 
 validator:
   count: 1
