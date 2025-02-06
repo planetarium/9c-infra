@@ -12,18 +12,14 @@
         "https://odin-rpc-1.nine-chronicles.com/graphql",
         "https://odin-rpc-2.nine-chronicles.com/graphql",
         "http://sgp-nc-1.ninodes.com/graphql",
-        "http://sgp-nc-2.ninodes.com/graphql",
         "http://ash-nc-1.ninodes.com/graphql",
-        "http://phx-nc-1.ninodes.com/graphql",
         "http://nld-nc-1.ninodes.com/graphql"
       ],
       "headless.grpc": [
         "http://odin-rpc-1.nine-chronicles.com:31238",
         "http://odin-rpc-2.nine-chronicles.com:31238",
         "http://sgp-nc-1.ninodes.com:31238",
-        "http://sgp-nc-2.ninodes.com:31238",
         "http://ash-nc-1.ninodes.com:31238",
-        "http://phx-nc-1.ninodes.com:31238",
         "http://nld-nc-1.ninodes.com:31238"
       ],
       "market.rest": ["https://odin-market.9c.gg"],
