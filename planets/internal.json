@@ -27,8 +27,8 @@
       "patrol-reward.gql": [
         "http://odin-internal-patrol.9c.gg/graphql"
       ],
-      "arena.gql": [
-        "http://odin-internal-arena.9c.gg/graphql"
+      "arena.rest": [
+        "http://odin-internal-arena.9c.gg"
       ]
     },
     "bridges": {
@@ -70,8 +70,8 @@
       "patrol-reward.gql": [
         "http://heimdall-internal-patrol.9c.gg/graphql"
       ],
-      "arena.gql": [
-        "http://heimdall-internal-arena.9c.gg/graphql"
+      "arena.rest": [
+        "http://heimdall-internal-arena.9c.gg"
       ]
     },
     "bridges": {
@@ -109,8 +109,8 @@
       "patrol-reward.gql": [
         "http://thor-internal-patrol.9c.gg/graphql"
       ],
-      "arena.gql": [
-        "http://thor-internal-arena.9c.gg/graphql"
+      "arena.rest": [
+        "http://thor-internal-arena.9c.gg"
       ]
     },
     "bridges": {
