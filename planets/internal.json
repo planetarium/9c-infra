@@ -29,6 +29,9 @@
       ],
       "arena.rest": [
         "http://odin-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://odin-internal-arena.9c.gg/graphql"
       ]
     },
     "bridges": {
@@ -72,6 +75,9 @@
       ],
       "arena.rest": [
         "http://heimdall-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://heimdall-internal-arena.9c.gg/graphql"
       ]
     },
     "bridges": {
@@ -111,6 +117,9 @@
       ],
       "arena.rest": [
         "http://thor-internal-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "http://thor-internal-arena.9c.gg/graphql"
       ]
     },
     "bridges": {
