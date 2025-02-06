@@ -28,10 +28,10 @@
         "http://odin-internal-patrol.9c.gg/graphql"
       ],
       "arena.rest": [
-        "http://odin-internal-arena.9c.gg"
+        "https://odin-internal-arena.9c.gg"
       ],
       "arena.gql": [
-        "http://odin-internal-arena.9c.gg/graphql"
+        "https://odin-internal-arena.9c.gg"
       ]
     },
     "bridges": {
@@ -74,10 +74,10 @@
         "http://heimdall-internal-patrol.9c.gg/graphql"
       ],
       "arena.rest": [
-        "http://heimdall-internal-arena.9c.gg"
+        "https://heimdall-internal-arena.9c.gg"
       ],
       "arena.gql": [
-        "http://heimdall-internal-arena.9c.gg/graphql"
+        "https://heimdall-internal-arena.9c.gg"
       ]
     },
     "bridges": {
@@ -116,10 +116,10 @@
         "http://thor-internal-patrol.9c.gg/graphql"
       ],
       "arena.rest": [
-        "http://thor-internal-arena.9c.gg"
+        "https://thor-internal-arena.9c.gg"
       ],
       "arena.gql": [
-        "http://thor-internal-arena.9c.gg/graphql"
+        "https://thor-internal-arena.9c.gg"
       ]
     },
     "bridges": {
