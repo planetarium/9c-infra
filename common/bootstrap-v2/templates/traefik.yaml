@@ -36,6 +36,9 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
         ports:
+          metrics:
+            expose:
+              default: true
           web: &trustedIPs
             {{- with $.Values.traefik.trustedIPs }}
             forwardedHeaders:

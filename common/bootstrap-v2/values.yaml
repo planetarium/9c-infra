@@ -34,3 +34,10 @@ certManager:
   dnsNames:
   issuer:
     email:
+
+prometheus:
+  server:
+    extraScrapeConfigs:
+
+grafana:
+  serviceAnnotations:

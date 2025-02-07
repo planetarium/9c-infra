@@ -25,3 +25,18 @@ certManager:
     - "*.planetarium.network"
   issuer:
     email: devops@planetariumhq.com
+grafana:
+  hosts:
+    - monitoring-internal-gke.planetarium.network
+prometheus:
+  server:
+    extraScrapeConfigs:
+      - job_name: scrape-headlesses
+        metrics_path: /metrics
+        scrape_interval: 8s
+        scrape_timeout: 6s
+        static_configs:
+          - labels:
+              group: thor-rpc
+            targets:
+              - remote-headless-1.thor.svc.cluster.local:80
