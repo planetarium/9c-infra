@@ -47,6 +47,26 @@ spec:
               value: {{ .Values.arenaService.recipientAddress }}
             - name: OpsConfig__ArenaProviderName
               value: "PLANETARIUM"
+            - name: OpsConfig__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: JWT_SECRET_KEY
+            - name: OpsConfig__JwtPublicKey
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: JWT_PUBLIC_KEY
+            - name: OpsConfig__HangfireUsername
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: HANGFIRE_USER_NAME
+            - name: OpsConfig__HangfirePassword
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: HANGFIRE_PASSWORD
           {{- with $.Values.arenaService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
