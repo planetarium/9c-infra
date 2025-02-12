@@ -1,4 +1,4 @@
-{{ if .Values.seasonpass.enabled }}
+{{- if $.Values.seasonpass.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -63,3 +63,4 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
+{{- end }}
