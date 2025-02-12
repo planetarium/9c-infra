@@ -3,10 +3,6 @@ provider: GCP
 GCP:
   projectID: devops-test-445104
 
-externalSecret:
-  enabled: true
-  separator: _
-
 gateway:
   certificate:
     name: certificate-secret

@@ -19,7 +19,8 @@ global:
 
 externalSecret:
   enabled: true
-  prefix: "ninechronicles-internal-test-1_thor"
+  provider: AWS
+  prefix: "9c-internal-v2/thor"
 
 ingress:
   enabled: false
@@ -59,8 +60,6 @@ seed:
   hosts:
   - "thor-internal-gke-tcp-seed-1.nine-chronicles.com"
 
-  nodeSelector:
-
 remoteHeadless:
   image:
     repository: planetariumhq/ninechronicles-headless
@@ -81,8 +80,6 @@ remoteHeadless:
     requests:
       cpu: 1
       memory: 12Gi
-
-  nodeSelector:
 
   loggingEnabled: true
 

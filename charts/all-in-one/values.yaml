@@ -46,6 +46,7 @@ externalSecret:
   enabled: false
   prefix: ""
   separator: /
+  provider: ""
 
 snapshot:
   downloadSnapshot: false
