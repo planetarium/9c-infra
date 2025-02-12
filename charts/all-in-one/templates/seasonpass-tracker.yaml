@@ -24,7 +24,7 @@ spec:
             - /bin/sh
             - -c
           env:
-            - name: REGION
+            - name: REGION_NAME
               valueFrom:
                 secretKeyRef:
                   key: region
@@ -53,6 +53,26 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: PLANET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: SECRET_ARN
+              valueFrom:
+                secretKeyRef:
+                  key: secret-arn
+                  name: seasonpass-env
+            - name: START_BLOCK_INDEX
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index
+                  name: seasonpass-env
+            - name: HEADLESS_GQL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
