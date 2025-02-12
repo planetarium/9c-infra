@@ -9,7 +9,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-7c0815d08cb5d94700918ca4598ae2634c26ac1e"
-  
+
   remoteKv:
     image:
       repository: planetariumhq/libplanet-remote-kv
@@ -37,7 +37,7 @@ global:
   pyroscope:
     enabled: false
     address: "http://pyroscope.pyroscope.svc.cluster.local:4040"
-  
+
   service:
     annotations: {}
 
@@ -761,7 +761,7 @@ stateproxy:
       memory: 14Gi
   nodeSelector: {}
   tolerations: []
-  
+
   service:
     annotations: {}
 
@@ -778,3 +778,21 @@ arenaService:
 
   env: []
   envForWrite: []
+
+seasonpass:
+  enabled: false
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-64e044185d37f8fb994b0a9740e4655a686440c8"
+  nodeSelector: {}
+  resources:
+    requests:
+      memory: 14Gi
+  env:
+    region: ""
+    gqlUrl: ""
+    currentPlanet: ""
+    dbUri: ""
+    sqsUrl: ""
+    arenaServiceJwtPublicKey: ""
