@@ -28,19 +28,32 @@ spec:
                 secretKeyRef:
                   name: arena
                   key: POSTGRES_CONNECTION_STRING
-            - name: Redis__Host
-              value: "{{ .Values.arenaService.redis.host }}"
             - name: Redis__Port
               value: "{{ .Values.arenaService.redis.port }}"
             - name: Redis__HangfireDbNumber
               value: "{{ .Values.arenaService.redis.hangfireDbNumber }}"
             - name: Redis__RankingDbNumber
               value: "{{ .Values.arenaService.redis.rankingDbNumber }}"
+            - name: Redis__Host
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: REDIS_HOST
             - name: Redis__Password
               valueFrom:
                 secretKeyRef:
                   name: arena
                   key: REDIS_PASSWORD
+            - name: Headless__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: HEADLESS_JWT_SECRET_KEY
+            - name: Headless__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: HEADLESS_JWT_ISSUER
             - name: Headless__HeadlessEndpoint
               value: {{ .Values.arenaService.graphqlEndpoint }}
             - name: OpsConfig__RecipientAddress

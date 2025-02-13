@@ -705,17 +705,17 @@ stateMigrationService:
 
 arenaService:
   enabled: true
-  rwMode: true
-  env:
-  - name: Worker
-    value: "false"
-
-  envForWrite:
-  - name: Worker
-    value: "true"
 
   nodeSelector:
     read:
       eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
     write:
       eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
+
+  graphqlEndpoint: "https://heimdall-rpc.nine-chronicles.com/graphql"
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "2"
+    rankingDbNumber: "3"
