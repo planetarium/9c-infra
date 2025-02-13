@@ -80,3 +80,9 @@ arenaService:
     repository: planetariumhq/arena-service
     pullPolicy: Always
     tag: "git-d8c51f88f70215b8cfff31a3c6cb21d35abf0ea8"
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-f4e299375ca6065eeac972274973b253af01aacf"
