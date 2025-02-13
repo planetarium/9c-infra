@@ -1,4 +1,15 @@
 {{- if $.Values.seasonpass.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-seasonpass-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -83,4 +94,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
 {{- end }}

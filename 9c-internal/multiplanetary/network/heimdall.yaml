@@ -357,3 +357,5 @@ arenaService:
 
 seasonpass:
   enabled: true
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
