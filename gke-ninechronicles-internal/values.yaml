@@ -1,7 +1,7 @@
 clusterName: ninechronicles-internal
 provider: GCP
 GCP:
-  projectID: nine-chronicles-internal
+  projectID: nine-chronicles-449809
 global:
   service:
     annotations:
