@@ -23,8 +23,9 @@ on:
         default: '9c-main'
         type: choice
         options:
-        - 9c-internal
         - 9c-main
+        - 9c-internal
+        - gke-ninechronicles-internal
       file-name:
         required: true
         description: 'Network environment'

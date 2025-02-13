@@ -1,0 +1,5 @@
+clusterName: nine-chronicles-internal
+targetRevision: main
+path: gke-ninechronicles-internal
+network:
+  - thor

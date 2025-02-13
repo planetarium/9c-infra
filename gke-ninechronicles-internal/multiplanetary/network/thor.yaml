@@ -1,0 +1,320 @@
+global:
+  validatorPath: "thor-internal-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings-x64.json"
+
+  appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
+
+  peerStrings:
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,thor-internal-tcp-seed-1.nine-chronicles.com,31234"
+
+  trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
+
+  networkType: Internal
+  planet: ThorInternal
+  consensusType: pbft
+
+  resetSnapshot: true
+  rollbackSnapshot: false
+
+  pyroscope:
+    enabled: true
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-internal-v2/thor"
+
+ingress:
+  enabled: false
+
+gateway:
+  enabled: true
+  services:
+  - name: remote-headless
+    hostnames:
+      - thor-internal-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    protocols:
+    - web
+    - grpc
+  - name: data-provider
+    hostnames:
+      - thor-internal-dp.9c.gg
+  - name: market-service
+    hostnames:
+      - thor-internal-market.9c.gg
+  - name: world-boss-service
+    hostnames:
+      - thor-internal-world-boss.9c.gg
+  - name: arena-service
+    hostnames:
+      - thor-internal-arena.9c.gg
+
+bridgeService:
+  enabled: false
+
+  multiplanetary:
+    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets-internal.json"
+    upstream: "0x100000000000"
+    downstream: "0x100000000003"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-relay-bridge-odin-thor"
+
+  storage:
+    size: "10Gi"
+
+  nodeSelector:
+
+  account:
+    type: "kms"
+    keyId: "178553bb-ca39-4959-8e08-ec48a562a887"
+    publicKey: "047cfee101490623b3efae7062b7c915f467c8e996636dffb1696b51e2ae368c0ab096af7e2d4bc98561ee6dabe112d4804da352e310fe016f5b793d9241ba501b"
+
+  txpool:
+    type: "local"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge Test (Odin ↔ Thor)"
+      channel: "9c-relay-bridge-bot-test-rdb"
+
+  db:
+    enabled: false
+    size: "5Gi"
+
+  rdb:
+    enabled: false
+    defaultStartBlockIndex:
+      upstream: "13154240"
+      downstream: "580751"
+
+bridgeServiceApi:
+  enabled: false
+  nodeSelector:
+
+dataProvider:
+  enabled: false
+  rwMode: false
+  render: true
+  migrateDatabase: false
+
+  storage:
+    data: 50Gi
+    log: 1Gi
+
+  db:
+    local: false
+
+  nodeSelector:
+
+dataProviderDailyMetric:
+  enabled: false
+
+  nodeSelector:
+
+marketService:
+  enabled: false
+
+  db:
+    local: false
+    size: 1Gi
+
+  nodeSelector:
+    read:
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
+
+remoteHeadless:
+  count: 1
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  storage:
+    data: 50Gi
+
+  hosts:
+  - "thor-internal-gke-rpc-1.nine-chronicles.com"
+
+  nodeSelector:
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --remote-key-value-service
+
+rudolfService:
+  enabled: false
+
+seed:
+  count: 1
+
+  hosts:
+  - "thor-internal-gke-tcp-seed-1.nine-chronicles.com"
+
+  nodeSelector:
+
+snapshot:
+  partition:
+    enabled: false
+    suspend: true
+  slackChannel: "bot-test"
+
+  image: "planetariumhq/ninechronicles-snapshot:git-45205b5ed6d978bb0dda6ad0b84fb0a393015711"
+
+  path: internal/thor
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 300Mi
+
+  nodeSelector:
+
+validator:
+  count: 1
+
+  consensusSeedStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.thor.svc.cluster.local,31235"
+
+  hosts:
+  - "thor-internal-validator-1.nine-chronicles.com"
+
+  nodeSelector:
+
+  ports:
+    rpc: 31238
+
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 12Gi
+
+  storage:
+    data: 50Gi
+
+  loggingEnabled: false
+
+  extraArgs:
+  - --tx-life-time=2000000000
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
+  - --consensus-enter-precommit-delay=300
+
+worldBoss:
+  enabled: false
+  ports:
+    targetPort: 5000
+
+  db:
+    local: false
+    size: 1Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+
+testHeadless1:
+  enabled: false
+
+  host: "thor-internal-test-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 50Gi
+    accessModes: "ReadWriteMany"
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  nodeSelector:
+
+  loggingEnabled: false
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+acc:
+  enabled: false
+
+  local: false
+
+  redis:
+    enabled: false
+
+  nodeSelector:
+
+  env:
+  - name: AccessControlServiceType
+    value: "sqlite"
+  - name: AccessControlServiceConnectionString
+    value: "Data Source=/data/acc.db"
+
+stateMigrationService:
+  enabled: false
+
+stateproxy:
+  enabled: true
+  image:
+    repository: planetariumhq/ninechronicles-stateproxy
+    pullPolicy: Always
+    tag: "git-2c1d18f6fdbe96916b62e0d0b1af6e4828218070"
+  appsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/stateproxy/appsettings.json"
+  upstream: "remote-headless-1.thor.svc.cluster.local"
+  snapshot:
+    reset: false
+    path: "internal/thor"
+  hosts:
+  - "thor-stateproxy-1.nine-chronicles.com"
+  ports:
+    graphql: 80
+    rpc: 31238
+  nodeSelector:
+  storage:
+    class:
+
+arenaService:
+  enabled: false
+
+  nodeSelector:
+    read:
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "4"
+    rankingDbNumber: "5"
+
+seasonpass:
+  enabled: false
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"

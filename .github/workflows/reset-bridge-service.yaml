@@ -13,11 +13,17 @@ on:
           - thor-internal
           - heimdall-preview
           - thor-preview
+      dir-name:
+        type: string
+        default: 9c-internal
   workflow_call:
     inputs:
       network:
         required: true
         type: string
+      dir-name:
+        type: string
+        default: 9c-internal
 
 jobs:
   reset-bridge-service:
@@ -27,44 +33,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.29.0'
-
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-
     - name: Set namespace based on input
       run: |
         NETWORK="${{ inputs.network }}"
         echo "NAMESPACE=${NETWORK%"-internal"}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
-
-    - name: Generate kubeconfig for the cluster
-      run: |
-        aws eks update-kubeconfig --name 9c-internal-v2 --region us-east-2
-
-    - name: Check pods
-      run: |
-        kubectl get pods --all-namespaces
-
-    - name: Scale down bridge-service
-      run: kubectl scale --replicas=0 statefulset/bridge-service -n ${{ env.NAMESPACE }}
-
-    - name: Scale down bridge-service-db
-      run: kubectl scale --replicas=0 statefulset/bridge-service-db -n ${{ env.NAMESPACE }}
-
-    - name: Delete PVC
-      run: kubectl delete pvc/bridge-service-db-data-bridge-service-db-0 --namespace=${{ env.NAMESPACE }}
 
     - uses: actions/setup-python@v2.2.2
       with:
@@ -78,7 +50,7 @@ jobs:
 
     - name: Update 'bridgeService.rdb.defaultStartBlockIndex'
       run: |
-        python cli.py update-bridge-service 9c-internal ${{ env.NAMESPACE }}
+        python cli.py update-bridge-service ${{ inputs.dir-name }} ${{ env.NAMESPACE }}
       working-directory: ./scripts
       env:
         GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
