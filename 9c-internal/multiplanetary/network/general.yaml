@@ -79,7 +79,7 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-d8c51f88f70215b8cfff31a3c6cb21d35abf0ea8"
+    tag: "git-b443318a43d6fc1be28de97a074a15a8601c220e"
 
 seasonpass:
   image:
