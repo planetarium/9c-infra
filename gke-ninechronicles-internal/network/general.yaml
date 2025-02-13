@@ -1,7 +1,7 @@
-clusterName: ninechronicles-internal-test-1
+clusterName: nine-chronicles-internal
 provider: GCP
 GCP:
-  projectID: devops-test-445104
+  projectID: nine-chronicles-449809
 
 gateway:
   certificate:
@@ -11,7 +11,7 @@ gateway:
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-f039a404940893414c12a5e4dffafd4cac4d44ec"
+    tag: "git-bac999c23ff23888bc5aa6b18ddbe4350c872c5a"
 
 seed:
   image:

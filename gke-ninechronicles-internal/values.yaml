@@ -1,7 +1,7 @@
-clusterName: ninechronicles-internal-test-1
+clusterName: ninechronicles-internal
 provider: GCP
 GCP:
-  projectID: devops-test-445104
+  projectID: nine-chronicles-internal
 global:
   service:
     annotations:
@@ -12,7 +12,7 @@ externalSecrets:
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-9c-internal-external-secrets
-      iam.gke.io/gcp-service-account: external-secrets@devops-test-445104.iam.gserviceaccount.com
+      iam.gke.io/gcp-service-account: external-secrets@nine-chronicles-449809.iam.gserviceaccount.com
 externalDns:
   serviceAccount:
     annotations:

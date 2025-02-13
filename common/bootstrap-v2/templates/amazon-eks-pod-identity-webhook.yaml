@@ -17,4 +17,4 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     path: common/bootstrap-v2/kustomization/amazon-eks-pod-identity-webhook
-    targetRevision: gke
+    targetRevision: main

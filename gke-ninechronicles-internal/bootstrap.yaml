@@ -13,17 +13,17 @@ spec:
   sources:
     - repoURL: https://github.com/planetarium/9c-infra
       path: common/bootstrap-v2
-      targetRevision: gke
+      targetRevision: main
       helm:
         valueFiles:
           - /gke-ninechronicles-internal/values.yaml
     - repoURL: https://github.com/planetarium/9c-infra.git
       path: charts/multiplanetary
-      targetRevision: gke
+      targetRevision: main
       helm:
         values: |-
-          clusterName: ninechronicles-internal-test-1
-          targetRevision: gke
+          clusterName: ninechronicles-internal
+          targetRevision: main
           path: gke-ninechronicles-internal
           network:
           - thor
