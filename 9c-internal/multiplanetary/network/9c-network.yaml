@@ -343,3 +343,6 @@ arenaService:
     port: "6379"
     hangfireDbNumber: "0"
     rankingDbNumber: "1"
+
+seasonpass:
+  enabled: true
