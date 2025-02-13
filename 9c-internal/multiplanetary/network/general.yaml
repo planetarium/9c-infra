@@ -1,7 +1,7 @@
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-bac999c23ff23888bc5aa6b18ddbe4350c872c5a"
+    tag: "git-f039a404940893414c12a5e4dffafd4cac4d44ec"
 
   service:
     annotations:
@@ -79,4 +79,10 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-940ab5c6651431cf8fcb6d29903ea604116f9d13"
+    tag: "git-45400b67f53f7541bc29adc01ab73c0b807af31d"
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-f4e299375ca6065eeac972274973b253af01aacf"

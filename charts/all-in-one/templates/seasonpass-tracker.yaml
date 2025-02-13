@@ -1,0 +1,99 @@
+{{- if $.Values.seasonpass.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-seasonpass-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-tracker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-tracker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-tracker
+  template:
+    metadata:
+      labels:
+        app: seasonpass-tracker
+    spec:
+      containers:
+        - args:
+            - python -m worker.tracker.courage_tracker
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url
+                  name: seasonpass-env
+            - name: CURRENT_PLANET
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: sqs-url
+                  name: seasonpass-env
+            - name: ARENA_SERVICE_JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: PLANET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: SECRET_ARN
+              valueFrom:
+                secretKeyRef:
+                  key: secret-arn
+                  name: seasonpass-env
+            - name: START_BLOCK_INDEX
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index
+                  name: seasonpass-env
+            - name: HEADLESS_GQL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: seasonpass-env
+          image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          name: seasonpass-tracker
+          ports:
+            - containerPort: 5000
+      {{- with $.Values.seasonpass.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
+{{- end }}
