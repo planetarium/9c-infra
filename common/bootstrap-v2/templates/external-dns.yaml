@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+  source:
+    repoURL: https://kubernetes-sigs.github.io/external-dns/
+    chart: external-dns
+    targetRevision: 1.15.0
+    helm:
+      values: |-
+        policy: sync
+        txtOwnerId: "{{ .Values.clusterName }}"
+        sources:
+          - service
+          - ingress
+          - gateway-httproute
+          - gateway-grpcroute
+          - crd
+        managedRecordTypes:
+          - A
+          - AAAA
+          - CNAME
+          - TXT
+        serviceAccount:
+          annotations:
+            {{- with .Values.externalDns.serviceAccount.annotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}

@@ -1,0 +1,14 @@
+{{- with .Values.certManager.dnsNames }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: certificate
+  namespace: traefik
+spec:
+  secretName: certificate-secret
+  dnsNames:
+    {{- toYaml . | nindent 4 }}
+  issuerRef:
+    name: cert-manager-letsencrypt-issuer
+    kind: ClusterIssuer
+{{- end }}

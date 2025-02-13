@@ -1,0 +1,99 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    targetRevision: 27.3.0
+    helm:
+      values: |-
+        serviceAccounts:
+          alertmanager:
+            create: false
+          nodeExporter:
+            create: true
+          pushgateway:
+            create: false
+          server:
+            create: true
+        alertmanager:
+          enabled: false
+        nodeExporter:
+          enabled: true
+          tolerations:
+            - operator: Exists
+        pushgateway:
+          enabled: false
+        server:
+          enabled: true
+          persistentVolume:
+            size: 50Gi
+          retention: "90d"
+          strategy:
+            type: Recreate
+          extraArgs:
+            log.level: debug
+            web.enable-remote-write-receiver: null
+        serverFiles:
+          prometheus.yml:
+            rule_files:
+              - /etc/config/recording_rules.yml
+              - /etc/config/alerting_rules.yml
+              ## Below two files are DEPRECATED will be removed from this default values file
+              - /etc/config/rules
+              - /etc/config/alerts
+            scrape_configs:
+              - job_name: 'kubelet'
+                scheme: https
+                bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+                tls_config:
+                  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                  insecure_skip_verify: true
+                kubernetes_sd_configs:
+                  - role: node
+                relabel_configs:
+                  - action: labelmap
+                    regex: __meta_kubernetes_node_label_(.+)
+                  - target_label: __address__
+                    replacement: kubernetes.default.svc:443
+                  - source_labels: [__meta_kubernetes_node_name]
+                    regex: (.*)
+                    target_label: __metrics_path__
+                    replacement: /api/v1/nodes/${1}/proxy/metrics
+              - job_name: 'cadvisor'
+                scheme: https
+                bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+                tls_config:
+                  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                  insecure_skip_verify: true
+                kubernetes_sd_configs:
+                  - role: node
+                relabel_configs:
+                  - action: labelmap
+                    regex: __meta_kubernetes_node_label_(.+)
+                  - target_label: __address__
+                    replacement: kubernetes.default.svc:443
+                  - source_labels: [__meta_kubernetes_node_name]
+                    regex: (.*)
+                    target_label: __metrics_path__
+                    replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+              - job_name: 'traefik'
+                static_configs:
+                  - targets:
+                    - traefik.traefik.svc.cluster.local:9100
+              {{- with .Values.prometheus.server.extraScrapeConfigs }}
+                {{- toYaml . | nindent 14 }}
+              {{- end }}

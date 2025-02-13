@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 7.7.16
+    helm:
+      values: |-
+        global:
+          domain: {{ .Values.argocd.domain }}
+        controller:
+          replicas: 1
+        redis-ha:
+          enabled: true
+        repoServer:
+          autoscaling:
+            enabled: true
+        server:
+          autoscaling:
+            enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+        configs:
+          params:
+            server.insecure: true
+          rbac:
+            scopes: "[email, groups]"
+            policy.default: role:readonly
+            policy.csv: |
+              g, planetarium:DevOps, role:admin
+          cm:
+            admin.enabled: true
+            statusbadge.enabled: true
+            dex.config: |-
+              connectors:
+                - type: github
+                  id: github
+                  name: GitHub
+                  config:
+                    orgs:
+                      - name: planetarium
+                    clientID: "$github-ssh-client:dex.github.clientId"
+                    clientSecret: "$github-ssh-client:dex.github.clientSecret"

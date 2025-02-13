@@ -25,6 +25,8 @@ kind: Application
 metadata:
   name: {{ $.Release.Name }}-{{ . }}
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ $.Release.Name }}
   source:
@@ -35,7 +37,6 @@ spec:
       valueFiles:
         - "../../{{ $.Values.path }}/network/general.yaml"
         - "../../{{ $.Values.path }}/network/{{ . }}.yaml"
-
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}-{{ . }}

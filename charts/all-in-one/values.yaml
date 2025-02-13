@@ -4,6 +4,7 @@
 
 clusterName: "9c-sample"
 logLevel: "debug"
+provider: "AWS"
 
 global:
   image:
@@ -44,6 +45,8 @@ global:
 externalSecret:
   enabled: false
   prefix: ""
+  separator: /
+  provider: ""
 
 snapshot:
   downloadSnapshot: false
@@ -217,6 +220,9 @@ remoteHeadless:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+  ingress:
+    enabled: false
 
 dataProviderDataMigrator:
   enabled: false

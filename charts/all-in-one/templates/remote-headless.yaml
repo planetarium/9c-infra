@@ -1,5 +1,5 @@
-{{ range $idx := until (int .Values.remoteHeadless.count) }}
-{{ $index := add $idx 1 }}
+{{- range $idx := until (int .Values.remoteHeadless.count) }}
+{{- $index := add $idx 1 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -140,7 +140,7 @@ spec:
               sleep 5s
             done
 
-            VALIDATOR="http://validator-5.{{ $.Release.Name }}.svc.cluster.local/ui/playground"
+            VALIDATOR="{{ $.Values.global.validatorPath }}/ui/playground"
 
             echo Checking: ${VALIDATOR}
 
@@ -338,10 +338,37 @@ spec:
       resources:
         requests:
           storage: {{ $.Values.remoteHeadless.storage.data }}
+      {{- if eq $.Values.provider "AWS" }}
       storageClassName: {{ $.Release.Name }}-gp3
+      {{- end }}
       volumeMode: Filesystem
       {{- end }}
   updateStrategy:
     type: RollingUpdate
 ---
-{{ end }}
+{{- if $.Values.remoteHeadless.ingress.enabled }}
+{{- $hosts := split "," (index $.Values.remoteHeadless.hosts $idx) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remote-headless-{{ $index }}-ingress
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/affinity: "true"
+spec:
+  rules:
+    {{- range $host := $hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remote-headless-{{ $index }}
+                port:
+                  number: 80
+    {{- end }}
+---
+{{- end }}
+{{- end }}

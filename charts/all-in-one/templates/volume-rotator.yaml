@@ -5,6 +5,8 @@ kind: Application
 metadata:
   name: volume-rotator
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:

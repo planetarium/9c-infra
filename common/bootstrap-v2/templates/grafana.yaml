@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: 8.9.0
+    helm:
+      values: |-
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.monitoring.svc.cluster.local
+              access: proxy
+              isDefault: true
+        persistence:
+          enabled: true
+        initChownData:
+          enabled: true
+        service:
+          enabled: true
+          {{- if not .Values.grafana.hosts }}
+          type: LoadBalancer
+          {{- end }}
+          {{- with .Values.grafana.serviceAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- with .Values.grafana.hosts }}
+        ingress:
+          enabled: true
+          hosts:
+            {{ toYaml . | nindent 12 }}
+        {{- end }}
