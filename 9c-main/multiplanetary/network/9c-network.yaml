@@ -238,8 +238,8 @@ remoteHeadless:
 
   storage:
     volumeNames:
-    - "remote-headless-data-1-remote-headless-1-1"
-    - "remote-headless-data-2-remote-headless-2-1"
+    - "test-headless-data-1-test-headless-1-0"
+    - "test-headless-data-1-test-headless-1-1"
 
   tolerations:
   - effect: NoSchedule
@@ -487,6 +487,9 @@ testHeadless1:
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-2c_spot_amd
+
+  storage:
+    volumeName: "remote-headless-data-1-remote-headless-1-1"
 
 testHeadless2:
   enabled: false
