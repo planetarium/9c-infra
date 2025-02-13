@@ -793,3 +793,5 @@ seasonpass:
     dbUri: ""
     sqsUrl: ""
     arenaServiceJwtPublicKey: ""
+  serviceAccount:
+    roleArn: ""
