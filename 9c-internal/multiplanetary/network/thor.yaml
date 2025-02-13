@@ -373,7 +373,6 @@ arenaService:
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:
-    host: redis-service.common-dbs.svc.cluster.local
     port: "6379"
     hangfireDbNumber: "4"
     rankingDbNumber: "5"
