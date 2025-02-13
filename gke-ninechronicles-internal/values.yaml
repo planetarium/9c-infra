@@ -1,4 +1,4 @@
-clusterName: ninechronicles-internal
+clusterName: nine-chronicles-internal
 provider: GCP
 GCP:
   projectID: nine-chronicles-449809

@@ -22,7 +22,7 @@ spec:
       targetRevision: main
       helm:
         values: |-
-          clusterName: ninechronicles-internal
+          clusterName: nine-chronicles-internal
           targetRevision: main
           path: gke-ninechronicles-internal
           network:
