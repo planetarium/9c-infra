@@ -25,6 +25,8 @@ kind: Application
 metadata:
   name: {{ $.Release.Name }}-{{ . }}
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ $.Release.Name }}
   source:

@@ -5,6 +5,8 @@ kind: Application
 metadata:
   name: remote-headless
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
