@@ -29,7 +29,12 @@
       "market.rest": ["https://odin-market.9c.gg"],
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://odin-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://odin-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://odin-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x000000000001": {
@@ -64,7 +69,12 @@
       "market.rest": ["http://heimdall-market.9c.gg"],
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://heimdall-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://heimdall-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://heimdall-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x000000000000": {
@@ -95,7 +105,12 @@
       "market.rest": ["http://thor-market.9c.gg"],
       "world-boss.rest": ["http://thor-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://thor-patrol.9c.gg/graphql"],
-      "arena.gql": ["http://thor-arena.9c.gg/graphql"]
+      "arena.rest": [
+        "https://thor-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://thor-arena.9c.gg"
+      ]
     },
     "bridges": {
       "0x000000000000": {
