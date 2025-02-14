@@ -719,3 +719,8 @@ arenaService:
     port: "6379"
     hangfireDbNumber: "2"
     rankingDbNumber: "3"
+
+seasonpass:
+  enabled: true
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"

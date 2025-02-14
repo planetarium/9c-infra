@@ -88,3 +88,9 @@ arenaService:
   nodeSelector:
     read: {}
     write: {}
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-f4e299375ca6065eeac972274973b253af01aacf"
