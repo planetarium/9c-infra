@@ -303,6 +303,8 @@ dataProvider:
   - name: DOTNET_gcServer
     value: "1"
 
+  storePath: "/data/headless"
+
   storage:
     writeVolumeName: "volume-rotator-1"
 
