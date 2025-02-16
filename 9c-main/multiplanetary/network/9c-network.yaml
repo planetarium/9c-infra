@@ -160,6 +160,8 @@ validator:
   hosts:
   - "odin-validator-5.nine-chronicles.com"
 
+  storePath: "/data/headless"
+
   storage:
     volumeNames:
     - "volume-rotator-0"
