@@ -162,7 +162,7 @@ validator:
 
   storage:
     volumeNames:
-    - "validator-data-5-validator-5-1"
+    - "volume-rotator-0"
 
   tolerations:
   - effect: NoSchedule
@@ -302,6 +302,9 @@ dataProvider:
     value: Odin
   - name: DOTNET_gcServer
     value: "1"
+
+  storage:
+    writeVolumeName: "volume-rotator-1"
 
 explorer:
   enabled: false
@@ -489,7 +492,7 @@ testHeadless1:
     eks.amazonaws.com/nodegroup: 9c-main-2c_spot_amd
 
   storage:
-    volumeName: "remote-headless-data-1-remote-headless-1-1"
+    volumeName: "volume-rotator-2"
 
 testHeadless2:
   enabled: false
@@ -584,7 +587,7 @@ jwtHeadless:
       memory: 25Gi
 
   storage:
-    volumeName: "jwt-headless-data-jwt-headless-1"
+    volumeName: "volume-rotator-3"
 
   tolerations:
   - effect: NoSchedule
