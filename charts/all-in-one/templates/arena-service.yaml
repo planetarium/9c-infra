@@ -59,7 +59,6 @@ spec:
                 secretKeyRef:
                   name: arena
                   key: HEADLESS_ENDPOINT
-              value: {{ .Values.arenaService.graphqlEndpoint }}
             - name: OpsConfig__RecipientAddress
               value: {{ .Values.arenaService.recipientAddress }}
             - name: OpsConfig__ArenaProviderName
