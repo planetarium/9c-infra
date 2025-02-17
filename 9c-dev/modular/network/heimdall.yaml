@@ -39,7 +39,6 @@ ingress:
   hosts:
     dataProvider: "heimdall-internal-dp.9c.gg"
     marketService: "heimdall-internal-market.9c.gg"
-    patrolRewardService: "heimdall-internal-patrol.9c.gg"
     worldBoss: "heimdall-internal-world-boss.9c.gg"
 
 bridgeService:
@@ -116,12 +115,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: true
-
-  db:
-    local: true
 
 remoteHeadless:
   enabled: true

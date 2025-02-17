@@ -180,23 +180,10 @@ marketService:
   - name: DOTNET_gcServer
     value: "1"
   - name: RpcConfig__Host
-    value: remote-headless-1.v200100.svc.cluster.local 
+    value: remote-headless-1.v200100.svc.cluster.local
   - name: RpcConfig__Port
     value: "31238"
   - name: WorkerConfig__SyncShop
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: true
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-39de7db54c7dab4efc30763a1c36fa34de235fe1"
-
-  nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
-
-  db:
-    local: true

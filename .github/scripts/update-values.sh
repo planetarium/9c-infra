@@ -9,8 +9,7 @@ BRIDGE_SERVICE=$5
 DATA_PROVIDER=$6
 WORLD_BOSS=$7
 MARKET_SERVICE=$8
-PATROL_REWARD_SERVICE=$9
-RUDOLF_SERVICE=${10}
+RUDOLF_SERVICE=$9
 
 file_path="$DIR/multiplanetary/network/$FILE_NAME.yaml"
 
@@ -41,10 +40,6 @@ else
 
     if [ "$MARKET_SERVICE" ]; then
         sources="marketService|planetariumhq/market-service:$MARKET_SERVICE $sources"
-    fi
-
-    if [ "$PATROL_REWARD_SERVICE" ]; then
-        sources="patrolRewardService|planetariumhq/patrol-reward-service:$PATROL_REWARD_SERVICE $sources"
     fi
 
     if [ "$RUDOLF_SERVICE" ]; then

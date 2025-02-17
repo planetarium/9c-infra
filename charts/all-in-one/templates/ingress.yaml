@@ -43,18 +43,6 @@ spec:
                 port:
                   number: 80
     {{- end }}
-    {{- if $.Values.patrolRewardService.enabled }}
-    - host: {{ $.Values.ingress.hosts.patrolRewardService }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: patrol-reward-service
-                port:
-                  number: 80
-    {{- end }}
     {{- if $.Values.worldBoss.enabled }}
     - host: {{ $.Values.ingress.hosts.worldBoss }}
       http:

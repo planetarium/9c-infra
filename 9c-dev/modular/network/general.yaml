@@ -42,12 +42,6 @@ marketService:
     pullPolicy: Always
     tag: "git-f3de1965f40ef4a2227db6ae33afa7fa77dff65e"
 
-patrolRewardService:
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-e7995b7a23d97d8d1c77499d82300b12041a326d"
-
 rudolfService:
   image:
     tag: "git-278252e48d7d13306dcb1820bd9524ee6a27203c"

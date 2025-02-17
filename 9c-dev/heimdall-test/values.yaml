@@ -116,8 +116,5 @@ worldBoss:
 marketService:
   enabled: false
 
-patrolRewardService:
-  enabled: false
-
 rudolfService:
   enabled: false
