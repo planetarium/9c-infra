@@ -369,7 +369,6 @@ arenaService:
     read:
       eks.amazonaws.com/nodegroup: thor-spot_2c
 
-  graphqlEndpoint: "http://remote-headless-1.thor.svc.cluster.local/graphql"
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:

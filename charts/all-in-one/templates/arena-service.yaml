@@ -55,6 +55,10 @@ spec:
                   name: arena
                   key: HEADLESS_JWT_ISSUER
             - name: Headless__HeadlessEndpoint
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: HEADLESS_ENDPOINT
               value: {{ .Values.arenaService.graphqlEndpoint }}
             - name: OpsConfig__RecipientAddress
               value: {{ .Values.arenaService.recipientAddress }}

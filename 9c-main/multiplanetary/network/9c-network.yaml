@@ -719,7 +719,6 @@ arenaService:
     write:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_xl_2c
 
-  graphqlEndpoint: "https://odin-rpc.nine-chronicles.com/graphql"
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:

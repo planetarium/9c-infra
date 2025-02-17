@@ -346,7 +346,6 @@ arenaService:
     read:
       eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
-  graphqlEndpoint: "http://remote-headless-1.heimdall.svc.cluster.local/graphql"
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:
