@@ -53,8 +53,6 @@ gateway:
     hostname: odin-dp.9c.gg
   - name: market-service
     hostname: odin-market.9c.gg
-  - name: patrol-reward-service
-    hostname: odin-patrol.9c.gg
   - name: world-boss-service
     hostname: odin-world-boss.9c.gg
   - name: arena-service
@@ -620,17 +618,6 @@ remoteActionEvaluatorHeadless:
 blockIntervalNotifier:
   enabled: true
   group: odin-validator
-
-patrolRewardService:
-  enabled: true
-
-  resources:
-    requests:
-      cpu: 100m
-      memory: 500Mi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 acc:
   enabled: false

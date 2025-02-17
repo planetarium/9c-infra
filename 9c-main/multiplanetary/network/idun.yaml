@@ -369,12 +369,6 @@ blockIntervalNotifier:
   enabled: false
   group: idun-validator
 
-patrolRewardService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: idun-m5_l_2c
-
 acc:
   enabled: false
 
@@ -412,4 +406,3 @@ rudolfService:
     securityGroupIds:
     - "sg-0f0bf654f2ff02289"
     - "sg-033602a010bce902e"
-

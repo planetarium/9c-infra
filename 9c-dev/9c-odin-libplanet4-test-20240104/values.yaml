@@ -37,7 +37,6 @@ ingress:
   hosts:
     dataProvider: "dev-dp.9c.gg"
     marketService: "dev-market.9c.gg"
-    patrolRewardService: "dev-patrol.9c.gg"
     worldBoss: "dev-world-boss.9c.gg"
 
 snapshot:
@@ -97,9 +96,9 @@ testHeadless1:
     tag: "git-1064aae17b967cc0b18c5efe4739041c48990578-v5"
 
   loggingEnabled: true
-  
+
   host: "sloth-test-headless-1.nine-chronicles.com"
-  
+
   extraArgs:
   - --tx-quota-per-signer=1
 
@@ -220,19 +219,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: true
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: git-cc830dd9bf0052feb624a81fbcde7e4a901e392c
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: general-m5d_xl_2c
-
-  db:
-    local: true
 
 rudolfService:
   enabled: true

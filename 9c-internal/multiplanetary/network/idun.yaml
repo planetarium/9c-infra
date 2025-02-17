@@ -92,15 +92,6 @@ marketService:
   - name: WorkerConfig__SyncProduct
     value: "true"
 
-patrolRewardService:
-  enabled: false
-
-  db:
-    local: true
-
-  nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
-
 remoteHeadless:
   count: 1
 
@@ -250,4 +241,3 @@ worldBoss:
 
   nodeSelector:
     node.kubernetes.io/instance-type: m5d.xlarge
-

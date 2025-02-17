@@ -41,8 +41,6 @@ gateway:
     hostname: thor-preview-dp.9c.gg
   - name: market-service
     hostname: thor-preview-market.9c.gg
-  - name: patrol-reward-service
-    hostname: thor-preview-patrol.9c.gg
   - name: world-boss-service
     hostname: thor-preview-world-boss.9c.gg
   - name: arena-service
@@ -138,15 +136,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: true
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-preview-spot_2c
-
-  db:
-    local: true
 
 remoteHeadless:
   count: 0
