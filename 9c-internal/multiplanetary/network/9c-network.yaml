@@ -48,10 +48,6 @@ gateway:
     hostnames:
       - odin-internal-market.9c.gg
       - odin-preview-market.9c.gg
-  - name: patrol-reward-service
-    hostnames:
-      - odin-internal-patrol.9c.gg
-      - odin-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
       - odin-internal-world-boss.9c.gg
@@ -219,15 +215,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-spot_2c
-
-  db:
-    local: true
 
 rudolfService:
   enabled: true

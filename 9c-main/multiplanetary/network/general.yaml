@@ -39,13 +39,6 @@ marketService:
     repository: planetariumhq/market-service
     tag: "git-bb126180a9e879ac3e926b60f79a93953f00264a"
 
-patrolRewardService:
-  enabled: false
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-dde67dc01204e76f0df6d132bb476ef9c12df938"
-
 acc:
   image:
     repository: planetariumhq/access-control-center

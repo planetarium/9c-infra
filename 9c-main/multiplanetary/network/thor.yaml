@@ -51,8 +51,6 @@ gateway:
     hostname: thor-dp.9c.gg
   - name: market-service
     hostname: thor-market.9c.gg
-  - name: patrol-reward-service
-    hostname: thor-patrol.9c.gg
   - name: world-boss-service
     hostname: thor-world-boss.9c.gg
   - name: arena-service
@@ -505,17 +503,6 @@ remoteActionEvaluatorHeadless:
 blockIntervalNotifier:
   enabled: true
   group: thor-validator
-
-patrolRewardService:
-  enabled: true
-
-  resources:
-    requests:
-      cpu: 100m
-      memory: 500Mi
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-m7g_l_2c
 
 acc:
   enabled: false

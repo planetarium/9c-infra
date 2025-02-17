@@ -587,26 +587,6 @@ lib9cStateService:
   tolerations: []
   affinity: {}
 
-patrolRewardService:
-  enabled: false
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-cc830dd9bf0052feb624a81fbcde7e4a901e392c"
-
-  nodeSelector: {}
-
-  resources: {}
-
-  env: []
-
-  db:
-    local: false
-    database: ""
-    user: ""
-    connectionString: ""
-    size: 1Gi
-
 blockIntervalNotifier:
   enabled: false
   group: odin-validator

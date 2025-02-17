@@ -40,8 +40,6 @@ gateway:
     hostname: odin-preview-dp.9c.gg
   - name: market-service
     hostname: odin-preview-market.9c.gg
-  - name: patrol-reward-service
-    hostname: odin-preview-patrol.9c.gg
   - name: world-boss-service
     hostname: odin-preview-world-boss.9c.gg
   - name: arena-service
@@ -207,14 +205,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: true
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: odin-preview-spot_2c
-
-  db:
-    local: true
 
 rudolfService:
   enabled: false

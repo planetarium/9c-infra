@@ -186,19 +186,6 @@ marketService:
   - name: WorkerConfig__SyncProduct
     value: "true"
 
-patrolRewardService:
-  enabled: true
-  image:
-    repository: planetariumhq/patrol-reward-service
-    pullPolicy: Always
-    tag: "git-db9bc2448a062ab981838564091469a2e2c38980"
-
-  nodeSelector:
-    node.kubernetes.io/instance-type: m5d.xlarge
-
-  db:
-    local: true
-
 rudolfService:
   enabled: true
 
