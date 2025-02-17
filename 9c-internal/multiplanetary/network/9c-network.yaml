@@ -335,7 +335,6 @@ arenaService:
     read:
       eks.amazonaws.com/nodegroup: odin-spot_2c
 
-  graphqlEndpoint: "http://remote-headless-1.9c-network.svc.cluster.local/graphql"
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:
