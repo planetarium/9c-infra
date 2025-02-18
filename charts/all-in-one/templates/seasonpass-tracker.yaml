@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - args:
-            - python -m worker.tracker.courage_tracker
+            - python -m worker.tracker.run
           command:
             - /bin/sh
             - -c
@@ -85,10 +85,18 @@ spec:
                 secretKeyRef:
                   key: jwt-secret
                   name: seasonpass-env
+            - name: ADVENTURE_BOSS_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: adv-boss-sqs-url
+                  name: seasonpass-env
+            - name: WORLD_CLEAR_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: world-clear-sqs-url
+                  name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
-          ports:
-            - containerPort: 5000
       {{- with $.Values.seasonpass.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
