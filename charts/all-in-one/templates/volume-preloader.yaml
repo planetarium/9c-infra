@@ -222,12 +222,6 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
-      {{- if $.Values.volumePreloader.loggingEnabled }}
-      - hostPath:
-          path: /var/log/headless
-          type: DirectoryOrCreate
-        name: json-log
-      {{- end }}
       - name: appsettings
         configMap:
           defaultMode: 0700
@@ -255,4 +249,29 @@ spec:
     type: RollingUpdate
 
 ---
+
+{{- if and $.Values.volumePreloader.storage.volumeNames (gt (len $.Values.volumePreloader.storage.volumeNames) $idx) (ne (index $.Values.volumePreloader.storage.volumeNames $idx) "") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ index $.Values.volumePreloader.storage.volumeNames $idx }}
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $.Values.volumePreloader.storage.data }}
+  {{- if eq $.Values.provider "AWS" }}
+  storageClassName: {{ $.Release.Name }}-gp3
+  {{- end }}
+  volumeMode: Filesystem
+
+---
+{{- end }}
 {{- end }}

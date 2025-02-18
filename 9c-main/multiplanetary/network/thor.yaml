@@ -26,7 +26,7 @@ global:
   planet: Thor
   consensusType: pbft
 
-  resetSnapshot: false
+  resetSnapshot: true
   rollbackSnapshot: false
 
 externalSecret:
@@ -600,10 +600,12 @@ volumePreloader:
   resources:
     requests:
       cpu: '3'
-      memory: 25Gi
+      memory: 20Gi
 
   storage:
     data: 100Gi
+    volumeNames:
+    - "volume-preloader-0"
 
   tolerations:
   - effect: NoSchedule

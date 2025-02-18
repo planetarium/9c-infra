@@ -749,7 +749,7 @@ volumePreloader:
   resources:
     requests:
       cpu: '3'
-      memory: 25Gi
+      memory: 20Gi
 
   storage:
     data: 300Gi
