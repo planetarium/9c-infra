@@ -50,10 +50,6 @@ gateway:
     hostnames:
     - heimdall-internal-market.9c.gg
     - heimdall-preview-market.9c.gg
-  - name: patrol-reward-service
-    hostnames:
-    - heimdall-internal-patrol.9c.gg
-    - heimdall-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
     - heimdall-internal-world-boss.9c.gg
@@ -149,15 +145,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-spot_2c
-
-  db:
-    local: true
 
 remoteHeadless:
   count: 1

@@ -50,10 +50,6 @@ gateway:
     hostnames:
       - thor-internal-market.9c.gg
       - thor-preview-market.9c.gg
-  - name: patrol-reward-service
-    hostnames:
-      - thor-internal-patrol.9c.gg
-      - thor-preview-patrol.9c.gg
   - name: world-boss-service
     hostnames:
       - thor-internal-world-boss.9c.gg
@@ -149,15 +145,6 @@ marketService:
     value: "true"
   - name: WorkerConfig__SyncProduct
     value: "true"
-
-patrolRewardService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: thor-spot_2c
-
-  db:
-    local: true
 
 remoteHeadless:
   count: 1
