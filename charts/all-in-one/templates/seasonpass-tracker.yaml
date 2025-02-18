@@ -14,19 +14,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-courage-tracker
+    app: seasonpass-tracker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-courage-tracker
+  name: seasonpass-tracker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-courage-tracker
+      app: seasonpass-tracker
   template:
     metadata:
       labels:
-        app: seasonpass-courage-tracker
+        app: seasonpass-tracker
     spec:
       containers:
         - args:
@@ -86,7 +86,7 @@ spec:
                   key: jwt-secret
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
-          name: seasonpass-courage-tracker
+          name: seasonpass-tracker
           ports:
             - containerPort: 5000
       {{- with $.Values.seasonpass.nodeSelector }}
