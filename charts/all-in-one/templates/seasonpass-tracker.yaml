@@ -97,8 +97,6 @@ spec:
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
-          ports:
-            - containerPort: 5000
       {{- with $.Values.seasonpass.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
