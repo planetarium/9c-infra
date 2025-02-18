@@ -723,3 +723,39 @@ seasonpass:
   enabled: true
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
+
+volumePreloader:
+  count: 0
+  replicas: 1
+
+  useTurnServer: true
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c_test
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 25Gi
+
+  storage:
+    data: 300Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
