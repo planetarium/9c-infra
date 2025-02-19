@@ -29,6 +29,8 @@ VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_TOKEN=$3
 CF_DISTRIBUTION_ID=$4
 
+export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
 function senderr() {
   echo "$1"
   curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in {{ $.Values.clusterName }} cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%23{{ $.Values.snapshot.slackChannel }}"
@@ -48,6 +50,10 @@ function replace_snapshot() {
   for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json\|7z"); do
     aws s3 mv $(echo $f | sed "s/.*/$TEMP_PREFIX&/") $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX/")
   done
+
+  if [[ $AWS_ENDPOINT_URL_S3 == *.r2.cloudflarestorage.com ]]; then
+    return
+  fi
 
   BUCKET="s3://9c-snapshots-v2"
   BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')

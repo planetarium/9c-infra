@@ -141,7 +141,7 @@ def get_metadata_url(network: str, planet: str) -> str:
     internal_or_preview = "preview" if planet.endswith("-preview") else "internal"
     chain_path = "" if stripped_planet == "odin" else f"/{stripped_planet}"
 
-    return f"https://9c-snapshots-v2.s3.us-east-2.amazonaws.com/{internal_or_preview}{chain_path}/latest.json"
+    return f"https://snapshots.nine-chronicles.com/{internal_or_preview}{chain_path}/latest.json"
 
 
 def get_metadata_url_pair(network, planet) -> Tuple[str, str]:

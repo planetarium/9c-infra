@@ -6,6 +6,8 @@ echo "$BASEDIR"
 
 BUCKET="s3://9c-snapshots-v2"
 
+export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
 # AWS configuration must be already set on your environment
 reset_snapshot() {
   CHAIN=$3
@@ -90,6 +92,10 @@ reset_snapshot() {
 
     aws s3 cp "$1/latest.json" "$1/mainnet_latest.json"
 
+  fi
+
+  if [[ $AWS_ENDPOINT_URL_S3 == *.r2.cloudflarestorage.com ]]; then
+    return
   fi
 
   BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
