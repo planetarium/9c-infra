@@ -100,6 +100,21 @@ spec:
                 secretKeyRef:
                   key: jwt-token-secret
                   name: seasonpass-env
+            - name: ODIN_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: odin-gql-url
+                  name: seasonpass-env
+            - name: HEIMDALL_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: heimdall-gql-url
+                  name: seasonpass-env
+            - name: THOR_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: thor-gql-url
+                  name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-api
       {{- with $.Values.seasonpass.nodeSelector }}
