@@ -26,6 +26,8 @@ SLACK_WEBHOOK=$3
 CF_DISTRIBUTION_ID=$4
 SNAPSHOT_PATH="$5/$1"
 
+export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
 function senderr() {
   echo "$1"
   curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $SLACK_WEBHOOK
@@ -84,9 +86,9 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
   
   mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
   unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
@@ -100,9 +102,9 @@ function make_and_upload_snapshot() {
   # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/latest.7z" --quiet --acl public-read
   # "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/$2/state_latest.7z" --quiet --acl public-read
 
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
-  "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
+  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
 
   rm "$LATEST_SNAPSHOT"
   rm "$LATEST_STATE"

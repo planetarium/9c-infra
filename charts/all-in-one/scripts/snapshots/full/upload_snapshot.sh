@@ -26,6 +26,8 @@ SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 
+export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
 function senderr() {
   echo "$1"
   curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' $SLACK_WEBHOOK
@@ -89,6 +91,10 @@ function make_and_upload_snapshot() {
 }
 
 function invalidate_cf() {
+  if [[ $AWS_ENDPOINT_URL_S3 == *.r2.cloudflarestorage.com ]]; then
+    return
+  fi
+
   if "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "$1"; then
     echo "CF invalidation successful"
   else

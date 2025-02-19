@@ -146,6 +146,8 @@ data:
     SLACK_TOKEN=$3
     CF_DISTRIBUTION_ID=$4
 
+    export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
     function senderr() {
       echo "$1"
       curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
@@ -204,9 +206,9 @@ data:
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/$1/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
 
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
-      "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
+      # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$SNAPSHOT_FILENAME.*"
+      # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$UPLOAD_FILENAME.*"
+      # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/main/$1/partition/$STATE_FILENAME.*"
       
       rm "$LATEST_SNAPSHOT"
       rm "$LATEST_STATE"
@@ -248,6 +250,8 @@ data:
     SLACK_TOKEN=$3
     CF_DISTRIBUTION_ID=$4
 
+    export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+
     function senderr() {
       echo "$1"
       curl --data "[K8S] $1. Check snapshot-partition-reset-v$VERSION_NUMBER in 9c-main cluster at upload_snapshot.sh." "https://planetariumhq.slack.com/services/hooks/slackbot?token=$SLACK_TOKEN&channel=%239c-mainnet"
@@ -267,6 +271,10 @@ data:
       for f in $(aws s3 ls $2 | awk 'NF>1{print $4}' | grep "zip\|json"); do
         aws s3 mv $(echo $f | sed "s/.*/$TEMP_PREFIX&/") $(echo $f | sed "s/.*/$SNAPSHOT_PREFIX/")
       done
+
+      if [[ $AWS_ENDPOINT_URL_S3 == *.r2.cloudflarestorage.com ]]; then
+        return
+      fi
 
       BUCKET="s3://9c-snapshots-v2"
       BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
