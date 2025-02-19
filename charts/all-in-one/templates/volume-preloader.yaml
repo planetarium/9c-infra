@@ -201,6 +201,46 @@ spec:
         {{- with $.Values.volumePreloader.env }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
+      - name: preload-checker
+        image: alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            GRAPHQL_URL="http://localhost:80/graphql"
+            INSTANCE_NAME="volume-preloader-{{ $index }}"
+
+            echo "Starting preload checker for $INSTANCE_NAME..."
+
+            while true; do
+              preloaded="$(curl -s -H 'Content-Type: application/json' --data '{"query":"query{nodeStatus{preloadEnded}}"}' $GRAPHQL_URL | jq .data.nodeStatus.preloadEnded)"
+
+              if [[ "$preloaded" == "true" ]]; then
+                echo "Preloading complete for $INSTANCE_NAME. Sending notification..."
+
+                curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"@devops-team Preloading for $INSTANCE_NAME is complete\"}" $SLACK_WEBHOOK_URL
+
+                echo "Notification sent. Exiting..."
+                exit 0
+              fi
+
+              echo "Preloading not complete yet. Retrying in 10 seconds..."
+              sleep 10
+            done
+        imagePullPolicy: Always
+        env:
+          - name: SLACK_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: slack
+                key: slack-webhook-url
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
       {{- with $.Values.volumePreloader.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
