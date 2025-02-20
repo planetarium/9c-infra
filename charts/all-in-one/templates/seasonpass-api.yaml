@@ -104,6 +104,26 @@ spec:
                 secretKeyRef:
                   key: thor-gql-url
                   name: seasonpass-env
+            - name: API_WORKERS
+              valueFrom:
+                secretKeyRef:
+                  key: api-workers
+                  name: seasonpass-env
+            - name: API_TIMEOUT_KEEP_ALIVE
+              valueFrom:
+                secretKeyRef:
+                  key: api-timeout-keep-alive
+                  name: seasonpass-env
+            - name: API_DEFAULT_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: api-default-host
+                  name: seasonpass-env
+            - name: API_DEFAULT_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: api-default-port
+                  name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-api
       {{- with $.Values.seasonpass.nodeSelector }}
