@@ -333,9 +333,9 @@ data:
     uname=$(uname -r)
     arch=${uname##*.}
     if [ "$arch" = "aarch64" ]; then
-      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.22.35.zip" -o "awscliv2.zip"
     else
-      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
     fi
     unzip awscliv2.zip
     sudo ./aws/install
@@ -346,6 +346,7 @@ data:
     CF_DISTRIBUTION_ID=$3
 
     export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+    export AWS_DEFAULT_REGION=auto
 
     function senderr() {
       echo "$1"
@@ -403,8 +404,8 @@ data:
       "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
+      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
 
       # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/$SNAPSHOT_FILENAME.*"
       # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/internal/$UPLOAD_FILENAME.*"

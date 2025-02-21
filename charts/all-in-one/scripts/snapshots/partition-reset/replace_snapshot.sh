@@ -10,9 +10,9 @@ apt-get -y install sudo
 uname=$(uname -r)
 arch=${uname##*.}
 if [ "$arch" = "aarch64" ]; then
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.22.35.zip" -o "awscliv2.zip"
 else
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
 fi
 unzip awscliv2.zip
 sudo ./aws/install
@@ -30,6 +30,7 @@ SLACK_TOKEN=$3
 CF_DISTRIBUTION_ID=$4
 
 export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+export AWS_DEFAULT_REGION=auto
 
 function senderr() {
   echo "$1"
