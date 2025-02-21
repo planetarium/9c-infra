@@ -11,9 +11,9 @@ apt-get -y install p7zip
 uname=$(uname -r)
 arch=${uname##*.}
 if [ "$arch" = "aarch64" ]; then
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.22.35.zip" -o "awscliv2.zip"
 else
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
 fi
 unzip awscliv2.zip
 sudo ./aws/install
@@ -27,6 +27,7 @@ CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 
 export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+export AWS_DEFAULT_REGION=auto
 
 function senderr() {
   echo "$1"
@@ -91,12 +92,12 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
   {{- if eq $.Values.global.networkType "Main" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
 
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
   {{- end }}
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
@@ -104,11 +105,11 @@ function make_and_upload_snapshot() {
   invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
   {{- if eq $.Values.global.networkType "Main" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$SNAPSHOT_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$UPLOAD_FILENAME.*"
@@ -123,7 +124,7 @@ function make_and_upload_snapshot() {
   # 7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
 
   # "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/latest.7z" --quiet --acl public-read
+  # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/latest.7z" --quiet --acl public-read --copy-props none --metadata-directive COPY
   # "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/state_latest.7z" --quiet --acl public-read
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"

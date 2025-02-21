@@ -11,9 +11,9 @@ apt-get -y install p7zip
 uname=$(uname -r)
 arch=${uname##*.}
 if [ "$arch" = "aarch64" ]; then
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.22.35.zip" -o "awscliv2.zip"
 else
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
 fi
 unzip awscliv2.zip
 sudo ./aws/install
@@ -27,6 +27,7 @@ CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 
 export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
+export AWS_DEFAULT_REGION=auto
 
 function senderr() {
   echo "$1"
@@ -79,7 +80,7 @@ function make_and_upload_snapshot() {
 
   "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
   "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/$2/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
+  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
   invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME"
 
   # Disable 7z snapshot
