@@ -21,9 +21,6 @@ spec:
       path: charts/multiplanetary
       targetRevision: main
       helm:
-        values: |-
-          clusterName: nine-chronicles-internal
-          targetRevision: main
-          path: gke-ninechronicles-internal
-          network:
-          - thor
+        valueFiles:
+          - /gke-ninechronicles-internal/values.yaml
+          - /gke-ninechronicles-internal/multiplanetary/values.yaml

@@ -1,0 +1,86 @@
+clusterName: nine-chronicles-internal
+provider: GCP
+GCP:
+  projectID: nine-chronicles-449809
+
+gateway:
+  certificate:
+    name: certificate-secret
+    namespace: traefik
+
+remoteHeadless:
+  ingress:
+    enabled: true
+
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-bac999c23ff23888bc5aa6b18ddbe4350c872c5a"
+
+seed:
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    tag: "git-67d0ef91c52a71a9772cd7fdb241c9fc37b165b8"
+
+bridgeService:
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
+
+bridgeServiceApi:
+  image:
+    repository: planetariumhq/9c-bridge-api
+    pullPolicy: Always
+    tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
+
+dataProvider:
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    tag: "git-da9d9ed12fe4c7d0733ceb0694a32b637a7c743a"
+
+worldBoss:
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    tag: "git-5582d71c3463de763d2776b1de486f1ee7a2e5dc"
+
+marketService:
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: "git-6d0ca852b9e79d484f652fd03ddcfc9ddc0d0b7d"
+
+rudolfService:
+  image:
+    tag: "git-278252e48d7d13306dcb1820bd9524ee6a27203c"
+
+acc:
+  image:
+    repository: planetariumhq/access-control-center
+    pullPolicy: Always
+    tag: "git-d1d2ccbb9fb8f6ffd5e7a6109363471c8f8fa480"
+
+stateMigrationService:
+  db:
+    local: false
+    size: 1Gi
+
+  image:
+    repository: planetariumhq/state-migration-service
+    pullPolicy: Always
+    tag: "git-ad7daecb45aeb81bf62e57474f72c6692d96466e"
+
+arenaService:
+  image:
+    repository: planetariumhq/arena-service
+    pullPolicy: Always
+    tag: "git-9db6af2a1986b94ff49066eb5870a230d3ac2238"
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-478b5d3e8d84c1d0397d9f92f1d89c55a3263ee3"

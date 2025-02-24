@@ -134,7 +134,7 @@ def update_index(contents: str, stream: Literal["upstream", "downstream"], tip_i
 
 
 def get_metadata_url(network: str, planet: str) -> str:
-    if network != "9c-internal":
+    if network not in ["9c-internal", "gke-ninechronicles-internal"]:
         raise TypeError(f"Not supported network and planet: {network}, {planet}")
 
     stripped_planet = planet.removesuffix("-preview")
