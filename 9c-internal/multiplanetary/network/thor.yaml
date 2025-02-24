@@ -58,6 +58,9 @@ gateway:
     hostnames:
       - thor-internal-arena.9c.gg
       - thor-preview-arena.9c.gg
+  - name: seasonpass-api
+    hostnames:
+      - season-pass-internal.9c.gg
 
 bridgeService:
   enabled: true
@@ -365,5 +368,6 @@ arenaService:
 
 seasonpass:
   enabled: true
+  api: true
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"

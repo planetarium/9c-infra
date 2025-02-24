@@ -767,6 +767,7 @@ arenaService:
 
 seasonpass:
   enabled: false
+  api: false
   image:
     repository: planetariumhq/season-pass
     pullPolicy: Always

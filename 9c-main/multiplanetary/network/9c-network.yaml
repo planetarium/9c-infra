@@ -57,6 +57,9 @@ gateway:
     hostname: odin-world-boss.9c.gg
   - name: arena-service
     hostname: odin-arena.9c.gg
+  - name: seasonpass-api
+    hostnames:
+      - season-pass.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -715,6 +718,7 @@ arenaService:
 
 seasonpass:
   enabled: true
+  api: true
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
 
