@@ -781,3 +781,36 @@ seasonpass:
     arenaServiceJwtPublicKey: ""
   serviceAccount:
     roleArn: ""
+
+volumePreloader:
+  count: 0
+  image:
+    # follow global imaged
+    repository: ""
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: Always
+
+  # dotnet args
+
+  extraArgs: []
+  # - --key=val
+
+  useTurnServer: true
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 1000Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 20Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
