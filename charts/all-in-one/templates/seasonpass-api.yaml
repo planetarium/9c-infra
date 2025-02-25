@@ -1,0 +1,136 @@
+{{- if and $.Values.seasonpass.enabled $.Values.seasonpass.api }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-api
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-api
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-api
+  template:
+    metadata:
+      labels:
+        app: seasonpass-api
+    spec:
+      containers:
+        - args:
+            - alembic upgrade head && python -m season_pass.main
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url
+                  name: seasonpass-env
+            - name: CURRENT_PLANET
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: sqs-url
+                  name: seasonpass-env
+            - name: ARENA_SERVICE_JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: PLANET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: SECRET_ARN
+              valueFrom:
+                secretKeyRef:
+                  key: secret-arn
+                  name: seasonpass-env
+            - name: START_BLOCK_INDEX
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index
+                  name: seasonpass-env
+            - name: HEADLESS_GQL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: seasonpass-env
+            - name: ADVENTURE_BOSS_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: adv-boss-sqs-url
+                  name: seasonpass-env
+            - name: WORLD_CLEAR_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: world-clear-sqs-url
+                  name: seasonpass-env
+            - name: JWT_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-token-secret
+                  name: seasonpass-env
+            - name: ODIN_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: odin-gql-url
+                  name: seasonpass-env
+            - name: HEIMDALL_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: heimdall-gql-url
+                  name: seasonpass-env
+            - name: THOR_GQL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: thor-gql-url
+                  name: seasonpass-env
+            - name: API_WORKERS
+              valueFrom:
+                secretKeyRef:
+                  key: api-workers
+                  name: seasonpass-env
+            - name: API_TIMEOUT_KEEP_ALIVE
+              valueFrom:
+                secretKeyRef:
+                  key: api-timeout-keep-alive
+                  name: seasonpass-env
+            - name: API_DEFAULT_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: api-default-host
+                  name: seasonpass-env
+            - name: API_DEFAULT_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: api-default-port
+                  name: seasonpass-env
+          image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          name: seasonpass-api
+      {{- with $.Values.seasonpass.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
+{{- end }}

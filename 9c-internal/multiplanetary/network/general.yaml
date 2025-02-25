@@ -79,4 +79,4 @@ seasonpass:
   image:
     repository: planetariumhq/season-pass
     pullPolicy: Always
-    tag: "git-478b5d3e8d84c1d0397d9f92f1d89c55a3263ee3"
+    tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"
