@@ -35,8 +35,8 @@ gateway:
   services:
   - name: remote-headless
     hostnames:
-      - thor-internal-rpc.nine-chronicles.com
-      - thor-preview-rpc.nine-chronicles.com
+    - thor-internal-rpc.nine-chronicles.com
+    - thor-preview-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -44,23 +44,23 @@ gateway:
     - grpc
   - name: data-provider
     hostnames:
-      - thor-internal-dp.9c.gg
-      - thor-preview-dp.9c.gg
+    - thor-internal-dp.9c.gg
+    - thor-preview-dp.9c.gg
   - name: market-service
     hostnames:
-      - thor-internal-market.9c.gg
-      - thor-preview-market.9c.gg
+    - thor-internal-market.9c.gg
+    - thor-preview-market.9c.gg
   - name: world-boss-service
     hostnames:
-      - thor-internal-world-boss.9c.gg
-      - thor-preview-world-boss.9c.gg
+    - thor-internal-world-boss.9c.gg
+    - thor-preview-world-boss.9c.gg
   - name: arena-service
     hostnames:
-      - thor-internal-arena.9c.gg
-      - thor-preview-arena.9c.gg
+    - thor-internal-arena.9c.gg
+    - thor-preview-arena.9c.gg
   - name: seasonpass-api
     hostnames:
-      - season-pass-internal.9c.gg
+    - season-pass-internal.9c.gg
 
 bridgeService:
   enabled: true
@@ -100,8 +100,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "13154240"
-      downstream: "580751"
+      upstream: "13553038"
+      downstream: "752620"
 
 bridgeServiceApi:
   enabled: false
