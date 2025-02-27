@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: infra
+  namespace: argocd
 spec:
   description: In-cluster applications managed by DevOps team
   destinations:

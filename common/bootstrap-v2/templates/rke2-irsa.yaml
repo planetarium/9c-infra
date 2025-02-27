@@ -1,0 +1,61 @@
+{{- if eq .Values.provider "RKE2" }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: irsa-certificate
+  namespace: default
+spec:
+  secretName: irsa-certificate-secret
+  dnsNames:
+    - {{ .Values.RKE2.domain }}
+  issuerRef:
+    name: cert-manager-letsencrypt-issuer
+    kind: ClusterIssuer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: service-account-issuer-discovery
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:service-account-issuer-discovery
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:authenticated
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:unauthenticated
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sa-iss-disc
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+    - hosts:
+      - rke2.planetarium.network
+      secretName: irsa-certificate-secret
+  rules:
+  - host: rke2.planetarium.network
+    http:
+      paths:
+      - path: /.well-known/openid-configuration
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kubernetes
+            port:
+              name: https
+      - path: /openid/v1/jwks
+        pathType: Exact
+        backend:
+          service:
+            name: kubernetes
+            port:
+              name: https
+{{- end }}

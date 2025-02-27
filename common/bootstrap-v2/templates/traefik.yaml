@@ -22,9 +22,13 @@ spec:
     targetRevision: 34.1.0
     helm:
       values: |-
+        additionalArguments:
+          - "--serversTransport.insecureSkipVerify=true"
         providers:
           kubernetesGateway:
             enabled: true
+          kubernetesIngress:
+            allowExternalNameServices: true
         tlsStore:
           default:
             defaultCertificate:
@@ -39,6 +43,7 @@ spec:
             {{- end }}
         ports:
           metrics:
+            exposedPort: 39100
             expose:
               default: true
           web: &trustedIPs

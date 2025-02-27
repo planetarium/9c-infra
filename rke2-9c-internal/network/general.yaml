@@ -1,0 +1,13 @@
+clusterName: 9c-internal
+provider: RKE2
+
+global:
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-6409a04f53e21d3256654576067e4d875278dd3b"
+
+seed:
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always
+    tag: "git-67d0ef91c52a71a9772cd7fdb241c9fc37b165b8"
