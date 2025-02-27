@@ -18,7 +18,12 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
 spec:
+  {{- if $.Values.seed.clusterLocal }}
+  type: ClusterIP
+  {{- else }}
+  type: LoadBalancer
   externalTrafficPolicy: Local
+  {{- end }}
   ports:
   - port: {{ $.Values.seed.ports.node }}
     targetPort: {{ $.Values.seed.ports.node }}
@@ -34,7 +39,6 @@ spec:
     name: gossip
   selector:
     app: tcp-seed-{{ $index }}
-  type: LoadBalancer
 ---
 {{ end }}
 
@@ -59,11 +63,14 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
 spec:
-  {{- if $.Values.remoteHeadless.ingress.enabled }}
+  {{- if and $.Values.remoteHeadless.ingress.enabled (not $.Values.remoteHeadless.ingress.hosts) }}
   type: ClusterIP
   {{- else }}
   externalTrafficPolicy: Local
   type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.remoteHeadless.loadBalancerIPs $idx }}
+  {{- end }}
   {{- end }}
   ports:
   - name: graphql

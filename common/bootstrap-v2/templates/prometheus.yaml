@@ -93,7 +93,7 @@ spec:
               - job_name: 'traefik'
                 static_configs:
                   - targets:
-                    - traefik.traefik.svc.cluster.local:9100
+                    - traefik.traefik.svc.cluster.local:39100
               {{- with .Values.prometheus.server.extraScrapeConfigs }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}

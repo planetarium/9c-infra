@@ -1,0 +1,16 @@
+{{- if eq $.Values.provider "RKE2" }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Release.Name }}-longhorn
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+parameters:
+  fromBackup: ''
+  fsType: ext4
+  numberOfReplicas: '1'
+  staleReplicaTimeout: '2880'
+provisioner: driver.longhorn.io
+reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
+allowVolumeExpansion: true
+{{- end }}
