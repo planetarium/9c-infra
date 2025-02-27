@@ -1,7 +1,4 @@
-clusterName: nine-chronicles-internal
-provider: GCP
-GCP:
-  projectID: nine-chronicles-449809
+clusterName: 9c-internal
 
 gateway:
   certificate:
