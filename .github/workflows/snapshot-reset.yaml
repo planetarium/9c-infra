@@ -73,11 +73,12 @@ jobs:
 
   reset-bridge-service:
     needs: [reset-snapshot, set-targets]
-    if: ${{ matrix.bridge_chain != 'odin' }} # Skip if bridge_chain is 'odin'
     strategy:
       fail-fast: false
       matrix:
         bridge_chain: ${{ fromJson(needs.set-targets.outputs.bridge_chains) }}
+        exclude:
+          - bridge_chain: odin
     uses: ./.github/workflows/reset-bridge-service.yaml
     secrets: inherit
     with:
