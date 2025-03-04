@@ -33,8 +33,8 @@ reset_snapshot() {
         snapshot_zip_filename_array=("$snapshot_zip_filename")
         snapshot_zip_filename_array+=("latest.zip")
         snapshot_zip_filename_array+=("latest.json")
-        aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip"
-        aws s3 cp "$2/latest.zip" "$1/latest.zip"
+        aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip" --copy-props none --metadata-directive COPY
+        aws s3 cp "$2/latest.zip" "$1/latest.zip" --copy-props none --metadata-directive COPY
         aws s3 cp "$2/latest.json" "$1/latest.json"
         aws s3 cp "$2/latest.json" "$1/mainnet_latest.json"
         NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
@@ -85,7 +85,7 @@ reset_snapshot() {
     done
 
     # copy main cluster chain to internal (copy state_latest.zip first)
-    aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip"
+    aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip" --copy-props none --metadata-directive COPY
     for f in $(aws s3 ls $2/ | sort -k1,2 | sort -r | awk 'NF>1{print $4}' | grep "zip\|json" | grep -v "state_latest.zip"); do
       echo $f
       aws s3 cp $(echo $f | sed "s/.*/$MAIN_PREFIX&/") $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/")
