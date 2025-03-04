@@ -13,15 +13,25 @@ on:
           - thor-internal
           - heimdall-preview
           - thor-preview
+      skip:
+        required: false
+        description: 'skip this job'
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       network:
         required: true
         type: string
+      skip:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   reset-bridge-service:
     runs-on: ubuntu-latest
+    if: ${{ inputs.skip == false }}
 
     steps:
     - name: Checkout Repository

@@ -82,3 +82,4 @@ jobs:
     secrets: inherit
     with:
       network: ${{ matrix.bridge_chain }}
+      skip: ${{ matrix.bridge_chain == 'odin' }}
