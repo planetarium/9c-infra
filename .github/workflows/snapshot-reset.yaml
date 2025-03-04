@@ -73,7 +73,6 @@ jobs:
 
   reset-bridge-service:
     needs: [reset-snapshot, set-targets]
-    if: ${{ matrix.bridge_chain != 'odin' }} # Skip if bridge_chain is 'odin'
     strategy:
       fail-fast: false
       matrix:
@@ -82,3 +81,4 @@ jobs:
     secrets: inherit
     with:
       network: ${{ matrix.bridge_chain }}
+      skip: ${{ matrix.bridge_chain == 'odin' }}
