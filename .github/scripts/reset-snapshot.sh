@@ -50,7 +50,7 @@ reset_snapshot() {
 
             snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
             snapshot_json_filename="snapshot-$BlockEpoch-$TxEpoch.json"
-            aws s3 cp "$2/$snapshot_zip_filename" "$1/$snapshot_zip_filename"
+            aws s3 cp "$2/$snapshot_zip_filename" "$1/$snapshot_zip_filename" --copy-props none --metadata-directive COPY
             aws s3 cp "$2/$snapshot_json_filename" "$1/$snapshot_json_filename"
             snapshot_zip_filename_array+=("$snapshot_zip_filename")
             snapshot_zip_filename_array+=("$snapshot_json_filename")
@@ -88,7 +88,7 @@ reset_snapshot() {
     aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip" --copy-props none --metadata-directive COPY
     for f in $(aws s3 ls $2/ | sort -k1,2 | sort -r | awk 'NF>1{print $4}' | grep "zip\|json" | grep -v "state_latest.zip"); do
       echo $f
-      aws s3 cp $(echo $f | sed "s/.*/$MAIN_PREFIX&/") $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/")
+      aws s3 cp $(echo $f | sed "s/.*/$MAIN_PREFIX&/") $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") --copy-props none --metadata-directive COPY
     done
 
     aws s3 cp "$1/latest.json" "$1/mainnet_latest.json"
