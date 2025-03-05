@@ -74,11 +74,11 @@ snapshot:
 
   resources:
     requests:
-      cpu: '1'
-      memory: 10Gi
+      cpu: '3'
+      memory: 25Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
 
   storage: 300Gi
 
@@ -308,12 +308,12 @@ dataProviderDataMigrator:
   enabled: true
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
 
   resources:
     requests:
-      cpu: '1'
-      memory: 10Gi
+      cpu: '3'
+      memory: 25Gi
 
   storage: 300Gi
 
