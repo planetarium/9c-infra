@@ -27,7 +27,7 @@ spec:
         controller:
           replicas: 1
         redis-ha:
-          enabled: true
+          enabled: false
         repoServer:
           autoscaling:
             enabled: true
@@ -36,7 +36,6 @@ spec:
             enabled: true
           ingress:
             enabled: true
-            ingressClassName: traefik
         configs:
           params:
             server.insecure: true

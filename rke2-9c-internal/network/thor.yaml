@@ -17,6 +17,11 @@ global:
   resetSnapshot: true
   rollbackSnapshot: false
 
+RKE2:
+  loadBalancerIPs:
+    - 115.68.199.12/32
+    - 49.247.14.86/32
+
 externalSecret:
   enabled: true
   provider: AWS
@@ -26,11 +31,11 @@ ingress:
   enabled: false
 
 gateway:
-  enabled: true
+  enabled: false
   services:
   - name: remote-headless
     hostnames:
-      - thor-internal-gke-rpc.nine-chronicles.com
+      - thor-internal-rke2-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -52,29 +57,42 @@ volumeReclaimPolicy: "Retain"
 
 seed:
   count: 1
+  clusterLocal: true
   useTurnServer: false
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
 
   hosts:
-  - "thor-internal-gke-tcp-seed-1.nine-chronicles.com"
+  - "thor-internal-rke2-tcp-seed-1.nine-chronicles.com"
 
 remoteHeadless:
+  count: 2
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
 
   hosts:
-  - "thor-internal-gke-rpc-1.nine-chronicles.com"
+  - "thor-internal-rke2-rpc-1.nine-chronicles.com"
+  - "thor-internal-rke2-rpc-2.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - 115.68.199.12
+  - 49.247.14.86
 
   ports:
     headless: 31234
     graphql: 80
     rpc: 31238
 
+  ingress:
+    enabled: true
+    hosts:
+      - "thor-internal-rke2-gql-1.nine-chronicles.com"
+      - "thor-internal-rke2-gql-2.nine-chronicles.com"
+
   storage:
-    data: 500Gi
+    data: 100Gi
 
   resources:
     requests:
