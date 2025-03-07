@@ -255,7 +255,7 @@ validator:
   - --consensus-enter-precommit-delay=300
 
 worldBoss:
-  enabled: true
+  enabled: false
   ports:
     targetPort: 5000
 
