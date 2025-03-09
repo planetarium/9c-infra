@@ -56,6 +56,9 @@ gateway:
     hostnames:
       - odin-internal-arena.9c.gg
       - odin-preview-arena.9c.gg
+  - name: ninechronicles-backoffice
+    hostnames:
+      - backoffice-internal.9c.gg
 
 snapshot:
   downloadSnapshot: true
@@ -333,3 +336,6 @@ seasonpass:
   enabled: true
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+
+backoffice:
+  enabled: true
