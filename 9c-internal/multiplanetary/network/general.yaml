@@ -85,4 +85,4 @@ backoffice:
   image:
     repository: planetariumhq/nine-chronicles-backoffice
     pullPolicy: Always
-    tag: "git-68da9937b82de4d5ed0f7d486433c8c3b8c05757"
+    tag: "git-edb540426377000f6b61da1e9da34ef8903ec426"
