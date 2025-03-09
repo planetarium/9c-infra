@@ -90,6 +90,6 @@ seasonpass:
 
 backoffice:
   image:
-    repository: planetariumhq/nine-chronicles-backoffice
+    repository: planetariumbot/nine-chronicles-backoffice
     pullPolicy: Always
     tag: "a6c9f2e805f507bf61e9866f607a7d4b0d55ad09"
