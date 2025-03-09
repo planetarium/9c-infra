@@ -815,3 +815,35 @@ volumePreloader:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+backoffice:
+  enabled: false
+  image:
+    repository: planetariumhq/ninechronicles-backoffice
+    tag: latest
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  nodeSelector: {}
+  env:
+    aspnetcoreEnvironment: "Development"
+    cloudflareAccessKeyId: ""
+    cloudflareSecretAccessKey: ""
+    cloudflareApiToken: ""
+    cloudflareEmail: ""
+    cloudflareZoneId: ""
+    cloudflareBucketName: ""
+    cloudflareAccountId: ""
+    privateKey: "0000000000000000000000000000000000000000000000000000000000000000"
+    jwtKey: "0000000000000000000000000000000000000000000000000000000000000000"
+    jwtIssuer: ""
+    cdnUrl: ""
+    blockHashOdin: "0000000000000000000000000000000000000000000000000000000000000000"
+    blockHashHeimdall: "0000000000000000000000000000000000000000000000000000000000000000"
+    blockHashThor: "0000000000000000000000000000000000000000000000000000000000000000"
+    googleClientId: ""
+    googleClientSecret: ""

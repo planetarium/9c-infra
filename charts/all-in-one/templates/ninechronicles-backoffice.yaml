@@ -1,0 +1,114 @@
+{{- if $.Values.backoffice.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ninechronicles-backoffice
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: ninechronicles-backoffice
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ninechronicles-backoffice
+  template:
+    metadata:
+      labels:
+        app: ninechronicles-backoffice
+    spec:
+      containers:
+        - name: ninechronicles-backoffice
+          image: {{ $.Values.backoffice.image.repository }}:{{ $.Values.backoffice.image.tag }}
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: NC_CLOUDFLARE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_ACCESS_KEY_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFARE_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFARE_SECRET_ACCESS_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFLARE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_API_TOKEN
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFLARE_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_EMAIL
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFLARE_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_ZONE_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFLARE_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_BUCKET_NAME
+                  name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFLARE_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFLARE_ACCOUNT_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_PRIVATE_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  key: NC_JWT_ISSUER
+                  name: ninechronicles-backoffice-env
+            - name: NC_CDN_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CDN_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_BLOCKHASH_ODIN
+              valueFrom:
+                secretKeyRef:
+                  key: NC_BLOCKHASH_ODIN
+                  name: ninechronicles-backoffice-env
+            - name: NC_BLOCKHASH_HEIMDALL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_BLOCKHASH_HEIMDALL
+                  name: ninechronicles-backoffice-env
+            - name: NC_BLOCKHASH_THOR
+              valueFrom:
+                secretKeyRef:
+                  key: NC_BLOCKHASH_THOR
+                  name: ninechronicles-backoffice-env
+            - name: Authentication__Google__ClientId
+              valueFrom:
+                secretKeyRef:
+                  key: Authentication__Google__ClientId
+                  name: ninechronicles-backoffice-env
+            - name: Authentication__Google__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  key: Authentication__Google__ClientSecret
+                  name: ninechronicles-backoffice-env
+          resources:
+            {{- toYaml $.Values.backoffice.resources | nindent 12 }}
+      {{- with $.Values.backoffice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

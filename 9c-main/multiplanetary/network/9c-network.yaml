@@ -60,6 +60,9 @@ gateway:
   - name: seasonpass-api
     hostnames:
       - season-pass.9c.gg
+  - name: ninechronicles-backoffice
+    hostnames:
+      - backoffice.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -759,3 +762,6 @@ volumePreloader:
     key: dedicated
     operator: Equal
     value: remote-headless-test
+
+backoffice:
+  enabled: true
