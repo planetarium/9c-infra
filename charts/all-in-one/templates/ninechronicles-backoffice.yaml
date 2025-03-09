@@ -24,6 +24,8 @@ spec:
             - containerPort: 80
             - containerPort: 443
           env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
             - name: NC_CLOUDFLARE_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
