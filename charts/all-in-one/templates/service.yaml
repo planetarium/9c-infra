@@ -817,7 +817,7 @@ spec:
       targetPort: 443
   selector:
     app: ninechronicles-backoffice
-  type: ClusterIP
+  type: LoadBalancer
 
 ---
 
