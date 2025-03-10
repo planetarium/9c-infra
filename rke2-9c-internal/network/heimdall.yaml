@@ -1,9 +1,9 @@
 global:
   validatorPath: "heimdall-internal-validator-1.nine-chronicles.com"
-  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings-x64.json"
 
-  appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
   peerStrings:
   - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,heimdall-internal-tcp-seed-1.nine-chronicles.com,31234"
@@ -14,7 +14,7 @@ global:
   planet: HeimdallInternal
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 RKE2:
