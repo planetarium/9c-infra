@@ -340,6 +340,8 @@ spec:
           storage: {{ $.Values.remoteHeadless.storage.data }}
       {{- if eq $.Values.provider "AWS" }}
       storageClassName: {{ $.Release.Name }}-gp3
+      {{- else if eq $.Values.provider "RKE2" }}
+      storageClassName: {{ $.Release.Name }}-longhorn
       {{- end }}
       volumeMode: Filesystem
       {{- end }}
@@ -347,7 +349,7 @@ spec:
     type: RollingUpdate
 ---
 {{- if $.Values.remoteHeadless.ingress.enabled }}
-{{- $hosts := split "," (index $.Values.remoteHeadless.hosts $idx) }}
+{{- $hosts := split "," (index ($.Values.remoteHeadless.ingress.hosts | default $.Values.remoteHeadless.hosts) $idx) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

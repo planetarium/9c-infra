@@ -1,18 +1,18 @@
-clusterName: nine-chronicles-internal
-provider: GCP
-GCP:
-  projectID: nine-chronicles-449809
+clusterName: 9c-main
+provider: RKE2
 global:
   service:
     annotations:
-      cloud.google.com/network-tier: Standard
+RKE2:
+  domain: rke2-main.planetarium.network
+  publicIPs:
+    - 49.247.14.88/32
 argocd:
-  domain: argocd-internal-gke.planetarium.network
+  domain: argocd-rke2.planetarium.network
 externalSecrets:
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-9c-internal-external-secrets
-      iam.gke.io/gcp-service-account: external-secrets@nine-chronicles-449809.iam.gserviceaccount.com
 externalDns:
   serviceAccount:
     annotations:
@@ -28,7 +28,7 @@ certManager:
     email: devops@planetariumhq.com
 grafana:
   hosts:
-    - monitoring-internal-gke.planetarium.network
+    - monitoring-rke2.planetarium.network
 prometheus:
   server:
     extraScrapeConfigs:
@@ -38,6 +38,10 @@ prometheus:
         scrape_timeout: 6s
         static_configs:
           - labels:
-              group: thor-rpc
+              group: odin-rpc
             targets:
-              - remote-headless-1.thor.svc.cluster.local:80
+              - remote-headless-1.odin.svc.cluster.local:80
+          - labels:
+              group: heimdall-rpc
+            targets:
+              - remote-headless-1.heimdall.svc.cluster.local:80
