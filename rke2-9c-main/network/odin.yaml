@@ -516,7 +516,7 @@ jwtHeadless:
       memory: 25Gi
 
   storage:
-    volumeName: "volume-rotator-3"
+    data: 650Gi
 
   tolerations:
     - effect: NoSchedule
