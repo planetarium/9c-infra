@@ -22,15 +22,21 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+RKE2:
+  loadBalancerIPs:
+    - 49.247.4.178/32
+    - 49.247.4.184/32
+
 externalSecret:
   enabled: true
+  provider: AWS
   prefix: "9c-main-v2/heimdall"
 
 ingress:
   enabled: false
 
 gateway:
-  enabled: true
+  enabled: false
   services:
     - name: remote-headless
       hostname: heimdall-rpc-rke2.nine-chronicles.com
@@ -80,10 +86,11 @@ volumeReclaimPolicy: "Retain"
 
 seed:
   count: 1
+  clusterLocal: true
   useTurnServer: false
 
   hosts:
-    - "heimdall-seed-1-rke2.nine-chronicles.com"
+    - "heimdall-seed-1.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -98,72 +105,7 @@ seed:
   nodeSelector:
 
 fullState:
-  enabled: true
-
-  loggingEnabled: true
-  datadog:
-    enabled: true
-
-  useTurnServer: false
-
-  host: "heimdall-full-state-rke2.nine-chronicles.com"
-
-  extraArgs:
-    - --no-reduce-store
-    - --tx-quota-per-signer=1
-
-  env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "false"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "120"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:157.245.68.243"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::1"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:172.70.126.138"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__5
-      value: "::ffff:18.156.30.229"
-    - name: IpRateLimiting__IpWhiteList__6
-      value: "::ffff:18.194.31.91"
-    - name: IpRateLimiting__IpWhiteList__7
-      value: "::ffff:3.72.169.78"
-    - name: MultiAccountManaging__EnableManaging
-      value: "true"
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: JWT__Key
-      valueFrom:
-        secretKeyRef:
-          key: jwt
-          name: private-keys
-
-  tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
-
-  nodeSelector:
+  enabled: false
 
 validator:
   count: 0
@@ -223,7 +165,7 @@ validator:
   nodeSelector:
 
 remoteHeadless:
-  count: 3
+  count: 2
   replicas: 1
 
   useTurnServer: false
@@ -231,8 +173,10 @@ remoteHeadless:
   hosts:
     - "heimdall-rpc-1-rke2.nine-chronicles.com"
     - "heimdall-rpc-2-rke2.nine-chronicles.com"
-    - "heimdall-rpc-3-rke2.nine-chronicles.com"
-    - "heimdall-rpc-4-rke2.nine-chronicles.com"
+
+  loadBalancerIPs:
+    - 49.247.4.178
+    - 49.247.4.184
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -275,6 +219,7 @@ remoteHeadless:
     - --tx-quota-per-signer=1
 
   nodeSelector:
+    node.kubernetes.io/network: heimdall
 
   resources:
     requests:
