@@ -60,7 +60,11 @@ spec:
         resources:
           requests:
             storage: {{ $.Values.bridgeService.db.size }}
+        {{- if eq $.Values.provider "RKE2" }}
+        storageClassName: {{ $.Release.Name }}-longhorn
+        {{- else }}
         storageClassName: {{ $.Release.Name }}-gp3
+        {{- end }}
         volumeMode: Filesystem
 ---
 apiVersion: v1
