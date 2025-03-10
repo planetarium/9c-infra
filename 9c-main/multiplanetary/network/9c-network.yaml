@@ -5,7 +5,7 @@ clusterName: "9c-main-v2"
 logLevel: "debug"
 
 global:
-  appProtocolVersion: "200280/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCICFTBd2bbzPoJDC4eE0sA6gQet0j.bSDS2Eocs+4TXeGAiAecHOKqqS6xDA5czZ588g5LmCddk.R6cTnlzjRW5F5WQ==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTAyLTE0ZQ=="
+  appProtocolVersion: "200290/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIGBEfoD9FP.BE1UaAlJjayiEftsriqhm+UZVUiylN6TYAiBvZHp9RWCKGLcVKOUKLtv0WPSmMWPEncC5csv2mKYO3g==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTAzLTEwZQ=="
 
   validatorPath: "validator-5.9c-network.svc.cluster.local"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
@@ -59,7 +59,7 @@ gateway:
     hostname: odin-arena.9c.gg
   - name: seasonpass-api
     hostnames:
-      - season-pass.9c.gg
+    - season-pass.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
