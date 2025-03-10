@@ -390,7 +390,7 @@ marketService:
       eks.amazonaws.com/nodegroup: thor-m7g_l_2c
 
 worldBoss:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-m7g_l_2c

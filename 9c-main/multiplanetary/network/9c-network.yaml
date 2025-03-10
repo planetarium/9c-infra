@@ -424,7 +424,7 @@ fullState:
     eks.amazonaws.com/nodegroup: 9c-main-spot-i-2xl_2c
 
 worldBoss:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
