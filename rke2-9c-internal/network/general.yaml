@@ -11,3 +11,39 @@ seed:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always
     tag: "git-67d0ef91c52a71a9772cd7fdb241c9fc37b165b8"
+
+bridgeService:
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
+
+bridgeServiceApi:
+  image:
+    repository: planetariumhq/9c-bridge-api
+    pullPolicy: Always
+    tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
+
+worldBoss:
+  image:
+    repository: planetariumhq/world-boss-service
+    pullPolicy: Always
+    tag: "git-5582d71c3463de763d2776b1de486f1ee7a2e5dc"
+
+marketService:
+  image:
+    repository: planetariumhq/market-service
+    pullPolicy: Always
+    tag: "git-59fc1a7ad0ab8c348cc5bd5886dcbcbe5c4ad091"
+
+arenaService:
+  image:
+    repository: planetariumhq/arena-service
+    pullPolicy: Always
+    tag: "git-1db089ec76fd31a4389e2c0c47df266e4ea42dec"
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"
