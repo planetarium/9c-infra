@@ -759,3 +759,6 @@ volumePreloader:
     key: dedicated
     operator: Equal
     value: remote-headless-test
+
+backoffice:
+  enabled: true

@@ -80,3 +80,9 @@ seasonpass:
     repository: planetariumhq/season-pass
     pullPolicy: Always
     tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"
+
+backoffice:
+  image:
+    repository: planetariumhq/nine-chronicles-backoffice
+    pullPolicy: Always
+    tag: "git-edb540426377000f6b61da1e9da34ef8903ec426"
