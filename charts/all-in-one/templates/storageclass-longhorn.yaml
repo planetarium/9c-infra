@@ -10,6 +10,7 @@ parameters:
   fsType: ext4
   numberOfReplicas: '1'
   staleReplicaTimeout: '2880'
+  nodeSelector: {{ .Release.Name }}
 provisioner: driver.longhorn.io
 reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 allowVolumeExpansion: true
