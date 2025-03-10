@@ -56,9 +56,6 @@ gateway:
     hostnames:
       - odin-internal-arena.9c.gg
       - odin-preview-arena.9c.gg
-  - name: ninechronicles-backoffice
-    hostnames:
-      - backoffice-internal.9c.gg
 
 snapshot:
   downloadSnapshot: true
