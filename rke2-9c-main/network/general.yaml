@@ -1,13 +1,51 @@
-clusterName: 9c-internal
+clusterName: 9c-main
 provider: RKE2
 
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-6409a04f53e21d3256654576067e4d875278dd3b"
+    tag: "250"
 
 seed:
   image:
     repository: planetariumhq/libplanet-seed
     pullPolicy: Always
     tag: "git-67d0ef91c52a71a9772cd7fdb241c9fc37b165b8"
+
+dataProvider:
+  image:
+    repository: planetariumhq/ninechronicles-dataprovider
+    pullPolicy: Always
+    tag: "250"
+
+worldBoss:
+  image:
+    repository: planetariumhq/world-boss-service
+    tag: "git-201df547889b4bbc3f47f4af86657a29d2064074"
+
+marketService:
+  image:
+    repository: planetariumhq/market-service
+    tag: "git-bb126180a9e879ac3e926b60f79a93953f00264a"
+
+remoteActionEvaluatorHeadless:
+  image:
+    tag: "41"
+
+stateMigrationService:
+  image:
+    repository: planetariumhq/state-migration-service
+    pullPolicy: Always
+    tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
+
+arenaService:
+  image:
+    repository: planetariumhq/arena-service
+    pullPolicy: Always
+    tag: "git-41d2c037d1b7c84380608baf5a2766ddc8b0d4b1"
+
+seasonpass:
+  image:
+    repository: planetariumhq/season-pass
+    pullPolicy: Always
+    tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"

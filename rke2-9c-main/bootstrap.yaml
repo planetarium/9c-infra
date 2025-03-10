@@ -22,8 +22,8 @@ spec:
       targetRevision: rke2
       helm:
         values: |-
-          clusterName: 9c-main
           targetRevision: rke2
           path: rke2-9c-main
           network:
+          - odin
           - heimdall
