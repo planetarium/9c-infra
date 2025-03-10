@@ -165,7 +165,7 @@ validator:
   nodeSelector:
 
 remoteHeadless:
-  count: 2
+  count: 3
   replicas: 1
 
   useTurnServer: false
@@ -173,10 +173,12 @@ remoteHeadless:
   hosts:
     - "heimdall-rpc-1-rke2.nine-chronicles.com"
     - "heimdall-rpc-2-rke2.nine-chronicles.com"
+    - "heimdall-rpc-3-rke2.nine-chronicles.com"
 
   loadBalancerIPs:
     - 49.247.4.178
     - 49.247.4.184
+    - 49.247.14.80
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting

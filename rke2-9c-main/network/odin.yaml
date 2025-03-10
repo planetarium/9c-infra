@@ -29,6 +29,8 @@ RKE2:
   loadBalancerIPs:
     - 115.68.194.60/32
     - 115.68.194.98/32
+    - 115.68.194.100/32
+    - 115.68.194.103/32
 
 externalSecret:
   enabled: true
@@ -189,10 +191,12 @@ remoteHeadless:
   hosts:
     - "odin-rpc-1-rke2.nine-chronicles.com"
     - "odin-rpc-2-rke2.nine-chronicles.com"
+    - "odin-rpc-3-rke2.nine-chronicles.com"
 
   loadBalancerIPs:
     - 115.68.194.60
     - 115.68.194.98
+    - 115.68.194.100
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -475,6 +479,8 @@ jwtHeadless:
 
   host: "odin-jwt-rke2.nine-chronicles.com"
 
+  loadBalancerIP: "115.68.194.103"
+
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
   env:
@@ -519,6 +525,7 @@ jwtHeadless:
       value: remote-headless-test
 
   nodeSelector:
+    node.kubernetes.io/network: odin
 
 blockIntervalNotifier:
   enabled: true
