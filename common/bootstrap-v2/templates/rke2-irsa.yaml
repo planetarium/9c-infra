@@ -38,10 +38,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - rke2.planetarium.network
+      - {{ .Values.RKE2.domain }}
       secretName: irsa-certificate-secret
   rules:
-  - host: rke2.planetarium.network
+  - host: {{ .Values.RKE2.domain }}
     http:
       paths:
       - path: /.well-known/openid-configuration
