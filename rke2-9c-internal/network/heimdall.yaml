@@ -1,17 +1,17 @@
 global:
-  validatorPath: "thor-internal-validator-1.nine-chronicles.com"
+  validatorPath: "heimdall-internal-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
-  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings-x64.json"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings-x64.json"
 
   appProtocolVersion: "1/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEQCIDCc.4TSt9sK7+D0ki2tvdw82Qs67+kHIMR0f7Ob8M2gAiB.m5.cfxT4xzLHXOCXRiLe61kvkG9gJMwcBWxMw2jklg=="
 
   peerStrings:
-  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,thor-internal-tcp-seed-1.nine-chronicles.com,31234"
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,heimdall-internal-tcp-seed-1.nine-chronicles.com,31234"
 
   trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
 
   networkType: Internal
-  planet: ThorInternal
+  planet: HeimdallInternal
   consensusType: pbft
 
   resetSnapshot: true
@@ -25,7 +25,7 @@ RKE2:
 externalSecret:
   enabled: true
   provider: AWS
-  prefix: "9c-internal-v2/thor"
+  prefix: "9c-internal-v2/heimdall"
 
 ingress:
   enabled: false
@@ -35,7 +35,7 @@ gateway:
   services:
   - name: remote-headless
     hostnames:
-      - thor-internal-rke2-rpc.nine-chronicles.com
+      - heimdall-internal-rke2-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     protocols:
@@ -49,7 +49,7 @@ snapshot:
   partition:
     enabled: false
     suspend: true
-  path: internal/thor
+  path: internal/heimdall
   nodeSelector:
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
@@ -64,7 +64,7 @@ seed:
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
 
   hosts:
-  - "thor-internal-rke2-tcp-seed-1.nine-chronicles.com"
+  - "heimdall-internal-rke2-tcp-seed-1.nine-chronicles.com"
 
 remoteHeadless:
   count: 2
@@ -73,8 +73,8 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "thor-internal-rke2-rpc-1.nine-chronicles.com"
-  - "thor-internal-rke2-rpc-2.nine-chronicles.com"
+  - "heimdall-internal-rke2-rpc-1.nine-chronicles.com"
+  - "heimdall-internal-rke2-rpc-2.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.199.12
@@ -88,8 +88,8 @@ remoteHeadless:
   ingress:
     enabled: true
     hosts:
-      - "thor-internal-rke2-gql-1.nine-chronicles.com"
-      - "thor-internal-rke2-gql-2.nine-chronicles.com"
+      - "heimdall-internal-rke2-gql-1.nine-chronicles.com"
+      - "heimdall-internal-rke2-gql-2.nine-chronicles.com"
 
   storage:
     data: 100Gi
