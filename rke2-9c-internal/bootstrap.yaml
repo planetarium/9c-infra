@@ -26,4 +26,4 @@ spec:
           targetRevision: rke2
           path: rke2-9c-internal
           network:
-          - thor
+          - heimdall
