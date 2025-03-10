@@ -183,7 +183,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 2
+  count: 3
   replicas: 1
 
   useTurnServer: false
