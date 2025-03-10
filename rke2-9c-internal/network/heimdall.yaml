@@ -41,6 +41,61 @@ gateway:
     protocols:
     - web
     - grpc
+  - name: market-service
+    hostnames:
+    - heimdall-internal-rke2-market.9c.gg
+  - name: world-boss-service
+    hostnames:
+    - heimdall-internal-rke2-world-boss.9c.gg
+  - name: arena-service
+    hostnames:
+    - heimdall-internal-rke2-arena.9c.gg
+
+bridgeService:
+  enabled: true
+
+  multiplanetary:
+    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets-internal.json"
+    upstream: "0x100000000000"
+    downstream: "0x100000000001"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+  nodeSelector:
+    node.kubernetes.io/provisioner: iwinv
+
+  account:
+    type: "kms"
+    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
+    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
+
+  txpool:
+    type: "local"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge Test (Odin ↔ Heimdall)"
+      channel: "9c-relay-bridge-bot-test-rdb"
+
+  db:
+    enabled: true
+    size: "10Gi"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "13579355"
+      downstream: "5147976"
+
+bridgeServiceApi:
+  enabled: true
+  nodeSelector:
+    node.kubernetes.io/provisioner: iwinv
 
 snapshot:
   downloadSnapshot: true
@@ -107,3 +162,44 @@ remoteHeadless:
 
 validator:
   count: 0
+
+worldBoss:
+  enabled: true
+  ports:
+    targetPort: 5000
+
+  db:
+    local: true
+    size: 5Gi
+
+  worldBossEnv:
+    databaseUrl: ""
+    redisHost: ""
+    redisPort: ""
+    kmsKeyId: ""
+    slackToken: ""
+    celeryBrokerUrl: ""
+    celeryResultBackend: ""
+    slackSigningSecret: ""
+
+  nodeSelector:
+    node.kubernetes.io/provisioner: iwinv
+
+arenaService:
+  enabled: true
+
+  nodeSelector:
+    read:
+      node.kubernetes.io/provisioner: iwinv
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "2"
+    rankingDbNumber: "3"
+
+seasonpass:
+  enabled: true
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
