@@ -25,14 +25,21 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+RKE2:
+  loadBalancerIPs:
+    - 115.68.194.60/32
+    - 115.68.194.98/32
+
 externalSecret:
   enabled: true
+  provider: AWS
+  prefix: "9c-main-v2"
 
 ingress:
   enabled: false
 
 gateway:
-  enabled: true
+  enabled: false
   services:
     - name: remote-headless
       hostname: odin-rpc-rke2.nine-chronicles.com
@@ -77,19 +84,20 @@ snapshot:
 
   nodeSelector:
 
-  storage: 1000Gi
+  storage: 700Gi
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
 
 seed:
   count: 3
+  clusterLocal: true
   useTurnServer: false
 
   hosts:
-    - "odin-tcp-seed-1-rke2.nine-chronicles.com"
-    - "odin-tcp-seed-2-rke2.nine-chronicles.com"
-    - "odin-tcp-seed-3-rke2.nine-chronicles.com"
+    - "odin-tcp-seed-1.nine-chronicles.com"
+    - "odin-tcp-seed-2.nine-chronicles.com"
+    - "odin-tcp-seed-3.nine-chronicles.com"
 
   loggingEnabled: true
 
@@ -173,7 +181,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 3
+  count: 2
   replicas: 1
 
   useTurnServer: false
@@ -181,7 +189,10 @@ remoteHeadless:
   hosts:
     - "odin-rpc-1-rke2.nine-chronicles.com"
     - "odin-rpc-2-rke2.nine-chronicles.com"
-    - "odin-rpc-3-rke2.nine-chronicles.com"
+
+  loadBalancerIPs:
+    - 115.68.194.60
+    - 115.68.194.98
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -224,6 +235,7 @@ remoteHeadless:
     - --tx-quota-per-signer=1
 
   nodeSelector:
+    node.kubernetes.io/network: odin
 
   resources:
     requests:
@@ -231,9 +243,7 @@ remoteHeadless:
       memory: 25Gi
 
   storage:
-    volumeNames:
-      - "test-headless-data-1-test-headless-1-0"
-      - "test-headless-data-1-test-headless-1-1"
+    data: 700Gi
 
   tolerations:
     - effect: NoSchedule
@@ -255,7 +265,7 @@ dataProviderDataMigrator:
       cpu: "5"
       memory: 56Gi
 
-  storage: 1000Gi
+  storage: 700Gi
 
   tolerations:
     - effect: NoSchedule
@@ -333,79 +343,7 @@ marketService:
     write:
 
 fullState:
-  enabled: true
-
-  loggingEnabled: true
-  datadog:
-    enabled: true
-
-  useTurnServer: false
-
-  host: "odin-full-state-rke2.nine-chronicles.com"
-
-  extraArgs:
-    - --no-reduce-store
-    - --tx-quota-per-signer=1
-
-  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
-
-  env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "false"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "120"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:157.245.68.243"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::1"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:172.70.126.138"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__5
-      value: "::ffff:18.156.30.229"
-    - name: IpRateLimiting__IpWhiteList__6
-      value: "::ffff:18.194.31.91"
-    - name: IpRateLimiting__IpWhiteList__7
-      value: "::ffff:3.72.169.78"
-    - name: MultiAccountManaging__EnableManaging
-      value: "true"
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: JWT__Key
-      valueFrom:
-        secretKeyRef:
-          key: jwt
-          name: private-keys
-
-  tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
-
-  resources:
-    requests:
-      cpu: "5"
-      memory: 56Gi
-
-  nodeSelector:
+  enabled: false
 
 worldBoss:
   enabled: true
