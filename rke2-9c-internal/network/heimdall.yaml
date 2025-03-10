@@ -65,9 +65,6 @@ bridgeService:
   storage:
     size: "50Gi"
 
-  nodeSelector:
-    node.kubernetes.io/provisioner: iwinv
-
   account:
     type: "kms"
     keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
@@ -94,8 +91,6 @@ bridgeService:
 
 bridgeServiceApi:
   enabled: true
-  nodeSelector:
-    node.kubernetes.io/provisioner: iwinv
 
 snapshot:
   downloadSnapshot: true
@@ -181,9 +176,6 @@ worldBoss:
     celeryBrokerUrl: ""
     celeryResultBackend: ""
     slackSigningSecret: ""
-
-  nodeSelector:
-    node.kubernetes.io/provisioner: iwinv
 
 arenaService:
   enabled: true
