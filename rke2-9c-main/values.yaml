@@ -1,0 +1,47 @@
+clusterName: 9c-main
+provider: RKE2
+global:
+  service:
+    annotations:
+RKE2:
+  domain: rke2-main.planetarium.network
+  publicIPs:
+    - 49.247.14.88/32
+argocd:
+  domain: argocd-rke2.planetarium.network
+externalSecrets:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-9c-internal-external-secrets
+externalDns:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
+certManager:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
+  dnsNames:
+    - "*.nine-chronicles.com"
+    - "*.planetarium.network"
+  issuer:
+    email: devops@planetariumhq.com
+grafana:
+  hosts:
+    - monitoring-rke2.planetarium.network
+prometheus:
+  server:
+    extraScrapeConfigs:
+      - job_name: scrape-headlesses
+        metrics_path: /metrics
+        scrape_interval: 8s
+        scrape_timeout: 6s
+        static_configs:
+          - labels:
+              group: odin-rpc
+            targets:
+              - remote-headless-1.odin.svc.cluster.local:80
+          - labels:
+              group: heimdall-rpc
+            targets:
+              - remote-headless-1.heimdall.svc.cluster.local:80
