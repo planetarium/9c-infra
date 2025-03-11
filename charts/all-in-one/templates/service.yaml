@@ -58,7 +58,7 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
-    {{- if and (index $.Values.remoteHeadless.hosts $idx) (not $.Values.remoteHeadless.ingress.enabled) }}
+    {{- if and (index $.Values.remoteHeadless.hosts $idx) (or (not $.Values.remoteHeadless.ingress.enabled) ($.Values.remoteHeadless.ingress.hosts)) }}
     external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
