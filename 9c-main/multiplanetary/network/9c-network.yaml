@@ -701,7 +701,7 @@ stateMigrationService:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:
