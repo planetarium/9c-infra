@@ -76,7 +76,7 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-8d30bdf809833a28d44734f5f853747424fd7257"
+    tag: "git-884cb48125cb5be2465dd7d9a9ff7184268c3950"
 
   nodeSelector:
     read: {}
