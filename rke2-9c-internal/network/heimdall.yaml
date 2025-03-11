@@ -19,8 +19,8 @@ global:
 
 RKE2:
   loadBalancerIPs:
-    - 115.68.199.12/32
     - 49.247.14.86/32
+    - 49.247.14.112/32
 
 externalSecret:
   enabled: true
@@ -126,7 +126,7 @@ remoteHeadless:
   - "heimdall-internal-rke2-rpc-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - 115.68.199.12
+  - 49.247.14.112
 
   ports:
     headless: 31234
@@ -217,7 +217,7 @@ arenaService:
 
   nodeSelector:
     read:
-      node.kubernetes.io/provisioner: iwinv
+      node.kubernetes.io/provisioner: cloudv
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
