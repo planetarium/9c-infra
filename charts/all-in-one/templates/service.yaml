@@ -603,6 +603,9 @@ spec:
   selector:
     app: validator-{{ $index }}
   type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.validator.loadBalancerIPs $idx }}
+  {{- end }}
 
 ---
 {{ end }}

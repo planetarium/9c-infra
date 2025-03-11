@@ -117,18 +117,16 @@ seed:
   - "heimdall-internal-rke2-tcp-seed-1.nine-chronicles.com"
 
 remoteHeadless:
-  count: 2
+  count: 1
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
 
   hosts:
   - "heimdall-internal-rke2-rpc-1.nine-chronicles.com"
-  - "heimdall-internal-rke2-rpc-2.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.199.12
-  - 49.247.14.86
 
   ports:
     headless: 31234
@@ -139,7 +137,6 @@ remoteHeadless:
     enabled: true
     hosts:
       - "heimdall-internal-rke2-gql-1.nine-chronicles.com"
-      - "heimdall-internal-rke2-gql-2.nine-chronicles.com"
 
   storage:
     data: 100Gi
@@ -156,7 +153,45 @@ remoteHeadless:
   - --remote-key-value-service
 
 validator:
-  count: 0
+  count: 1
+
+  consensusSeedStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
+
+  hosts:
+  - "heimdall-internal-rke2-validator-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - 49.247.14.86
+
+  ingress:
+    enabled: true
+    hosts:
+      - "heimdall-internal-rke2-validator-gql-1.nine-chronicles.com"
+
+  ports:
+    rpc: 31238
+
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 12Gi
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-life-time=2000000000
+  - --planet=HeimdallInternal
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
+  - --consensus-enter-precommit-delay=300
+
+  storage:
+    volumeNames:
+    - remote-headless-data-2-remote-headless-2-0
+
 
 worldBoss:
   enabled: true
