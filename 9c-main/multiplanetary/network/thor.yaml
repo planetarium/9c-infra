@@ -550,7 +550,7 @@ rudolfCurrencyNotifier:
   enabled: false
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:

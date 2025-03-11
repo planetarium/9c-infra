@@ -691,7 +691,7 @@ stateMigrationService:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:
