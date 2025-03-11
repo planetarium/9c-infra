@@ -20,7 +20,7 @@ global:
 RKE2:
   loadBalancerIPs:
     - 49.247.14.86/32
-    - 49.247.14.112/32
+    - 49.247.14.84/32
 
 externalSecret:
   enabled: true
@@ -126,7 +126,7 @@ remoteHeadless:
   - "heimdall-internal-rke2-rpc-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - 49.247.14.112
+  - 49.247.14.84
 
   ports:
     headless: 31234
