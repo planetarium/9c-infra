@@ -20,10 +20,10 @@
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
       "arena.rest": [
-        "https://odin-arena.planetarium.dev"
+        "http://odin-arena.planetarium.dev"
       ],
       "arena.gql": [
-        "https://odin-arena.planetarium.dev"
+        "http://odin-arena.planetarium.dev"
       ]
     },
     "bridges": {
@@ -60,10 +60,10 @@
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
       "arena.rest": [
-        "https://heimdall-arena.planetarium.dev"
+        "http://heimdall-arena.planetarium.dev"
       ],
       "arena.gql": [
-        "https://heimdall-arena.planetarium.dev"
+        "http://heimdall-arena.planetarium.dev"
       ]
     },
     "bridges": {
