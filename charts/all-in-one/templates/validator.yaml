@@ -242,6 +242,11 @@ spec:
         - containerPort: {{ $.Values.validator.ports.gossip }}
           name: gossip
           protocol: TCP
+        {{- if $.Values.validator.ports.rpc }}
+        - containerPort: {{ $.Values.validator.ports.rpc }}
+          name: rpc
+          protocol: TCP
+        {{- end }}
         {{- if eq $.Values.global.networkType "Main"  }}
         livenessProbe:
           exec:

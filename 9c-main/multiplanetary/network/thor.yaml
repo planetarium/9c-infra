@@ -105,7 +105,7 @@ seed:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
 fullState:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
   datadog:
@@ -215,12 +215,20 @@ validator:
   - --tx-quota-per-signer=1
   - --tx-life-time=10
   - --consensus-target-block-interval=8000
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
+  - --no-cors
 
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.thor.svc.cluster.local,31235"
 
   hosts:
   - "thor-validator-1.nine-chronicles.com"
+
+  ports:
+    rpc: 31238
 
   storage:
     volumeNames:
@@ -239,7 +247,7 @@ validator:
     eks.amazonaws.com/nodegroup: thor-r7g_xl_2c_validator
 
 remoteHeadless:
-  count: 1
+  count: 0
   replicas: 1
 
   useTurnServer: false
@@ -309,7 +317,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
@@ -445,7 +453,7 @@ testHeadless2:
   enabled: false
 
 jwtHeadless:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
