@@ -2,7 +2,7 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
-    tag: "250"
+    tag: "260"
   remoteKv:
     image:
       repository: planetariumhq/libplanet-remote-kv
@@ -27,7 +27,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "250"
+    tag: "260"
 
 worldBoss:
   image:
@@ -37,7 +37,7 @@ worldBoss:
 marketService:
   image:
     repository: planetariumhq/market-service
-    tag: "git-bb126180a9e879ac3e926b60f79a93953f00264a"
+    tag: "git-8a676fbf27c0af155b9741bcad90bc9cf351ebdd"
 
 acc:
   image:
@@ -76,7 +76,7 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-41d2c037d1b7c84380608baf5a2766ddc8b0d4b1"
+    tag: "git-884cb48125cb5be2465dd7d9a9ff7184268c3950"
 
   nodeSelector:
     read: {}
