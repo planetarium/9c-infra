@@ -317,7 +317,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
