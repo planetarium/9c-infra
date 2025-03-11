@@ -26,7 +26,7 @@ global:
   planet: Thor
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 externalSecret:
