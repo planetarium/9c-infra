@@ -83,13 +83,9 @@
       "dp.gql": ["http://thor-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-thor.9cscan.com"],
       "headless.gql": [
-        "https://thor-rpc-1.nine-chronicles.com/graphql",
-        "https://thor-rpc-2.nine-chronicles.com/graphql",
         "https://thor-rpc-3.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://thor-rpc-1.nine-chronicles.com:31238",
-        "http://thor-rpc-2.nine-chronicles.com:31238",
         "http://thor-rpc-3.nine-chronicles.com:31238"
       ],
       "market.rest": ["https://api.9capi.com/marketProviderThor"],
