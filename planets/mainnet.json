@@ -16,7 +16,7 @@
         "http://odin-rpc-1.nine-chronicles.com:31238",
         "http://odin-rpc-2.nine-chronicles.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderOdin"],
+      "market.rest": ["https://odin-market.9c.gg"],
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
       "arena.rest": [
@@ -56,7 +56,7 @@
         "http://heimdall-rpc-2.nine-chronicles.com:31238",
         "http://heimdall-rpc-3.nine-chronicles.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderHeimdall"],
+      "market.rest": ["http://heimdall-market.9c.gg"],
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
       "arena.rest": [
@@ -92,7 +92,7 @@
         "http://thor-rpc-2.nine-chronicles.com:31238",
         "http://thor-rpc-3.nine-chronicles.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderThor"],
+      "market.rest": ["http://thor-market.9c.gg"],
       "world-boss.rest": ["http://thor-world-boss.9c.gg"],
       "patrol-reward.gql": ["http://thor-patrol.9c.gg/graphql"],
       "arena.rest": [
