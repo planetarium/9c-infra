@@ -364,8 +364,8 @@ explorer:
     eks.amazonaws.com/nodegroup: heimdall-r7g_xl_2c
 
 marketService:
-  enabled: true
-  rwMode: true
+  enabled: false
+  rwMode: false
 
   env:
   - name: DOTNET_gcServer
