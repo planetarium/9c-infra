@@ -60,10 +60,10 @@
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
       "arena.rest": [
-        "https://heimdall-arena.planetarium.dev"
+        "http://heimdall-arena.planetarium.dev"
       ],
       "arena.gql": [
-        "https://heimdall-arena.planetarium.dev"
+        "http://heimdall-arena.planetarium.dev"
       ]
     },
     "bridges": {
