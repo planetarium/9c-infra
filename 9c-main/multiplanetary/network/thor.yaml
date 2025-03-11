@@ -372,8 +372,8 @@ explorer:
   enabled: false
 
 marketService:
-  enabled: true
-  rwMode: true
+  enabled: false
+  rwMode: false
 
   env:
   - name: DOTNET_gcServer
