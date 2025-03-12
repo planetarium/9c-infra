@@ -83,6 +83,24 @@ spec:
                 secretKeyRef:
                   name: arena
                   key: HANGFIRE_PASSWORD
+            - name: Ssh__Enabled
+              value: {{ .Values.arenaService.ssh.enabled }}
+            - name: Ssh__Host
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: SSH_HOST
+            - name: Ssh__Username
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: SSH_USERNAME
+            - name: Ssh__Password
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: SSH_PASSWORD
+
           {{- with $.Values.arenaService.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
