@@ -767,6 +767,9 @@ arenaService:
   env: []
   envForWrite: []
 
+  ssh:
+    enabled: false
+
 seasonpass:
   enabled: false
   api: false
