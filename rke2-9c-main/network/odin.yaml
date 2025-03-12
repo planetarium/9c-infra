@@ -22,7 +22,7 @@ global:
   planet: Odin
   consensusType: pbft
 
-  resetSnapshot: false
+  resetSnapshot: true
   rollbackSnapshot: false
 
 RKE2:

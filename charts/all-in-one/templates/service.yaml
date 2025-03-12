@@ -66,10 +66,12 @@ spec:
   {{- if and $.Values.remoteHeadless.ingress.enabled (not $.Values.remoteHeadless.ingress.hosts) }}
   type: ClusterIP
   {{- else }}
-  externalTrafficPolicy: Local
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.remoteHeadless.loadBalancerIPs $idx }}
+  externalTrafficPolicy: Cluster
+  {{- else }}
+  externalTrafficPolicy: Local
   {{- end }}
   {{- end }}
   ports:
@@ -580,7 +582,6 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
 spec:
-  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.validator.ports.headless }}
     targetPort: {{ $.Values.validator.ports.headless }}
@@ -605,6 +606,9 @@ spec:
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.validator.loadBalancerIPs $idx }}
+  externalTrafficPolicy: Cluster
+  {{- else }}
+  externalTrafficPolicy: Local
   {{- end }}
 
 ---
