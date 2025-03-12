@@ -340,6 +340,9 @@ arenaService:
     hangfireDbNumber: "2"
     rankingDbNumber: "3"
 
+  ssh:
+    enabled: false
+
 seasonpass:
   enabled: true
   serviceAccount:
