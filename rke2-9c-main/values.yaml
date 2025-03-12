@@ -41,7 +41,17 @@ prometheus:
               group: odin-rpc
             targets:
               - remote-headless-1.odin.svc.cluster.local:80
+              - remote-headless-2.odin.svc.cluster.local:80
+          - labels:
+              group: odin-validator
+            targets:
+              - validator-1.odin.svc.cluster.local:80
           - labels:
               group: heimdall-rpc
             targets:
               - remote-headless-1.heimdall.svc.cluster.local:80
+              - remote-headless-2.heimdall.svc.cluster.local:80
+          - labels:
+              group: heimdall-validator
+            targets:
+              - validator-1.heimdall.svc.cluster.local:80
