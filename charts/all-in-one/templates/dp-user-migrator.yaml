@@ -81,6 +81,116 @@ spec:
               subPath: preload_headless.sh
             - mountPath: /data
               name: dp-user-migrator-volume
+          - name: set-date
+            image: debian:latest
+            command:
+              - sh
+              - -c
+              - >
+                apt-get update && apt-get install -y coreutils &&
+                echo -n $(date -d 'yesterday' +%Y-%m-%d) > /etc/config/date &&
+                echo "Date set to: $(cat /etc/config/date)"
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+          - name: chain-migration
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            command:
+              - sh
+              - '-c'
+              - >
+                dotnet NineChronicles.DataProvider.Executable.dll
+                mysql-migration -o "/data/headless" --mysql-server $(DP_HOST)
+                --mysql-port $(DP_PORT) --mysql-username $(DP_USER)
+                --mysql-password $(DP_TOKEN) --mysql-database $(DP_DATABASE)
+                --date "$(cat /etc/config/date)"
+            env:
+              - name: DP_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: write-host
+              - name: DP_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: user
+              - name: DP_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: token
+              - name: DP_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: port
+              - name: DP_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: database
+            resources:
+              requests:
+                cpu: '1'
+                memory: 10Gi
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+              - mountPath: /data
+                name: dp-user-migrator-volume
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            imagePullPolicy: Always
+          - command:
+            - sh
+            - -c
+            - >
+              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration
+              --mysql-server $(DP_HOST)
+              --mysql-port $(DP_PORT)
+              --mysql-username $(DP_USER)
+              --mysql-password $(DP_TOKEN)
+              --mysql-database $(DP_DATABASE)
+              --date "$(cat /etc/config/date)"
+            env:
+            - name: DP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: write-host
+                  name: data-provider
+            - name: DP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: data-provider
+            - name: DP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: data-provider
+            - name: DP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: data-provider
+            - name: DP_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            imagePullPolicy: Always
+            name: dailymetric
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            {{- with $.Values.dataProviderDataMigrator.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
           - args:
             - NineChronicles.DataProvider.Executable.dll
             - user-data-migration
@@ -184,6 +294,8 @@ spec:
           - name: dp-user-migrator-volume
             persistentVolumeClaim:
               claimName: dp-user-migrator-volume
+          - name: date-config
+            emptyDir: {}
   schedule: 0 0 * * *
   successfulJobsHistoryLimit: 1
 
