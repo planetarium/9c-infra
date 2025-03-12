@@ -568,6 +568,9 @@ arenaService:
     hangfireDbNumber: "0"
     rankingDbNumber: "1"
 
+  ssh:
+    enabled: true
+
 seasonpass:
   enabled: true
   api: true
