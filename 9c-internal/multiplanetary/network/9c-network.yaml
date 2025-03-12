@@ -198,7 +198,7 @@ explorer:
   - --tx-quota-per-signer=1
 
 marketService:
-  enabled: true
+  enabled: false
 
   db:
     local: true
@@ -316,7 +316,7 @@ jwtHeadless:
     eks.amazonaws.com/nodegroup: odin-spot_2c
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:

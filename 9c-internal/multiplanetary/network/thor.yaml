@@ -131,7 +131,7 @@ dataProviderDailyMetric:
     eks.amazonaws.com/nodegroup: thor-spot_2c
 
 marketService:
-  enabled: true
+  enabled: false
 
   db:
     local: true
@@ -353,7 +353,7 @@ stateproxy:
     class: "thor-gp3"
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:

@@ -128,7 +128,7 @@ dataProviderDailyMetric:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 marketService:
-  enabled: true
+  enabled: false
 
   db:
     local: true
@@ -327,7 +327,7 @@ stateMigrationService:
     eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
 arenaService:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     read:
