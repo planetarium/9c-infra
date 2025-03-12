@@ -84,7 +84,7 @@ spec:
                   name: arena
                   key: HANGFIRE_PASSWORD
             - name: Ssh__Enabled
-              value: {{ .Values.arenaService.ssh.enabled }}
+              value: "{{ .Values.arenaService.ssh.enabled }}"
             - name: Ssh__Host
               valueFrom:
                 secretKeyRef:
