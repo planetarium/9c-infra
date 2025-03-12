@@ -26,10 +26,10 @@
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
       "arena.rest": [
-        "http://odin-arena.planetarium.dev"
+        "http://odin-arena-rke2.9c.gg"
       ],
       "arena.gql": [
-        "http://odin-arena.planetarium.dev"
+        "http://odin-arena-rke2.9c.gg"
       ]
     },
     "bridges": {
