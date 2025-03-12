@@ -126,7 +126,7 @@ remoteHeadless:
   - "heimdall-internal-rke2-rpc-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - 49.247.14.84
+  - 49.247.14.86
 
   ports:
     headless: 31234
@@ -162,7 +162,7 @@ validator:
   - "heimdall-internal-rke2-validator-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - 49.247.14.86
+  - 49.247.14.84
 
   ingress:
     enabled: true
