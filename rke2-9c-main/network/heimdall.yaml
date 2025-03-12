@@ -56,7 +56,7 @@ gateway:
     - name: world-boss-service
       hostname: heimdall-world-boss.9c.gg
     - name: arena-service
-      hostname: heimdall-arena.9c.gg
+      hostname: heimdall-arena-rke2.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"

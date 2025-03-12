@@ -59,7 +59,7 @@ gateway:
     - name: world-boss-service
       hostname: odin-world-boss.9c.gg
     - name: arena-service
-      hostname: odin-arena.9c.gg
+      hostname: odin-arena-rke2.9c.gg
     - name: seasonpass-api
       hostnames:
         - season-pass.9c.gg
