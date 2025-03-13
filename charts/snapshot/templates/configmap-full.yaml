@@ -183,7 +183,7 @@ data:
       FULL_SNAPSHOT_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.zip"
       FULL_SNAPSHOT_FILENAME_7Z="$UPLOAD_FULL_SNAPSHOT_FILENAME.7z"
 
-      S3_BUCKET_NAME="9c-snapshots-v2"
+      S3_BUCKET_NAME="9c-snapshots"
 
       AWS="/usr/local/bin/aws"
       AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"

@@ -121,8 +121,8 @@ spec:
               readOnly: true
           containers:
           - args:
-            - s3://9c-snapshots-v2/main/partition/
-            - s3://9c-snapshots-v2/main/temp/partition/
+            - s3://9c-snapshots/main/partition/
+            - s3://9c-snapshots/main/temp/partition/
             - $(SLACK_TOKEN)
             - $(CF_DISTRIBUTION_ID)
             command:
