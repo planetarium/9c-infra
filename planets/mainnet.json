@@ -55,14 +55,12 @@
       "headless.gql": [
         "https://heimdall-rpc-1.nine-chronicles.com/graphql",
         "https://heimdall-rpc-2.nine-chronicles.com/graphql",
-        "https://heimdall-rpc-3.nine-chronicles.com/graphql",
         "https://heimdall-rke2-gql-1.nine-chronicles.com/graphql",
         "https://heimdall-rke2-gql-2.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://heimdall-rpc-1.nine-chronicles.com:31238",
         "http://heimdall-rpc-2.nine-chronicles.com:31238",
-        "http://heimdall-rpc-3.nine-chronicles.com:31238",
         "http://heimdall-rke2-rpc-1.nine-chronicles.com:31238",
         "http://heimdall-rke2-rpc-2.nine-chronicles.com:31238"
       ],
