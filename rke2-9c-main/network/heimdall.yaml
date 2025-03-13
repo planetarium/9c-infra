@@ -181,6 +181,13 @@ remoteHeadless:
     - 49.247.4.184
     - 49.247.14.80
 
+  ingress:
+    enabled: true
+    hosts:
+      - "heimdall-rke2-gql-1.nine-chronicles.com"
+      - "heimdall-rke2-gql-2.nine-chronicles.com"
+      - "heimdall-rke2-gql-3.nine-chronicles.com"
+
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
       value: "true"
@@ -220,13 +227,6 @@ remoteHeadless:
 
   extraArgs:
     - --tx-quota-per-signer=1
-
-  ingress:
-    enabled: true
-    hosts:
-      - "heimdall-rke2-gql-1.nine-chronicles.com"
-      - "heimdall-rke2-gql-2.nine-chronicles.com"
-      - "heimdall-rke2-gql-3.nine-chronicles.com"
 
   nodeSelector:
     node.kubernetes.io/network: heimdall
@@ -460,9 +460,13 @@ jwtHeadless:
 
   loggingEnabled: true
 
-  host: "heimdall-rke2-jwt.nine-chronicles.com"
+  host: "heimdall-rke2-jwt-rpc.nine-chronicles.com"
 
   loadBalancerIP: "49.247.4.178"
+
+  ingress:
+    enabled: true
+    host: "heimdall-rke2-jwt-gql.nine-chronicles.com"
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting

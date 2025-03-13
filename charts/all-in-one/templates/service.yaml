@@ -58,9 +58,11 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
-    {{- if and (index $.Values.remoteHeadless.hosts $idx) (or (not $.Values.remoteHeadless.ingress.enabled) ($.Values.remoteHeadless.ingress.hosts)) }}
-    external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
+    {{- with (index $.Values.remoteHeadless.hosts $idx) }}
+    {{- if or (not $.Values.remoteHeadless.ingress.enabled) ($.Values.remoteHeadless.ingress.hosts) }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
+    {{- end }}
     {{- end }}
 spec:
   {{- if and $.Values.remoteHeadless.ingress.enabled (not $.Values.remoteHeadless.ingress.hosts) }}
@@ -352,11 +354,23 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
     {{- with $.Values.jwtHeadless.host }}
+    {{- if or (not $.Values.jwtHeadless.ingress.enabled) ($.Values.jwtHeadless.ingress.host) }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
+  {{- if and $.Values.jwtHeadless.ingress.enabled (not $.Values.jwtHeadless.ingress.hosts) }}
+  type: ClusterIP
+  {{- else }}
+  type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ $.Values.jwtHeadless.loadBalancerIP }}
+  externalTrafficPolicy: Cluster
+  {{- else }}
   externalTrafficPolicy: Local
+  {{- end }}
+  {{- end }}
   ports:
   - name: graphql
     port: {{ $.Values.jwtHeadless.ports.graphql }}

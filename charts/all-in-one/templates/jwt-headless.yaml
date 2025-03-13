@@ -324,4 +324,29 @@ spec:
       {{- end }}
   updateStrategy:
     type: RollingUpdate
-{{ end }}
+---
+{{- if $.Values.jwtHeadless.ingress.enabled }}
+{{- $hosts := split "," ($.Values.jwtHeadless.ingress.host | default $.Values.jwtHeadless.host) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jwt-headless-ingress
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/affinity: "true"
+spec:
+  rules:
+    {{- range $host := $hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jwt-headless
+                port:
+                  number: 80
+    {{- end }}
+{{- end }}
+{{- end }}

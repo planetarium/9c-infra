@@ -198,6 +198,13 @@ remoteHeadless:
     - 115.68.194.98
     - 115.68.194.100
 
+  ingress:
+    enabled: true
+    hosts:
+      - "odin-rke2-gql-1.nine-chronicles.com"
+      - "odin-rke2-gql-2.nine-chronicles.com"
+      - "odin-rke2-gql-3.nine-chronicles.com"
+
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
       value: "true"
@@ -237,13 +244,6 @@ remoteHeadless:
 
   extraArgs:
     - --tx-quota-per-signer=1
-
-  ingress:
-    enabled: true
-    hosts:
-      - "odin-rke2-gql-1.nine-chronicles.com"
-      - "odin-rke2-gql-2.nine-chronicles.com"
-      - "odin-rke2-gql-3.nine-chronicles.com"
 
   nodeSelector:
     node.kubernetes.io/network: odin
@@ -484,9 +484,13 @@ jwtHeadless:
   datadog:
     enabled: true
 
-  host: "odin-jwt-rke2.nine-chronicles.com"
+  host: "odin-rke2-jwt-rpc.nine-chronicles.com"
 
   loadBalancerIP: "115.68.194.103"
+
+  ingress:
+    enabled: true
+    host: "odin-rke2-jwt-gql.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
