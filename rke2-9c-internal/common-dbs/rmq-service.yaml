@@ -18,4 +18,4 @@ spec:
       targetPort: 15672
   selector:
     app: rmq
-  type: ClusterIP 
+  type: ClusterIP
