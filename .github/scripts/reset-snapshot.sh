@@ -4,7 +4,7 @@ set -ex
 BASEDIR=$(dirname "$0")
 echo "$BASEDIR"
 
-BUCKET="s3://9c-snapshots-v2"
+BUCKET="s3://9c-snapshots"
 
 export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
 export AWS_DEFAULT_REGION=auto

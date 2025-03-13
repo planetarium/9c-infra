@@ -69,7 +69,7 @@ function make_and_upload_snapshot() {
   LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
   STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
-  S3_BUCKET_NAME="9c-snapshots-v2"
+  S3_BUCKET_NAME="9c-snapshots"
   S3_LATEST_SNAPSHOT_PATH="$2/$UPLOAD_SNAPSHOT_FILENAME"
   S3_LATEST_METADATA_PATH="$2/$UPLOAD_METADATA_FILENAME"
 

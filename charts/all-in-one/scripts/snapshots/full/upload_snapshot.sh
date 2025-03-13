@@ -67,7 +67,7 @@ function make_and_upload_snapshot() {
   LATEST_METADATA_FILENAME=$(basename "$LATEST_METADATA")
   UPLOAD_METADATA_FILENAME="$UPLOAD_FULL_SNAPSHOT_FILENAME.json"
 
-  S3_BUCKET_NAME="9c-snapshots-v2"
+  S3_BUCKET_NAME="9c-snapshots"
 
   AWS="/usr/local/bin/aws"
   AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"

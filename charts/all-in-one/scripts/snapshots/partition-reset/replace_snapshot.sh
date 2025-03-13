@@ -56,7 +56,7 @@ function replace_snapshot() {
     return
   fi
 
-  BUCKET="s3://9c-snapshots-v2"
+  BUCKET="s3://9c-snapshots"
   BUCKET_PREFIX=$(echo $BUCKET | awk '{gsub(/\//,"\\/");print}')
   CF_PATH=$(echo $1 | sed -e "s/^$BUCKET_PREFIX//" | sed "s/.*/&*/")
 
