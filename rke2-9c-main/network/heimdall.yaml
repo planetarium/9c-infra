@@ -462,6 +462,8 @@ jwtHeadless:
 
   host: "heimdall-rke2-jwt.nine-chronicles.com"
 
+  loadBalancerIP: "49.247.4.178"
+
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
       value: "false"
