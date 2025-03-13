@@ -85,15 +85,20 @@ spec:
                 secretKeyRef:
                   key: jwt-secret
                   name: seasonpass-env
-            - name: ADVENTURE_BOSS_SQS_URL
+            - name: COURAGE_QUEUE_NAME
               valueFrom:
                 secretKeyRef:
-                  key: adv-boss-sqs-url
+                  key: courage-queue-name
                   name: seasonpass-env
-            - name: WORLD_CLEAR_SQS_URL
+            - name: ADVENTURE_BOSS_QUEUE_NAME
               valueFrom:
                 secretKeyRef:
-                  key: world-clear-sqs-url
+                  key: adv-boss-queue-name
+                  name: seasonpass-env
+            - name: WORLD_CLEAR_QUEUE_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: world-clear-queue-name
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
