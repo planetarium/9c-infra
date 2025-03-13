@@ -254,7 +254,7 @@ remoteHeadless:
       memory: 25Gi
 
   storage:
-    data: 650Gi
+    data: 850Gi
 
   tolerations:
     - effect: NoSchedule
@@ -523,7 +523,7 @@ jwtHeadless:
       memory: 25Gi
 
   storage:
-    data: 650Gi
+    data: 850Gi
 
   tolerations:
     - effect: NoSchedule
