@@ -24,6 +24,7 @@ certManager:
   dnsNames:
     - "*.nine-chronicles.com"
     - "*.planetarium.network"
+    - "*.9c.gg"
   issuer:
     email: devops@planetariumhq.com
 grafana:
