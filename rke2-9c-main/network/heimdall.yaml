@@ -19,7 +19,7 @@ global:
   planet: Heimdall
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 RKE2:
@@ -130,6 +130,11 @@ validator:
       value: "::ffff:13.124.239.97"
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
+    - name: IpRateLimiting__IpWhiteList__4
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -211,6 +216,11 @@ remoteHeadless:
       value: "::ffff:13.124.239.97"
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
+    - name: IpRateLimiting__IpWhiteList__4
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -462,7 +472,7 @@ jwtHeadless:
 
   host: "heimdall-rke2-jwt-rpc.nine-chronicles.com"
 
-  loadBalancerIP: "49.247.4.178"
+  loadBalancerIP: "49.247.14.87"
 
   ingress:
     enabled: true
