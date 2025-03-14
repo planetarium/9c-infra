@@ -9,15 +9,15 @@
       "dp.gql": ["http://odin-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api.9cscan.com"],
       "headless.gql": [
-        "https://odin-rpc-1.nine-chronicles.com/graphql",
-        "https://odin-rpc-2.nine-chronicles.com/graphql",
+        "https://odin-rke2-gql-1.nine-chronicles.com/graphql",
+        "https://odin-rke2-gql-2.nine-chronicles.com/graphql",
         "http://ash-nc-1.ninodes.com/graphql",
         "http://phx-nc-1.ninodes.com/graphql",
         "http://nld-nc-1.ninodes.com/graphql"
       ],
       "headless.grpc": [
-        "http://odin-rpc-1.nine-chronicles.com:31238",
-        "http://odin-rpc-2.nine-chronicles.com:31238",
+        "http://odin-rke2-rpc-1.nine-chronicles.com:31238",
+        "http://odin-rke2-rpc-2.nine-chronicles.com:31238",
         "http://ash-nc-1.ninodes.com:31238",
         "http://phx-nc-1.ninodes.com:31238",
         "http://nld-nc-1.ninodes.com:31238"
@@ -53,13 +53,11 @@
       "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-heimdall.9cscan.com"],
       "headless.gql": [
-        "https://heimdall-rpc-1.nine-chronicles.com/graphql",
-        "https://heimdall-rpc-2.nine-chronicles.com/graphql",
+        "https://heimdall-rke2-gql-1.nine-chronicles.com/graphql",
         "https://heimdall-rke2-gql-2.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://heimdall-rpc-1.nine-chronicles.com:31238",
-        "http://heimdall-rpc-2.nine-chronicles.com:31238",
+        "http://heimdall-rke2-rpc-1.nine-chronicles.com:31238",
         "http://heimdall-rke2-rpc-2.nine-chronicles.com:31238"
       ],
       "market.rest": ["https://api.9capi.com/marketProviderHeimdall"],
