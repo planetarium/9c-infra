@@ -16,14 +16,14 @@ spec:
       targetRevision: main
       helm:
         valueFiles:
-          - /gke-ninechronicles-internal/values.yaml
+          - /rke2-9c-internal/values.yaml
     - repoURL: https://github.com/planetarium/9c-infra.git
       path: charts/multiplanetary
       targetRevision: main
       helm:
         values: |-
-          clusterName: nine-chronicles-internal
+          clusterName: 9c-internal
           targetRevision: main
-          path: gke-ninechronicles-internal
+          path: rke2-9c-internal
           network:
-          - thor
+          - heimdall

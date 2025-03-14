@@ -495,6 +495,8 @@ jwtHeadless:
 
   host: ""
 
+  loadBalancerIP: ""
+
   ports:
     headless: 31234
     graphql: 80
@@ -765,23 +767,62 @@ arenaService:
   env: []
   envForWrite: []
 
+  ssh:
+    enabled: false
+
 seasonpass:
-  enabled: false
-  api: false
   image:
-    repository: planetariumhq/season-pass
-    pullPolicy: Always
-    tag: "git-64e044185d37f8fb994b0a9740e4655a686440c8"
-  nodeSelector: {}
-  env:
-    region: ""
-    gqlUrl: ""
-    currentPlanet: ""
-    dbUri: ""
-    sqsUrl: ""
-    arenaServiceJwtPublicKey: ""
-  serviceAccount:
-    roleArn: ""
+    tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"
+
+  api:
+    enabled: false
+    image:
+      repository: planetariumhq/season-pass-api
+      pullPolicy: Always
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
+
+  consumer:
+    enabled: false
+    image:
+      repository: planetariumhq/season-pass-consumer
+      pullPolicy: Always
+
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
+
+  tracker:
+    enabled: false
+    image:
+      repository: planetariumhq/season-pass-tracker
+      pullPolicy: Always
+
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
 
 volumePreloader:
   count: 0

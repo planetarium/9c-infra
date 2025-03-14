@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: rmq
+    app.kubernetes.io/instance: common-dbs
+  name: rmq
+  namespace: common-dbs
+spec:
+  replicas: 1
+  serviceName: rmq-service
+  selector:
+    matchLabels:
+      app: rmq
+  template:
+    metadata:
+      labels:
+        app: rmq
+    spec:
+      containers:
+        - name: rmq
+          image: rabbitmq:3.13.7-management
+          ports:
+            - containerPort: 5672
+              name: amqp
+            - containerPort: 15672
+              name: management
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: RMQ_USERNAME
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: RMQ_PASSWORD
+          volumeMounts:
+            - name: rmq-data
+              mountPath: /var/lib/rabbitmq
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: rmq-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: common-dbs-longhorn
+        volumeMode: Filesystem 

@@ -9,6 +9,8 @@ spec:
     privateKeySecretRef:
       name: cert-manager-letsencrypt-issuer-secret
     solvers:
+      - http01:
+          ingress: {}
       - dns01:
           route53:
             region: us-east-2

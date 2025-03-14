@@ -18,7 +18,12 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
 spec:
+  {{- if $.Values.seed.clusterLocal }}
+  type: ClusterIP
+  {{- else }}
+  type: LoadBalancer
   externalTrafficPolicy: Local
+  {{- end }}
   ports:
   - port: {{ $.Values.seed.ports.node }}
     targetPort: {{ $.Values.seed.ports.node }}
@@ -34,7 +39,6 @@ spec:
     name: gossip
   selector:
     app: tcp-seed-{{ $index }}
-  type: LoadBalancer
 ---
 {{ end }}
 
@@ -54,16 +58,21 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
-    {{- if and (index $.Values.remoteHeadless.hosts $idx) (not $.Values.remoteHeadless.ingress.enabled) }}
-    external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.remoteHeadless.hosts $idx }}
+    {{- with (index $.Values.remoteHeadless.hosts $idx) }}
+    {{- if or (not $.Values.remoteHeadless.ingress.enabled) ($.Values.remoteHeadless.ingress.hosts) }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
-  {{- if $.Values.remoteHeadless.ingress.enabled }}
+  {{- if and $.Values.remoteHeadless.ingress.enabled (not $.Values.remoteHeadless.ingress.hosts) }}
   type: ClusterIP
   {{- else }}
-  externalTrafficPolicy: Local
   type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.remoteHeadless.loadBalancerIPs $idx }}
+  {{- end }}
+  externalTrafficPolicy: Local
   {{- end }}
   ports:
   - name: graphql
@@ -343,11 +352,21 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
     {{- with $.Values.jwtHeadless.host }}
+    {{- if or (not $.Values.jwtHeadless.ingress.enabled) ($.Values.jwtHeadless.ingress.host) }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
+  {{- if and $.Values.jwtHeadless.ingress.enabled (not $.Values.jwtHeadless.ingress.hosts) }}
+  type: ClusterIP
+  {{- else }}
+  type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ $.Values.jwtHeadless.loadBalancerIP }}
+  {{- end }}
   externalTrafficPolicy: Local
+  {{- end }}
   ports:
   - name: graphql
     port: {{ $.Values.jwtHeadless.ports.graphql }}
@@ -364,6 +383,9 @@ spec:
   selector:
     app: jwt-headless
   type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.jwtHeadless.loadBalancerIP }}
+  {{- end }}
 
 ---
 {{ end }}
@@ -565,12 +587,13 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
-    {{- if index $.Values.validator.hosts $idx }}
-    external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.validator.hosts $idx }}
+    {{- with (index $.Values.validator.hosts $idx) }}
+    {{- if or (not $.Values.validator.ingress.enabled) ($.Values.validator.ingress.hosts) }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
+    {{- end }}
 spec:
-  externalTrafficPolicy: Local
   ports:
   - port: {{ $.Values.validator.ports.headless }}
     targetPort: {{ $.Values.validator.ports.headless }}
@@ -593,6 +616,10 @@ spec:
   selector:
     app: validator-{{ $index }}
   type: LoadBalancer
+  externalTrafficPolicy: Local
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.validator.loadBalancerIPs $idx }}
+  {{- end }}
 
 ---
 {{ end }}
@@ -771,7 +798,7 @@ spec:
 
 {{ end }}
 
-{{ if and .Values.seasonpass.enabled .Values.seasonpass.api }}
+{{ if .Values.seasonpass.api.enabled }}
 apiVersion: v1
 kind: Service
 metadata:

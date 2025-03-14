@@ -21,6 +21,27 @@ rollback_snapshot=${6:-"false"}
 complete_snapshot_reset=${7:-"false"}
 mainnet_snapshot_json_filename={{- if eq $.Values.global.networkType "Main" }}"latest.json"{{- else }}"mainnet_latest.json"{{- end }}
 
+function download_with_retry() {
+  local url=$1
+  local save_dir=$2
+  local output_file=$3
+
+  while true; do
+    echo "Downloading $url"
+
+    aria2c "$url" -d "$2" -o "$3" -j5 -x5 --continue=true
+    if [ ! -f "$save_dir/$output_file.aria2" ] && [ -f "$save_dir/$output_file" ]; then
+        echo "Download successful: $save_dir/$output_file"
+        return 0
+    fi
+
+    echo "Download failed (.aria2 file detected). Retrying in 10 seconds..."
+    rm -f "$save_dir/$output_file" "$save_dir/$output_file.aria2"
+    sleep 10
+  done
+}
+
+
 if [ $download_option = "true" ]
 then
   echo "Start download snapshot"
@@ -99,17 +120,19 @@ then
         snapshot_zip_url="$base_url/$snapshot_zip_filename"
         echo "$snapshot_zip_url"
 
-        aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+        #aria2c "$snapshot_zip_url" -d "$save_dir" -j10 -x10 --continue=true
+        download_with_retry "$snapshot_zip_url" "$save_dir" "$snapshot_zip_filename"
         echo "Unzipping $snapshot_zip_filename"
-        unzip -o "$snapshot_zip_filename" -d "$save_dir"
-        rm "$snapshot_zip_filename"
+        unzip -o "$save_dir/$snapshot_zip_filename" -d "$save_dir"
+        rm "$save_dir/$snapshot_zip_filename"
     done
 
     if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
       rm $save_dir/$mainnet_snapshot_json_filename
     fi
 
-    aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+    # aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+    download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
   }
 
   function download_unzip_full_snapshot() {
@@ -152,13 +175,15 @@ then
           snapshot_zip_url="$base_url/$snapshot_zip_filename"
           echo "$snapshot_zip_url"
 
-          aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+          #aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
+          download_with_retry "$snapshot_zip_url" "$save_dir" "$snapshot_zip_filename"
           echo "Unzipping $snapshot_zip_filename"
-          unzip -o "$snapshot_zip_filename" -d "$save_dir"
-          rm "$snapshot_zip_filename"
+          unzip -o "$save_dir/$snapshot_zip_filename" -d "$save_dir"
+          rm "$save_dir/$snapshot_zip_filename"
       done
 
-      aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+      #aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+      download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
   }
 
   if [ -f $save_dir/$mainnet_snapshot_json_filename ]
