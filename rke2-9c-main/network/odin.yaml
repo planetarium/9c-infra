@@ -212,6 +212,14 @@ remoteHeadless:
       - "odin-rke2-gql-2.nine-chronicles.com"
       - "odin-rke2-gql-3.nine-chronicles.com"
 
+  nodeSelector:
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: 1
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: 2
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: 3
+
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
       value: "true"
@@ -258,9 +266,6 @@ remoteHeadless:
 
   extraArgs:
     - --tx-quota-per-signer=1
-
-  nodeSelector:
-    node.kubernetes.io/network: odin
 
   resources:
     requests:
@@ -506,6 +511,10 @@ jwtHeadless:
     enabled: true
     host: "odin-rke2-jwt-gql.nine-chronicles.com"
 
+  nodeSelector:
+    node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: 4
+
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
   env:
@@ -548,9 +557,6 @@ jwtHeadless:
       key: dedicated
       operator: Equal
       value: remote-headless-test
-
-  nodeSelector:
-    node.kubernetes.io/network: odin
 
 blockIntervalNotifier:
   enabled: true
