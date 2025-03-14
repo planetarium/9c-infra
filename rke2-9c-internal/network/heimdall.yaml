@@ -227,7 +227,17 @@ arenaService:
     rankingDbNumber: "3"
 
 seasonpass:
-  enabled: true
-  api: true
-  serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+  api:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+
+  consumer:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+
+  tracker:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"

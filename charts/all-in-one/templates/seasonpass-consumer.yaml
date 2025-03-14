@@ -1,59 +1,63 @@
-{{- if $.Values.seasonpass.api.enabled }}
+{{- if $.Values.seasonpass.consumer.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.consumer.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-seasonpass-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-api
+    app: seasonpass-consumer
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-api
+  name: seasonpass-consumer
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-api
+      app: seasonpass-consumer
   template:
     metadata:
       labels:
-        app: seasonpass-api
+        app: seasonpass-consumer
     spec:
       containers:
           env:
-            - name: API_GQL_URL_MAP
+            - name: CONSUMER_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: CONSUMER_GQL_URL_MAP
               valueFrom:
                 secretKeyRef:
                   key: gql-url-dict
                   name: seasonpass-env
-            - name: API_PG_DSN
+            - name: CONSUMER_PG_DSN
               valueFrom:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: API_AMQP_DSN
+            - name: CONSUMER_AMQP_DSN
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: API_HEADLESS_JWT_SECRET
+            - name: CONSUMER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: jwt-token-secret
                   name: seasonpass-env
-            - name: API_WORKERS
-              valueFrom:
-                secretKeyRef:
-                  key: api-workers
-                  name: seasonpass-env
-            - name: API_TIMEOUT_KEEP_ALIVE
-              valueFrom:
-                secretKeyRef:
-                  key: api-timeout-keep-alive
-                  name: seasonpass-env
-            - name: API_HOST
-              value: "0.0.0.0"
-          image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
-          name: seasonpass-api
-      {{- with $.Values.seasonpass.api.nodeSelector }}
+          image: {{ $.Values.seasonpass.consumer.image.repository }}:{{ $.Values.seasonpass.consumer.image.tag }}
+          name: seasonpass-consumer
+      {{- with $.Values.seasonpass.consumer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
