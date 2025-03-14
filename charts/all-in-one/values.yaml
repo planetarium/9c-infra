@@ -492,6 +492,9 @@ jwtHeadless:
   extraArgs: []
   # - --key=val
 
+  ingress:
+    enabled: false
+
   useTurnServer: false
 
   env: []
