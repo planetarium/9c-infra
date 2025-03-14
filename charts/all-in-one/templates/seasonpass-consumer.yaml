@@ -55,7 +55,7 @@ spec:
                 secretKeyRef:
                   key: jwt-token-secret
                   name: seasonpass-env
-          image: {{ $.Values.seasonpass.consumer.image.repository }}:{{ $.Values.seasonpass.consumer.image.tag }}
+          image: {{ $.Values.seasonpass.consumer.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-consumer
       {{- with $.Values.seasonpass.consumer.nodeSelector }}
       nodeSelector:
