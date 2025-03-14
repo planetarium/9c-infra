@@ -46,7 +46,11 @@ prometheus:
           - labels:
               group: odin-validator
             targets:
-              - validator-1.odin.svc.cluster.local:80
+              - validator-5.odin.svc.cluster.local:80
+          - labels:
+              group: odin-jwt
+            targets:
+              - jwt-headless.odin.svc.cluster.local:80
           - labels:
               group: heimdall-rpc
             targets:
@@ -55,4 +59,8 @@ prometheus:
           - labels:
               group: heimdall-validator
             targets:
-              - validator-1.heimdall.svc.cluster.local:80
+              - validator-5.heimdall.svc.cluster.local:80
+          - labels:
+              group: heimdall-jwt
+            targets:
+              - jwt-headless.heimdall.svc.cluster.local:80
