@@ -71,10 +71,8 @@ spec:
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.remoteHeadless.loadBalancerIPs $idx }}
-  externalTrafficPolicy: Cluster
-  {{- else }}
-  externalTrafficPolicy: Local
   {{- end }}
+  externalTrafficPolicy: Local
   {{- end }}
   ports:
   - name: graphql
@@ -366,10 +364,8 @@ spec:
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ $.Values.jwtHeadless.loadBalancerIP }}
-  externalTrafficPolicy: Cluster
-  {{- else }}
-  externalTrafficPolicy: Local
   {{- end }}
+  externalTrafficPolicy: Local
   {{- end }}
   ports:
   - name: graphql
@@ -618,11 +614,9 @@ spec:
   selector:
     app: validator-{{ $index }}
   type: LoadBalancer
+  externalTrafficPolicy: Local
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.validator.loadBalancerIPs $idx }}
-  externalTrafficPolicy: Cluster
-  {{- else }}
-  externalTrafficPolicy: Local
   {{- end }}
 
 ---
