@@ -29,6 +29,7 @@ spec:
         app: seasonpass-consumer
     spec:
       containers:
+        - name: seasonpass-consumer
           env:
             - name: CONSUMER_REGION_NAME
               valueFrom:

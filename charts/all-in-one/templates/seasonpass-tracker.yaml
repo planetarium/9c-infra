@@ -29,6 +29,7 @@ spec:
         app: seasonpass-tracker
     spec:
       containers:
+        - name: seasonpass-tracker
           env:
             - name: TRACKER_GQL_URL
               valueFrom:

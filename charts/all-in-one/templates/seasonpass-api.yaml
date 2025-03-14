@@ -18,6 +18,7 @@ spec:
         app: seasonpass-api
     spec:
       containers:
+        - name: seasonpass-api
           env:
             - name: API_GQL_URL_MAP
               valueFrom:
