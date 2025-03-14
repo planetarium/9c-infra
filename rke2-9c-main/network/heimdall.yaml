@@ -198,11 +198,11 @@ remoteHeadless:
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: 1
+      node.kubernetes.io/node-index: '1'
     - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: 2
+      node.kubernetes.io/node-index: '2'
     - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: 3
+      node.kubernetes.io/node-index: '3'
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -490,7 +490,7 @@ jwtHeadless:
 
   nodeSelector:
     node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: 4
+    node.kubernetes.io/node-index: '4'
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
