@@ -798,7 +798,7 @@ spec:
 
 {{ end }}
 
-{{ if and .Values.seasonpass.enabled .Values.seasonpass.api }}
+{{ if .Values.seasonpass.api.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
