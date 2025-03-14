@@ -41,12 +41,10 @@ gateway:
   enabled: false
   services:
     - name: remote-headless
-      hostname: heimdall-rpc-rke2.nine-chronicles.com
+      hostname: heimdall-rke2-gql.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
         - name: remote-headless-2
-        - name: remote-headless-3
-        - name: main-full-state
       protocols:
         - web
         - grpc
@@ -110,7 +108,7 @@ fullState:
   enabled: false
 
 validator:
-  count: 0
+  count: 1
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
@@ -160,7 +158,21 @@ validator:
     - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
 
   hosts:
-    - "heimdall-validator-1-rke2.nine-chronicles.com"
+    - "heimdall-rke2-validator-1-rpc.nine-chronicles.com"
+
+  loadBalancerIPs:
+    - "49.247.14.80"
+
+  ingress:
+    enabled: true
+    hosts:
+      - "heimdall-rke2-validator-1-gql.nine-chronicles.com"
+
+  nodeSelector:
+    node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '3'
+
+  storePath: "/data/headless"
 
   storage:
     data: 300Gi
@@ -171,10 +183,8 @@ validator:
       operator: Equal
       value: validator-test
 
-  nodeSelector:
-
 remoteHeadless:
-  count: 3
+  count: 2
   replicas: 1
 
   useTurnServer: false
@@ -182,27 +192,22 @@ remoteHeadless:
   hosts:
     - "heimdall-rke2-rpc-1.nine-chronicles.com"
     - "heimdall-rke2-rpc-2.nine-chronicles.com"
-    - "heimdall-rke2-rpc-3.nine-chronicles.com"
 
   loadBalancerIPs:
     - 49.247.4.178
     - 49.247.4.184
-    - 49.247.14.80
 
   ingress:
     enabled: true
     hosts:
       - "heimdall-rke2-gql-1.nine-chronicles.com"
       - "heimdall-rke2-gql-2.nine-chronicles.com"
-      - "heimdall-rke2-gql-3.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '1'
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '2'
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '3'
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting

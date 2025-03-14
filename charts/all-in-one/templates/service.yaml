@@ -587,9 +587,11 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
-    {{- if index $.Values.validator.hosts $idx }}
-    external-dns.alpha.kubernetes.io/hostname: {{ index $.Values.validator.hosts $idx }}
+    {{- with (index $.Values.validator.hosts $idx) }}
+    {{- if or (not $.Values.validator.ingress.enabled) ($.Values.validator.ingress.hosts) }}
+    external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
+    {{- end }}
     {{- end }}
 spec:
   ports:
