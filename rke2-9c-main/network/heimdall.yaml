@@ -175,7 +175,8 @@ validator:
   storePath: "/data/headless"
 
   storage:
-    data: 300Gi
+    volumeNames:
+      - "remote-headless-data-3-remote-headless-3-0"
 
   tolerations:
     - effect: NoSchedule
