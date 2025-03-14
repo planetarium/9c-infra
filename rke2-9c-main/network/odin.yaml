@@ -44,7 +44,9 @@ gateway:
   enabled: false
   services:
     - name: remote-headless
-      hostname: odin-rke2-gql.nine-chronicles.com
+      hostnames:
+        - odin-rpc.nine-chronicles.com
+        - odin-rke2-gql.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
         - name: remote-headless-2
@@ -175,7 +177,7 @@ validator:
   ingress:
     enabled: true
     hosts:
-      - "odin-rke2-validator-1-gql.nine-chronicles.com"
+      - "odin-validator-1.nine-chronicles.com,odin-validator-5.nine-chronicles.com,odin-rke2-validator-1-gql.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: odin
@@ -217,8 +219,8 @@ remoteHeadless:
   ingress:
     enabled: true
     hosts:
-      - "odin-rke2-gql-1.nine-chronicles.com"
-      - "odin-rke2-gql-2.nine-chronicles.com"
+      - "odin-rpc-1.nine-chronicles.com,odin-rke2-gql-1.nine-chronicles.com"
+      - "odin-rpc-2.nine-chronicles.com,odin-rke2-gql-2.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: odin
@@ -515,7 +517,7 @@ jwtHeadless:
 
   ingress:
     enabled: true
-    host: "odin-rke2-jwt-gql.nine-chronicles.com"
+    host: "odin-jwt.nine-chronicles.com,odin-rke2-jwt-gql.nine-chronicles.com"
 
   nodeSelector:
     node.kubernetes.io/network: odin

@@ -41,7 +41,9 @@ gateway:
   enabled: false
   services:
     - name: remote-headless
-      hostname: heimdall-rke2-gql.nine-chronicles.com
+      hostnames:
+        - heimdall-rpc.nine-chronicles.com
+        - heimdall-rke2-gql.nine-chronicles.com
       backendRefs:
         - name: remote-headless-1
         - name: remote-headless-2
@@ -166,7 +168,7 @@ validator:
   ingress:
     enabled: true
     hosts:
-      - "heimdall-rke2-validator-1-gql.nine-chronicles.com"
+      - "heimdall-validator-1.nine-chronicles.com,heimdall-rke2-validator-1-gql.nine-chronicles.com"
 
   nodeSelector:
     node.kubernetes.io/network: heimdall
@@ -201,8 +203,8 @@ remoteHeadless:
   ingress:
     enabled: true
     hosts:
-      - "heimdall-rke2-gql-1.nine-chronicles.com"
-      - "heimdall-rke2-gql-2.nine-chronicles.com"
+      - "heimdall-rpc-1.nine-chronicles.com,heimdall-rke2-gql-1.nine-chronicles.com"
+      - "heimdall-rpc-2.nine-chronicles.com,heimdall-rke2-gql-2.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
@@ -492,7 +494,7 @@ jwtHeadless:
 
   ingress:
     enabled: true
-    host: "heimdall-rke2-jwt-gql.nine-chronicles.com"
+    host: "heimdall-jwt.nine-chronicles.com,heimdall-rke2-jwt-gql.nine-chronicles.com"
 
   nodeSelector:
     node.kubernetes.io/network: heimdall
