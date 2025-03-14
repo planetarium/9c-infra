@@ -13,16 +13,16 @@ spec:
   sources:
     - repoURL: https://github.com/planetarium/9c-infra
       path: common/bootstrap-v2
-      targetRevision: rke2
+      targetRevision: main
       helm:
         valueFiles:
           - /rke2-9c-main/values.yaml
     - repoURL: https://github.com/planetarium/9c-infra.git
       path: charts/multiplanetary
-      targetRevision: rke2
+      targetRevision: main
       helm:
         values: |-
-          targetRevision: rke2
+          targetRevision: main
           path: rke2-9c-main
           network:
           - odin

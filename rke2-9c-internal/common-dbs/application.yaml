@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: rke2
+    targetRevision: main
     path: rke2-9c-internal/common-dbs
   destination:
     server: https://kubernetes.default.svc
