@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   key: gql-url
                   name: seasonpass-env
+            - name: TRACKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: seasonpass-env
             - name: TRACKER_PLANET_STR
               valueFrom:
                 secretKeyRef:

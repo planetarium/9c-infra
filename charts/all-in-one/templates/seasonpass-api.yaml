@@ -51,7 +51,7 @@ spec:
                   key: api-timeout-keep-alive
                   name: seasonpass-env
             - name: API_HOST
-              value: "0.0.0.0"
+              value: "127.0.0.1"
           image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-api
       {{- with $.Values.seasonpass.api.nodeSelector }}
