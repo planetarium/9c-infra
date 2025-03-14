@@ -157,6 +157,9 @@ validator:
   extraArgs: []
   # - --key=val
 
+  ingress:
+    enabled: false
+
   # private keys if not using External Secrets
   privateKeys: []
   # - "<private key>"
