@@ -761,14 +761,10 @@ stateproxy:
 
 arenaService:
   enabled: false
-  rwMode: false
 
   rpcHost: ""
   redisConnectionString: ""
   redisDatabase: "0"
-  nodeSelector:
-    read: {}
-    write: {}
 
   env: []
   envForWrite: []
