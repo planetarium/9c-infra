@@ -272,6 +272,9 @@ spec:
         {{- end }}
       {{- with $.Values.jwtHeadless.nodeSelector }}
       nodeSelector:
+      {{- if kindIs "slice" . }}
+        {{- toYaml (index . $idx) | nindent 8 }}
+      {{- else }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with $.Values.jwtHeadless.tolerations }}
