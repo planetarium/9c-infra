@@ -217,6 +217,8 @@ validator:
   consensusSeedStrings:
   - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
+  storePath: "/data/headless"
+
   hosts:
   - "heimdall-validator-1.nine-chronicles.com"
 
