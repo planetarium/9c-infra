@@ -235,7 +235,7 @@ validator:
 
 remoteHeadless:
   count: 3
-  replicas: 1
+  replicas: 0
 
   useTurnServer: false
 
