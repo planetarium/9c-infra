@@ -221,7 +221,8 @@ validator:
   - "heimdall-validator-1.nine-chronicles.com"
 
   storage:
-    data: 300Gi
+    volumeNames:
+      - "remote-headless-data-1-remote-headless-1-0"
 
   tolerations:
   - effect: NoSchedule
@@ -234,7 +235,7 @@ validator:
 
 remoteHeadless:
   count: 3
-  replicas: 1
+  replicas: 0
 
   useTurnServer: false
 
