@@ -223,6 +223,9 @@ validator:
   storage:
     data: 300Gi
 
+    volumeNames:
+      - "remote-headless-data-1-remote-headless-1-0"
+
   tolerations:
   - effect: NoSchedule
     key: dedicated
