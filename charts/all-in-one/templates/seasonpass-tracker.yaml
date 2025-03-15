@@ -29,47 +29,71 @@ spec:
         app: seasonpass-tracker
     spec:
       containers:
-        - name: seasonpass-tracker
+        - args:
+            - python -m worker.tracker.run
+          command:
+            - /bin/sh
+            - -c
           env:
-            - name: TRACKER_GQL_URL
+            - name: REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: GQL_URL
               valueFrom:
                 secretKeyRef:
                   key: gql-url
                   name: seasonpass-env
-            - name: TRACKER_GQL_URL_MAP
+            - name: CURRENT_PLANET
               valueFrom:
                 secretKeyRef:
-                  key: gql-url-dict
+                  key: current-planet
                   name: seasonpass-env
-            - name: TRACKER_PLANET_STR
-              valueFrom:
-                secretKeyRef:
-                  key: planet-str
-                  name: seasonpass-env
-            - name: TRACKER_PG_DSN
+            - name: DB_URI
               valueFrom:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: TRACKER_AMQP_DSN
+            - name: SQS_URL
               valueFrom:
                 secretKeyRef:
-                  key: rmq-url
+                  key: sqs-url
                   name: seasonpass-env
-            - name: TRACKER_ARENA_SERVICE_JWT_PUBLIC_KEY
+            - name: ARENA_SERVICE_JWT_PUBLIC_KEY
               valueFrom:
                 secretKeyRef:
                   key: arena-service-jwt-public-key
                   name: seasonpass-env
-            - name: TRACKER_START_BLOCK_INDEX
+            - name: PLANET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: current-planet
+                  name: seasonpass-env
+            - name: SECRET_ARN
+              valueFrom:
+                secretKeyRef:
+                  key: secret-arn
+                  name: seasonpass-env
+            - name: START_BLOCK_INDEX
               valueFrom:
                 secretKeyRef:
                   key: start-block-index
                   name: seasonpass-env
-            - name: TRACKER_HEADLESS_JWT_SECRET
+            - name: HEADLESS_GQL_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: jwt-token-secret
+                  key: jwt-secret
+                  name: seasonpass-env
+            - name: ADVENTURE_BOSS_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: adv-boss-sqs-url
+                  name: seasonpass-env
+            - name: WORLD_CLEAR_SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: world-clear-sqs-url
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
