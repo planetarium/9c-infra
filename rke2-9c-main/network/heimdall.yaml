@@ -497,8 +497,8 @@ jwtHeadless:
     host: "heimdall-jwt.nine-chronicles.com,heimdall-rke2-jwt-gql.nine-chronicles.com"
 
   nodeSelector:
-    node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '4'
+    - node.kubernetes.io/network: heimdall
+    - node.kubernetes.io/node-index: '4'
 
   env:
     - name: IpRateLimiting__EnableEndpointRateLimiting
