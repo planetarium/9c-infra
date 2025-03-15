@@ -520,8 +520,8 @@ jwtHeadless:
     host: "odin-jwt.nine-chronicles.com,odin-rke2-jwt-gql.nine-chronicles.com"
 
   nodeSelector:
-    node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '4'
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: '4'
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
