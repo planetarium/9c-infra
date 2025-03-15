@@ -105,7 +105,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       restartPolicy: Always
-      {{- with $.Values.remoteHeadless.nodeSelector }}
+      {{- with $.Values.arenaService.nodeSelector }}
       nodeSelector:
       {{- if kindIs "slice" . }}
         {{- toYaml (index . $idx) | nindent 8 }}

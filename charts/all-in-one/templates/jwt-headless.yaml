@@ -270,7 +270,7 @@ spec:
         {{- with $.Values.jwtHeadless.env }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
-      {{- with $.Values.remoteHeadless.nodeSelector }}
+      {{- with $.Values.jwtHeadless.nodeSelector }}
       nodeSelector:
       {{- if kindIs "slice" . }}
         {{- toYaml (index . $idx) | nindent 8 }}
