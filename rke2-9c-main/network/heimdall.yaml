@@ -564,11 +564,8 @@ arenaService:
   enabled: true
 
   nodeSelector:
-    read:
-      nodeSelector:
-        node.kubernetes.io/network: odin
-        node.kubernetes.io/node-index: '4'
-    write:
+    node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: '4'
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
