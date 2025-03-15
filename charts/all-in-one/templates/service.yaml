@@ -382,10 +382,6 @@ spec:
     targetPort: {{ $.Values.jwtHeadless.ports.graphql }}
   selector:
     app: jwt-headless
-  type: LoadBalancer
-  {{- if eq $.Values.provider "RKE2" }}
-  loadBalancerIP: {{ index $.Values.jwtHeadless.loadBalancerIP }}
-  {{- end }}
 
 ---
 {{ end }}
