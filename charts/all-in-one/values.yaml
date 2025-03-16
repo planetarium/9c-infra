@@ -792,10 +792,10 @@ seasonpass:
     serviceAccount:
       roleArn: ""
 
-  consumer:
+  worker:
     enabled: false
     image:
-      repository: planetariumhq/season-pass-consumer
+      repository: planetariumhq/season-pass-worker
       pullPolicy: Always
 
     nodeSelector: {}
