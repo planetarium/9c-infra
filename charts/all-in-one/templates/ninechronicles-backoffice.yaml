@@ -104,6 +104,66 @@ spec:
                 secretKeyRef:
                   key: Authentication__Google__ClientSecret
                   name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_ODIN_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_ODIN_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_ODIN_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_ODIN_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_HEIMDALL_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_HEIMDALL_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_HEIMDALL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_HEIMDALL_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_THOR_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_THOR_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_THOR_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_THOR_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_ODIN_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_ODIN_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_ODIN_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_ODIN_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_HEIMDALL_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_HEIMDALL_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_HEIMDALL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_HEIMDALL_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_THOR_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_THOR_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAIN_THOR_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAIN_THOR_URL
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
