@@ -30,12 +30,12 @@ spec:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: API_BROKER_URL
+            - name: API_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: API_RESULT_BACKEND
+            - name: API_CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: redis-url
