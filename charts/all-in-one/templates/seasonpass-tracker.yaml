@@ -51,12 +51,12 @@ spec:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: TRACKER_BROKER_URL
+            - name: TRACKER_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: TRACKER_RESULT_BACKEND
+            - name: TRACKER_CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: redis-url
