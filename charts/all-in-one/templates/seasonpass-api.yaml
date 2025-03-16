@@ -30,10 +30,15 @@ spec:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: API_AMQP_DSN
+            - name: API_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
+                  name: seasonpass-env
+            - name: API_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
                   name: seasonpass-env
             - name: API_HEADLESS_JWT_SECRET
               valueFrom:
