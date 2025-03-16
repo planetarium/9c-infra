@@ -1,9 +1,9 @@
-{{- if $.Values.seasonpass.consumer.enabled }}
+{{- if $.Values.seasonpass.worker.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.consumer.serviceAccount.roleArn }}
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.worker.serviceAccount.roleArn }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   name: {{ $.Release.Name }}-seasonpass-iam-role
@@ -14,51 +14,56 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-consumer
+    app: seasonpass-worker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-consumer
+  name: seasonpass-worker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-consumer
+      app: seasonpass-worker
   template:
     metadata:
       labels:
-        app: seasonpass-consumer
+        app: seasonpass-worker
     spec:
       containers:
-        - name: seasonpass-consumer
+        - name: seasonpass-worker
           env:
-            - name: CONSUMER_REGION_NAME
+            - name: WORKER_REGION_NAME
               valueFrom:
                 secretKeyRef:
                   key: region
                   name: seasonpass-env
-            - name: CONSUMER_GQL_URL_MAP
+            - name: WORKER_GQL_URL_MAP
               valueFrom:
                 secretKeyRef:
                   key: gql-url-dict
                   name: seasonpass-env
-            - name: CONSUMER_PG_DSN
+            - name: WORKER_PG_DSN
               valueFrom:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: CONSUMER_AMQP_DSN
+            - name: WORKER_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: CONSUMER_HEADLESS_JWT_SECRET
+            - name: WORKER_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: WORKER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: jwt-token-secret
                   name: seasonpass-env
-          image: {{ $.Values.seasonpass.consumer.image.repository }}:{{ $.Values.seasonpass.image.tag }}
-          name: seasonpass-consumer
-      {{- with $.Values.seasonpass.consumer.nodeSelector }}
+          image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          name: seasonpass-worker
+      {{- with $.Values.seasonpass.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
