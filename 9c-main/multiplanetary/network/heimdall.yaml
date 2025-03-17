@@ -116,6 +116,11 @@ fullState:
 
   host: "heimdall-full-state.nine-chronicles.com"
 
+  storePath: "/data/data-provider"
+
+  storage:
+    volumeName: "data-provider-write-data-data-provider-write-0"
+
   extraArgs:
   - --no-reduce-store
   - --tx-quota-per-signer=1
@@ -332,9 +337,9 @@ dataProviderDailyMetric:
       memory: 10Gi
 
 dataProvider:
-  enabled: true
-  rwMode: true
-  render: true
+  enabled: false
+  rwMode: false
+  render: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
