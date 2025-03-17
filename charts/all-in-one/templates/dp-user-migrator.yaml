@@ -347,8 +347,13 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- if eq $.Values.provider "AWS" }}
     volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
     volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    {{- else if eq $.Values.provider "RKE2" }}
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+    {{- end }}
 spec:
   accessModes:
     - ReadWriteOnce
