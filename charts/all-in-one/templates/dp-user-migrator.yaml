@@ -327,8 +327,8 @@ spec:
             name: {{ $.Release.Name }}-snapshot-script-partition
           - configMap:
               defaultMode: 448
-              name: reset-snapshot-script
-            name: reset-snapshot-script
+              name: {{ $.Release.Name }}-download-snapshot-script
+            name: download-snapshot-script
           - name: dp-user-migrator-volume
             persistentVolumeClaim:
               claimName: dp-user-migrator-volume
