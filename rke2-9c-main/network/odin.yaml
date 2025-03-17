@@ -137,8 +137,10 @@ validator:
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
     - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:49.247.14.88"
+      value: 10.42.0.0/15
     - name: IpRateLimiting__IpWhiteList__5
+      value: '::ffff:49.247.14.88'
+    - name: IpRateLimiting__IpWhiteList__6
       valueFrom:
         fieldRef:
           apiVersion: v1
@@ -252,8 +254,10 @@ remoteHeadless:
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
     - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:49.247.14.88"
+      value: 10.42.0.0/15
     - name: IpRateLimiting__IpWhiteList__5
+      value: '::ffff:49.247.14.88'
+    - name: IpRateLimiting__IpWhiteList__6
       valueFrom:
         fieldRef:
           apiVersion: v1
