@@ -355,7 +355,12 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.dataProviderDataMigrator.storage }}
+  {{- if eq $.Values.provider "AWS" }}
   storageClassName: {{ $.Release.Name }}-gp3
+  {{- else if eq $.Values.provider "RKE2" }}
+  storageClassName: {{ $.Release.Name }}-longhorn
+  {{- end }}
   volumeMode: Filesystem
+  {{- end }}
 
 {{ end }}
