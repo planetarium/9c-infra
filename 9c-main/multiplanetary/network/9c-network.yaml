@@ -285,10 +285,10 @@ dataProviderDailyMetric:
       memory: 56Gi
 
 dataProvider:
-  enabled: true
+  enabled: false
 
-  rwMode: true
-  render: true
+  rwMode: false
+  render: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
@@ -357,6 +357,11 @@ fullState:
   useTurnServer: false
 
   host: "odin-full-state.nine-chronicles.com"
+
+  storePath: "/data/headless"
+
+  storage:
+    volumeName: "volume-rotator-1"
 
   extraArgs:
   - --no-reduce-store

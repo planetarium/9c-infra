@@ -89,7 +89,7 @@ spec:
         - --port={{ $.Values.fullState.ports.headless }}
         - --no-miner
         - --store-type=rocksdb
-        - --store-path=/data/full-state
+        - --store-path={{ $.Values.fullState.storePath | default "/data/full-state" }}
         {{- if $.Values.fullState.useTurnServer }}
         {{- range $.Values.global.iceServers }}
         - --ice-server={{ . }}
