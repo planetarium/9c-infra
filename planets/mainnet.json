@@ -20,7 +20,7 @@
         "http://phx-nc-1.ninodes.com:31238",
         "http://nld-nc-1.ninodes.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderOdin"],
+      "market.rest": ["https://odin-market.9c.gg"],
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
       "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
       "arena.rest": [
