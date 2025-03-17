@@ -361,6 +361,5 @@ spec:
   storageClassName: {{ $.Release.Name }}-longhorn
   {{- end }}
   volumeMode: Filesystem
-  {{- end }}
 
 {{ end }}
