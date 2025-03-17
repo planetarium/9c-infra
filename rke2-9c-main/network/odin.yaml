@@ -137,7 +137,7 @@ validator:
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
     - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:10.42.0.0"
+      value: "::ffff:49.247.14.88"
     - name: IpRateLimiting__IpWhiteList__5
       valueFrom:
         fieldRef:
@@ -252,7 +252,7 @@ remoteHeadless:
     - name: IpRateLimiting__IpWhiteList__3
       value: "::ffff:118.131.110.197"
     - name: IpRateLimiting__IpWhiteList__4
-      value: "::ffff:10.42.0.0"
+      value: "::ffff:49.247.14.88"
     - name: IpRateLimiting__IpWhiteList__5
       valueFrom:
         fieldRef:
