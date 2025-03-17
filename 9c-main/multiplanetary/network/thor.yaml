@@ -342,9 +342,9 @@ dataProviderDailyMetric:
 
 dataProvider:
 
-  enabled: true
-  rwMode: true
-  render: true
+  enabled: false
+  rwMode: false
+  render: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: thor-2c_spot
