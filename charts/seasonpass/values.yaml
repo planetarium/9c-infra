@@ -1,3 +1,8 @@
+externalSecret:
+  enabled: false
+  prefix: ""
+  separator: /
+  provider: ""
 
 seasonpass:
   image:
