@@ -18,7 +18,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-f7d32ce4672567ff8dd7fef36bab8dc1d0a5e5bc"
+    tag: "git-7a0f63a65b0888e9c61c9dca4de391a8dda80626"
 
   api:
     enabled: true
@@ -27,6 +27,8 @@ seasonpass:
     enabled: true
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
+    flower:
+      enabled: true
 
   tracker:
     enabled: true
