@@ -1,3 +1,7 @@
+global:
+  service:
+    annotations: {}
+
 externalSecret:
   enabled: false
   prefix: ""
