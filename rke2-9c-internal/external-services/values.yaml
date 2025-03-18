@@ -9,7 +9,7 @@ RKE2:
 externalSecret:
   enabled: true
   provider: AWS
-  prefix: "9c-internal-v2/seasonpass"
+  prefix: "9c-internal-v2/external-services"
 
 gateway:
   enabled: false
