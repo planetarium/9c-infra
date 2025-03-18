@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 9c-seasonpass
+  name: 9c-external-services
   namespace: argocd
 spec:
   project: default
