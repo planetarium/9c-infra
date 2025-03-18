@@ -57,6 +57,8 @@ seasonpass:
       arenaServiceJwtPublicKey: ""
     serviceAccount:
       roleArn: ""
+    flower:
+      enabled: false
 
   tracker:
     enabled: false

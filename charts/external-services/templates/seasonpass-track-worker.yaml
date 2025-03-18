@@ -1,0 +1,83 @@
+{{- if $.Values.seasonpass.worker.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.worker.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-seasonpass-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-track-worker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-track-worker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-track-worker
+  template:
+    metadata:
+      labels:
+        app: seasonpass-track-worker
+    spec:
+      containers:
+        - name: seasonpass-track-worker
+          args:
+            - celery -A app.celery_app worker --loglevel=info -Q tracker_queue -n tracker_worker@%h
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: WORKER_KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: seasonpass-env
+            - name: WORKER_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: WORKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: seasonpass-env
+            - name: WORKER_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: WORKER_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: seasonpass-env
+            - name: WORKER_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: WORKER_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-token-secret
+                  name: seasonpass-env
+          image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          name: seasonpass-track-worker
+      {{- with $.Values.seasonpass.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
+{{- end }}
