@@ -18,7 +18,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-c9ec74ccb4cc818acb3e14acc5a8d5fcf05b80be"
+    tag: "git-74e2465819c5f49fa6c05c0f8a7da6df668f5459"
 
   api:
     enabled: true
