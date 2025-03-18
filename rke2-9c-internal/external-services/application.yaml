@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: test-seasonpass
-    path: charts/seasonpass
+    path: charts/external-services
     helm:
       valueFiles:
-        - ../../rke2-9c-internal/seasonpass/values.yaml
+        - ../../rke2-9c-internal/external-services/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: 9c-seasonpass
+    namespace: 9c-external-services
