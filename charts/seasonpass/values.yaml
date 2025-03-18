@@ -4,6 +4,19 @@ externalSecret:
   separator: /
   provider: ""
 
+gateway:
+  enabled: false
+  trustedIPs:
+  - 10.0.0.0/8
+  - 172.0.0.0/8
+  ports:
+    grpc:
+      kind: GRPCRoute
+      port: 31238
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
+
 seasonpass:
   image:
     tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"

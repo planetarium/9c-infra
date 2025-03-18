@@ -1,3 +1,6 @@
+clusterName: 9c-internal
+provider: RKE2
+
 RKE2:
   loadBalancerIPs:
     - 49.247.14.86/32
