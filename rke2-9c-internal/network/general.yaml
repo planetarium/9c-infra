@@ -44,4 +44,4 @@ arenaService:
 
 seasonpass:
   image:
-    tag: "git-7eb7ee6e0da6fada444f3fa82516e664598fc958"
+    tag: "git-f7d32ce4672567ff8dd7fef36bab8dc1d0a5e5bc"
