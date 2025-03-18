@@ -1,9 +1,6 @@
 clusterName: 9c-internal
 provider: RKE2
 
-RKE2:
-  loadBalancerIPs: []
-
 externalSecret:
   enabled: true
   provider: AWS
