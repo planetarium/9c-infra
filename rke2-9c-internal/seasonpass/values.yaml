@@ -1,0 +1,33 @@
+RKE2:
+  loadBalancerIPs:
+    - 49.247.14.86/32
+    - 49.247.14.84/32
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-internal-v2/seasonpass"
+
+gateway:
+  enabled: false
+  services:
+  - name: seasonpass-api-service
+    hostnames:
+    - seasonpass-internal-rke2.9c.gg
+
+volumeReclaimPolicy: "Retain"
+
+seasonpass:
+  image:
+    tag: "git-f7d32ce4672567ff8dd7fef36bab8dc1d0a5e5bc"
+
+  api:
+    enabled: true
+
+  worker:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
+
+  tracker:
+    enabled: true
