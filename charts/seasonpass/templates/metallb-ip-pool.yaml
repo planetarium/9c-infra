@@ -1,0 +1,15 @@
+{{- if eq $.Values.provider "RKE2" }}
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ .Release.Name }}-rke2-ip-pool
+  namespace: metallb
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  autoAssign: false
+  addresses:
+    {{- range .Values.RKE2.loadBalancerIPs }}
+    - {{ . }}
+    {{- end }}
+{{- end }}
