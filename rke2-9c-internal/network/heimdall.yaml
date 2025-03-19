@@ -221,3 +221,6 @@ arenaService:
     port: "6379"
     hangfireDbNumber: "2"
     rankingDbNumber: "3"
+
+  ssh:
+    enabled: false
