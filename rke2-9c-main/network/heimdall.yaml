@@ -28,6 +28,7 @@ RKE2:
     - 49.247.4.184/32
     - 49.247.14.80/32
     - 49.247.14.87/32
+    - 115.68.194.131/32
 
 externalSecret:
   enabled: true
@@ -201,7 +202,7 @@ remoteHeadless:
     - "heimdall-rke2-rpc-2.nine-chronicles.com"
 
   loadBalancerIPs:
-    - 49.247.4.178
+    - 115.68.194.131
     - 49.247.4.184
 
   ingress:
@@ -213,6 +214,7 @@ remoteHeadless:
   nodeSelector:
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '1'
+      kubernetes.io/hostname: 9c-main-heimdall-1
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '2'
 
@@ -273,7 +275,7 @@ remoteHeadless:
       memory: 25Gi
 
   storage:
-    data: 300Gi
+    data: 290Gi
 
   tolerations:
     - effect: NoSchedule
