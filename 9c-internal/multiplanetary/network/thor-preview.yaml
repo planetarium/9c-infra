@@ -281,8 +281,7 @@ arenaService:
   rwMode: false
 
   nodeSelector:
-    read:
-      eks.amazonaws.com/nodegroup: thor-preview-spot_2c
+    eks.amazonaws.com/nodegroup: thor-preview-spot_2c
 
   env:
     - name: Worker

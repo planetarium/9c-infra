@@ -219,8 +219,7 @@ arenaService:
   enabled: true
 
   nodeSelector:
-    read:
-      node.kubernetes.io/provisioner: cloudv
+    node.kubernetes.io/provisioner: cloudv
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 

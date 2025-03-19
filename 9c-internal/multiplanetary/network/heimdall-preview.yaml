@@ -324,8 +324,7 @@ arenaService:
     enabled: true
 
   nodeSelector:
-    read:
-      eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
+    eks.amazonaws.com/nodegroup: heimdall-preview-spot_2c
 
   env:
   - name: Worker

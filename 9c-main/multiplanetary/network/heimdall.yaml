@@ -702,10 +702,7 @@ arenaService:
   enabled: false
 
   nodeSelector:
-    read:
-      eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
-    write:
-      eks.amazonaws.com/nodegroup: heimdall-m7g_xl_2c
+    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
