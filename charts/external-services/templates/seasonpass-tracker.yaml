@@ -64,7 +64,7 @@ spec:
             - name: TRACKER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: jwt-token-secret
+                  key: headless-jwt-token
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           name: seasonpass-tracker
