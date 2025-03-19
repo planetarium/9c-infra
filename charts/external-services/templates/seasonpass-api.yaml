@@ -40,10 +40,15 @@ spec:
                 secretKeyRef:
                   key: redis-url
                   name: seasonpass-env
+            - name: API_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: seasonpass-env
             - name: API_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: jwt-token-secret
+                  key: headless-jwt-token
                   name: seasonpass-env
             - name: API_WORKERS
               valueFrom:
