@@ -31,20 +31,10 @@ spec:
       containers:
         - name: seasonpass-tracker
           env:
-            - name: TRACKER_GQL_URL
-              valueFrom:
-                secretKeyRef:
-                  key: gql-url
-                  name: seasonpass-env
             - name: TRACKER_GQL_URL_MAP
               valueFrom:
                 secretKeyRef:
                   key: gql-url-dict
-                  name: seasonpass-env
-            - name: TRACKER_PLANET_STR
-              valueFrom:
-                secretKeyRef:
-                  key: planet-str
                   name: seasonpass-env
             - name: TRACKER_PG_DSN
               valueFrom:
