@@ -78,10 +78,6 @@ arenaService:
     pullPolicy: Always
     tag: "git-9a4806b1642760ee997bf9894eb824a08a567db6"
 
-  nodeSelector:
-    read: {}
-    write: {}
-
 seasonpass:
   image:
     tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"

@@ -330,8 +330,7 @@ arenaService:
   enabled: true
 
   nodeSelector:
-    read:
-      eks.amazonaws.com/nodegroup: heimdall-spot_2c
+    eks.amazonaws.com/nodegroup: heimdall-spot_2c
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
