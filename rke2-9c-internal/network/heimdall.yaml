@@ -218,9 +218,6 @@ worldBoss:
 arenaService:
   enabled: true
 
-  nodeSelector:
-    node.kubernetes.io/provisioner: cloudv
-
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:
