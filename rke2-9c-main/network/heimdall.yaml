@@ -29,6 +29,7 @@ RKE2:
     - 49.247.14.80/32
     - 49.247.14.87/32
     - 115.68.194.131/32
+    - 115.68.194.141/32
 
 externalSecret:
   enabled: true
@@ -203,7 +204,7 @@ remoteHeadless:
 
   loadBalancerIPs:
     - 115.68.194.131
-    - 49.247.4.184
+    - 115.68.194.141
 
   ingress:
     enabled: true
@@ -271,8 +272,8 @@ remoteHeadless:
 
   resources:
     requests:
-      cpu: "3"
-      memory: 25Gi
+      cpu: "2"
+      memory: 12Gi
 
   storage:
     data: 290Gi
