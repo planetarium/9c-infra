@@ -57,12 +57,12 @@
       "headless.gql": [
         "https://heimdall-full-state.nine-chronicles.com/graphql",
         "https://heimdall-rpc-2.nine-chronicles.com/graphql",
-        "https://heimdall-rke2-gql-1.nine-chronicles.com/graphql"
+        "https://heimdall-rke2-gql-2.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://heimdall-full-state.nine-chronicles.com:31238",
         "http://heimdall-rpc-2.nine-chronicles.com:31238",
-        "http://heimdall-rke2-grpc-1.nine-chronicles.com:31238"
+        "http://heimdall-rke2-grpc-2.nine-chronicles.com:31238"
       ],
       "market.rest": ["https://api.9capi.com/marketProviderHeimdall"],
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
