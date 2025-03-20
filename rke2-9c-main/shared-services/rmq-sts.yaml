@@ -29,12 +29,12 @@ spec:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
-                  name: rmq-secrets
+                  name: secrets-rmq
                   key: RMQ_USERNAME
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  name: rmq-secrets
+                  name: secrets-rmq
                   key: RMQ_PASSWORD
           volumeMounts:
             - name: rmq-data
