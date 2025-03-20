@@ -56,10 +56,10 @@ spec:
                 secretKeyRef:
                   key: arena-service-jwt-public-key
                   name: seasonpass-env
-            - name: TRACKER_START_BLOCK_INDEX
+            - name: TRACKER_START_BLOCK_INDEX_MAP
               valueFrom:
                 secretKeyRef:
-                  key: start-block-index
+                  key: start-block-index-dict
                   name: seasonpass-env
             - name: TRACKER_HEADLESS_JWT_SECRET
               valueFrom:
