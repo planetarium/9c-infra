@@ -24,12 +24,9 @@ global:
 
 RKE2:
   loadBalancerIPs:
-    - 49.247.4.178/32
-    - 49.247.4.184/32
-    - 49.247.14.80/32
-    - 49.247.14.87/32
-    - 115.68.194.131/32
-    - 115.68.194.141/32
+    - 115.68.194.150/32
+    - 115.68.194.151/32
+    - 115.68.194.214/32
 
 externalSecret:
   enabled: true
@@ -115,35 +112,6 @@ validator:
   count: 1
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "false"
-    - name: IpRateLimiting__GeneralRules__2__Endpoint
-      value: "*:/graphql"
-    - name: IpRateLimiting__GeneralRules__2__Period
-      value: 1s
-    - name: IpRateLimiting__GeneralRules__2__Limit
-      value: "10"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::ffff:13.124.239.97"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:118.131.110.197"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: 10.42.0.0/15
-    - name: IpRateLimiting__IpWhiteList__5
-      value: 115.68.0.0/16
-    - name: IpRateLimiting__IpWhiteList__6
-      value: '::ffff:49.247.14.88'
-    - name: IpRateLimiting__IpWhiteList__7
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -169,7 +137,7 @@ validator:
     - "heimdall-rke2-validator-1-rpc.nine-chronicles.com"
 
   loadBalancerIPs:
-    - "49.247.14.80"
+    - "115.68.194.214"
 
   ingress:
     enabled: true
@@ -193,7 +161,7 @@ validator:
       value: validator-test
 
 remoteHeadless:
-  count: 2
+  count: 3
   replicas: 1
 
   useTurnServer: false
@@ -203,56 +171,26 @@ remoteHeadless:
     - "heimdall-rke2-rpc-2.nine-chronicles.com"
 
   loadBalancerIPs:
-    - 115.68.194.131
-    - 115.68.194.141
+    - 115.68.194.150
+    - 115.68.194.151
+    - 115.68.194.214
 
   ingress:
     enabled: true
     hosts:
       - "heimdall-rpc-1.nine-chronicles.com,heimdall-rke2-gql-1.nine-chronicles.com"
       - "heimdall-rpc-2.nine-chronicles.com,heimdall-rke2-gql-2.nine-chronicles.com"
+      - "heimdall-rpc-3.nine-chronicles.com,heimdall-rke2-gql-2.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '1'
-      kubernetes.io/hostname: 9c-main-heimdall-1
     - node.kubernetes.io/network: heimdall
       node.kubernetes.io/node-index: '2'
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '3'
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "true"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "300s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "10"
-    - name: IpRateLimiting__IpBanMinute
-      value: "5"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "15"
-    - name: MultiAccountManaging__EnableManaging
-      value: "true"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::ffff:13.124.239.97"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:118.131.110.197"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: 10.42.0.0/15
-    - name: IpRateLimiting__IpWhiteList__5
-      value: 115.68.0.0/16
-    - name: IpRateLimiting__IpWhiteList__6
-      value: '::ffff:49.247.14.88'
-    - name: IpRateLimiting__IpWhiteList__7
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -276,7 +214,7 @@ remoteHeadless:
       memory: 12Gi
 
   storage:
-    data: 290Gi
+    data: 500Gi
 
   tolerations:
     - effect: NoSchedule
@@ -544,7 +482,7 @@ jwtHeadless:
       memory: 25Gi
 
   storage:
-    data: 300Gi
+    data: 500Gi
 
   tolerations:
     - effect: NoSchedule
