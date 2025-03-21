@@ -181,7 +181,7 @@ remoteHeadless:
     hosts:
       - "heimdall-rpc-1.nine-chronicles.com,heimdall-rke2-gql-1.nine-chronicles.com"
       - "heimdall-rpc-2.nine-chronicles.com,heimdall-rke2-gql-2.nine-chronicles.com"
-      - "heimdall-rpc-3.nine-chronicles.com,heimdall-rke2-gql-2.nine-chronicles.com"
+      - "heimdall-rpc-3.nine-chronicles.com,heimdall-rke2-gql-3.nine-chronicles.com"
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
