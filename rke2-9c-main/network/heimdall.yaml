@@ -169,6 +169,7 @@ remoteHeadless:
   hosts:
     - "heimdall-rke2-rpc-1.nine-chronicles.com"
     - "heimdall-rke2-rpc-2.nine-chronicles.com"
+    - "heimdall-rke2-rpc-3.nine-chronicles.com"
 
   loadBalancerIPs:
     - 115.68.194.150
