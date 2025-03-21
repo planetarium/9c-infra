@@ -144,6 +144,10 @@ validator:
     hosts:
       - "heimdall-validator-1.nine-chronicles.com,heimdall-rke2-validator-1-gql.nine-chronicles.com"
 
+  resources:
+    limits:
+      memory: 30Gi
+
   nodeSelector:
     node.kubernetes.io/network: heimdall
     node.kubernetes.io/node-index: '3'
@@ -213,6 +217,8 @@ remoteHeadless:
     requests:
       cpu: "2"
       memory: 12Gi
+    limits:
+      memory: 30Gi
 
   storage:
     data: 500Gi
