@@ -138,7 +138,7 @@ spec:
               - '-c'
               - >
                 dotnet NineChronicles.DataProvider.Executable.dll
-                mysql-migration -o "/data/headless" --mysql-server $(DP_HOST)
+                mysql-migration migration -o "/data/headless" --mysql-server $(DP_HOST)
                 --mysql-port $(DP_PORT) --mysql-username $(DP_USER)
                 --mysql-password $(DP_TOKEN) --mysql-database $(DP_DATABASE)
                 --date "$(cat /etc/config/date)"
@@ -184,7 +184,7 @@ spec:
             - sh
             - -c
             - >
-              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration
+              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration migration
               --mysql-server $(DP_HOST)
               --mysql-port $(DP_PORT)
               --mysql-username $(DP_USER)
@@ -232,6 +232,7 @@ spec:
           - args:
             - NineChronicles.DataProvider.Executable.dll
             - user-data-migration
+            -  migration
             - -o
             - /data/headless
             - --rocksdb-storetype

@@ -30,7 +30,7 @@ spec:
             - sh
             - -c
             - >
-              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration
+              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration migration
               --mysql-server $(DP_HOST)
               --mysql-port $(DP_PORT)
               --mysql-username $(DP_USER)
