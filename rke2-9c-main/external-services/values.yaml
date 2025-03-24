@@ -24,7 +24,7 @@ seasonpass:
     enabled: false
 
     nodeSelector:
-      node.kubernetes.io/node-index: 2
+      node.kubernetes.io/node-index: "2"
       node.kubernetes.io/provisioner: "cloudv"
       node.kubernetes.io/type: "general"
 
