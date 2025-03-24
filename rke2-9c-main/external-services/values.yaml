@@ -23,6 +23,11 @@ seasonpass:
   api:
     enabled: false
 
+    nodeSelector:
+      node.kubernetes.io/node-index: 2
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
   worker:
     enabled: true
     serviceAccount:
@@ -30,5 +35,17 @@ seasonpass:
     flower:
       enabled: true
 
+    nodeSelector:
+      node.kubernetes.io/node-index: 2
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
+
   tracker:
     enabled: true
+
+    nodeSelector:
+      node.kubernetes.io/node-index: 2
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
