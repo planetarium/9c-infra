@@ -87,17 +87,17 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.output json
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --quiet --acl public-read
+  safe_cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" --acl public-read
+  safe_cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" --acl public-read
+  safe_cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" --acl public-read
 
   {{- if eq $.Values.global.networkType "Main" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/archive/states/${NOW}_$LATEST_STATE_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
 
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --acl public-read --copy-props none --metadata-directive COPY
   {{- end }}
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
@@ -105,11 +105,11 @@ function make_and_upload_snapshot() {
   invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
   {{- if eq $.Values.global.networkType "Main" }}
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_STATE_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_SNAPSHOT_PATH" --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/internal/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_INTERNAL_METADATA_PATH" --acl public-read --copy-props none --metadata-directive COPY
 
   invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$SNAPSHOT_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/internal/$UPLOAD_FILENAME.*"
@@ -119,20 +119,10 @@ function make_and_upload_snapshot() {
   unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
   unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
 
-  # Disable 7z snapshot
-  # 7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
-  # 7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
-
-  # "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/latest.7z" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  # "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/{{ $.Values.snapshot.path }}/state_latest.7z" --quiet --acl public-read
-
   invalidate_cf "/{{ $.Values.snapshot.path }}/$SNAPSHOT_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/$UPLOAD_FILENAME.*"
   invalidate_cf "/{{ $.Values.snapshot.path }}/$STATE_FILENAME.*"
 
-  # rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
-  # rm "/data/snapshots/7z/partition/state_latest.7z"
   rm -r "$PARTITION_DIR/partition-snapshot"
   rm -r "$STATE_DIR/state-snapshot"
   {{- end }}
@@ -153,6 +143,30 @@ function invalidate_cf() {
     echo "CF invalidation failed. Trying again."
     invalidate_cf "$1"
   fi
+}
+
+function safe_cp() {
+  local src=$1
+  local dst=$2
+  shift 2  # Shift off src and dst to get the rest of the arguments (like --acl etc.)
+  local extra_args=("$@")
+  local retries=3
+  local count=0
+  local delay=5
+
+  echo "Uploading: $src → $dst"
+  until "$AWS" s3 cp "$src" "$dst" "${extra_args[@]}"; do
+    exit_code=$?
+    count=$((count + 1))
+    if [ $count -lt $retries ]; then
+      echo "Retry $count/$retries failed with exit code $exit_code. Retrying in $delay seconds..."
+      sleep $delay
+    else
+      echo "Failed after $retries attempts. Source: $src → $dst"
+      senderr "S3 upload failed: $src → $dst"
+      return $exit_code
+    fi
+  done
 }
 
 trap '' HUP
