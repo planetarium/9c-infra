@@ -78,16 +78,11 @@ function make_and_upload_snapshot() {
   "$AWS" configure set default.output json
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  "$AWS" s3 cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/$2/full/$UPLOAD_METADATA_FILENAME" --quiet --acl public-read
-  "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+  safe_cp "$LATEST_FULL_SNAPSHOT" "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" --acl public-read
+  safe_cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/$2/full/$UPLOAD_METADATA_FILENAME" --acl public-read
+  safe_cp "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$2/archive/full/${NOW}_$FULL_SNAPSHOT_FILENAME" --acl public-read --copy-props none --metadata-directive COPY
   invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME"
 
-  # Disable 7z snapshot
-  # 7zr a -r /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z /data/headless/*
-  # "$AWS" s3 cp /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z "s3://$S3_BUCKET_NAME/$2/full/$FULL_SNAPSHOT_FILENAME_7Z" --quiet --acl public-read
-  # invalidate_cf "/$2/full/$FULL_SNAPSHOT_FILENAME_7Z"
-  # rm /data/snapshots/full/7z/9c-main-snapshot-"$NOW".7z
   rm "$LATEST_FULL_SNAPSHOT"
 }
 
@@ -102,6 +97,30 @@ function invalidate_cf() {
     echo "CF invalidation failed. Trying again."
     invalidate_cf "$1"
   fi
+}
+
+function safe_cp() {
+  local src=$1
+  local dst=$2
+  shift 2  # Shift off src and dst to get the rest of the arguments (like --acl etc.)
+  local extra_args=("$@")
+  local retries=3
+  local count=0
+  local delay=5
+
+  echo "Uploading: $src → $dst"
+  until "$AWS" s3 cp "$src" "$dst" "${extra_args[@]}"; do
+    exit_code=$?
+    count=$((count + 1))
+    if [ $count -lt $retries ]; then
+      echo "Retry $count/$retries failed with exit code $exit_code. Retrying in $delay seconds..."
+      sleep $delay
+    else
+      echo "Failed after $retries attempts. Source: $src → $dst"
+      senderr "S3 upload failed: $src → $dst"
+      return $exit_code
+    fi
+  done
 }
 
 trap '' HUP
