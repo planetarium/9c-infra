@@ -323,8 +323,8 @@ explorer:
     node.kubernetes.io/instance-type: r7g.xlarge
 
 marketService:
-  enabled: true
-  rwMode: true
+  enabled: false
+  rwMode: false
   env:
   - name: DOTNET_gcServer
     value: "1"
