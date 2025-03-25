@@ -67,6 +67,10 @@ spec:
                   key: headless-jwt-token
                   name: seasonpass-env
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.tracker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
           name: seasonpass-tracker
       {{- with $.Values.seasonpass.tracker.nodeSelector }}
       nodeSelector:
