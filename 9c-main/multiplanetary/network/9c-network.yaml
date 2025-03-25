@@ -78,11 +78,11 @@ snapshot:
 
   resources:
     requests:
-      cpu: '3'
-      memory: 28Gi
+      cpu: '5'
+      memory: 56Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g-2xl_2c
 
   storage: 1000Gi
 
