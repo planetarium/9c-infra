@@ -82,7 +82,7 @@ snapshot:
       memory: 56Gi
 
   nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-r7g-2xl_2c
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
 
   storage: 1000Gi
 
