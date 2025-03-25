@@ -18,7 +18,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-428f5e66ff069175e8845a5f55284fab67a8195d"
+    tag: "git-92d1b0a403a63ff381084c4c27df461b88b077f0"
 
   api:
     enabled: false
@@ -49,3 +49,7 @@ seasonpass:
       node.kubernetes.io/provisioner: "cloudv"
       node.kubernetes.io/type: "general"
 
+  resources:
+    requests:
+      cpu: 1
+      memory: 4Gi
