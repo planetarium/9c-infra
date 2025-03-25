@@ -49,7 +49,7 @@ seasonpass:
       node.kubernetes.io/provisioner: "cloudv"
       node.kubernetes.io/type: "general"
 
-  resources:
-    requests:
-      cpu: 1
-      memory: 4Gi
+    resources:
+      requests:
+        cpu: 1
+        memory: 4Gi
