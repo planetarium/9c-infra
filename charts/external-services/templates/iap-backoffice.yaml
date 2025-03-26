@@ -1,0 +1,247 @@
+{{- if $.Values.iap.backoffice.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: iap-backoffice
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: iap-backoffice
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iap-backoffice
+  template:
+    metadata:
+      labels:
+        app: iap-backoffice
+    spec:
+      containers:
+        - name: iap-backoffice
+          env:
+            - name: STAGE
+              valueFrom:
+                secretKeyRef:
+                  key: STAGE
+                  name: iap-env
+            - name: REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: REGION_NAME
+                  name: iap-env
+            - name: HEADLESS
+              valueFrom:
+                secretKeyRef:
+                  key: HEADLESS
+                  name: iap-env
+            - name: GOOGLE_PACKAGE_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: GOOGLE_PACKAGE_NAME
+                  name: iap-env
+            - name: FORM_SHEET
+              valueFrom:
+                secretKeyRef:
+                  key: FORM_SHEET
+                  name: iap-env
+            - name: CDN_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: CDN_HOST
+                  name: iap-env
+            - name: ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: ACCOUNT_ID
+                  name: iap-env
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AWS_ACCESS_KEY_ID
+                  name: iap-env
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: AWS_SECRET_ACCESS_KEY
+                  name: iap-env
+            - name: KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: KMS_KEY_ID
+                  name: iap-env
+            - name: GOOGLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: GOOGLE_CREDENTIAL
+                  name: iap-env
+            - name: GOLDEN_DUST_REQUEST_SHEET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: GOLDEN_DUST_REQUEST_SHEET_ID
+                  name: iap-env
+            - name: GOLDEN_DUST_WORK_SHEET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: GOLDEN_DUST_WORK_SHEET_ID
+                  name: iap-env
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URL
+                  name: iap-env
+            - name: PRODUCTS_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: PRODUCTS_FILE_PATH
+                  name: iap-env
+            - name: CATEGORY_PRODUCTS_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: CATEGORY_PRODUCTS_FILE_PATH
+                  name: iap-env
+            - name: FUNGIBLE_ITEM_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: FUNGIBLE_ITEM_FILE_PATH
+                  name: iap-env
+            - name: FUNGIBLE_ASSET_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: FUNGIBLE_ASSET_FILE_PATH
+                  name: iap-env
+            - name: L10N_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: L10N_FILE_PATH
+                  name: iap-env
+            - name: IMAGES_FOLDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  key: IMAGES_FOLDER_PATH
+                  name: iap-env
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: S3_BUCKET
+                  name: iap-env
+            - name: CLOUDFRONT_DISTRIBUTION_1
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFRONT_DISTRIBUTION_1
+                  name: iap-env
+            - name: CLOUDFRONT_DISTRIBUTION_2
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFRONT_DISTRIBUTION_2
+                  name: iap-env
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  key: DB_URI
+                  name: iap-env
+            - name: APPLE_BUNDLE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_BUNDLE_ID
+                  name: iap-env
+            - name: APPLE_ISSUER_ID
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_ISSUER_ID
+                  name: iap-env
+            - name: APPLE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_KEY_ID
+                  name: iap-env
+            - name: APPLE_VALIDATION_URL
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_VALIDATION_URL
+                  name: iap-env
+            - name: APPLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_CREDENTIAL
+                  name: iap-env
+            - name: SEASON_PASS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: SEASON_PASS_JWT_SECRET
+                  name: iap-env
+            - name: HEADLESS_GQL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: HEADLESS_GQL_JWT_SECRET
+                  name: iap-env
+            - name: CLOUDFLARE_ASSETS_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFLARE_ASSETS_ZONE_ID
+                  name: iap-env
+            - name: CLOUDFLARE_ASSETS_K_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFLARE_ASSETS_K_ZONE_ID
+                  name: iap-env
+            - name: CLOUDFLARE_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFLARE_EMAIL
+                  name: iap-env
+            - name: CLOUDFLARE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: CLOUDFLARE_API_KEY
+                  name: iap-env
+            - name: R2_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: R2_ACCESS_KEY_ID
+                  name: iap-env
+            - name: R2_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: R2_SECRET_ACCESS_KEY
+                  name: iap-env
+            - name: R2_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: R2_ACCOUNT_ID
+                  name: iap-env
+            - name: R2_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: R2_BUCKET
+                  name: iap-env
+            - name: BACKOFFICE_OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: BACKOFFICE_OAUTH_CLIENT_ID
+                  name: iap-env
+            - name: BACKOFFICE_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: BACKOFFICE_OAUTH_CLIENT_SECRET
+                  name: iap-env
+            - name: BACKOFFICE_OAUTH_REDIRECT_URI
+              valueFrom:
+                secretKeyRef:
+                  key: BACKOFFICE_OAUTH_REDIRECT_URI
+                  name: iap-env
+            - name: SESSION_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SESSION_SECRET_KEY
+                  name: iap-env
+          image: {{ $.Values.iap.backoffice.image.repository }}:{{ $.Values.iap.backoffice.image.tag }}
+          ports:
+            - containerPort: 8000
+          name: iap-backoffice
+      {{- with $.Values.iap.backoffice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
