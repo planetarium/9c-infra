@@ -130,7 +130,7 @@ spec:
 
             # Endpoint to check
 
-            SEED="http://{{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts 0)) }}:{{ $.Values.seed.ports.graphql }}/playground.html"
+            SEED="http://{{- if $.Values.seed.clusterLocal }}tcp-seed-1.{{ $.Release.Name }}.svc.cluster.local{{- else }}{{ regexFind "^[^,]+" (toString (index $.Values.seed.hosts 0)) }}{{- end }}:{{ $.Values.seed.ports.graphql }}/playground.html"
 
             echo Checking: ${SEED}
 

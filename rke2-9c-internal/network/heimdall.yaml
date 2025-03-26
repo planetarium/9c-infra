@@ -6,7 +6,7 @@ global:
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
 
   peerStrings:
-  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,heimdall-internal-tcp-seed-1.nine-chronicles.com,31234"
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.heimdall.svc.cluster.local,31234"
 
   trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
 
