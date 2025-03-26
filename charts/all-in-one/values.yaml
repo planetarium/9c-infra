@@ -869,3 +869,20 @@ backoffice:
     mainHeimdallUrl: ""
     mainThorId: ""
     mainThorUrl: ""
+
+iap:
+  backoffice:
+    enabled: false
+    image:
+      repository: planetariumhq/ninechronicles-iap
+      pullPolicy: Always
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
