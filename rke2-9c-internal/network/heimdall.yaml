@@ -169,6 +169,8 @@ validator:
     hosts:
       - "heimdall-internal-rke2-validator-gql-1.nine-chronicles.com"
 
+  storePath: "/data/headless"
+
   ports:
     rpc: 31238
 
