@@ -60,6 +60,9 @@ gateway:
   - name: seasonpass-api
     hostnames:
     - season-pass.9c.gg
+  - name: iap-backoffice
+    hostnames:
+    - iap-internal-backoffice.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -777,3 +780,9 @@ volumePreloader:
 
 backoffice:
   enabled: true
+
+iap:
+  backoffice:
+    enabled: true
+    image:
+      tag: "git-c96c5117c0f8687d77e656e0e870f42fe546100a"
