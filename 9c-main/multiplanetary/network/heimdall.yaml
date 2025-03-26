@@ -106,7 +106,7 @@ seed:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
 
 fullState:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
   datadog:
@@ -566,7 +566,7 @@ jwtHeadless:
 
   loggingEnabled: true
 
-  host: "heimdall-jwt.nine-chronicles.com"
+  host: "heimdall-jwt.nine-chronicles.com,heimdall-full-state.nine-chronicles.com"
 
   env:
   - name: IpRateLimiting__EnableEndpointRateLimiting

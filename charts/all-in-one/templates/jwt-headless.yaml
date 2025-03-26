@@ -223,7 +223,7 @@ spec:
           - name: JSON_LOG_PATH
             value: ./logs/$(POD_NAME)_$(NAMESPACE_NAME)_jwt-headless.json
           - name: JWT__EnableJwtAuthentication
-            value: "true"
+            value: "false"
           - name: JWT__Key
             valueFrom:
               secretKeyRef:

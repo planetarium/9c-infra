@@ -348,7 +348,7 @@ marketService:
       eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 fullState:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
   datadog:
@@ -560,7 +560,7 @@ jwtHeadless:
   datadog:
     enabled: true
 
-  host: "odin-jwt.nine-chronicles.com"
+  host: "odin-jwt.nine-chronicles.com,odin-full-state.nine-chronicles.com"
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
