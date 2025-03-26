@@ -76,3 +76,20 @@ seasonpass:
       arenaServiceJwtPublicKey: ""
     serviceAccount:
       roleArn: ""
+
+iap:
+  backoffice:
+    enabled: false
+    image:
+      repository: planetariumhq/iap-backoffice
+      pullPolicy: Always
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""

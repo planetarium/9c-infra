@@ -12,6 +12,9 @@ gateway:
   - name: seasonpass-api-service
     hostnames:
     - seasonpass-internal-rke2.9c.gg
+  - name: iap-backoffice
+    hostnames:
+    - iap-internal-backoffice.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
@@ -32,3 +35,9 @@ seasonpass:
 
   tracker:
     enabled: true
+
+iap:
+  backoffice:
+    enabled: true
+    image:
+      tag: "git-9d98f43bbef5e5dadc3d30c26b7cdae482e01baf"
