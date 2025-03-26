@@ -62,14 +62,14 @@ snapshot:
   path: "main/thor/partition"
 
   fullSnapshot:
-    enabled: true
+    enabled: false
     suspend: false
 
   partitionReset:
     enabled: false
 
   partition:
-    enabled: true
+    enabled: false
 
   resources:
     requests:
