@@ -83,7 +83,7 @@ function make_and_upload_snapshot() {
   ARCHIVED_NAME="${NOW}_$BASENAME"
   ARCHIVED_PATH="$ARCHIVE_PATH/$ARCHIVED_NAME"
 
-  rclone copy "$LATEST_FULL_SNAPSHOT" "$ARCHIVED_PATH" \
+  rclone copyto "$LATEST_FULL_SNAPSHOT" "$ARCHIVED_PATH" \
     --s3-upload-cutoff 512M \
     --s3-chunk-size 512M \
     --s3-disable-checksum \
@@ -107,7 +107,7 @@ function make_and_upload_snapshot() {
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Uploading metadata $LATEST_METADATA..."
-    rclone copy "$LATEST_METADATA" "$DEST_PATH/" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$LATEST_METADATA" "$DEST_PATH/" --no-traverse --retries 5 --low-level-retries 10
   else
     echo "[INFO] No metadata file found to upload."
   fi
