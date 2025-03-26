@@ -55,16 +55,6 @@ spec:
                 secretKeyRef:
                   key: ACCOUNT_ID
                   name: iap-env
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  key: AWS_ACCESS_KEY_ID
-                  name: iap-env
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: AWS_SECRET_ACCESS_KEY
-                  name: iap-env
             - name: KMS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -124,16 +114,6 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: S3_BUCKET
-                  name: iap-env
-            - name: CLOUDFRONT_DISTRIBUTION_1
-              valueFrom:
-                secretKeyRef:
-                  key: CLOUDFRONT_DISTRIBUTION_1
-                  name: iap-env
-            - name: CLOUDFRONT_DISTRIBUTION_2
-              valueFrom:
-                secretKeyRef:
-                  key: CLOUDFRONT_DISTRIBUTION_2
                   name: iap-env
             - name: DB_URI
               valueFrom:
