@@ -1,0 +1,70 @@
+{{- if $.Values.seasonpass.worker.flower.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-flower
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-flower
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-flower
+  template:
+    metadata:
+      labels:
+        app: seasonpass-flower
+    spec:
+      containers:
+        - name: seasonpass-flower
+          args:
+            - celery -A app.celery_app flower --port=5555
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: WORKER_KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: seasonpass-env
+            - name: WORKER_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: seasonpass-env
+            - name: WORKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: seasonpass-env
+            - name: WORKER_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: WORKER_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: seasonpass-env
+            - name: WORKER_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: WORKER_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: seasonpass-env
+          image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          name: seasonpass-flower
+      {{- with $.Values.seasonpass.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

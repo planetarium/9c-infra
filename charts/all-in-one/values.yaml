@@ -776,39 +776,6 @@ seasonpass:
   image:
     tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"
 
-  api:
-    enabled: false
-    image:
-      repository: planetariumhq/season-pass-api
-      pullPolicy: Always
-    nodeSelector: {}
-    env:
-      region: ""
-      gqlUrl: ""
-      currentPlanet: ""
-      dbUri: ""
-      sqsUrl: ""
-      arenaServiceJwtPublicKey: ""
-    serviceAccount:
-      roleArn: ""
-
-  consumer:
-    enabled: false
-    image:
-      repository: planetariumhq/season-pass-consumer
-      pullPolicy: Always
-
-    nodeSelector: {}
-    env:
-      region: ""
-      gqlUrl: ""
-      currentPlanet: ""
-      dbUri: ""
-      sqsUrl: ""
-      arenaServiceJwtPublicKey: ""
-    serviceAccount:
-      roleArn: ""
-
   tracker:
     enabled: false
     image:

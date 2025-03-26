@@ -734,6 +734,8 @@ seasonpass:
     enabled: true
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
+    image:
+      repository: planetariumhq/season-pass
 
 volumePreloader:
   count: 0

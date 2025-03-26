@@ -44,9 +44,6 @@ gateway:
   - name: market-service
     hostnames:
     - heimdall-internal-rke2-market.9c.gg
-  - name: seasonpass-service
-    hostnames:
-    - heimdall-internal-rke2-seasonpass.9c.gg
   - name: world-boss-service
     hostnames:
     - heimdall-internal-rke2-world-boss.9c.gg
@@ -225,18 +222,5 @@ arenaService:
     hangfireDbNumber: "2"
     rankingDbNumber: "3"
 
-seasonpass:
-  api:
-    enabled: true
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
-
-  consumer:
-    enabled: true
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
-
-  tracker:
-    enabled: true
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+  ssh:
+    enabled: false

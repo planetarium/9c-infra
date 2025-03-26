@@ -30,15 +30,25 @@ spec:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: API_AMQP_DSN
+            - name: API_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
+            - name: API_CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: API_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: seasonpass-env
             - name: API_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: jwt-token-secret
+                  key: headless-jwt-token
                   name: seasonpass-env
             - name: API_WORKERS
               valueFrom:
@@ -51,8 +61,10 @@ spec:
                   key: api-timeout-keep-alive
                   name: seasonpass-env
             - name: API_HOST
-              value: "127.0.0.1"
+              value: "0.0.0.0"
           image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          ports:
+            - containerPort: 8000
           name: seasonpass-api
       {{- with $.Values.seasonpass.api.nodeSelector }}
       nodeSelector:

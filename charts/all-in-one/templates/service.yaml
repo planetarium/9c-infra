@@ -794,32 +794,6 @@ spec:
 
 {{ end }}
 
-{{ if .Values.seasonpass.api.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: seasonpass-api
-  namespace: {{ $.Release.Name }}
-  labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: 8000
-    - name: https
-      port: 443
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: seasonpass-api
-  type: ClusterIP
-
----
-
-{{ end }}
-
 {{ if and .Values.backoffice.enabled }}
 apiVersion: v1
 kind: Service

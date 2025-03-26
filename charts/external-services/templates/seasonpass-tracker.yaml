@@ -1,0 +1,82 @@
+{{- if $.Values.seasonpass.tracker.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.seasonpass.tracker.serviceAccount.roleArn }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: {{ $.Release.Name }}-seasonpass-iam-role
+  namespace: {{ $.Release.Name }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-tracker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-tracker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-tracker
+  template:
+    metadata:
+      labels:
+        app: seasonpass-tracker
+    spec:
+      containers:
+        - name: seasonpass-tracker
+          env:
+            - name: TRACKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: seasonpass-env
+            - name: TRACKER_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: TRACKER_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: seasonpass-env
+            - name: TRACKER_CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: TRACKER_ARENA_SERVICE_JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: TRACKER_START_BLOCK_INDEX_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index-dict
+                  name: seasonpass-env
+            - name: TRACKER_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: seasonpass-env
+          image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.tracker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          name: seasonpass-tracker
+      {{- with $.Values.seasonpass.tracker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
+{{- end }}

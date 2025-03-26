@@ -618,20 +618,6 @@ arenaService:
   ssh:
     enabled: true
 
-seasonpass:
-  api:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  consumer:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  tracker:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-
 volumePreloader:
   count: 0
   replicas: 1
