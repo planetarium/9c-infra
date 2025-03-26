@@ -38,6 +38,6 @@ seasonpass:
 
 iap:
   backoffice:
-    enabled: true
+    enabled: false
     image:
       tag: "git-9d98f43bbef5e5dadc3d30c26b7cdae482e01baf"
