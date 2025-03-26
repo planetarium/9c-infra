@@ -59,11 +59,9 @@
         "https://api-heimdall-internal.9cscan.com"
       ],
       "headless.gql": [
-        "https://heimdall-internal-rpc-1.nine-chronicles.com/graphql",
         "https://heimdall-internal-rke2-gql-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://heimdall-internal-rpc-1.nine-chronicles.com:31238",
         "http://heimdall-internal-rke2-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": [
