@@ -218,7 +218,6 @@ spec:
           image: {{ $.Values.iap.backoffice.image.repository }}:{{ $.Values.iap.backoffice.image.tag }}
           ports:
             - containerPort: 8000
-          name: iap-backoffice
       {{- with $.Values.iap.backoffice.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
