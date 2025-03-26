@@ -230,3 +230,9 @@ arenaService:
 mimir:
   enabled: true
   planetType: "heimdall"
+
+  gql:
+    enabled: true
+
+  diffWorker:
+    enabled: true
