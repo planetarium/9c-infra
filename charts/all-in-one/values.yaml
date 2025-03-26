@@ -772,6 +772,27 @@ arenaService:
   ssh:
     enabled: false
 
+seasonpass:
+  image:
+    tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"
+
+  tracker:
+    enabled: false
+    image:
+      repository: planetariumhq/season-pass-tracker
+      pullPolicy: Always
+
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
+
 volumePreloader:
   count: 0
   image:
