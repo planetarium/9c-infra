@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: test-seasonpass
+    targetRevision: main
     path: rke2-9c-main/shared-services
   destination:
     server: https://kubernetes.default.svc
