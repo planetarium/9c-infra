@@ -226,3 +226,7 @@ arenaService:
 
   ssh:
     enabled: false
+
+mimir:
+  enabled: true
+  planetType: "heimdall"

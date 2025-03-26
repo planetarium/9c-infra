@@ -793,6 +793,16 @@ seasonpass:
     serviceAccount:
       roleArn: ""
 
+mimir:
+  enabled: false
+  planetType: "odin"
+  diffWorker:
+    enabled: false
+    nodeSelector: {}
+  gql:
+    enabled: false
+    nodeSelector: {}
+
 volumePreloader:
   count: 0
   image:

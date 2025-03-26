@@ -1,0 +1,41 @@
+{{ if and .Values.mimir.enabled .Values.mimir.gql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mimir-gql
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: mimir-gql
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mimir-gql
+  template:
+    metadata:
+      labels:
+        app: mimir-gql
+    spec:
+      containers:
+        - name: mimir-gql
+          image: {{ $.Values.mimir.gql.image.repository }}:{{ $.Values.mimir.gql.image.tag }}
+          env:
+            - name: Database__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: MONGO_DB_CONNECTION_STRING
+            - name: Database__Database
+              value: "{{ $.Values.mimir.planetType }}"
+          {{- with $.Values.mimir.gql.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      restartPolicy: Always
+      {{- with $.Values.mimir.gql.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  strategy:
+    type: RollingUpdate
+{{ end }}
