@@ -44,6 +44,23 @@ function senderr() {
     --data '{"text":"[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' "$SLACK_WEBHOOK"
 }
 
+function retry_until_success() {
+  local max_attempts=100
+  local delay=60
+  local count=1
+
+  until "$@"; do
+    echo "[WARN] Attempt $count failed. Retrying in $delay seconds..."
+    sleep $delay
+    count=$((count + 1))
+    if [ $count -gt $max_attempts ]; then
+      echo "[ERROR] Command failed after $max_attempts attempts."
+      return 1
+    fi
+  done
+  echo "[INFO] Command succeeded after $count attempt(s)."
+}
+
 function make_and_upload_snapshot() {
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
   OUTPUT_DIR="/data/snapshots"
@@ -105,10 +122,23 @@ function make_and_upload_snapshot() {
 
   echo "[INFO] Archiving state..."
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
-  rclone copyto "$LATEST_STATE" "$ARCHIVED_STATE_PATH" --no-traverse --retries 5 --low-level-retries 10
+  rclone copyto "$LATEST_STATE" "$ARCHIVED_STATE_PATH" \
+    --s3-upload-cutoff 512M \
+    --s3-chunk-size 512M \
+    --s3-disable-checksum \
+    --multi-thread-streams 4 \
+    --no-traverse \
+    --retries 5 \
+    --low-level-retries 10
 
-  echo "[INFO] Copying state to latest path..."
-  rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" --no-traverse --retries 5 --low-level-retries 10
+  echo "[INFO] Copying state to latest path (with retry)..."
+  retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" \
+    --no-traverse \
+    --s3-disable-checksum \
+    --s3-copy-cutoff 1G \
+    --s3-copy-chunk-size 512M \
+    --retries 5 \
+    --low-level-retries 10
 
   rm "$LATEST_SNAPSHOT" "$LATEST_STATE"
   rm -rf "$METADATA_DIR"

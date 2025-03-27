@@ -54,6 +54,23 @@ EOF
   export RCLONE_CONFIG="$RCLONE_CONFIG_DIR/rclone.conf"
 }
 
+function retry_until_success() {
+  local max_attempts=100
+  local delay=60
+  local count=1
+
+  until "$@"; do
+    echo "[WARN] Attempt $count failed. Retrying in $delay seconds..."
+    sleep $delay
+    count=$((count + 1))
+    if [ $count -gt $max_attempts ]; then
+      echo "[ERROR] Command failed after $max_attempts attempts."
+      return 1
+    fi
+  done
+  echo "[INFO] Command succeeded after $count attempt(s)."
+}
+
 function make_and_upload_snapshot() {
   echo "[INFO] Starting make_and_upload_snapshot..."
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
@@ -97,10 +114,12 @@ function make_and_upload_snapshot() {
   FINAL_DEST="$DEST_PATH/$FINAL_NAME"
 
   echo "[INFO] Copying archive snapshot to $FINAL_DEST without re-upload..."
-  rclone copyto "$ARCHIVED_PATH" "$FINAL_DEST" \
+  retry_until_success rclone copyto "$ARCHIVED_PATH" "$FINAL_DEST" \
     --no-traverse \
     --s3-disable-checksum \
     --retries 5 \
+    --s3-copy-cutoff 1G \
+    --s3-copy-chunk-size 512M \
     --low-level-retries 10
 
 
