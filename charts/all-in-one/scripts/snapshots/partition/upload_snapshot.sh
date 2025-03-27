@@ -108,8 +108,12 @@ function make_and_upload_snapshot() {
     --low-level-retries 10
 
   echo "[INFO] Copying snapshot to latest path..."
-  rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
-    --no-traverse --retries 5 --low-level-retries 10
+  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
+    --no-traverse \
+    --s3-disable-checksum \
+    --s3-copy-cutoff 1G \
+    --retries 5 \
+    --low-level-retries 10
 
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Archiving metadata..."
