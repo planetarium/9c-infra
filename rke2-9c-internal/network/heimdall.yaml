@@ -152,6 +152,10 @@ remoteHeadless:
   - --tx-quota-per-signer=1
   - --remote-key-value-service
 
+  nodeSelector:
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '1'
+
 validator:
   count: 1
 
@@ -194,6 +198,9 @@ validator:
     volumeNames:
     - remote-headless-data-2-remote-headless-2-0
 
+  nodeSelector:
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '2'
 
 worldBoss:
   enabled: true
