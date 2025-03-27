@@ -44,7 +44,7 @@ spec:
             - name: WORKER_Logging__LogLevel__System.Net.Http.HttpClient
               value: "warning"
             - name: WORKER_Configuration__PollerType
-              value: "diff"
+              value: "DiffPoller"
             - name: WORKER_Configuration__EnableInitializing
               value: "true"
             - name: WORKER_Configuration__PlanetType

@@ -50,6 +50,9 @@ gateway:
   - name: arena-service
     hostnames:
     - heimdall-internal-rke2-arena.9c.gg
+  - name: mimir-gql
+    hostnames:
+    - heimdall-internal-rke2-mimir.9c.gg
 
 bridgeService:
   enabled: true
