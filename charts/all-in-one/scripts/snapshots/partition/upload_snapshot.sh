@@ -136,7 +136,6 @@ function make_and_upload_snapshot() {
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
-    --s3-copy-chunk-size 512M \
     --retries 5 \
     --low-level-retries 10
 
