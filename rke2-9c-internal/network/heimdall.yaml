@@ -1,5 +1,5 @@
 global:
-  validatorPath: "heimdall-internal-validator-1.nine-chronicles.com"
+  validatorPath: "heimdall-internal-rke2-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000001/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/heimdall/appsettings-x64.json"
 
@@ -114,7 +114,7 @@ seed:
     pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
 
   hosts:
-  - "heimdall-internal-rke2-tcp-seed-1.nine-chronicles.com"
+  - "tcp-seed-1.heimdall.svc.cluster.local"
 
 remoteHeadless:
   count: 1
