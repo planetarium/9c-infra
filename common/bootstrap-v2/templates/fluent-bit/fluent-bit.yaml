@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: fluent-bit
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://fluent.github.io/helm-charts
+    chart: fluent-bit
+    targetRevision: 0.23.0
+    helm:
+      values: |-
+        serviceAccount:
+          create: true
+          annotations:
+            eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/eks-{{ .Values.clusterName }}-fluent-bit
+          name: fluent-bit
+        env:
+        - name: AWS_REGION
+          value: "us-east-2"
+        - name: CLUSTER_NAME
+          value: {{ .Values.clusterName }}
+        - name: HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: READ_FROM_HEAD
+          value: "Off"
+        - name: READ_FROM_TAIL
+          value: "On"
+        flush: 5
+        existingConfigMap: "fluent-bit-config"
+        volumeMounts:
+          - name: config
+            mountPath: /fluent-bit/etc/fluent-bit.conf
+            subPath: fluent-bit.conf
+          - name: config
+            mountPath: /fluent-bit/etc/application-log.conf
+            subPath: application-log.conf
+          - name: config
+            mountPath: /fluent-bit/etc/parsers.conf
+            subPath: parsers.conf
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            memory: 500Mi
+        tolerations:
+          - operator: "Exists"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

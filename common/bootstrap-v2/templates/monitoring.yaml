@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+{{- if eq .Values.provider "RKE2" }}
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: monitoring-secretstore
+  namespace: monitoring
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: "ap-northeast-2"
+{{- end }}
