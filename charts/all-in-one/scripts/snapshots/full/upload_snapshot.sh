@@ -125,7 +125,7 @@ function make_and_upload_snapshot() {
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Uploading metadata $LATEST_METADATA..."
-    rclone copyto "$LATEST_METADATA" "$DEST_PATH/" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$LATEST_METADATA" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10
   else
     echo "[INFO] No metadata file found to upload."
   fi
