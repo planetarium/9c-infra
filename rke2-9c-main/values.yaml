@@ -29,7 +29,7 @@ certManager:
     email: devops@planetariumhq.com
 grafana:
   hosts:
-    - monitoring-rke2.planetarium.network
+    - monitoring.planetarium.network
 prometheus:
   server:
     extraScrapeConfigs:

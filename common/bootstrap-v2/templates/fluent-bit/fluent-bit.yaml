@@ -13,14 +13,18 @@ spec:
     targetRevision: 0.23.0
     helm:
       values: |-
+        {{- if eq .Values.provider "AWS" }}
         serviceAccount:
           create: true
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountId }}:role/eks-{{ .Values.clusterName }}-fluent-bit
           name: fluent-bit
+        {{- end }}
         env:
+        {{- if eq .Values.provider "AWS" }}
         - name: AWS_REGION
           value: "us-east-2"
+        {{- end }}
         - name: CLUSTER_NAME
           value: {{ .Values.clusterName }}
         - name: HOST_NAME
@@ -31,6 +35,11 @@ spec:
           value: "Off"
         - name: READ_FROM_TAIL
           value: "On"
+        {{- if eq .Values.provider "RKE2" }}
+        envFrom:
+        - secretRef:
+            name: r2-token
+        {{- end }}
         flush: 5
         existingConfigMap: "fluent-bit-config"
         volumeMounts:

@@ -12,20 +12,27 @@ spec:
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
-    targetRevision: 5.0.0
+    targetRevision: 6.29.0
     helm:
       values: |-
+        dnsService: "coredns"
+        extraEnvFrom:
+        - secretRef:
+            name: r2-token
         loki:
           auth_enabled: false
           commonConfig:
             path_prefix: /var/loki
             replication_factor: 3
           storage:
-            bucketNames:
-              admin: admin
-              chunks: {{ $.Values.loki.bucketName }}
-              ruler: ruler
             type: s3
+            s3:
+              endpoint: "${R2_ENDPOINT}"
+              bucketnames: "{{ $.Values.loki.bucketName }}"
+              access_key_id: "${R2_ACCESS_KEY_ID}"
+              secret_access_key: "${R2_SECRET_ACCESS_KEY}"
+              s3forcepathstyle: true
+              insecure: false
           schema_config:
             configs:
             - from: "2022-01-11"
@@ -41,22 +48,6 @@ spec:
 
           querier:
             max_concurrent: 32
-
-          {{- if $.Values.memcached.enabled }}
-          memcached:
-            chunk_cache:
-              enabled: true
-              host: "memcached.monitoring.svc.cluster.local"
-              service: "memcache"
-              batch_size: 150
-              parallelism: 32
-            results_cache:
-              enabled: true
-              host: "memcached.monitoring.svc.cluster.local"
-              service: "memcache"
-              timeout: "5s"
-              default_validity: "12h"
-          {{- end }}
 
           query_scheduler:
             max_outstanding_requests_per_tenant: 8192
@@ -110,36 +101,29 @@ spec:
               max_recv_msg_size: 160388078
 
           storage_config:
-            aws:
-              insecure: false
-              s3: s3://us-east-2/{{ $.Values.bucketName }}
-              s3forcepathstyle: true
             boltdb_shipper:
               active_index_directory: /var/loki/index
               shared_store: s3
 
         write:
           replicas: {{ $.Values.loki.write.count }}
-          {{- with $.Values.loki.write.nodeGroup }}
+          {{- with $.Values.loki.write.nodeSelector }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{ . }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
           persistence:
             size: 50Gi
-            storageClass: gp3-extensible
 
         read:
           replicas: {{ $.Values.loki.read.count }}
-          {{- with $.Values.loki.read.nodeGroup }}
+          {{- with $.Values.loki.read.nodeSelector }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{ . }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.read.resources | nindent 12 }}
-          persistence:
-            storageClass: gp3-extensible
 
         test:
           enabled: false

@@ -211,30 +211,20 @@ data:
     [OUTPUT]
         Name                         s3
         Match                        host.*
+        {{- if eq .Values.provider "AWS" }}
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        aws_key_id                   ${R2_ACCESS_KEY_ID}
+        aws_sec_key                  ${R2_SECRET_ACCESS_KEY}
+        {{- end }}
         Total_file_size              100M
         compression                  gzip
         S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .
-    [OUTPUT]
-        Name            opensearch
-        Match           nginx_log
-        Host            srdg.planetarium.team
-        Port            443
-        AWS_Region      us-east-2
-        HTTP_User       [user]
-        HTTP_Passwd     [password]
-        {{- if eq $.Values.clusterName "9c-dev-v2" }}
-        Index           nginx_logs_dev
-        {{- else }}
-        Index           nginx_logs
-        {{- end }}
-        Type            _doc
-        tls             On
-        tls.verify      On
-        tls.debug       1
-        Suppress_Type_Name On
   parsers.conf: |
     [PARSER]
         Name                docker
