@@ -41,3 +41,24 @@ prometheus:
 
 grafana:
   serviceAnnotations:
+
+loki:
+  enabled: false
+  bucketName: ""
+  write:
+    count: 0
+    resources:
+      requests:
+        cpu: 1500m
+        memory: 6Gi
+    nodeSelector: {}
+  read:
+    count: 0
+    resources:
+      requests:
+        cpu: 1500m
+        memory: 6Gi
+      limits:
+        cpu: 1500m
+        memory: 6Gi
+    nodeSelector: {}

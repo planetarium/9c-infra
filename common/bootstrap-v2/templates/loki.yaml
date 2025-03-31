@@ -1,0 +1,155 @@
+{{ if .Values.loki.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: loki
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    targetRevision: 6.29.0
+    helm:
+      values: |-
+        dnsService: "coredns"
+        extraEnvFrom:
+        - secretRef:
+            name: r2-token
+        loki:
+          auth_enabled: false
+          commonConfig:
+            path_prefix: /var/loki
+            replication_factor: 3
+          storage:
+            type: s3
+            s3:
+              endpoint: "${R2_ENDPOINT}"
+              bucketnames: "{{ $.Values.loki.bucketName }}"
+              access_key_id: "${R2_ACCESS_KEY_ID}"
+              secret_access_key: "${R2_SECRET_ACCESS_KEY}"
+              s3forcepathstyle: true
+              insecure: false
+          schema_config:
+            configs:
+            - from: "2022-01-11"
+              index:
+                period: 24h
+                prefix: loki_index_
+              store: boltdb_shipper
+              object_store: s3
+              schema: v12
+
+          compactor:
+            retention_enabled: true
+
+          querier:
+            max_concurrent: 32
+
+          query_scheduler:
+            max_outstanding_requests_per_tenant: 8192
+            grpc_client_config:
+              grpc_compression: "snappy"
+              max_send_msg_size: 160388078 # 32MiB, default = 16777216]
+              max_recv_msg_size: 160388078
+
+          limits_config:
+            enforce_metric_name: false
+            max_query_parallelism: 64
+            max_query_series: 10000000
+            max_entries_limit_per_query: 1000000
+            reject_old_samples: true
+            reject_old_samples_max_age: 168h
+            retention_period: 360h
+            split_queries_by_interval: 15m
+            query_timeout: 600s
+            ingestion_rate_mb: 192
+            ingestion_burst_size_mb: 200
+            per_stream_rate_limit: 32MB
+            per_stream_rate_limit_burst: 48MB
+
+          ingester:
+            concurrent_flushes: 32
+            chunk_block_size: 262144
+            chunk_target_size: 1572864
+            chunk_encoding: "snappy"
+            index_shards: 32
+
+          server:
+            grpc_listen_port: 9095
+            grpc_server_max_recv_msg_size: 160388078
+            grpc_server_max_send_msg_size: 160388078
+            grpc_server_max_concurrent_streams: 0
+            http_listen_port: 3100
+            http_server_read_timeout: 600s
+            http_server_write_timeout: 600s
+            http_server_idle_timeout: 600s
+
+          frontend:
+            max_outstanding_per_tenant: 8192
+            scheduler_worker_concurrency: 32
+
+          frontend_worker:
+            parallelism: 32
+            match_max_concurrent: true
+            grpc_client_config:
+              grpc_compression: "snappy"
+              max_send_msg_size: 160388078 # 32MiB, default = 16777216]
+              max_recv_msg_size: 160388078
+
+          storage_config:
+            boltdb_shipper:
+              active_index_directory: /var/loki/index
+              shared_store: s3
+
+        write:
+          replicas: {{ $.Values.loki.write.count }}
+          {{- with $.Values.loki.write.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml $.Values.loki.write.resources | nindent 12 }}
+          persistence:
+            size: 50Gi
+
+        read:
+          replicas: {{ $.Values.loki.read.count }}
+          {{- with $.Values.loki.read.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml $.Values.loki.read.resources | nindent 12 }}
+
+        test:
+          enabled: false
+        monitoring:
+          lokiCanary:
+            enabled: false
+          dashboards:
+            enabled: false
+          rules:
+            enabled: false
+          alerts:
+            enabled: false
+          serviceMonitor:
+            enabled: false
+          selfMonitoring:
+            enabled: false
+            lokiCanary:
+              enabled: false
+            grafanaAgent:
+              installOperator: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+---
+{{ end }}
