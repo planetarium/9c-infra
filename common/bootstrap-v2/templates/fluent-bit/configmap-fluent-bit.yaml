@@ -116,8 +116,16 @@ data:
     [OUTPUT]
         Name                         s3
         Match                        s3json.*
+        {{- if eq .Values.provider "AWS" }}
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        aws_key_id                   ${R2_ACCESS_KEY_ID}
+        aws_sec_key                  ${R2_SECRET_ACCESS_KEY}
+        {{- end }}
         compression                  gzip
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
@@ -125,8 +133,16 @@ data:
     [OUTPUT]
         Name                         s3
         Match                        s3json.*
+        {{- if eq .Values.provider "AWS" }}
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        aws_key_id                   ${R2_ACCESS_KEY_ID}
+        aws_sec_key                  ${R2_SECRET_ACCESS_KEY}
+        {{- end }}
         compression                  gzip
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/glue/$TAG[3]/%Y/%m/%d/%H/$TAG-$UUID.gz
@@ -168,8 +184,16 @@ data:
     [OUTPUT]
         Name                         s3
         Match                        dataplane.*
+        {{- if eq .Values.provider "AWS" }}
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        aws_key_id                   ${R2_ACCESS_KEY_ID}
+        aws_sec_key                  ${R2_SECRET_ACCESS_KEY}
+        {{- end }}
         Total_file_size              100M
         compression                  gzip
         S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
