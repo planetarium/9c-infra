@@ -63,7 +63,7 @@ snapshot:
   path: "main/heimdall/partition"
 
   fullSnapshot:
-    enabled: true
+    enabled: false
     suspend: false
 
   partitionReset:
