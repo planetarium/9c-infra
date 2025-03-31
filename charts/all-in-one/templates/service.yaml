@@ -797,6 +797,27 @@ spec:
 
 {{ end }}
 
+{{ if .Values.arenaService.backoffice.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: arena-backoffice
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 8080
+  selector:
+    app: arena-backoffice
+  type: ClusterIP
+
+---
+
+{{ end }}
+
 {{ if .Values.mimir.gql.enabled }}
 apiVersion: v1
 kind: Service

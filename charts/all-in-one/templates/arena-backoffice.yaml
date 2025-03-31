@@ -1,0 +1,67 @@
+{{ if .Values.arenaService.backoffice.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: arena-backoffice
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: arena-backoffice
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arena-backoffice
+  template:
+    metadata:
+      labels:
+        app: arena-backoffice
+    spec:
+      containers:
+        - name: arena-backoffice
+          image: {{ $.Values.arenaService.backoffice.image.repository }}:{{ $.Values.arenaService.backoffice.image.tag }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: POSTGRES_CONNECTION_STRING
+            - name: Redis__Port
+              value: "{{ .Values.arenaService.redis.port }}"
+            - name: Redis__RankingDbNumber
+              value: "{{ .Values.arenaService.redis.rankingDbNumber }}"
+            - name: Redis__Host
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: REDIS_HOST
+            - name: Redis__Password
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: REDIS_PASSWORD
+            - name: GoogleAuth__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: GOOGLE_AUTH_CLIENT_ID
+            - name: GoogleAuth__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: GOOGLE_AUTH_CLIENT_SECRET
+            - name: GoogleAuth__Enabled
+              value: "true"
+          {{- with $.Values.arenaService.backoffice.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      restartPolicy: Always
+      {{- with $.Values.arenaService.backoffice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  strategy:
+    type: RollingUpdate
+{{ end }}

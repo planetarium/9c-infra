@@ -65,6 +65,8 @@ gateway:
     - name: seasonpass-api
       hostnames:
         - season-pass.9c.gg
+    - name: arena-backoffice
+      hostname: odin-arena-rke2-backoffice.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
