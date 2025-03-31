@@ -1,0 +1,784 @@
+# Default values for 9c-main cluster.
+# This is a YAML-formatted file.
+
+clusterName: "9c-main-v2"
+logLevel: "debug"
+
+global:
+  appProtocolVersion: "200300/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCGl8kXTvdFEYGlSk.jRVXNG9+uUKCAdn3STXNQ6aqtfAIgDfgzcJfKCtFAtJ0IghMCwEnsuf9FQ9Z17w2Pt.a2X7k=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTA0LTAxZQ=="
+
+  validatorPath: "odin-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  trustedAppProtocolVersionSigner: "030ffa9bd579ee1503ce008394f687c182279da913bfaec12baca34e79698a7cd1"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json"
+
+  peerStrings:
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.nine-chronicles.com,31234"
+
+  iceServers:
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us3.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us4.planetarium.dev:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us5.planetarium.dev:3478"
+
+  networkType: Main
+  planet: Odin
+  consensusType: pbft
+
+  resetSnapshot: false
+  rollbackSnapshot: false
+
+externalSecret:
+  enabled: true
+
+ingress:
+  enabled: false
+
+gateway:
+  enabled: true
+  services:
+  - name: remote-headless
+    hostname: odin-rpc-eks.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    - name: remote-headless-2
+    - name: main-full-state
+    protocols:
+    - web
+    - grpc
+  - name: data-provider-write
+    hostname: odin-dp.9c.gg
+  - name: market-service
+    hostname: odin-market.9c.gg
+  - name: world-boss-service
+    hostname: odin-world-boss.9c.gg
+  - name: arena-service
+    hostname: odin-arena.9c.gg
+  - name: seasonpass-api
+    hostnames:
+    - season-pass.9c.gg
+  - name: iap-backoffice
+    hostnames:
+    - iap-internal-backoffice.9c.gg
+
+snapshot:
+  slackChannel: "9c-mainnet"
+  image: "planetariumhq/ninechronicles-snapshot:git-96c1475107e14eeb81ed2a8fbba492952fbac99c"
+  path: "main/partition"
+
+  fullSnapshot:
+    enabled: false
+    suspend: false
+
+  partitionReset:
+    enabled: false
+
+  partition:
+    enabled: true
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 56Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
+
+  storage: 1000Gi
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
+seed:
+  count: 0
+  useTurnServer: false
+
+  hosts:
+  - "odin-tcp-seed-1.nine-chronicles.com"
+  - "odin-tcp-seed-2.nine-chronicles.com"
+  - "odin-tcp-seed-3.nine-chronicles.com"
+
+  loggingEnabled: true
+
+  # dotnet args
+  workerCount: 1000
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-spot_2c
+
+validator:
+  count: 0
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__2__Endpoint
+    value: "*:/graphql"
+  - name: IpRateLimiting__GeneralRules__2__Period
+    value: 1s
+  - name: IpRateLimiting__GeneralRules__2__Limit
+    value: "10"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:3.18.248.125"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  loggingEnabled: true
+  datadog:
+    enabled: true
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --tx-life-time=10
+  - --consensus-target-block-interval=7500
+  - --maximum-transaction-per-block=150
+  - --consensus-enter-precommit-delay=300
+
+  consensusSeedStrings:
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.9c-network.svc.cluster.local,31235"
+  - "02f164e3139e53eef2c17e52d99d343b8cbdb09eeed88af46c352b1c8be6329d71,tcp-seed-2.9c-network.svc.cluster.local,31235"
+  - "0247e289aa332260b99dfd50e578f779df9e6702d67e50848bb68f3e0737d9b9a5,tcp-seed-3.9c-network.svc.cluster.local,31235"
+
+  hosts:
+  - "odin-validator-5.nine-chronicles.com"
+
+  storePath: "/data/headless"
+
+  storage:
+    volumeNames:
+    - "volume-rotator-0"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: validator-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c_validator
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 25Gi
+
+remoteHeadless:
+  count: 1
+  replicas: 1
+
+  useTurnServer: false
+
+  hosts:
+  - "odin-eks-rpc-1.nine-chronicles.com"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "300s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "10"
+  - name: IpRateLimiting__IpBanMinute
+    value: "30"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: MultiAccountManaging__EnableManaging
+    value: "true"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:3.18.248.125"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::ffff:13.124.239.97"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:118.131.110.197"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_2xl_2c_test
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 25Gi
+
+  storage:
+    volumeNames:
+    - "test-headless-data-1-test-headless-1-0"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  loggingEnabled: true
+  datadog:
+    enabled: true
+
+dataProviderDataMigrator:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 56Gi
+
+  storage: 1000Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+dataProviderDailyMetric:
+  enabled: true
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 56Gi
+
+dataProvider:
+  enabled: false
+
+  rwMode: false
+  render: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
+
+  resources:
+    requests:
+      cpu: '3'
+      memory: 28Gi
+
+  env:
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: NC_Planet
+    value: Odin
+  - name: DOTNET_gcServer
+    value: "1"
+
+  storePath: "/data/headless"
+
+  storage:
+    writeVolumeName: "volume-rotator-1"
+
+explorer:
+  enabled: false
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    node.kubernetes.io/instance-type: r7g.xlarge
+
+marketService:
+  enabled: false
+  rwMode: false
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "false"
+
+  envForWrite:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
+
+  nodeSelector:
+    read:
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+    write:
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+fullState:
+  enabled: false
+
+  loggingEnabled: true
+  datadog:
+    enabled: true
+
+  useTurnServer: false
+
+  host: "odin-full-state.nine-chronicles.com"
+
+  storePath: "/data/headless"
+
+  storage:
+    volumeName: "volume-rotator-1"
+
+  extraArgs:
+  - --no-reduce-store
+  - --tx-quota-per-signer=1
+
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "120"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: IpRateLimiting__IpWhiteList__1
+    value: "::ffff:157.245.68.243"
+  - name: IpRateLimiting__IpWhiteList__2
+    value: "::1"
+  - name: IpRateLimiting__IpWhiteList__3
+    value: "::ffff:172.70.126.138"
+  - name: IpRateLimiting__IpWhiteList__4
+    value: "::ffff:3.18.248.125"
+  - name: IpRateLimiting__IpWhiteList__5
+    value: "::ffff:18.156.30.229"
+  - name: IpRateLimiting__IpWhiteList__6
+    value: "::ffff:18.194.31.91"
+  - name: IpRateLimiting__IpWhiteList__7
+    value: "::ffff:3.72.169.78"
+  - name: MultiAccountManaging__EnableManaging
+    value: "true"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 56Gi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-spot-i-2xl_2c
+
+worldBoss:
+  enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+bridge:
+  enabled: true
+  bridgeObserverImage:
+    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
+  bridgeStatusBotImage:
+    tag: "20210913-01"
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+testHeadless1:
+  enabled: false
+
+  loggingEnabled: true
+
+  remoteKv:
+    ports:
+      rpc: 5000
+      http: 5001
+
+  datadog:
+    enabled: true
+
+  host: "odin-test-1.nine-chronicles.com"
+
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-2c_spot_amd
+
+  storage:
+    volumeName: "volume-rotator-2"
+
+testHeadless2:
+  enabled: false
+
+  loggingEnabled: true
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  host: "odin-test-2.nine-chronicles.com"
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-2c_spot
+
+jwtHeadless:
+  enabled: false
+
+  loggingEnabled: true
+
+  datadog:
+    enabled: true
+
+  host: "odin-jwt.nine-chronicles.com,odin-full-state.nine-chronicles.com"
+
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "false"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  resources:
+    requests:
+      cpu: 3
+      memory: 25Gi
+
+  storage:
+    volumeName: "volume-rotator-3"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7i_flex_2xl_2c_test
+
+remoteActionEvaluatorHeadless:
+  enabled: false
+
+  loggingEnabled: true
+
+  useTurnServer: true
+
+  host: "odin-remote-aev-test.nine-chronicles.com"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+
+blockIntervalNotifier:
+  enabled: false
+  group: odin-validator
+
+acc:
+  enabled: false
+
+  local: true
+
+  redis:
+    enabled: false
+    port: 6379
+
+    nodeSelector:
+      eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+    resources:
+      requests:
+        memory: 200Mi
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+volumeRotator:
+  enabled: false
+  nodeSelector:
+    node.kubernetes.io/instance-type: r6g.xlarge
+
+  nodeSelectorValue: "9c-main-r7g_xl_2c"
+  headlessImage: "planetariumhq/ninechronicles-headless:git-8c4048f9aff848d200f1efcb1d8a12e0361a1b64"
+  replicaCount: 8
+
+rudolfService:
+  enabled: true
+
+  config:
+    ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"
+    graphqlEndpoint: "http://9c-main-full-state.nine-chronicles.com/graphql"
+    genesisBlockHash: "4582250d0da33b06779a8475d283d5dd210c683b9b999d74d03fac4f58fa6bce"
+  db:
+    local: false
+
+  kms:
+    keyId: "edebbede-fbc9-4200-bb64-8c040a3c2f75"
+    publicKey: "0480999c83c0d11635de058df9c573afb12d6af377078bc83913fdcf66f44f2df0454491aa304f6ef0529386ae42117b1712a697bb552f6f296cea11f6df1ade2b"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/odin-mainnet-9c-rudolf-signer"
+
+  service:
+    enabled: true
+    hostname: odin-rudolf.9c.gg
+    securityGroupIds:
+    - "sg-0f0bf654f2ff02289"
+    - "sg-033602a010bce902e"
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+rudolfCurrencyNotifier:
+  enabled: false
+
+  config:
+    schedule: "0 0 * * *"
+    graphqlEndpoint: "https://9c-main-full-state.nine-chronicles.com/graphql"
+    targetAddress: "0x4c35e816c9e13628615581a436a0df38F57A08cc"
+    serverName: "odin"
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+testWorldBoss:
+  enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+stateMigrationService:
+  enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+arenaService:
+  enabled: false
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "0"
+    rankingDbNumber: "1"
+
+  ssh:
+    enabled: true
+
+seasonpass:
+  api:
+    enabled: false
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
+  consumer:
+    enabled: false
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
+  tracker:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
+    image:
+      repository: planetariumhq/season-pass
+
+volumePreloader:
+  count: 0
+  replicas: 1
+
+  useTurnServer: true
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: 9c-main-r7g_xl_2c
+
+  resources:
+    requests:
+      cpu: '5'
+      memory: 25Gi
+
+  storage:
+    volumeNames:
+    - "volume-preloader-0"
+    - "volume-preloader-1"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+backoffice:
+  enabled: true
+
+iap:
+  backoffice:
+    enabled: true
+    image:
+      tag: "git-c96c5117c0f8687d77e656e0e870f42fe546100a"

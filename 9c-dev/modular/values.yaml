@@ -1,6 +1,0 @@
-clusterName: "9c-dev-v2"
-
-path: "9c-dev/modular"
-
-network:
-  - "heimdall"

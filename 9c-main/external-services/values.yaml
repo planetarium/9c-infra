@@ -1,0 +1,55 @@
+clusterName: 9c-main
+provider: RKE2
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-main-v2/external-services"
+
+gateway:
+  enabled: false
+  services:
+  - name: seasonpass-api-service
+    hostnames:
+    - seasonpass.9c.gg
+
+volumeReclaimPolicy: "Retain"
+
+seasonpass:
+  enabled: true
+  image:
+    tag: "git-92d1b0a403a63ff381084c4c27df461b88b077f0"
+
+  api:
+    enabled: false
+
+    nodeSelector:
+      node.kubernetes.io/node-index: "2"
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
+  worker:
+    enabled: true
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-worker"
+    flower:
+      enabled: true
+
+    nodeSelector:
+      node.kubernetes.io/node-index: "2"
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
+
+  tracker:
+    enabled: true
+
+    nodeSelector:
+      node.kubernetes.io/node-index: "2"
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 4Gi
