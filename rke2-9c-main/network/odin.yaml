@@ -31,6 +31,7 @@ RKE2:
     - 115.68.194.98/32
     - 115.68.194.100/32
     - 115.68.194.103/32
+    - 115.68.193.217/32
 
 externalSecret:
   enabled: true
@@ -93,14 +94,15 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
-  count: 3
-  clusterLocal: true
+  count: 1
+  clusterLocal: false
   useTurnServer: false
 
   hosts:
     - "odin-rke2-tcp-seed-1.nine-chronicles.com"
-    - "odin-rke2-tcp-seed-2.nine-chronicles.com"
-    - "odin-rke2-tcp-seed-3.nine-chronicles.com"
+
+  loadBalancerIPs:
+    - "115.68.193.217"
 
   loggingEnabled: true
 
@@ -113,6 +115,9 @@ seed:
       memory: 500Mi
 
   nodeSelector:
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: '1'
+      node.kubernetes.io/type: seed
 
 validator:
   count: 1

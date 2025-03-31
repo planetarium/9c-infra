@@ -27,6 +27,7 @@ RKE2:
     - 115.68.194.150/32
     - 115.68.194.151/32
     - 115.68.194.214/32
+    - 115.68.193.219/32
 
 externalSecret:
   enabled: true
@@ -87,11 +88,14 @@ volumeReclaimPolicy: "Retain"
 
 seed:
   count: 1
-  clusterLocal: true
+  clusterLocal: false
   useTurnServer: false
 
   hosts:
     - "heimdall-seed-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+    - "115.68.193.219"
 
   loggingEnabled: true
 
@@ -104,6 +108,9 @@ seed:
       memory: 500Mi
 
   nodeSelector:
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '1'
+      node.kubernetes.io/type: seed
 
 fullState:
   enabled: false

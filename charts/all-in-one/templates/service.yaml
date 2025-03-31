@@ -22,6 +22,9 @@ spec:
   type: ClusterIP
   {{- else }}
   type: LoadBalancer
+  {{- if eq $.Values.provider "RKE2" }}
+  loadBalancerIP: {{ index $.Values.seed.loadBalancerIPs $idx }}
+  {{- end }}
   externalTrafficPolicy: Local
   {{- end }}
   ports:
