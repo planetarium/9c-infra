@@ -67,7 +67,7 @@ snapshot:
   path: "main/partition"
 
   fullSnapshot:
-    enabled: true
+    enabled: false
     suspend: false
 
   partitionReset:
@@ -90,7 +90,7 @@ snapshot:
 volumeReclaimPolicy: "Retain"
 
 seed:
-  count: 3
+  count: 1
   useTurnServer: false
 
   hosts:
