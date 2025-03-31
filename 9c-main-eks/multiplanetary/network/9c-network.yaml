@@ -13,7 +13,7 @@ global:
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings.json"
 
   peerStrings:
-  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,tcp-seed-1.nine-chronicles.com,31234"
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,odin-tcp-seed-1.nine-chronicles.com,31234"
 
   iceServers:
   - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
@@ -39,7 +39,7 @@ gateway:
   enabled: true
   services:
   - name: remote-headless
-    hostname: odin-rpc-eks.nine-chronicles.com
+    hostname: odin-eks-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
     - name: remote-headless-2
@@ -47,14 +47,6 @@ gateway:
     protocols:
     - web
     - grpc
-  - name: data-provider-write
-    hostname: odin-dp.9c.gg
-  - name: market-service
-    hostname: odin-market.9c.gg
-  - name: world-boss-service
-    hostname: odin-world-boss.9c.gg
-  - name: arena-service
-    hostname: odin-arena.9c.gg
   - name: seasonpass-api
     hostnames:
     - season-pass.9c.gg
@@ -254,7 +246,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
@@ -273,7 +265,7 @@ dataProviderDataMigrator:
     value: remote-headless-test
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
@@ -434,7 +426,7 @@ worldBoss:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
 bridge:
-  enabled: true
+  enabled: false
   bridgeObserverImage:
     tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
   bridgeStatusBotImage:
@@ -655,7 +647,7 @@ volumeRotator:
   replicaCount: 8
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     ncgMinter: "0x47D082a115c63E7b58B1532d20E631538eaFADde"

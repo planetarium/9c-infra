@@ -1,6 +1,6 @@
 clusterName: "9c-main-v2"
 
-path: "9c-main/multiplanetary"
+path: "9c-main-eks/multiplanetary"
 
 network:
   - "9c-network"
