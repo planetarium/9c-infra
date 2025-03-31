@@ -50,6 +50,9 @@ gateway:
   - name: arena-service
     hostnames:
     - heimdall-internal-rke2-arena.9c.gg
+  - name: arena-backoffice
+    hostnames:
+    - heimdall-internal-rke2-arena-backoffice.9c.gg
   - name: mimir-gql
     hostnames:
     - heimdall-internal-rke2-mimir.9c.gg
@@ -236,6 +239,11 @@ arenaService:
 
   ssh:
     enabled: false
+
+  backoffice:
+    enabled: true
+
+
 
 mimir:
   enabled: true
