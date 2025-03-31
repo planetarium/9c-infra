@@ -542,6 +542,9 @@ arenaService:
   ssh:
     enabled: true
 
+  backoffice:
+    enabled: true
+
 volumePreloader:
   count: 0
   replicas: 1
