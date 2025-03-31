@@ -38,11 +38,6 @@ data:
         Rotate_Wait                  30
         storage.type                 filesystem
         Read_from_Head               ${READ_FROM_HEAD}
-    [INPUT]
-        Name            tail
-        Path            /var/log/kong/access.log
-        Parser          nginx
-        Tag             nginx_log
     [FILTER]
         Name                         kubernetes
         Match                        application.*
@@ -59,6 +54,7 @@ data:
         Match                        application.*
         Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_s3
+    {{- if eq .Values.provider "AWS" }}
     [OUTPUT]
         Name                         s3
         Match                        s3.*
@@ -68,6 +64,7 @@ data:
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
+    {{- end }}
 
     [INPUT]
         Name                         tail
