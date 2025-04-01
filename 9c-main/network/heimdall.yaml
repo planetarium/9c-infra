@@ -45,8 +45,6 @@ gateway:
       protocols:
         - web
         - grpc
-    - name: data-provider-write
-      hostname: heimdall-dp.9c.gg
     - name: market-service
       hostname: heimdall-market.9c.gg
     - name: arena-service
@@ -237,29 +235,6 @@ dataProviderDailyMetric:
     requests:
       cpu: "1"
       memory: 10Gi
-
-dataProvider:
-  enabled: true
-  rwMode: true
-  render: true
-
-  nodeSelector:
-
-  resources:
-    requests:
-      cpu: "3"
-      memory: 28Gi
-
-  env:
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: NC_Planet
-      value: Heimdall
-    - name: DOTNET_gcServer
-      value: "1"
-
-  storage:
-    data: 300Gi
 
 marketService:
   enabled: false
