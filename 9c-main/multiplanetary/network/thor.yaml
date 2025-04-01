@@ -317,7 +317,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
@@ -330,7 +330,7 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c
@@ -509,7 +509,7 @@ remoteActionEvaluatorHeadless:
   enabled: false
 
 blockIntervalNotifier:
-  enabled: true
+  enabled: false
   group: thor-validator
 
 acc:
@@ -519,7 +519,7 @@ volumeRotator:
   enabled: false
 
 rudolfService:
-  enabled: true
+  enabled: false
 
   config:
     graphqlEndpoint: "http://thor-full-state.nine-chronicles.com/graphql"
