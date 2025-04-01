@@ -38,7 +38,7 @@ class ApvUpdater:
         file_name: str
     ):
         new_branch = f"update-{file_name}-apv-{int(time())}"
-        file_path = f"{dir_name}/multiplanetary/network/{file_name}.yaml"
+        file_path = f"{dir_name}/network/{file_name}.yaml"
 
         remote_values_file_contents, contents_response = self._init_github_ref(
             branch=new_branch,

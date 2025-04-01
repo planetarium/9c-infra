@@ -30,7 +30,7 @@ spec:
     helm:
       values: |
         clusterName: 9c-main-v2
-        argocdPath: 9c-main
+        argocdPath: 9c-main-eks
         accountId: "319679068466"
         prometheus:
           server:
@@ -45,36 +45,13 @@ spec:
                 scrape_timeout: 6s
                 static_configs:
                   - targets:
-                    - validator-5.9c-network.svc.cluster.local:80
-                    - validator-6.9c-network.svc.cluster.local:80
-                    - validator-7.9c-network.svc.cluster.local:80
-                    - validator-8.9c-network.svc.cluster.local:80
-                    labels:
-                      group: odin-validator
-                  - targets:
-                    - validator-5.heimdall.svc.cluster.local:80
-                    labels:
-                      group: heimdall-validator
-                  - targets:
                     - remote-headless-1.9c-network.svc.cluster.local:80
-                    - remote-headless-2.9c-network.svc.cluster.local:80
                     labels:
                       group: odin-rpc
                   - targets:
                     - remote-headless-1.heimdall.svc.cluster.local:80
-                    - remote-headless-2.heimdall.svc.cluster.local:80
-                    - remote-headless-3.heimdall.svc.cluster.local:80
-                    - remote-headless-4.heimdall.svc.cluster.local:80
                     labels:
                       group: heimdall-rpc
-                  - targets:
-                    - test-headless-1.9c-network.svc.cluster.local:80
-                    labels:
-                      group: odin-test-rpc
-                  - targets:
-                    - test-headless-1.heimdall.svc.cluster.local:80
-                    labels:
-                      group: heimdall-test-rpc
                   - targets:
                     - sgp-nc-1.ninodes.com:80
                     - ash-nc-1.ninodes.com:80
@@ -83,143 +60,12 @@ spec:
                     - nld-nc-1.ninodes.com:80
                     labels:
                       group: nodeinfra-rpc
-                  - targets:
-                    - main-full-state.9c-network.svc.cluster.local:80
-                    labels:
-                      group: odin-full-state
-                  - targets:
-                    - main-full-state.heimdall.svc.cluster.local:80
-                    labels:
-                      group: heimdall-full-state
-                  - targets:
-                    - data-provider-db.9c-network.svc.cluster.local:80
-                    - data-provider-write.9c-network.svc.cluster.local:80
-                    labels:
-                      group: odin-data-provider
-                  - targets:
-                    - data-provider-db.heimdall.svc.cluster.local:80
-                    - data-provider-write.heimdall.svc.cluster.local:80
-                    labels:
-                      group: heimdall-data-provider
-                  - targets:
-                    - jwt-headless.9c-network.svc.cluster.local:80
-                    labels:
-                      group: odin-jwt
-                  - targets:
-                    - jwt-headless.heimdall.svc.cluster.local:80
-                    labels:
-                      group: heimdall-jwt
-                  - targets:
-                    - validator-5.thor.svc.cluster.local:80
-                    labels:
-                      group: thor-validator
-                  - targets:
-                    - remote-headless-1.thor.svc.cluster.local:80
-                    labels:
-                      group: thor-rpc
-                  - targets:
-                    - main-full-state.thor.svc.cluster.local:80
-                    labels:
-                      group: thor-full-state
-                  - targets:
-                    - jwt-headless.thor.svc.cluster.local:80
-                    labels:
-                      group: thor-jwt
-                  - targets:
-                    - data-provider-db.thor.svc.cluster.local:80
-                    - data-provider-write.thor.svc.cluster.local:80
-                    labels:
-                      group: thor-data-provider
                 tls_config:
                   insecure_skip_verify: true
-              - job_name: scrape-9c-rudolf
-                metrics_path: /metrics
-                scrape_interval: 5s
-                scrape_timeout: 4s
-                static_configs:
-                  - targets:
-                    - rudolf-service.9c-network.svc.cluster.local:3000
-                    - rudolf-service.heimdall.svc.cluster.local:3000
-                    - rudolf-service.thor.svc.cluster.local:3000
-                    labels:
-                      group: 9c-rudolf
-                tls_config:
-                  insecure_skip_verify: true
-        loki:
-          enabled: true
-          bucketName: loki.planetariumhq.com
-          write:
-            count: 3
-            nodeGroup: 9c-main-spot_2c
-            resources:
-              requests:
-                cpu: 1500m
-                memory: 6Gi
-          read:
-            count: 3
-            nodeGroup: 9c-main-spot_2c
-            resources:
-              requests:
-                cpu: 2000m
-                memory: 12Gi
-              limits:
-                cpu: 2000m
-                memory: 12Gi
-        memcached:
-          enabled: false
-          memory: 16Gi
-          nodeGroup: 9c-main-spot_2c
-        opentelemetry:
-          enabled: true
-          nodeGroup: 9c-main-spot_2c
-        tempo:
-          enabled: true
-          nodeGroup: 9c-main-spot_2c
         pyroscope:
           enabled: true
           replicaCount: 2
           nodeGroup: 9c-main-spot_2c
-        corednsRewrite:
-          enabled: true
-          suffix: nine-chronicles.com
-          planets:
-            odin:
-              namespace: 9c-network
-              services:
-                tcp-seed:
-                  count: 3
-                  suffix: planetarium.dev
-                validator:
-                  count: 1
-                  domainOffset: 5
-                  serviceOffset: 5
-                rpc:
-                  count: 2
-                  service: remote-headless
-                test:
-                  count: 1
-                  service: test-headless
-                full-state:
-                  service: main-full-state
-                jwt:
-                  service: jwt-headless
-            heimdall:
-              services:
-                tcp-seed:
-                  count: 1
-                validator:
-                  count: 1
-                  serviceOffset: 5
-                rpc:
-                  count: 3
-                  service: remote-headless
-                test:
-                  count: 1
-                  service: test-headless
-                full-state:
-                  service: main-full-state
-                jwt:
-                  service: jwt-headless
         datadog:
           enabled: true
           tolerations:

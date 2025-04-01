@@ -39,7 +39,3 @@ prometheus:
         scrape_interval: 8s
         scrape_timeout: 6s
         static_configs:
-          - labels:
-              group: thor-rpc
-            targets:
-              - remote-headless-1.thor.svc.cluster.local:80

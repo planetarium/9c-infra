@@ -13,7 +13,7 @@ spec:
     path: charts/multiplanetary
     helm:
       valueFiles:
-        - ../../9c-main/multiplanetary/values.yaml
+        - /9c-main-eks/multiplanetary/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: multiplanetary
