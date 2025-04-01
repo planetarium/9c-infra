@@ -47,9 +47,6 @@ gateway:
     protocols:
     - web
     - grpc
-  - name: seasonpass-api
-    hostnames:
-    - season-pass.9c.gg
   - name: iap-backoffice
     hostnames:
     - iap-internal-backoffice.9c.gg
@@ -425,15 +422,6 @@ worldBoss:
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
 
-bridge:
-  enabled: false
-  bridgeObserverImage:
-    tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
-  bridgeStatusBotImage:
-    tag: "20210913-01"
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: 9c-main-m7g_l_2c
-
 testHeadless1:
   enabled: false
 
@@ -708,25 +696,6 @@ arenaService:
     port: "6379"
     hangfireDbNumber: "0"
     rankingDbNumber: "1"
-
-  ssh:
-    enabled: true
-
-seasonpass:
-  api:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  consumer:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  tracker:
-    enabled: true
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-    image:
-      repository: planetariumhq/season-pass
 
 volumePreloader:
   count: 0

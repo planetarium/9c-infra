@@ -688,38 +688,6 @@ stateMigrationService:
   nodeSelector:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
-arenaService:
-  enabled: false
-
-  nodeSelector:
-    eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
-
-  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
-
-  redis:
-    port: "6379"
-    hangfireDbNumber: "2"
-    rankingDbNumber: "3"
-
-  ssh:
-    enabled: true
-
-seasonpass:
-  api:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  consumer:
-    enabled: false
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-  tracker:
-    enabled: true
-    serviceAccount:
-      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-seasonpass-tracker"
-    image:
-      repository: planetariumhq/season-pass
-
 volumePreloader:
   count: 0
   replicas: 1

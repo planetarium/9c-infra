@@ -53,34 +53,11 @@ rudolfService:
   image:
     tag: "git-278252e48d7d13306dcb1820bd9524ee6a27203c"
 
-bridgeService:
-  image:
-    repository: planetariumhq/9c-bridge
-    pullPolicy: Always
-    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
-
-bridgeServiceApi:
-  image:
-    repository: planetariumhq/9c-bridge-api
-    pullPolicy: Always
-    tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
-
-
 stateMigrationService:
   image:
     repository: planetariumhq/state-migration-service
     pullPolicy: Always
     tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
-
-arenaService:
-  image:
-    repository: planetariumhq/arena-service
-    pullPolicy: Always
-    tag: "git-9a4806b1642760ee997bf9894eb824a08a567db6"
-
-seasonpass:
-  image:
-    tag: "git-4c7b6b4f867535e71701e61d06ba0c7669a9fb31"
 
 backoffice:
   image:

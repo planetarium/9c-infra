@@ -450,9 +450,6 @@ arenaService:
     hangfireDbNumber: "0"
     rankingDbNumber: "1"
 
-  ssh:
-    enabled: true
-
   backoffice:
     enabled: true
 
