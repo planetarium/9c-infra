@@ -10,10 +10,8 @@ on:
         options:
         - main-odin
         - main-heimdall
-        - main-thor
         - internal-odin
         - internal-heimdall
-        - internal-thor
       number:
         required: true
         description: 'Apv number (e.g. 100310)'
@@ -32,9 +30,8 @@ on:
         type: choice
         options:
         - general
-        - 9c-network
+        - odin
         - heimdall
-        - thor
 
 jobs:
   manage-apv:

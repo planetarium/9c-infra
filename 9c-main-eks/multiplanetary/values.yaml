@@ -5,4 +5,3 @@ path: "9c-main-eks/multiplanetary"
 network:
   - "9c-network"
   - "heimdall"
-  - "thor"
