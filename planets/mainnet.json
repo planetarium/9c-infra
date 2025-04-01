@@ -6,6 +6,7 @@
     "genesisUri": "https://release.nine-chronicles.com/genesis-block-9c-main",
     "9cscanUrl": "https://9cscan.com",
     "rpcEndpoints": {
+      "dp.gql": ["http://odin-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api.9cscan.com"],
       "headless.gql": [
         "https://odin-rpc-1.nine-chronicles.com/graphql",
@@ -39,6 +40,7 @@
     "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
     "9cscanUrl": "https://heimdall.9cscan.com",
     "rpcEndpoints": {
+      "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-heimdall.9cscan.com"],
       "headless.gql": [
         "https://heimdall-rpc-1.nine-chronicles.com/graphql",
