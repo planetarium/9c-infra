@@ -3,22 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-tracker
+    app: seasonpass-heimdall-tracker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-tracker
+  name: seasonpass-heimdall-tracker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-tracker
+      app: seasonpass-heimdall-tracker
   template:
     metadata:
       labels:
-        app: seasonpass-tracker
+        app: seasonpass-heimdall-tracker
     spec:
       containers:
-        - name: seasonpass-tracker
+        - name: seasonpass-heimdall-tracker
           env:
             - name: TRACKER_GQL_URL_MAP
               valueFrom:
@@ -55,12 +55,16 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: seasonpass-env
+            - name: TRACKER_ENABLED_PLANETS
+              value: '["0x000000000001"]'
+            - name: TRACKER_ENABLED_TRACKERS
+              value: '["AdventureBossTracker", "CourageTracker", "WorldClearTracker"]'
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           {{- with $.Values.seasonpass.tracker.resources }}
           resources:
             {{- toYaml . | nindent 14 }}
           {{- end }}
-          name: seasonpass-tracker
+          name: seasonpass-heimdall-tracker
       {{- with $.Values.seasonpass.tracker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
