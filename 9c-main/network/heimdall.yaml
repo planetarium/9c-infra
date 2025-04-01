@@ -406,8 +406,8 @@ arenaService:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '4'
+    node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '2'
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
@@ -415,9 +415,6 @@ arenaService:
     port: "6379"
     hangfireDbNumber: "2"
     rankingDbNumber: "3"
-
-  ssh:
-    enabled: true
 
   backoffice:
     enabled: true
@@ -456,3 +453,43 @@ volumePreloader:
       key: dedicated
       operator: Equal
       value: remote-headless-test
+
+bridge:
+  enabled: true
+
+bridgeService:
+  enabled: true
+
+  multiplanetary:
+    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
+    upstream: "0x000000000000"
+    downstream: "0x000000000001"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+  account:
+    type: "kms"
+    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
+    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
+
+  txpool:
+    type: "local"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge (Odin ↔ Heimdall)"
+      channel: "9c-relay-bridge-bot-rdb"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "8521305"
+      downstream: "134016"
+
+bridgeServiceApi:
+  enabled: true

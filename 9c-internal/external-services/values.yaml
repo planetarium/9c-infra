@@ -21,7 +21,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-3cdc729219945f3e817c78104c74cea08260e5f8"
+    tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
 
   api:
     enabled: true
@@ -35,6 +35,11 @@ seasonpass:
 
   tracker:
     enabled: true
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 4Gi
 
 iap:
   backoffice:

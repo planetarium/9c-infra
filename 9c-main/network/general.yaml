@@ -38,6 +38,18 @@ stateMigrationService:
     pullPolicy: Always
     tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
 
+bridgeService:
+  image:
+    repository: planetariumhq/9c-bridge
+    pullPolicy: Always
+    tag: "git-b2ce3e2fd93d4728123d20ee4bd16caf09c83b9c"
+
+bridgeServiceApi:
+  image:
+    repository: planetariumhq/9c-bridge-api
+    pullPolicy: Always
+    tag: "git-c3bb6dc8357fc1e86e46ed788ff851d1239d756e"
+
 arenaService:
   image:
     repository: planetariumhq/arena-service
@@ -48,7 +60,7 @@ arenaService:
     image:
       repository: planetariumhq/arena-service-backoffice
       pullPolicy: Always
-      tag: "git-5151642645bdd5fe84163be79b42f557de6eee5c"
+      tag: "git-c886e575375af69ff96d23bccd38ea87824b267b"
 
 seasonpass:
   image:

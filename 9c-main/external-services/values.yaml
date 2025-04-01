@@ -18,10 +18,10 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-92d1b0a403a63ff381084c4c27df461b88b077f0"
+    tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
 
   api:
-    enabled: false
+    enabled: true
 
     nodeSelector:
       node.kubernetes.io/node-index: "2"
