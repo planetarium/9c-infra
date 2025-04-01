@@ -47,8 +47,6 @@ gateway:
       protocols:
         - web
         - grpc
-    - name: data-provider-write
-      hostname: odin-dp.9c.gg
     - name: market-service
       hostname: odin-market.9c.gg
     - name: arena-service
@@ -251,32 +249,6 @@ dataProviderDailyMetric:
     requests:
       cpu: "5"
       memory: 56Gi
-
-dataProvider:
-  enabled: true
-
-  rwMode: true
-  render: true
-
-  nodeSelector:
-
-  resources:
-    requests:
-      cpu: "3"
-      memory: 28Gi
-
-  env:
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: NC_Planet
-      value: Odin
-    - name: DOTNET_gcServer
-      value: "1"
-
-  storePath: "/data/headless"
-
-  storage:
-    writeVolumeName: "volume-rotator-1"
 
 marketService:
   enabled: false
