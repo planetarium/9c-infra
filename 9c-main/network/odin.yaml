@@ -116,35 +116,6 @@ validator:
   count: 1
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "false"
-    - name: IpRateLimiting__GeneralRules__2__Endpoint
-      value: "*:/graphql"
-    - name: IpRateLimiting__GeneralRules__2__Period
-      value: 1s
-    - name: IpRateLimiting__GeneralRules__2__Limit
-      value: "10"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::ffff:13.124.239.97"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:118.131.110.197"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: 10.42.0.0/15
-    - name: IpRateLimiting__IpWhiteList__5
-      value: 115.68.0.0/16
-    - name: IpRateLimiting__IpWhiteList__6
-      value: '::ffff:49.247.14.88'
-    - name: IpRateLimiting__IpWhiteList__7
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
@@ -218,39 +189,6 @@ remoteHeadless:
       node.kubernetes.io/node-index: '2'
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "true"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "300s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "10"
-    - name: IpRateLimiting__IpBanMinute
-      value: "30"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: MultiAccountManaging__EnableManaging
-      value: "true"
-    - name: IpRateLimiting__IpWhiteList__1
-      value: "::ffff:3.18.248.125"
-    - name: IpRateLimiting__IpWhiteList__2
-      value: "::ffff:13.124.239.97"
-    - name: IpRateLimiting__IpWhiteList__3
-      value: "::ffff:118.131.110.197"
-    - name: IpRateLimiting__IpWhiteList__4
-      value: 10.42.0.0/15
-    - name: IpRateLimiting__IpWhiteList__5
-      value: 115.68.0.0/16
-    - name: IpRateLimiting__IpWhiteList__6
-      value: '::ffff:49.247.14.88'
-    - name: IpRateLimiting__IpWhiteList__7
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.hostIP
     - name: Headless__AccessControlService__AccessControlServiceType
       value: "local"
     - name: Headless__AccessControlService__AccessControlServiceConnectionString
