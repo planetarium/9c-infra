@@ -1,5 +1,5 @@
 global:
-  appProtocolVersion: "200290/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDtmXbXy9seYISvIxPbu1K5JH4yfar91pA+5qixFPp3BAIgCVAjBmO.6xBEUeyt6ezYgytsmngnI8SYKgS4GQF0jaw=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTAzLTEwZQ=="
+  appProtocolVersion: "200300/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIA6EUj40u.ODOeefhcFYCxkfxBp7OVAv.xgVkGkSBWZwAiAgpBiRX4Yo40EbXmpKgc37msnyFFVf7GBrnenBTZDcYA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTA0LTAxZQ=="
   validatorPath: "heimdall-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
