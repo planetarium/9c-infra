@@ -11,7 +11,7 @@ WORLD_BOSS=$7
 MARKET_SERVICE=$8
 RUDOLF_SERVICE=$9
 
-file_path="$DIR/multiplanetary/network/$FILE_NAME.yaml"
+file_path="$DIR/network/$FILE_NAME.yaml"
 
 sources=""
 
