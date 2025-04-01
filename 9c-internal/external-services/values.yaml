@@ -25,6 +25,7 @@ seasonpass:
 
   api:
     enabled: true
+    stage: "internal"
 
   worker:
     enabled: true

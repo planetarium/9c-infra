@@ -1,68 +1,69 @@
-{{- if $.Values.seasonpass.worker.enabled }}
+{{- if $.Values.seasonpass.tracker.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-track-worker
+    app: seasonpass-tx-tracker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-track-worker
+  name: seasonpass-tx-tracker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-track-worker
+      app: seasonpass-tx-tracker
   template:
     metadata:
       labels:
-        app: seasonpass-track-worker
+        app: seasonpass-tx-tracker
     spec:
       containers:
-        - name: seasonpass-track-worker
-          args:
-            - celery -A app.celery_app worker --loglevel=info -Q tracker_queue -n tracker_worker@%h
-          command:
-            - /bin/sh
-            - -c
+        - name: seasonpass-tx-tracker
           env:
-            - name: WORKER_KMS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  key: kms-key-id
-                  name: seasonpass-env
-            - name: WORKER_REGION_NAME
-              valueFrom:
-                secretKeyRef:
-                  key: region
-                  name: seasonpass-env
-            - name: WORKER_GQL_URL_MAP
+            - name: TRACKER_GQL_URL_MAP
               valueFrom:
                 secretKeyRef:
                   key: gql-url-dict
                   name: seasonpass-env
-            - name: WORKER_PG_DSN
+            - name: TRACKER_PG_DSN
               valueFrom:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: WORKER_BROKER_URL
+            - name: TRACKER_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: WORKER_RESULT_BACKEND
+            - name: TRACKER_CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: redis-url
                   name: seasonpass-env
-            - name: WORKER_HEADLESS_JWT_SECRET
+            - name: TRACKER_ARENA_SERVICE_JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: TRACKER_START_BLOCK_INDEX_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index-dict
+                  name: seasonpass-env
+            - name: TRACKER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: seasonpass-env
-          image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
-          name: seasonpass-track-worker
-      {{- with $.Values.seasonpass.worker.nodeSelector }}
+            - name: TRACKER_ENABLED_TRACKERS
+              value: '["TxTracker"]'
+          image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.tracker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          name: seasonpass-tx-tracker
+      {{- with $.Values.seasonpass.tracker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

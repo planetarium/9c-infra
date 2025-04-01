@@ -1,74 +1,71 @@
-{{- if $.Values.seasonpass.api.enabled }}
+{{- if $.Values.seasonpass.tracker.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: seasonpass-api
+    app: seasonpass-odin-tracker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: seasonpass-api
+  name: seasonpass-odin-tracker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: seasonpass-api
+      app: seasonpass-odin-tracker
   template:
     metadata:
       labels:
-        app: seasonpass-api
+        app: seasonpass-odin-tracker
     spec:
       containers:
-        - name: seasonpass-api
+        - name: seasonpass-odin-tracker
           env:
-            - name: API_GQL_URL_MAP
+            - name: TRACKER_GQL_URL_MAP
               valueFrom:
                 secretKeyRef:
                   key: gql-url-dict
                   name: seasonpass-env
-            - name: API_PG_DSN
+            - name: TRACKER_PG_DSN
               valueFrom:
                 secretKeyRef:
                   key: db-uri
                   name: seasonpass-env
-            - name: API_CELERY_BROKER_URL
+            - name: TRACKER_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: seasonpass-env
-            - name: API_CELERY_RESULT_BACKEND
+            - name: TRACKER_CELERY_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: redis-url
                   name: seasonpass-env
-            - name: API_JWT_SECRET
+            - name: TRACKER_ARENA_SERVICE_JWT_PUBLIC_KEY
               valueFrom:
                 secretKeyRef:
-                  key: jwt-secret
+                  key: arena-service-jwt-public-key
                   name: seasonpass-env
-            - name: API_HEADLESS_JWT_SECRET
+            - name: TRACKER_START_BLOCK_INDEX_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index-dict
+                  name: seasonpass-env
+            - name: TRACKER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: seasonpass-env
-            - name: API_WORKERS
-              valueFrom:
-                secretKeyRef:
-                  key: api-workers
-                  name: seasonpass-env
-            - name: API_TIMEOUT_KEEP_ALIVE
-              valueFrom:
-                secretKeyRef:
-                  key: api-timeout-keep-alive
-                  name: seasonpass-env
-            - name: API_HOST
-              value: "0.0.0.0"
-            - name: API_STAGE
-              value: {{ $.Values.seasonpass.api.stage }}
-          image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
-          ports:
-            - containerPort: 8000
-          name: seasonpass-api
-      {{- with $.Values.seasonpass.api.nodeSelector }}
+            - name: TRACKER_ENABLED_PLANETS
+              value: '["0x000000000000"]'
+            - name: TRACKER_ENABLED_TRACKERS
+              value: '["AdventureBossTracker", "CourageTracker", "WorldClearTracker"]'
+          image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.tracker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          name: seasonpass-odin-tracker
+      {{- with $.Values.seasonpass.tracker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
