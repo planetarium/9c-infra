@@ -146,15 +146,15 @@ spec:
             | tar xvz -C /data/datadog
 
             sh /data/datadog/createLogPath.sh
-        image: alpine
-        imagePullPolicy: Always
-        name: setup-datadog
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /data
-          name: jwt-headless-data
+          image: alpine
+          imagePullPolicy: Always
+          name: setup-datadog
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: jwt-headless-data
         {{- end }}
       containers:
       - args:
