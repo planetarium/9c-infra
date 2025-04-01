@@ -303,7 +303,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
@@ -316,7 +316,7 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProviderDailyMetric:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c

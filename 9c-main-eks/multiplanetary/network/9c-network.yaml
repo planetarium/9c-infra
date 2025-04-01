@@ -243,7 +243,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-r7g_2xl_2c
@@ -262,7 +262,7 @@ dataProviderDataMigrator:
     value: remote-headless-test
 
 dataProviderDailyMetric:
-  enabled: false
+  enabled: true
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
