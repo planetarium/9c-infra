@@ -44,6 +44,8 @@ spec:
             policy.default: role:readonly
             policy.csv: |
               g, planetarium:DevOps, role:admin
+              g, planetarium:Engineers, role:admin
+              g, planetarium:Nine Chronicles (engineers), role:admin
           cm:
             admin.enabled: true
             statusbadge.enabled: true

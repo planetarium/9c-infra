@@ -1,8 +1,0 @@
-clusterName: "9c-internal-v2"
-
-path: "9c-internal/multiplanetary"
-
-network:
-  - "9c-network"
-  - "heimdall"
-  - "thor"

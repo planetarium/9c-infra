@@ -59,10 +59,10 @@
         "https://api-heimdall-internal.9cscan.com"
       ],
       "headless.gql": [
-        "https://heimdall-internal-rke2-1.nine-chronicles.com/graphql"
+        "https://heimdall-internal-rpc-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://heimdall-internal-rke2-1.nine-chronicles.com:31238"
+        "http://heimdall-internal-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": [
         "http://heimdall-internal-market.9c.gg"
@@ -74,10 +74,10 @@
         "http://heimdall-internal-patrol.9c.gg/graphql"
       ],
       "arena.rest": [
-        "https://heimdall-internal-rke2-arena.9c.gg"
+        "https://heimdall-internal-arena.9c.gg"
       ],
       "arena.gql": [
-        "https://heimdall-internal-rke2-arena.9c.gg"
+        "https://heimdall-internal-arena.9c.gg"
       ]
     },
     "bridges": {
