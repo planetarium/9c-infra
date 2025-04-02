@@ -291,6 +291,8 @@ remoteHeadless:
 
   storage:
     data: 300Gi
+    volumeNames:
+      - "volume-preloader-data-1-volume-preloader-1-0"
 
   tolerations:
     - effect: NoSchedule
@@ -721,7 +723,7 @@ seasonpass:
       repository: planetariumhq/season-pass
 
 volumePreloader:
-  count: 1
+  count: 0
   replicas: 1
 
   useTurnServer: true
