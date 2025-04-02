@@ -721,7 +721,7 @@ seasonpass:
       repository: planetariumhq/season-pass
 
 volumePreloader:
-  count: 0
+  count: 1
   replicas: 1
 
   useTurnServer: true
