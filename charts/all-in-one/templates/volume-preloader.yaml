@@ -207,6 +207,9 @@ spec:
         args:
           - |
             set -e
+
+            apk --no-cache add curl jq
+
             GRAPHQL_URL="http://localhost:80/graphql"
             INSTANCE_NAME="volume-preloader-{{ $index }}"
 
