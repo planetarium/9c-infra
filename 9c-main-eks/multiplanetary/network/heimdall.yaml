@@ -689,7 +689,7 @@ stateMigrationService:
     eks.amazonaws.com/nodegroup: heimdall-m7g_l_2c
 
 volumePreloader:
-  count: 0
+  count: 1
   replicas: 1
 
   useTurnServer: true
