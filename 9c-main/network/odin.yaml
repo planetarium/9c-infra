@@ -130,7 +130,7 @@ validator:
   extraArgs:
     - --tx-quota-per-signer=1
     - --tx-life-time=10
-    - --consensus-target-block-interval=7500
+    - --consensus-target-block-interval=7650
     - --maximum-transaction-per-block=150
     - --consensus-enter-precommit-delay=300
 
