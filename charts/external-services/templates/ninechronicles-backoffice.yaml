@@ -183,8 +183,12 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   parentRefs:
-    - name: {{ $.Release.Name }}-gateway
-      namespace: {{ $.Release.Name }}
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: web
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
   hostnames:
     - "backoffice.nine-chronicles.com"
   rules:
