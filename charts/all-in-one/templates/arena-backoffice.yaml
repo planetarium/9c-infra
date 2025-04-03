@@ -28,6 +28,21 @@ spec:
                 secretKeyRef:
                   name: arena
                   key: POSTGRES_CONNECTION_STRING
+            - name: Headless__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  key: HEADLESS_JWT_SECRET_KEY
+                  name: arena
+            - name: Headless__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  key: HEADLESS_JWT_ISSUER
+                  name: arena
+            - name: Headless__HeadlessEndpoint
+              valueFrom:
+                secretKeyRef:
+                  key: HEADLESS_ENDPOINT
+                  name: arena
             - name: Redis__Port
               value: "{{ .Values.arenaService.redis.port }}"
             - name: Redis__RankingDbNumber
