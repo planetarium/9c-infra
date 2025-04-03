@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   ports:
-    - port: 80
-      targetPort: 8080
-    - port: 443
+    - name: http
+      port: 80
+      protocol: TCP
       targetPort: 8080
   selector:
     app: ninechronicles-backoffice

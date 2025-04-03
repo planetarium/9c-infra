@@ -21,8 +21,7 @@ spec:
         - name: ninechronicles-backoffice
           image: {{ $.Values.backoffice.image.repository }}:{{ $.Values.backoffice.image.tag }}
           ports:
-            - containerPort: 80
-            - containerPort: 443
+            - containerPort: 8080
           env:
             - name: NC_CLOUDFLARE_ACCESS_KEY_ID
               valueFrom:
@@ -196,7 +195,5 @@ spec:
       backendRefs:
         - name: ninechronicles-backoffice
           port: 80
-        - name: ninechronicles-backoffice
-          port: 443
 ---
 {{- end }}
