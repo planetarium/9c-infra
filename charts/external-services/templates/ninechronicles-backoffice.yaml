@@ -164,6 +164,11 @@ spec:
                 secretKeyRef:
                   key: NC_MAIN_THOR_URL
                   name: ninechronicles-backoffice-env
+            - name: NC_ARENA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_ARENA_PRIVATE_KEY
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}

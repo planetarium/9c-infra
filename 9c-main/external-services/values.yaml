@@ -53,3 +53,10 @@ seasonpass:
       limits:
         cpu: 0.5
         memory: 1Gi
+
+backoffice:
+  enabled: true
+
+  image:
+    pullPolicy: Always
+    tag: "git-dbd4e4ad90effb2e30e501c6556e0c23d05d3507"
