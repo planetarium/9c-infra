@@ -88,9 +88,6 @@ gateway:
     grpc:
       kind: GRPCRoute
       port: 31238
-      transport:
-        respondingTimeouts:
-          readTimeout: 0
 
 seed:
   count: 1
