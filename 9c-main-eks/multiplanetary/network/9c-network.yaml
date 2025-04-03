@@ -735,9 +735,6 @@ volumePreloader:
     operator: Equal
     value: remote-headless-test
 
-backoffice:
-  enabled: true
-
 iap:
   backoffice:
     enabled: true

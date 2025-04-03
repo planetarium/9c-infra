@@ -58,9 +58,3 @@ stateMigrationService:
     repository: planetariumhq/state-migration-service
     pullPolicy: Always
     tag: "git-c3d015891391bae1fd78f5ae1d09eef5627a0a46"
-
-backoffice:
-  image:
-    repository: planetariumhq/nine-chronicles-backoffice
-    pullPolicy: Always
-    tag: "git-2841829bd1af277500c0b5dbd347c709c6706291"
