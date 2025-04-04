@@ -26,6 +26,10 @@ spec:
             replication_factor: 3
           storage:
             type: s3
+            bucketNames:
+              admin: admin
+              chunks: {{ $.Values.loki.bucketName }}
+              ruler: ruler
             s3:
               endpoint: "${R2_ENDPOINT}"
               bucketnames: "{{ $.Values.loki.bucketName }}"
