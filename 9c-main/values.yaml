@@ -33,7 +33,6 @@ loki:
   write:
     count: 2
     nodeSelector:
-      node.kubernetes.io/node-index: '3'
       node.kubernetes.io/type: general
     resources:
       requests:
@@ -45,7 +44,6 @@ loki:
   read:
     count: 2
     nodeSelector:
-      node.kubernetes.io/node-index: '3'
       node.kubernetes.io/type: general
     resources:
       requests:
