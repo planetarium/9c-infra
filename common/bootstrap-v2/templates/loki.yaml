@@ -114,7 +114,7 @@ spec:
           resources:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
           persistence:
-            size: 50Gi
+            size: 30Gi
 
         read:
           replicas: {{ $.Values.loki.read.count }}

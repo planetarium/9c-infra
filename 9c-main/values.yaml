@@ -27,6 +27,33 @@ certManager:
     - "*.9c.gg"
   issuer:
     email: devops@planetariumhq.com
+loki:
+  enabled: true
+  bucketName: 9c-loki
+  write:
+    count: 2
+    nodeSelector:
+      node.kubernetes.io/node-index: '3'
+      node.kubernetes.io/type: general
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+      limits:
+        cpu: 500m
+        memory: 2Gi
+  read:
+    count: 2
+    nodeSelector:
+      node.kubernetes.io/node-index: '3'
+      node.kubernetes.io/type: general
+    resources:
+      requests:
+        cpu: 500m
+        memory: 4Gi
+      limits:
+        cpu: 500m
+        memory: 4Gi
 grafana:
   hosts:
     - monitoring.planetarium.network
