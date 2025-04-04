@@ -739,4 +739,4 @@ iap:
   backoffice:
     enabled: true
     image:
-      tag: "git-c96c5117c0f8687d77e656e0e870f42fe546100a"
+      tag: "git-8c873b7140c065882437959b20c2554df223dd9f"
