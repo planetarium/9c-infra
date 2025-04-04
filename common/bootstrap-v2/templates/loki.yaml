@@ -16,7 +16,7 @@ spec:
     helm:
       values: |-
         global:
-          dnsService: "coredns"
+          dnsService: "rke2-coredns-rke2-coredns"
           extraEnvFrom:
           - secretRef:
               name: r2-token
@@ -101,7 +101,6 @@ spec:
           storage_config:
             boltdb_shipper:
               active_index_directory: /var/loki/index
-              shared_store: s3
 
         write:
           replicas: {{ $.Values.loki.write.count }}
