@@ -37,7 +37,7 @@ spec:
               secret_access_key: "${R2_SECRET_ACCESS_KEY}"
               s3forcepathstyle: true
               insecure: false
-          schema_config:
+          schemaConfig:
             configs:
             - from: "2022-01-11"
               index:
