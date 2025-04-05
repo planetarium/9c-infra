@@ -21,7 +21,7 @@ class BridgeServiceUpdater:
 
     def update(self, dir_name, file_name):
         new_branch = f"update-bridge-service-{int(time())}"
-        file_path = f"{dir_name}/multiplanetary/network/{file_name}.yaml"
+        file_path = f"{dir_name}/network/{file_name}.yaml"
 
         remote_values_file_contents, contents_response = self._init_github_ref(
             branch=new_branch,

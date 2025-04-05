@@ -10,8 +10,7 @@ gateway:
   enabled: false
   services:
   - name: seasonpass-api-service
-    hostnames:
-    - seasonpass.9c.gg
+    hostname: seasonpass.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
