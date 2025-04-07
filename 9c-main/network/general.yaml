@@ -65,3 +65,16 @@ arenaService:
 seasonpass:
   image:
     tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"
+
+mimir:
+  gql:
+    image:
+      repository: planetariumhq/mimir
+      pullPolicy: Always
+      tag: "git-f3c13c2a5a7b64fb2b0d8fe9b4c8da6a5fde0071"
+
+  diffWorker:
+    image:
+      repository: planetariumhq/mimir-worker
+      tag: "git-f3c13c2a5a7b64fb2b0d8fe9b4c8da6a5fde0071"
+    pullPolicy: Always

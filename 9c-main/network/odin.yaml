@@ -56,6 +56,8 @@ gateway:
         - season-pass.9c.gg
     - name: arena-backoffice
       hostname: odin-arena-backoffice.9c.gg
+    - name: mimir-gql
+      hostname: odin-mimir.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -461,3 +463,13 @@ volumePreloader:
       key: dedicated
       operator: Equal
       value: remote-headless-test
+
+mimir:
+  enabled: true
+  planetType: "odin"
+
+  gql:
+    enabled: true
+
+  diffWorker:
+    enabled: false
