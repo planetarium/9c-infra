@@ -35,8 +35,8 @@ spec:
               endpoint: "https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
               region: "apac"
               bucketnames: "{{ $.Values.loki.bucketName }}"
-              access_key_id: "${R2_ACCESS_KEY_ID}"
-              secret_access_key: "${R2_SECRET_ACCESS_KEY}"
+              accessKeyId: "${R2_ACCESS_KEY_ID}"
+              secretAccessKey: "${R2_SECRET_ACCESS_KEY}"
               s3forcepathstyle: true
               insecure: false
           schemaConfig:
