@@ -17,9 +17,17 @@ spec:
       values: |-
         global:
           dnsService: "rke2-coredns-rke2-coredns"
-          extraEnvFrom:
-          - secretRef:
-              name: r2-token
+          extraEnv:
+            - name: R2_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: r2-token
+                  key: R2_ACCESS_KEY_ID
+            - name: R2_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: r2-token
+                  key: R2_SECRET_ACCESS_KEY
         loki:
           auth_enabled: false
           commonConfig:
@@ -102,6 +110,9 @@ spec:
           storage_config:
             boltdb_shipper:
               active_index_directory: /var/loki/index
+
+        lokiCanary:
+          enabled: false
 
         write:
           replicas: {{ $.Values.loki.write.count }}
