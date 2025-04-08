@@ -472,4 +472,4 @@ mimir:
     enabled: true
 
   diffWorker:
-    enabled: false
+    enabled: true
