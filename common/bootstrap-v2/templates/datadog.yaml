@@ -48,9 +48,9 @@ spec:
           podSecurity:
             apparmor:
               enabled: false
-          {{- with $.Values.datadog.nodeGroup }}
+          {{- with $.Values.datadog.nodeSelector }}
           nodeSelector:
-            eks.amazonaws.com/nodegroup: {{ . }}
+            {{ toYaml . | nindent 12 }}
           {{- end }}
           {{- with $.Values.datadog.tolerations }}
           tolerations:
@@ -63,11 +63,6 @@ spec:
         clusterAgent:
           metricsProvider:
             enabled: true
-          {{- with $.Values.datadog.clusterAgent.nodeSelector }}
-          nodeSelector:
-            {{ toYaml . | nindent 12 }}
-          {{- end }}
-
   destination:
     server: https://kubernetes.default.svc
     namespace: datadog
@@ -85,7 +80,7 @@ spec:
   provider:
     aws:
       service: SecretsManager
-      region: us-east-2
+      region: ap-northeast-2
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret

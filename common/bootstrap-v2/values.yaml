@@ -62,3 +62,11 @@ loki:
         cpu: 1500m
         memory: 6Gi
     nodeSelector: {}
+
+datadog:
+  enabled: false
+  nodeSelector: {}
+  clusterAgent:
+    nodeSelector: {}
+  tolerations: []
+  affinity: {}
