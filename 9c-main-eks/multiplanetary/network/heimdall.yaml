@@ -318,7 +318,7 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot_2c

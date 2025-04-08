@@ -243,7 +243,7 @@ dataProviderDataMigrator:
       value: remote-headless-test
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
 

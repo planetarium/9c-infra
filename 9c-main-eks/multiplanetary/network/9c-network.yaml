@@ -262,7 +262,7 @@ dataProviderDataMigrator:
     value: remote-headless-test
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c

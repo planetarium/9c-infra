@@ -229,7 +229,7 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
 
