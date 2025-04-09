@@ -65,7 +65,7 @@ spec:
             enabled: true
           {{- with $.Values.datadog.clusterAgent.nodeSelector }}
           nodeSelector:
-            {{ toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
 
   destination:
@@ -99,7 +99,7 @@ spec:
     kind: SecretStore
   dataFrom:
   - extract:
-      key: {{ .Values.clusterName }}/datadog
+      key: {{ .Values.clusterName }}{{- if eq .Values.provider "RKE" }}-rke2{{- end }}/datadog
   target:
     name: datadog-secret
     template:
