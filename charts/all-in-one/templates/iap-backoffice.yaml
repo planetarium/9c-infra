@@ -215,6 +215,56 @@ spec:
                 secretKeyRef:
                   key: SESSION_SECRET_KEY
                   name: iap-env
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USER
+                  name: iap-env
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD
+                  name: iap-env
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: DB_HOST
+                  name: iap-env
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PORT
+                  name: iap-env
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_NAME
+                  name: iap-env
+            - name: SSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SSH_PRIVATE_KEY
+                  name: iap-env
+            - name: SSH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: SSH_HOST
+                  name: iap-env
+            - name: SSH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: SSH_USERNAME
+                  name: iap-env
+            - name: REMOTE_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REMOTE_HOST
+                  name: iap-env
+            - name: LOCAL_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: LOCAL_PORT
+                  name: iap-env
           image: {{ $.Values.iap.backoffice.image.repository }}:{{ $.Values.iap.backoffice.image.tag }}
           ports:
             - containerPort: 8000
