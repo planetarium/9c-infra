@@ -361,15 +361,11 @@ metadata:
     {{- end }}
     {{- end }}
 spec:
-  {{- if and $.Values.jwtHeadless.ingress.enabled (not $.Values.jwtHeadless.ingress.hosts) }}
-  type: ClusterIP
-  {{- else }}
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ $.Values.jwtHeadless.loadBalancerIP }}
   {{- end }}
   externalTrafficPolicy: Local
-  {{- end }}
   ports:
   - name: graphql
     port: {{ $.Values.jwtHeadless.ports.graphql }}
