@@ -1,0 +1,111 @@
+{{- if .Values.datadog.enabled }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: datadog
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: argocd
+  name: datadog
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: https://helm.datadoghq.com
+    chart: datadog
+    targetRevision: 3.69.3
+    helm:
+      values: |-
+        datadog:
+          apiKeyExistingSecret: datadog-secret
+          appKeyExistingSecret: datadog-secret
+          site: datadoghq.com
+          prometheusScrape:
+            enabled: true
+            serviceEndpoints: true
+          apm:
+            portEnabled: true
+          processAgent:
+            enabled: true
+            processCollection: true
+            stripProcessArguments: true
+          networkMonitoring:
+            enabled: true
+          otlp:
+            receiver:
+              protocols:
+                grpc:
+                  endpoint: 0.0.0.0:4317
+                  enabled: true
+                http:
+                  endpoint: 0.0.0.0:4318
+                  enabled: true
+        agents:
+          podSecurity:
+            apparmor:
+              enabled: false
+          {{- with $.Values.datadog.nodeSelector }}
+          nodeSelector:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.datadog.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with $.Values.datadog.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        clusterAgent:
+          metricsProvider:
+            enabled: true
+          {{- with $.Values.datadog.clusterAgent.nodeSelector }}
+          nodeSelector:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: datadog
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: "external-secrets.io/v1beta1"
+kind: SecretStore
+metadata:
+  name: datadog-secretsmanager
+  namespace: datadog
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: ap-northeast-2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: datadog-secret
+  namespace: datadog
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: datadog-secretsmanager
+    kind: SecretStore
+  dataFrom:
+  - extract:
+      key: {{ .Values.clusterName }}/datadog
+  target:
+    name: datadog-secret
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/instance: datadog
+          app.kubernetes.io/part-of: datadog
+    creationPolicy: Owner
+{{- end }}
