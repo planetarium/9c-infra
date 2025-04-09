@@ -1,0 +1,11 @@
+# charts/portal/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-portal-config
+  labels:
+    {{- include "portal.labels" . | nindent 4 }}
+data:
+  NODE_ENV: {{ .Values.portalService.env.NODE_ENV | quote }}
+  API_URL: {{ .Values.portalService.env.API_URL | quote }}
+  PUBLIC_URL: {{ .Values.portalService.env.PUBLIC_URL | quote }}

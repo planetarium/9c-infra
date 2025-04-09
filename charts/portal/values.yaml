@@ -1,0 +1,90 @@
+# Global settings
+global:
+  environment: development
+  domain: localhost
+  # Shared database configuration
+
+# App 1 Configuration
+portalService:
+  name: portal
+  replicaCount: 1
+  image:
+    repository: sunwoong/portal
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: true
+    className: "nginx"
+    host: "portal.localhost"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  env:
+    ETH_JSON_RPC_PROVIDER_URL: "https://mainnet.infura.io/v3/9b981bb164114a8b882d6c6c6c8d9fc1"
+    TWITTER_ID: "1155834450787233792"
+    TWITTER_BEARER_TOKEN: ""
+    TWITTER_CLIENT_ID: ""
+    TWITTER_CLIENT_SECRET: ""
+    IR2_TWITTER_ID: "1752251826886553600"
+    JC_TWITTER_ID: "709049309237346304"
+    DATABASE_URL: ""
+    MINIMUM_BALANCE_TO_WITHDRAW: 5
+    NC_ADDRESS_NCG_MINTER: 47d082a115c63e7b58b1532d20e631538eafadde
+    NC_ADDRESS_PORTAL: "0x491d9842ed8f1b5d291272cf9e7b66a7b7c90cda"
+    NC_ADDRESS_NCG_VOUCHER: "0xc1Ea0D238f7b1C9c70Ce6589DAb2F15C1A076455"
+    PLANET_VAULT_ADDRESS: "0x1c2ae97380CFB4F732049e454F6D9A25D4967c6f"
+    SECRETS: ""
+    BACKEND_ROLE_ARN: "arn:aws:iam::319679068466:role/9c-portal-kms"
+    KMS_REGION: us-east-2
+    KMS_KEY_ID: ea8d2b04-1d7a-456b-a454-c7a8ae6b8cc3
+    KMS_MEAD_REGION: us-east-2
+    KMS_MEAD_KEY_ID: 648fc547-0b3b-48c9-bd2d-c347188e1682
+    KMS_NCG_VOUCHER_REGION: us-east-2
+    KMS_NCG_VOUCHER_KEY_ID: 0b3b409d-36f2-4b8e-b406-ae95c248de4a
+    DISCORD_ID: ""
+    DISCORD_SECRET: ""
+    DISCORD_SERVER_ID: "1069427717130440794"
+    DISCORD_BOT_TOKEN: ""
+    DISCORD_IR2_SERVER_ID: "1222423353936183359"
+    DISCORD_IR2_BOT_TOKEN: ""
+    GOOGLE_ID: ""
+    GOOGLE_SECRET: ""
+    APPLE_CLIENT_ID: ""
+    APPLE_TEAM_ID: ""
+    APPLE_KEY_ID: ""
+    APPLE_PRIVATE_KEY_STRING: ""
+    AUTH_COOKIE_NAME: accessToken
+    AUTH_COOKIE_SECRET: ""
+    JWT_SECRET_KEY: ""
+    JWT_IAP_SECRET_KEY: ""
+    DEPLOY_KEY: ""
+    COIN_GECKO_API_KEY: ""
+    NEXT_PUBLIC_INFURA_API_KEY: ""
+    NEXT_PUBLIC_NODE_REAL_API_KEY: ""
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: ""
+    SLACK_TOKEN: ""
+    DP_ODIN_HOST: ""
+    DP_ODIN_USER: ""
+    DP_ODIN_PASSWORD: ""
+    DP_ODIN_DATABASE: ""
+    DP_HEIMDAL_HOST: ""
+    DP_HEIMDAL_USER: ""
+    DP_HEIMDAL_PASSWORD: ""
+    DP_HEIMDAL_DATABASE: ""
+    NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ""
+    HCAPTCHA_SECRET_KEY: ""
+    S3_REGION: us-east-2
+    MAINNET_JWT_KEY: ""
+    MAINNET_ODIN: "https://9c-main-jwt.nine-chronicles.com/graphql"
+    MAINNET_HEIMDALL: "https://heimdall-jwt.nine-chronicles.com/graphql"
+    TWILIO_ACCOUNT_SID: ""
+    TWILIO_ACCOUNT_TOKEN: ""
+    TWILIO_CLIENT_SID: ""
+    KMS_BRIDGE_ID: ""

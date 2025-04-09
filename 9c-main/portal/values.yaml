@@ -1,0 +1,36 @@
+clusterName: 9c-main
+provider: RKE2
+
+portal:
+  enabled: true
+  image:
+    repository: planetariumhq/9c-portal
+    tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: true
+    className: "nginx"
+    host: "nine-chronicles.com"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  externalSecret:
+    enabled: true
+    provider: AWS
+    prefix: "9c-main/portal"
+  env:
+    NODE_ENV: production
+    BASE_URL: "https://nine-chronicles.com"
+    NEXT_PUBLIC_STATUS_SEVER_URL: "https://portal-status.nine-chronicles.com"
+    S3_BANNER_BUCKET: "9c-portal-banner"
+    BANNER_CLOUD_FRONT_DOMAIN: "https://d20llolvuaz1gj.cloudfront.net/"
+    QA_ENABLED: true
+    NEXT_PUBLIC_MAINNET_ENV: production
+    NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets.nine-chronicles.com/planets/"
