@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: portal
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/portal
+    helm:
+      valueFiles:
+        - /9c-internal/portal/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: portal

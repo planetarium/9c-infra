@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.portalService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.portalService.name }}
+          image: "{{ .Values.portalService.image.repository }}:{{ .Values.portalService.image.tag }}"
+          imagePullPolicy: {{ .Values.portalService.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.portalService.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
+          resources:
+            {{- toYaml .Values.portalService.resources | nindent 12 }}
