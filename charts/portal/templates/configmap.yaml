@@ -9,6 +9,4 @@ data:
   {{- range $key, $value := .Values.portalService.env }}
   {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- range $key, $value := .Values.portalService.env }}
-  {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  
