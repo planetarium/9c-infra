@@ -23,7 +23,7 @@ externalSecret:
 env:
   NODE_ENV: production
   BASE_URL: "https://nine-chronicles.com"
-  NEXT_PUBLIC_STATUS_SEVER_URL: "https://portal-status.nine-chronicles.com"
+  NEXT_PUBLIC_STATUS_SERVER_URL: "https://portal-status.nine-chronicles.com"
   S3_BANNER_BUCKET: "9c-portal-banner"
   BANNER_CLOUD_FRONT_DOMAIN: "https://d20llolvuaz1gj.cloudfront.net/"
   QA_ENABLED: true
