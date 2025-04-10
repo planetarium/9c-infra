@@ -9,8 +9,8 @@ portalService:
       cpu: 4
       memory: 4Gi
     requests:
-      cpu: 4
-      memory: 4Gi
+      cpu: 2
+      memory: 3Gi
   image:
     repository: planetariumhq/9c-portal
     tag: latest
