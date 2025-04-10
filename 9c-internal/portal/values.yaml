@@ -6,11 +6,11 @@ portalService:
     port: 3000
   resources:
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 2
+      memory: 2Gi
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 2
+      memory: 2Gi
   image:
     repository: planetariumhq/9c-portal-internal
     tag: latest
