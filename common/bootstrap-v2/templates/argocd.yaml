@@ -46,6 +46,7 @@ spec:
               g, planetarium:DevOps, role:admin
               g, planetarium:Engineers, role:admin
               g, planetarium:Nine Chronicles (engineers), role:admin
+              g, planetarium:Growth, role:admin
           cm:
             admin.enabled: true
             statusbadge.enabled: true
