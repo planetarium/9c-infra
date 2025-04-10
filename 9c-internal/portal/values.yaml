@@ -1,6 +1,6 @@
 image:
   repository: planetariumhq/9c-portal-internal
-  tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
+  tag: latest
   pullPolicy: Always
 service:
   type: ClusterIP
