@@ -16,6 +16,14 @@ portalService:
     requests:
       cpu: 200m
       memory: 256Mi
+  image:
+    repository: planetariumhq/9c-portal-internal
+    tag: latest
+    pullPolicy: Always
+  externalSecret:
+    enabled: true
+    provider: AWS
+    prefix: "9c-internal-v2/portal"
   env:
     ETH_JSON_RPC_PROVIDER_URL: "https://mainnet.infura.io/v3/9b981bb164114a8b882d6c6c6c8d9fc1"
     TWITTER_ID: "1155834450787233792"

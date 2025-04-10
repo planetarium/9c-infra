@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: {{ .Values.portalService.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.portalService.image.repository }}:{{ .Values.portalService.image.tag }}"
+          imagePullPolicy: {{ .Values.portalService.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.portalService.service.port }}
