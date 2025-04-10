@@ -4,7 +4,6 @@ global:
   domain: localhost
   # Shared database configuration
 
-# App 1 Configuration
 portalService:
   name: portal
   replicaCount: 1

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-portal
+  name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}-portal
+    app: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.portalService.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-portal
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-portal
+        app: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ .Values.portalService.name }}
@@ -24,6 +24,8 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-portal-config
+                name: {{ .Release.Name }}-config
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
           resources:
             {{- toYaml .Values.portalService.resources | nindent 12 }}

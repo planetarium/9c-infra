@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-portal
+  name: { { .Release.Name } }
   labels:
-    app: {{ .Release.Name }}-portal
+    app: { { .Release.Name } }
 spec:
-  type: {{ .Values.portalService.service.type }}
+  type: { { .Values.portalService.service.type } }
   ports:
-    - port: {{ .Values.portalService.service.port }}
-      targetPort: {{ .Values.portalService.service.port }}
+    - port: { { .Values.portalService.service.port } }
+      targetPort: { { .Values.portalService.service.port } }
       protocol: TCP
       name: http
   selector:
-    app: {{ .Release.Name }}-portal
+    app: { { .Release.Name } }

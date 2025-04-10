@@ -11,7 +11,7 @@ spec:
     path: charts/portal
     helm:
       valueFiles:
-        - 9c-main/portal/values.yaml
+        - /9c-main/portal/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: portal

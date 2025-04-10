@@ -1,36 +1,31 @@
-clusterName: 9c-internal
-provider: RKE2
-
-portal:
-  enabled: false
-  image:
-    repository: planetariumhq/9c-portal-internal
-    tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
-    pullPolicy: Always
-  service:
-    type: ClusterIP
-    port: 3000
-  ingress:
-    enabled: true
-    className: "nginx"
-    host: "developer-mode.nine-chronicles.com"
-  resources:
-    limits:
-      cpu: 200m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  externalSecret:
-    enabled: true
-    provider: AWS
-    prefix: "9c-internal-v2/portal"
-  env:
-    NODE_ENV: development
-    BASE_URL: "developer-mode.nine-chronicles.com"
-    NEXT_PUBLIC_STATUS_SEVER_URL: "https://9c-status-portal.s3.ap-northeast-2.amazonaws.com"
-    S3_BANNER_BUCKET: "9c-portal-banner-dev"
-    BANNER_CLOUD_FRONT_DOMAIN: "https://d3hdj186tjvpbo.cloudfront.net/"
-    QA_ENABLED: true
-    NEXT_PUBLIC_MAINNET_ENV: local
-    NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
+image:
+  repository: planetariumhq/9c-portal-internal
+  tag: "git-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 3000
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "developer-mode.nine-chronicles.com"
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-internal-v2/portal"
+env:
+  NODE_ENV: development
+  BASE_URL: "developer-mode.nine-chronicles.com"
+  NEXT_PUBLIC_STATUS_SEVER_URL: "https://9c-status-portal.s3.ap-northeast-2.amazonaws.com"
+  S3_BANNER_BUCKET: "9c-portal-banner-dev"
+  BANNER_CLOUD_FRONT_DOMAIN: "https://d3hdj186tjvpbo.cloudfront.net/"
+  QA_ENABLED: true
+  NEXT_PUBLIC_MAINNET_ENV: local
+  NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
