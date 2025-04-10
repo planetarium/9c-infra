@@ -17,7 +17,7 @@ spec:
         app: petpop-backoffice
     spec:
       containers:
-          - name: petpop-backoffice
+        - name: petpop-backoffice
           image: {{ .Values.backoffice.image.repository }}:{{ .Values.backoffice.image.tag }}
           ports:
             - containerPort: 3001
