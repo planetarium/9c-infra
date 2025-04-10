@@ -19,6 +19,8 @@ spec:
       containers:
         - name: petpop-backoffice
           image: {{ .Values.backoffice.image.repository }}:{{ .Values.backoffice.image.tag }}
+          command: ["pnpm"]
+          args: ["run", "admin:dev"]
           ports:
             - containerPort: 3001
           envFrom:
