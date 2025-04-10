@@ -1,3 +1,9 @@
 image:
   repository: planetariumhq/petpop
   tag: git-22a0fa7219211e3e927b924c99c3961b493df764
+
+backoffice:
+  image:
+    repository: planetariumhq/petpop
+    tag: git-966be46ae02b73d254bf2070d57e293a368c43f8
+  hostname: petpop-backoffice.9c.gg

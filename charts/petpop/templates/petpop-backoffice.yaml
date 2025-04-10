@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petpop-backoffice
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: petpop-backoffice
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petpop-backoffice
+  template:
+    metadata:
+      labels:
+        app: petpop-backoffice
+    spec:
+      containers:
+        - name: petpop-backoffice
+          image: {{ .Values.backoffice.image.repository }}:{{ .Values.backoffice.image.tag }}
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - secretRef:
+                name: petpop-env
+      {{- with .Values.backoffice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | indent 8 }}
+      {{- end }}
+      restartPolicy: Always

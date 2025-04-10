@@ -13,3 +13,21 @@ spec:
       port: 80
       protocol: TCP
       targetPort: 3407
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petpop-backoffice
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3001
+  selector:
+    app: petpop-backoffice
+---
