@@ -6,10 +6,6 @@ global:
 portalService:
   name: portal
   replicaCount: 1
-  image:
-    repository: sunwoong/portal
-    tag: latest
-    pullPolicy: Never
   service:
     type: ClusterIP
     port: 3000
@@ -20,6 +16,14 @@ portalService:
     requests:
       cpu: 200m
       memory: 256Mi
+  image:
+    repository: planetariumhq/9c-portal-internal
+    tag: latest
+    pullPolicy: Always
+  externalSecret:
+    enabled: true
+    provider: AWS
+    prefix: "9c-internal-v2/portal"
   env:
     ETH_JSON_RPC_PROVIDER_URL: "https://mainnet.infura.io/v3/9b981bb164114a8b882d6c6c6c8d9fc1"
     TWITTER_ID: "1155834450787233792"
@@ -37,11 +41,11 @@ portalService:
     SECRETS: ""
     BACKEND_ROLE_ARN: "arn:aws:iam::319679068466:role/9c-portal-kms"
     KMS_REGION: us-east-2
-    KMS_KEY_ID: ea8d2b04-1d7a-456b-a454-c7a8ae6b8cc3
+    KMS_KEY_ID: ""
     KMS_MEAD_REGION: us-east-2
-    KMS_MEAD_KEY_ID: 648fc547-0b3b-48c9-bd2d-c347188e1682
+    KMS_MEAD_KEY_ID: ""
     KMS_NCG_VOUCHER_REGION: us-east-2
-    KMS_NCG_VOUCHER_KEY_ID: 0b3b409d-36f2-4b8e-b406-ae95c248de4a
+    KMS_NCG_VOUCHER_KEY_ID: ""
     DISCORD_ID: ""
     DISCORD_SECRET: ""
     DISCORD_SERVER_ID: "1069427717130440794"
