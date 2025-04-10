@@ -5,17 +5,6 @@ image:
 service:
   type: ClusterIP
   port: 3000
-ingress:
-  enabled: true
-  className: "nginx"
-  host: "developer-mode.nine-chronicles.com"
-resources:
-  limits:
-    cpu: 200m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
 externalSecret:
   enabled: true
   provider: AWS

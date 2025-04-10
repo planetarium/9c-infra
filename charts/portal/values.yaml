@@ -2,7 +2,6 @@
 global:
   environment: development
   domain: localhost
-  # Shared database configuration
 
 portalService:
   name: portal
@@ -14,10 +13,6 @@ portalService:
   service:
     type: ClusterIP
     port: 3000
-  ingress:
-    enabled: true
-    className: "nginx"
-    host: "portal.localhost"
   resources:
     limits:
       cpu: 500m

@@ -5,10 +5,6 @@ image:
 service:
   type: ClusterIP
   port: 3000
-ingress:
-  enabled: true
-  className: "nginx"
-  host: "nine-chronicles.com"
 resources:
   limits:
     cpu: 500m
