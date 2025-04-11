@@ -22,9 +22,12 @@ certManager:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
   dnsNames:
+    - "nine-chronicles.com"
     - "*.nine-chronicles.com"
     - "*.planetarium.network"
     - "*.9c.gg"
+    - "petpop.fun"
+    - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
 loki:
@@ -89,3 +92,18 @@ prometheus:
               group: heimdall-jwt
             targets:
               - jwt-headless.heimdall.svc.cluster.local:80
+datadog:
+  enabled: true
+  clusterAgent:
+    nodeSelector:
+      node.kubernetes.io/type: general
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.kubernetes.io/network
+            operator: In
+            values:
+            - odin
+            - heimdall

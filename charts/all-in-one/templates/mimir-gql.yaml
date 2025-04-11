@@ -20,6 +20,8 @@ spec:
       containers:
         - name: mimir-gql
           image: {{ $.Values.mimir.gql.image.repository }}:{{ $.Values.mimir.gql.image.tag }}
+          ports:
+            - containerPort: 8080
           env:
             - name: Database__ConnectionString
               valueFrom:

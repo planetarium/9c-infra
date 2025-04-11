@@ -17,9 +17,7 @@ spec:
       values: |-
         global:
           dnsService: "rke2-coredns-rke2-coredns"
-          extraEnvFrom:
-          - secretRef:
-              name: r2-token
+
         loki:
           auth_enabled: false
           commonConfig:
@@ -28,14 +26,15 @@ spec:
           storage:
             type: s3
             bucketNames:
-              admin: admin
+              admin: {{ $.Values.loki.bucketName }}
               chunks: {{ $.Values.loki.bucketName }}
-              ruler: ruler
+              ruler: {{ $.Values.loki.bucketName }}
             s3:
-              endpoint: "${R2_ENDPOINT}"
+              endpoint: "${R2_ENDPOINT}}"
+              region: "apac"
               bucketnames: "{{ $.Values.loki.bucketName }}"
-              access_key_id: "${R2_ACCESS_KEY_ID}"
-              secret_access_key: "${R2_SECRET_ACCESS_KEY}"
+              accessKeyId: "${R2_ACCESS_KEY_ID}"
+              secretAccessKey: "${R2_SECRET_ACCESS_KEY}"
               s3forcepathstyle: true
               insecure: false
           schemaConfig:
@@ -102,6 +101,16 @@ spec:
             boltdb_shipper:
               active_index_directory: /var/loki/index
 
+        lokiCanary:
+          enabled: false
+
+        backend:
+          extraArgs:
+            - "-config.expand-env=true"
+          extraEnvFrom:
+            - secretRef:
+                name: r2-token
+
         write:
           replicas: {{ $.Values.loki.write.count }}
           {{- with $.Values.loki.write.nodeSelector }}
@@ -112,6 +121,11 @@ spec:
             {{- toYaml $.Values.loki.write.resources | nindent 12 }}
           persistence:
             size: 30Gi
+          extraArgs:
+            - "-config.expand-env=true"
+          extraEnvFrom:
+            - secretRef:
+                name: r2-token
 
         read:
           replicas: {{ $.Values.loki.read.count }}
@@ -121,6 +135,11 @@ spec:
           {{- end }}
           resources:
             {{- toYaml $.Values.loki.read.resources | nindent 12 }}
+          extraArgs:
+            - "-config.expand-env=true"
+          extraEnvFrom:
+            - secretRef:
+                name: r2-token
 
         test:
           enabled: false

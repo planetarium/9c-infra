@@ -51,6 +51,8 @@ gateway:
       hostname: heimdall-arena.9c.gg
     - name: arena-backoffice
       hostname: heimdall-arena-backoffice.9c.gg
+    - name: mimir-gql
+      hostname: heimdall-mimir.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -227,7 +229,7 @@ dataProviderDataMigrator:
   storage: 300Gi
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
 
@@ -468,3 +470,13 @@ bridgeService:
 
 bridgeServiceApi:
   enabled: true
+
+mimir:
+  enabled: true
+  planetType: "heimdall"
+
+  gql:
+    enabled: true
+
+  diffWorker:
+    enabled: true

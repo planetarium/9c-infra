@@ -25,6 +25,7 @@ certManager:
     - "*.nine-chronicles.com"
     - "*.planetarium.network"
     - "*.9c.gg"
+    - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
 grafana:

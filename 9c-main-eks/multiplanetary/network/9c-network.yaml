@@ -262,7 +262,7 @@ dataProviderDataMigrator:
     value: remote-headless-test
 
 dataProviderDailyMetric:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-2xl_2c
@@ -739,4 +739,4 @@ iap:
   backoffice:
     enabled: true
     image:
-      tag: "git-8c873b7140c065882437959b20c2554df223dd9f"
+      tag: "git-f1929dfe365b6e2d847eb4f57212f205a7c40738"

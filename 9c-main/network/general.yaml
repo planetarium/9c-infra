@@ -16,7 +16,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-8a220515a35fb8bac8dfad21c0dd7cd3af96de6b"
+    tag: "git-84c095751b760792820290569b072ec83d827926"
 
 worldBoss:
   image:
@@ -65,3 +65,16 @@ arenaService:
 seasonpass:
   image:
     tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"
+
+mimir:
+  gql:
+    image:
+      repository: planetariumhq/mimir
+      pullPolicy: Always
+      tag: "git-a971720fd38efe00d155b8a98d1df5833e702ae4"
+
+  diffWorker:
+    image:
+      repository: planetariumhq/mimir-worker
+      tag: "git-a971720fd38efe00d155b8a98d1df5833e702ae4"
+    pullPolicy: Always
