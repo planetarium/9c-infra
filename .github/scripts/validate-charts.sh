@@ -10,11 +10,11 @@ done
 
 # Check multiplanetary networks manually
 CLUSTERS=("9c-main" "9c-internal")
-NETWORKS=("9c-network" "heimdall" "thor" "idun")
+NETWORKS=("odin" "heimdall")
 for cluster in "${CLUSTERS[@]}"; do
     for network in "${NETWORKS[@]}"; do
-        helm template --values "$cluster/multiplanetary/network/$network.yaml" \
-            --values "$cluster/multiplanetary/network/general.yaml" \
+        helm template --values "$cluster/network/$network.yaml" \
+            --values "$cluster/network/general.yaml" \
             "charts/all-in-one" | ./kubeconform -strict -summary -skip "TCPRoute" -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
     done
 done

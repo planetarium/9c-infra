@@ -11,10 +11,6 @@ on:
         - internal-all
         - odin-internal
         - heimdall-internal
-        - thor-internal
-        - preview-all
-        - odin-preview
-        - heimdall-preview
 
 concurrency:
   group: release
@@ -28,8 +24,7 @@ jobs:
     steps:
     - id: set-matrix
       run: |
-        INTERNAL_ALL='[ "odin", "heimdall", "thor" ]'
-        PREVIEW_ALL='[ "odin-preview", "heimdall-preview" ]'
+        INTERNAL_ALL='[ "odin", "heimdall" ]'
 
         INPUT="${{ github.event.inputs.chain }}"
         if [[ $INPUT == "internal-all" ]]; then
