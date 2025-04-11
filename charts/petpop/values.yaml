@@ -1,6 +1,8 @@
+replicas: 1
+
 image:
   repository: planetariumhq/petpop
-  tag: git-22a0fa7219211e3e927b924c99c3961b493df764
+  tag: git-d94cb0a3e61622d0d65b50160aeca5079712933a
 
 backoffice:
   image:

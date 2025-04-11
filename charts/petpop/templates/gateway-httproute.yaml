@@ -1,4 +1,4 @@
-{{- if .Values.hostname }}
+{{- if or .Values.hostname .Values.hostnames }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -13,7 +13,9 @@ spec:
       namespace: traefik
       sectionName: websecure
   hostnames:
-    - {{ .Values.hostname }}
+    {{- with (.Values.hostnames | default (list .Values.hostname)) }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   rules:
     - matches:
         - path:
@@ -22,10 +24,9 @@ spec:
       backendRefs:
         - name: petpop
           port: 80
----
 {{- end }}
-
-{{- if .Values.backoffice.hostname }}
+---
+{{- if or .Values.backoffice.hostname .Values.backoffice.hostnames }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -40,7 +41,9 @@ spec:
       namespace: traefik
       sectionName: websecure
   hostnames:
-    - {{ .Values.backoffice.hostname }}
+    {{- with (.Values.backoffice.hostnames | default (list .Values.backoffice.hostname)) }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   rules:
     - matches:
         - path:
@@ -49,5 +52,4 @@ spec:
       backendRefs:
         - name: petpop-backoffice
           port: 80
----
 {{- end }}

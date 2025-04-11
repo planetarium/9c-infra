@@ -1,17 +1,15 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: petpop
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  podManagementPolicy: OrderedReady
-  replicas: 1
   selector:
     matchLabels:
       app: petpop
-  serviceName: petpop
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
@@ -20,6 +18,10 @@ spec:
       containers:
         - name: petpop
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          command:
+            - sh
+            - '-c'
+            - npx vite build && npx tsc -p tsconfig.game.json && node dist/server.js
           ports:
             - containerPort: 3407
           envFrom:
@@ -27,8 +29,6 @@ spec:
                 name: petpop-env
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | indent 8 }}
+        {{- toYaml . | nindent 6 }}
       {{- end }}
       restartPolicy: Always
-  updateStrategy:
-    type: RollingUpdate

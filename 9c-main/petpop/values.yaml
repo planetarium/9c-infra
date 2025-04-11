@@ -1,0 +1,9 @@
+hostnames:
+  - petpop.fun
+  - www.petpop.fun
+
+externalSecretKey: petpop/prod
+
+replicas: 1
+nodeSelector:
+  node.kubernetes.io/type: general

@@ -28,6 +28,6 @@ spec:
                 name: petpop-env
       {{- with .Values.backoffice.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | indent 8 }}
+        {{- toYaml . | indent 6 }}
       {{- end }}
       restartPolicy: Always
