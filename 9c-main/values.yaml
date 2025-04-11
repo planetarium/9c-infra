@@ -22,9 +22,12 @@ certManager:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-external-dns
   dnsNames:
+    - "nine-chronicles.com"
     - "*.nine-chronicles.com"
     - "*.planetarium.network"
     - "*.9c.gg"
+    - "petpop.fun"
+    - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
 loki:
