@@ -1,3 +1,16 @@
 hostname: internal.petpop.fun
 
 externalSecretKey: petpop/internal
+
+image:
+  repository: planetariumhq/petpop
+  tag: server-e1c57e9356b518079d14579fff2fa4286d822c6e
+
+backoffice:
+  repository: planetariumhq/petpop
+  tag: server-e1c57e9356b518079d14579fff2fa4286d822c6e
+
+workers:
+  image:
+    repository: planetariumhq/petpop
+    tag: worker-e1c57e9356b518079d14579fff2fa4286d822c6e

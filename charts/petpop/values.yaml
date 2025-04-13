@@ -1,13 +1,6 @@
 replicas: 1
 
-image:
-  repository: planetariumhq/petpop
-  tag: git-d94cb0a3e61622d0d65b50160aeca5079712933a
-
 backoffice:
-  image:
-    repository: planetariumhq/petpop
-    tag: git-966be46ae02b73d254bf2070d57e293a368c43f8
   hostname: petpop-backoffice.9c.gg
 
 workers:
