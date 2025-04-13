@@ -60,4 +60,4 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
           restartPolicy: OnFailure
-{{- end }} 
+{{- end }}
