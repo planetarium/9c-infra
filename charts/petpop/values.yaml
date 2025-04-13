@@ -9,3 +9,13 @@ backoffice:
     repository: planetariumhq/petpop
     tag: git-966be46ae02b73d254bf2070d57e293a368c43f8
   hostname: petpop-backoffice.9c.gg
+
+workers:
+  ranking-worker:
+    enabled: true
+    schedule: "0 * * * *"
+    command: "ranking"
+  block-reset-worker:
+    enabled: true
+    schedule: "0 0 * * *"
+    command: "reset"

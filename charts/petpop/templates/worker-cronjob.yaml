@@ -1,0 +1,63 @@
+{{- if .Values.workers.ranking-worker.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: petpop-ranking-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.workers.ranking-worker.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: ranking-worker
+            image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
+            args:
+              - {{ .Values.workers.ranking-worker.command }}
+            envFrom:
+              - secretRef:
+                  name: petpop-env
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          restartPolicy: OnFailure
+{{- end }}
+
+{{- if .Values.workers.block-reset-worker.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: petpop-block-reset-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.workers.block-reset-worker.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: block-reset-worker
+            image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
+            args:
+              - {{ .Values.workers.block-reset-worker.command }}
+            envFrom:
+              - secretRef:
+                  name: petpop-env
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          restartPolicy: OnFailure
+{{- end }} 
