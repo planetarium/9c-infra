@@ -1,0 +1,35 @@
+{{- if .Values.server.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: petpop
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app: petpop
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3407
+{{- end }}
+---
+{{- if .Values.backoffice.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: petpop-backoffice
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app: petpop-backoffice
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3001
+{{- end }}
