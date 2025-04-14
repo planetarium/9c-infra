@@ -1,17 +1,17 @@
 externalSecretKey: petpop/internal
 
 server:
+  enabled: true
   image:
     repository: planetariumhq/petpop
     tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
   hostname: internal.petpop.fun
 
-backoffice:
-  image:
-    repository: planetariumhq/petpop
-    tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
-
 workers:
   image:
     repository: planetariumhq/petpop
     tag: worker-d53bd93ed4707201c998a1bd9606e9dc166c6d52
+  rankingWorker:
+    enabled: true
+  blockResetWorker:
+    enabled: true

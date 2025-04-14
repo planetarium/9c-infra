@@ -1,10 +1,12 @@
 server:
+  enabled: false
   replicas: 1
   image:
     repository: ""
     tag: ""
 
 backoffice:
+  enabled: false
   image:
     repository: ""
     tag: ""
@@ -14,10 +16,10 @@ workers:
     repository: ""
     tag: ""
   rankingWorker:
-    enabled: true
+    enabled: false
     schedule: "0 * * * *"
     command: "ranking"
   blockResetWorker:
-    enabled: true
+    enabled: false
     schedule: "0 0 * * *"
     command: "reset"

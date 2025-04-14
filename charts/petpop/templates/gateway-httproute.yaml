@@ -1,4 +1,4 @@
-{{- if or .Values.server.hostname .Values.server.hostnames }}
+{{- if (and .Values.server.enabled (or .Values.server.hostname .Values.server.hostnames)) }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -26,7 +26,7 @@ spec:
           port: 80
 {{- end }}
 ---
-{{- if or .Values.backoffice.hostname .Values.backoffice.hostnames }}
+{{- if (and .Values.backoffice.enabled (or .Values.backoffice.hostname .Values.backoffice.hostnames)) }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

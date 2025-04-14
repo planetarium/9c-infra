@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,8 +14,9 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 3407
-
+{{- end }}
 ---
+{{- if .Values.backoffice.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -30,4 +32,4 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 3001
----
+{{- end }}

@@ -1,6 +1,7 @@
 externalSecretKey: petpop/prod
 
 server:
+  enabled: true
   image:
     repository: planetariumhq/petpop
     tag: server-afdc14da19218bad0d9029fb9b56c331a18b5786
@@ -11,6 +12,7 @@ server:
     node.kubernetes.io/type: general
 
 backoffice:
+  enabled: true
   image:
     repository: planetariumhq/petpop
     tag: server-afdc14da19218bad0d9029fb9b56c331a18b5786
@@ -24,3 +26,7 @@ workers:
     tag: worker-afdc14da19218bad0d9029fb9b56c331a18b5786
   nodeSelector:
     node.kubernetes.io/type: general
+  rankingWorker:
+    enabled: true
+  blockResetWorker:
+    enabled: true
