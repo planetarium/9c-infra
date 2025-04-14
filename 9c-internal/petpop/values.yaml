@@ -5,14 +5,14 @@ externalSecretKey: petpop/internal
 server:
   image:
     repository: planetariumhq/petpop
-    tag: server-e1c57e9356b518079d14579fff2fa4286d822c6e
+    tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
 
 backoffice:
   image:
     repository: planetariumhq/petpop
-    tag: server-e1c57e9356b518079d14579fff2fa4286d822c6e
+    tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
 
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-e1c57e9356b518079d14579fff2fa4286d822c6e
+    tag: worker-d53bd93ed4707201c998a1bd9606e9dc166c6d52
