@@ -11,14 +11,14 @@ nodeSelector:
 server:
   image:
     repository: planetariumhq/petpop
-    tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
+    tag: server-afdc14da19218bad0d9029fb9b56c331a18b5786
 
 backoffice:
   image:
     repository: planetariumhq/petpop
-    tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
+    tag: server-afdc14da19218bad0d9029fb9b56c331a18b5786
 
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-d53bd93ed4707201c998a1bd9606e9dc166c6d52
+    tag: worker-afdc14da19218bad0d9029fb9b56c331a18b5786
