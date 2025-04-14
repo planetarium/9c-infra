@@ -1,11 +1,10 @@
-hostname: internal.petpop.fun
-
 externalSecretKey: petpop/internal
 
 server:
   image:
     repository: planetariumhq/petpop
     tag: server-d53bd93ed4707201c998a1bd9606e9dc166c6d52
+  hostname: internal.petpop.fun
 
 backoffice:
   image:

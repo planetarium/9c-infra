@@ -23,9 +23,9 @@ spec:
             envFrom:
               - secretRef:
                   name: petpop-env
-          {{- with .Values.nodeSelector }}
+          {{- with .Values.workers.nodeSelector }}
           nodeSelector:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           restartPolicy: OnFailure
 {{- end }}
@@ -55,9 +55,9 @@ spec:
             envFrom:
               - secretRef:
                   name: petpop-env
-          {{- with .Values.nodeSelector }}
+          {{- with .Values.workers.nodeSelector }}
           nodeSelector:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           restartPolicy: OnFailure
 {{- end }}

@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: petpop
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.server.replicas }}
   template:
     metadata:
       labels:
@@ -27,8 +27,8 @@ spec:
           envFrom:
             - secretRef:
                 name: petpop-env
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.server.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always

@@ -1,4 +1,4 @@
-{{- if or .Values.hostname .Values.hostnames }}
+{{- if or .Values.server.hostname .Values.server.hostnames }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -13,7 +13,7 @@ spec:
       namespace: traefik
       sectionName: websecure
   hostnames:
-    {{- with (.Values.hostnames | default (list .Values.hostname)) }}
+    {{- with (.Values.server.hostnames | default (list .Values.server.hostname)) }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   rules:
