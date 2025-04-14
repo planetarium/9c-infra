@@ -9,8 +9,8 @@ portalService:
       cpu: 2
       memory: 2Gi
     requests:
-      cpu: 2
-      memory: 2Gi
+      cpu: 1
+      memory: 1.5Gi
   image:
     repository: planetariumhq/9c-portal-internal
     tag: latest
@@ -21,7 +21,7 @@ portalService:
     prefix: "9c-internal-v2/portal"
   env:
     NODE_ENV: development
-    BASE_URL: "developer-mode.nine-chronicles.com"
+    BASE_URL: "https://developer-mode.nine-chronicles.com"
     NEXT_PUBLIC_STATUS_SERVER_URL: "https://9c-status-portal.s3.ap-northeast-2.amazonaws.com"
     S3_BANNER_BUCKET: "9c-portal-banner-dev"
     BANNER_CLOUD_FRONT_DOMAIN: "https://d3hdj186tjvpbo.cloudfront.net/"
