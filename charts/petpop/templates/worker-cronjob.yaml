@@ -17,7 +17,7 @@ spec:
         spec:
           containers:
           - name: ranking-worker
-            image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
+            image: "{{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}"
             args:
               - {{ .Values.workers.rankingWorker.command }}
             envFrom:
@@ -29,7 +29,7 @@ spec:
           {{- end }}
           restartPolicy: OnFailure
 {{- end }}
-
+---
 {{- if .Values.workers.blockResetWorker.enabled }}
 apiVersion: batch/v1
 kind: CronJob
@@ -49,7 +49,7 @@ spec:
         spec:
           containers:
           - name: block-reset-worker
-            image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
+            image: "{{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}"
             args:
               - {{ .Values.workers.blockResetWorker.command }}
             envFrom:

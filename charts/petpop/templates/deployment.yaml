@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: petpop
-          image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           command:
             - pnpm
             - run
