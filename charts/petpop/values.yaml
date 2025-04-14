@@ -1,0 +1,25 @@
+server:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""
+
+backoffice:
+  enabled: false
+  image:
+    repository: ""
+    tag: ""
+
+workers:
+  image:
+    repository: ""
+    tag: ""
+  rankingWorker:
+    enabled: false
+    schedule: "0 * * * *"
+    command: "ranking"
+  blockResetWorker:
+    enabled: false
+    schedule: "0 0 * * *"
+    command: "reset"
