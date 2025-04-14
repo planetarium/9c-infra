@@ -8,6 +8,10 @@ server:
   hostnames:
     - petpop.fun
     - www.petpop.fun
+  hpa:
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
   nodeSelector:
     node.kubernetes.io/type: general
 

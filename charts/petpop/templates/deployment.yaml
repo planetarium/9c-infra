@@ -34,3 +34,21 @@ spec:
       {{- end }}
       restartPolicy: Always
 {{- end }}
+---
+{{- if .Values.server.hpa }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: petpop-server-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: petpop
+  minReplicas: {{ .Values.server.hpa.minReplicas }}
+  maxReplicas: {{ .Values.server.hpa.maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .Values.server.hpa.targetCPUUtilizationPercentage }}
+{{- end }}
