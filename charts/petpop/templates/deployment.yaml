@@ -17,11 +17,11 @@ spec:
     spec:
       containers:
         - name: petpop
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}
           command:
-            - sh
-            - '-c'
-            - npx vite build && npx tsc -p tsconfig.game.json && node dist/server.js
+            - pnpm
+            - run
+            - start
           ports:
             - containerPort: 3407
           envFrom:
@@ -29,6 +29,6 @@ spec:
                 name: petpop-env
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 6 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       restartPolicy: Always

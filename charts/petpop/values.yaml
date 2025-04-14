@@ -1,14 +1,25 @@
 replicas: 1
 
+server:
+  image:
+    repository:
+    tag:
+
 backoffice:
   hostname: petpop-backoffice.9c.gg
+  image:
+    repository:
+    tag:
 
 workers:
-  ranking-worker:
+  image:
+    repository:
+    tag:
+  rankingWorker:
     enabled: true
     schedule: "0 * * * *"
     command: "ranking"
-  block-reset-worker:
+  blockResetWorker:
     enabled: true
     schedule: "0 0 * * *"
     command: "reset"

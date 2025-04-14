@@ -1,4 +1,4 @@
-{{- if .Values.workers.ranking-worker.enabled }}
+{{- if .Values.workers.rankingWorker.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  schedule: {{ .Values.workers.ranking-worker.schedule | quote }}
+  schedule: {{ .Values.workers.rankingWorker.schedule | quote }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
@@ -19,7 +19,7 @@ spec:
           - name: ranking-worker
             image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
             args:
-              - {{ .Values.workers.ranking-worker.command }}
+              - {{ .Values.workers.rankingWorker.command }}
             envFrom:
               - secretRef:
                   name: petpop-env
@@ -30,7 +30,7 @@ spec:
           restartPolicy: OnFailure
 {{- end }}
 
-{{- if .Values.workers.block-reset-worker.enabled }}
+{{- if .Values.workers.blockResetWorker.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -39,7 +39,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  schedule: {{ .Values.workers.block-reset-worker.schedule | quote }}
+  schedule: {{ .Values.workers.blockResetWorker.schedule | quote }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
@@ -51,7 +51,7 @@ spec:
           - name: block-reset-worker
             image: {{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}
             args:
-              - {{ .Values.workers.block-reset-worker.command }}
+              - {{ .Values.workers.blockResetWorker.command }}
             envFrom:
               - secretRef:
                   name: petpop-env
