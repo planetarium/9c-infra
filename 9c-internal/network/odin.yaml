@@ -1,0 +1,188 @@
+global:
+  validatorPath: "odin-internal-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/odin/appsettings-x64.json"
+
+  appProtocolVersion: "200290/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIGBEfoD9FP.BE1UaAlJjayiEftsriqhm+UZVUiylN6TYAiBvZHp9RWCKGLcVKOUKLtv0WPSmMWPEncC5csv2mKYO3g==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTAzLTEwZQ=="
+
+  peerStrings:
+    - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.odin.svc.cluster.local,31234"
+
+  trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
+
+  iceServers:
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
+
+  networkType: Internal
+  planet: OdinInternal
+  consensusType: pbft
+
+  resetSnapshot: true
+  rollbackSnapshot: false
+
+RKE2:
+  loadBalancerIPs:
+    - 49.247.14.160/32
+    - 49.247.14.161/32
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-internal-v2/odin"
+
+gateway:
+  enabled: true
+  services:
+  - name: remote-headless
+    hostnames:
+      - odin-internal-rpc.nine-chronicles.com
+      - odin-preview-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    protocols:
+    - web
+    - grpc
+  - name: market-service
+    hostnames:
+      - odin-internal-market.9c.gg
+      - odin-preview-market.9c.gg
+  - name: arena-service
+    hostnames:
+      - odin-internal-arena.9c.gg
+      - odin-preview-arena.9c.gg
+
+bridgeService:
+  enabled: false
+
+bridgeServiceApi:
+  enabled: false
+
+snapshot:
+  downloadSnapshot: true
+  slackChannel: "9c-internal
+  image: "planetariumhq/ninechronicles-snapshot:git-45205b5ed6d978bb0dda6ad0b84fb0a393015711"
+  partition:
+    enabled: false
+    suspend: true
+  path: internal
+  nodeSelector:
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
+seed:
+  count: 1
+  clusterLocal: true
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+
+  hosts:
+  - "tcp-seed-1.odin.svc.cluster.local"
+
+remoteHeadless:
+  count: 1
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    pullPolicy: Always
+
+  hosts:
+  - "odin-internal-node-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - 49.247.14.160
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 4500Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 12Gi
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --remote-key-value-service
+
+  nodeSelector:
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: '1'
+
+validator:
+  count: 1
+
+  consensusSeedStrings:
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.odin.svc.cluster.local,31235"
+
+  hosts:
+  - "odin-internal-node-validator-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - 49.247.14.161
+
+  ports:
+    rpc: 31238
+
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 12Gi
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-life-time=2000000000
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
+  - --consensus-enter-precommit-delay=300
+
+  storage:
+    data: 450Gi
+
+  nodeSelector:
+    - node.kubernetes.io/network: odin
+      node.kubernetes.io/node-index: '2'
+
+arenaService:
+  enabled: false
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "2"
+    rankingDbNumber: "3"
+
+  ssh:
+    enabled: false
+
+  backoffice:
+    enabled: true
+
+mimir:
+  enabled: true
+  planetType: "odin"
+
+  gql:
+    enabled: true
+
+  diffWorker:
+    enabled: true
+
+seasonpass:
+  enabled: true
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
+
+backoffice:
+  enabled: true
