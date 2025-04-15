@@ -30,6 +30,8 @@ certManager:
     - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
+traefik:
+  replicas: 3
 loki:
   enabled: true
   bucketName: 9c-loki

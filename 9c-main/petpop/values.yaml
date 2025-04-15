@@ -4,14 +4,15 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-b1b5131d805cf8ef45a4847d827a377c6ddc79c2
+    tag: server-88e3124ca40775fb68a1ee0f4f4816419d75b24a
   hostnames:
     - petpop.fun
     - www.petpop.fun
   hpa:
-    minReplicas: 1
+    minReplicas: 4
     maxReplicas: 10
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
   nodeSelector:
     node.kubernetes.io/type: general
 
@@ -19,7 +20,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-b1b5131d805cf8ef45a4847d827a377c6ddc79c2
+    tag: server-88e3124ca40775fb68a1ee0f4f4816419d75b24a
   hostname: petpop-backoffice.9c.gg
   nodeSelector:
     node.kubernetes.io/type: general
@@ -27,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-b1b5131d805cf8ef45a4847d827a377c6ddc79c2
+    tag: worker-88e3124ca40775fb68a1ee0f4f4816419d75b24a
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
