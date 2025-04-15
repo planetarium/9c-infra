@@ -63,7 +63,8 @@ function retry_until_success() {
 
 function make_and_upload_snapshot() {
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
-  OUTPUT_DIR="/data/snapshots"
+ # Use $5 as override if provided, otherwise fallback to /data/snapshots
+  OUTPUT_DIR="${5:-/data/snapshots}"
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
