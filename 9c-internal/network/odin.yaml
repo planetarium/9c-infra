@@ -31,25 +31,7 @@ externalSecret:
   prefix: "9c-internal-v2/odin"
 
 gateway:
-  enabled: true
   services:
-  - name: remote-headless
-    hostnames:
-      - odin-internal-rpc.nine-chronicles.com
-      - odin-preview-rpc.nine-chronicles.com
-    backendRefs:
-    - name: remote-headless-1
-    protocols:
-    - web
-    - grpc
-  - name: market-service
-    hostnames:
-      - odin-internal-market.9c.gg
-      - odin-preview-market.9c.gg
-  - name: arena-service
-    hostnames:
-      - odin-internal-arena.9c.gg
-      - odin-preview-arena.9c.gg
 
 bridgeService:
   enabled: false
@@ -99,7 +81,7 @@ remoteHeadless:
     rpc: 31238
 
   storage:
-    data: 4500Gi
+    data: 450Gi
 
   resources:
     requests:
