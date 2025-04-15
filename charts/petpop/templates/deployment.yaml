@@ -28,6 +28,13 @@ spec:
           envFrom:
             - secretRef:
                 name: petpop-env
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
       {{- with .Values.server.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -50,5 +57,17 @@ spec:
     name: petpop
   minReplicas: {{ .Values.server.hpa.minReplicas }}
   maxReplicas: {{ .Values.server.hpa.maxReplicas }}
-  targetCPUUtilizationPercentage: {{ .Values.server.hpa.targetCPUUtilizationPercentage }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.server.hpa.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.server.hpa.targetMemoryUtilizationPercentage }}
 {{- end }}

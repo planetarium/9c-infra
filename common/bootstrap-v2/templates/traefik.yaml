@@ -36,6 +36,8 @@ spec:
         logs:
           access:
             enabled: true
+        deployment:
+          replicas: {{ .Values.traefik.replicas }}
         service:
           annotations:
             {{- with .Values.global.service.annotations }}
@@ -55,6 +57,8 @@ spec:
               trustedIPs:
                 {{- toYaml . | nindent 16 }}
             {{- end }}
+          websecure:
+            <<: *trustedIPs
           {{- range $name, $config := $.Values.traefik.ports }}
           {{ $name }}:
             port: {{ $config.port }}
