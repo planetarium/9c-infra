@@ -6,6 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
     component: portal
+  namespace: {{ .Release.Name }}
 data:
   {{- range $key, $value := .Values.portalService.env }}
   {{ $key }}: {{ $value | quote }}

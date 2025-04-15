@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
     component: backoffice
+  namespace: {{ .Release.Name }}
 data:
   {{- range $key, $value := .Values.backofficeService.env }}
   {{ $key }}: {{ $value | quote }}

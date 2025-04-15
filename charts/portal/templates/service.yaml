@@ -5,6 +5,7 @@ metadata:
   labels:
     app: {{ .Release.Name }}
     component: portal
+  namespace: {{ .Release.Name }}
 spec:
   type: {{ .Values.portalService.service.type }}
   ports:

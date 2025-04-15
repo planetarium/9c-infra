@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
     component: portal
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Name }}
 spec:
   parentRefs:
     - name: traefik-gateway
