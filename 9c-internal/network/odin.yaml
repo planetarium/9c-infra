@@ -71,8 +71,7 @@ remoteHeadless:
   hosts:
   - "odin-internal-node-1.nine-chronicles.com"
 
-  loadBalancerIPs:
-  - 49.247.14.160
+  loadBalancerIPs: []
 
   ports:
     headless: 31234
