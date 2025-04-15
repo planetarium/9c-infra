@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-backoffice
+  labels:
+    app: {{ .Release.Name }}
+    component: backoffice
+  namespace: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.backofficeService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+      component: backoffice
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: backoffice
+    spec:
+      containers:
+        - name: {{ .Values.backofficeService.name }}
+          image: "{{ .Values.backofficeService.image.repository }}:{{ .Values.backofficeService.image.tag }}"
+          imagePullPolicy: {{ .Values.backofficeService.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backofficeService.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-backoffice-config
+            - secretRef:
+                name: {{ .Release.Name }}-backoffice-secrets
+          resources:
+            {{- toYaml .Values.backofficeService.resources | nindent 12 }}

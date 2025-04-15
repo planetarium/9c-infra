@@ -29,3 +29,25 @@ portalService:
     QA_ENABLED: true
     NEXT_PUBLIC_MAINNET_ENV: local
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
+backofficeService:
+  name: backoffice
+  hostname: "dev-portal.planetarium.team"
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3001
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1.5Gi
+  image:
+    repository: planetariumhq/9c-backoffice-internal
+    tag: latest
+    pullPolicy: Always
+  externalSecret:
+    enabled: true
+    provider: AWS
+    prefix: "9c-internal-v2/backoffice"
