@@ -56,7 +56,7 @@ snapshot:
     enabled: false
 
   partition:
-    enabled: true
+    enabled: false
 
   resources:
     requests:
@@ -149,7 +149,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   nodeSelector:
     eks.amazonaws.com/nodegroup: 9c-main-spot-xl_2c
