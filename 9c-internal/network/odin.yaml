@@ -22,8 +22,7 @@ global:
 
 RKE2:
   loadBalancerIPs:
-    - 49.247.14.160/32
-    - 49.247.14.161/32
+    - 115.68.193.230/32
 
 externalSecret:
   enabled: true
@@ -64,7 +63,7 @@ seed:
   - "tcp-seed-1.odin.svc.cluster.local"
 
 remoteHeadless:
-  count: 1
+  count: 0
   image:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
@@ -81,7 +80,7 @@ remoteHeadless:
     rpc: 31238
 
   storage:
-    data: 450Gi
+    data: 600Gi
 
   resources:
     requests:
@@ -96,7 +95,7 @@ remoteHeadless:
 
   nodeSelector:
     - node.kubernetes.io/network: odin
-      node.kubernetes.io/node-index: '1'
+      node.kubernetes.io/node-index: '2'
 
 validator:
   count: 1
@@ -108,7 +107,7 @@ validator:
   - "odin-internal-node-validator-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - 49.247.14.161
+  - 115.68.193.230
 
   ports:
     rpc: 31238
@@ -129,11 +128,11 @@ validator:
   - --consensus-enter-precommit-delay=300
 
   storage:
-    data: 450Gi
+    data: 600Gi
 
   nodeSelector:
     - node.kubernetes.io/network: odin
-      node.kubernetes.io/node-index: '2'
+      node.kubernetes.io/node-index: '1'
 
 arenaService:
   enabled: false
