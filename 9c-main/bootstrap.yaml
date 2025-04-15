@@ -21,9 +21,5 @@ spec:
       path: charts/multiplanetary
       targetRevision: main
       helm:
-        values: |-
-          targetRevision: main
-          path: 9c-main
-          network:
-          - odin
-          - heimdall
+        valuesFiles:
+          - /9c-main/multiplanetary.yaml

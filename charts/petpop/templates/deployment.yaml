@@ -10,7 +10,9 @@ spec:
   selector:
     matchLabels:
       app: petpop
+  {{- if and .Values.server.replicas (not .Values.server.hpa) }}
   replicas: {{ .Values.server.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:
