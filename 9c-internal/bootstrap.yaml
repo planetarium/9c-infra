@@ -26,4 +26,5 @@ spec:
           targetRevision: main
           path: 9c-internal
           network:
+          - odin
           - heimdall
