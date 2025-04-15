@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-backoffice
   labels:
     app: {{ .Release.Name }}
     component: backoffice
@@ -32,4 +32,3 @@ spec:
                 name: {{ .Release.Name }}-backoffice-secrets
           resources:
             {{- toYaml .Values.backofficeService.resources | nindent 12 }}
-    
