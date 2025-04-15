@@ -57,7 +57,7 @@ metadata:
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
 spec:
   capacity:
-    storage: {{ default "250Gi" $.Values.snapshot.outputStorage }}
+    storage: {{ default "240Gi" $.Values.snapshot.outputStorage }}
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -88,7 +88,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ default "250Gi" $.Values.snapshot.outputStorage }}
+      storage: {{ default "240Gi" $.Values.snapshot.outputStorage }}
   storageClassName: snapshot-bm-output
   volumeMode: Filesystem
 {{- else }}
