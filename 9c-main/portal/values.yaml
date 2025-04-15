@@ -29,3 +29,26 @@ portalService:
     QA_ENABLED: false
     NEXT_PUBLIC_MAINNET_ENV: production
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets.nine-chronicles.com/planets/"
+backofficeService:
+  name: backoffice
+  hostname: "portal.planetarium.team"
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3001
+  resources:
+    limits:
+      cpu: 4
+      memory: 4Gi
+    requests:
+      cpu: 2
+      memory: 3Gi
+  image:
+    repository: planetariumhq/9c-backoffice
+    tag: latest
+    pullPolicy: Always
+  externalSecret:
+    enabled: true
+    provider: AWS
+    prefix: "9c-main/backoffice"
+  env:

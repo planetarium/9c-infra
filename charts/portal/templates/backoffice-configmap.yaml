@@ -1,13 +1,12 @@
-# charts/portal/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-config
+  name: {{ .Release.Name }}-backoffice-config
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
-    component: portal
+    component: backoffice
 data:
-  {{- range $key, $value := .Values.portalService.env }}
+  {{- range $key, $value := .Values.backofficeService.env }}
   {{ $key }}: {{ $value | quote }}
   {{- end }}
 

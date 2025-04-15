@@ -4,15 +4,18 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
+    component: portal
 spec:
   replicas: {{ .Values.portalService.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}
+      component: portal
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        component: portal
     spec:
       containers:
         - name: {{ .Values.portalService.name }}

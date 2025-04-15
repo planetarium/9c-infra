@@ -4,6 +4,7 @@ metadata:
   name: {{ .Release.Name }}-service
   labels:
     app: {{ .Release.Name }}
+    component: portal
 spec:
   type: {{ .Values.portalService.service.type }}
   ports:
@@ -13,3 +14,4 @@ spec:
       name: http
   selector:
     app: {{ .Release.Name }}
+    component: portal
