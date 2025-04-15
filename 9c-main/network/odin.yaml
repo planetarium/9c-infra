@@ -80,8 +80,8 @@ snapshot:
       memory: 56Gi
 
   nodeSelector:
-    - node.kubernetes.io/network: odin
-      node.kubernetes.io/node-index: '5'
+    node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: '5'
 
   storage: 700Gi
 
