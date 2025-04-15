@@ -11,14 +11,21 @@ spec:
         spec:
           initContainers:
           {{- if $.Values.global.resetSnapshot }}
-          - args:
+          - name: reset-snapshot
+            {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
+            image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+            {{- else }}
+            image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+            {{- end }}
+            imagePullPolicy: Always
+            command:
+            - /bin/download_snapshot.sh
+            args:
             - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
             - /data/headless
             - $(RESET_SNAPSHOT_OPTION)
             - snapshot
             - $(SLACK_WEBHOOK_URL)
-            command:
-            - /bin/download_snapshot.sh
             env:
             - name: RESET_SNAPSHOT_OPTION
               value: 'true'
@@ -27,35 +34,29 @@ spec:
                 secretKeyRef:
                   key: slack-webhook-url
                   name: slack
-            {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
-            image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
-            {{- else }}
-            image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
-            {{- end }}
-            imagePullPolicy: Always
-            name: reset-snapshot
-            resources: {}
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
+            resources: {}
             volumeMounts:
-            - mountPath: /bin/download_snapshot.sh
-              name: download-snapshot-script
+            - name: download-snapshot-script
+              mountPath: /bin/download_snapshot.sh
               readOnly: true
               subPath: download_snapshot.sh
-            - mountPath: /data
-              name: snapshot-volume-partition
+            - name: snapshot-volume-partition
+              mountPath: /data
           {{- end }}
+
           - name: preload-headless
             {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
             image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
             {{- else }}
             image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
             {{- end }}
+            command:
+            - /bin/preload_headless.sh
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
-            command:
-            - /bin/preload_headless.sh
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -75,9 +76,12 @@ spec:
               subPath: preload_headless.sh
             - name: snapshot-volume-partition
               mountPath: /data
+
           containers:
           - name: upload-snapshot
             image: {{ $.Values.snapshot.image }}
+            command:
+            - /bin/upload_snapshot.sh
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
@@ -87,8 +91,9 @@ spec:
             {{- else }}
             - {{ $.Values.snapshot.path }}
             {{- end }}
-            command:
-            - /bin/upload_snapshot.sh
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+            - /output/snapshots
+            {{- end }}
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -125,11 +130,18 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+            - name: snapshot-volume-output
+              mountPath: /output
+            {{- end }}
+
           restartPolicy: OnFailure
+
           {{- with $.Values.snapshot.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
           volumes:
           - name: script-volume
             configMap:
@@ -145,6 +157,12 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
+          {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+          - name: snapshot-volume-output
+            persistentVolumeClaim:
+              claimName: snapshot-volume-output
+          {{- end }}
+
   schedule: 0 0 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
