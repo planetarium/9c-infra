@@ -76,10 +76,12 @@ snapshot:
 
   resources:
     requests:
-      cpu: "3"
-      memory: 28Gi
+      cpu: "5"
+      memory: 56Gi
 
   nodeSelector:
+    node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: '5'
 
   storage: 700Gi
 
