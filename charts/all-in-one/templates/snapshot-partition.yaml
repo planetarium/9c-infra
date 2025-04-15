@@ -10,7 +10,7 @@ spec:
       template:
         spec:
           initContainers:
-          {{- if $.Values.snapshot.downloadSnapshot }}
+          {{- if $.Values.global.resetSnapshot }}
           - args:
             - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
             - /data/headless
