@@ -33,7 +33,7 @@ gateway:
       - odin-internal-rpc.nine-chronicles.com
       - odin-preview-rpc.nine-chronicles.com
     backendRefs:
-      - name: validator-1
+      - name: validator-5
     protocols:
       - web
       - grpc
