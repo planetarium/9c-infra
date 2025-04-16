@@ -24,6 +24,7 @@ certManager:
   dnsNames:
     - "*.nine-chronicles.com"
     - "*.planetarium.network"
+    - "*.planetarium.team"
     - "*.9c.gg"
     - "*.petpop.fun"
   issuer:
