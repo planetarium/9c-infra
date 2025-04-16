@@ -80,7 +80,7 @@ ingress:
   enabled: false
 
 gateway:
-  enabled: false
+  namespacedTraefik: false
   trustedIPs:
   - 10.0.0.0/8
   - 172.0.0.0/8

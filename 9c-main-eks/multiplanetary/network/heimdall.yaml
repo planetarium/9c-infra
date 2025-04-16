@@ -30,7 +30,7 @@ externalSecret:
   prefix: "9c-main-v2/heimdall"
 
 gateway:
-  enabled: true
+  namespacedTraefik: true
   services:
     - name: remote-headless
       hostname: heimdall-eks-rpc.nine-chronicles.com

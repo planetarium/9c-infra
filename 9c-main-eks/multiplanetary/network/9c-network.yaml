@@ -30,7 +30,7 @@ externalSecret:
   enabled: true
 
 gateway:
-  enabled: true
+  namespacedTraefik: true
   services:
   - name: remote-headless
     hostname: odin-eks-rpc.nine-chronicles.com
