@@ -6,18 +6,15 @@ global:
   appProtocolVersion: "200290/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIGBEfoD9FP.BE1UaAlJjayiEftsriqhm+UZVUiylN6TYAiBvZHp9RWCKGLcVKOUKLtv0WPSmMWPEncC5csv2mKYO3g==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTAzLTEwZQ=="
 
   peerStrings:
-    - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.odin.svc.cluster.local,31234"
+  - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.odin.svc.cluster.local,31234"
 
   trustedAppProtocolVersionSigner: "02529a61b9002ba8f21c858224234af971e962cac9bd7e6b365e71e125c6463478"
-
-  iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
   networkType: Internal
   planet: OdinInternal
   consensusType: pbft
 
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
 RKE2:
@@ -31,6 +28,27 @@ externalSecret:
 
 gateway:
   services:
+  - name: remote-headless
+    hostnames:
+      - odin-internal-rpc.nine-chronicles.com
+      - odin-preview-rpc.nine-chronicles.com
+    backendRefs:
+      - name: validator-1
+    protocols:
+      - web
+      - grpc
+  - name: arena-service
+    hostnames:
+      - odin-internal-arena.9c.gg
+      - odin-preview-arena.9c.gg
+  - name: arena-backoffice
+    hostnames:
+      - odin-internal-arena-backoffice.9c.gg
+      - odin-preview-arena-backoffice.9c.gg
+  - name: mimir-gql
+    hostnames:
+      - odin-internal-mimir.9c.gg
+      - odin-preview-mimir.9c.gg
 
 bridgeService:
   enabled: false
@@ -69,9 +87,8 @@ remoteHeadless:
     pullPolicy: Always
 
   hosts:
-  - "odin-internal-node-1.nine-chronicles.com"
 
-  loadBalancerIPs: []
+  loadBalancerIPs:
 
   ports:
     headless: 31234
@@ -93,8 +110,6 @@ remoteHeadless:
   - --remote-key-value-service
 
   nodeSelector:
-    - node.kubernetes.io/network: odin
-      node.kubernetes.io/node-index: '2'
 
 validator:
   count: 1
@@ -103,7 +118,10 @@ validator:
   - "033369e95dbfd970dd9a7b4df31dcf5004d7cfd63289d26cc42bbdd01e25675b6f,tcp-seed-1.odin.svc.cluster.local,31235"
 
   hosts:
-  - "odin-internal-node-validator-1.nine-chronicles.com"
+  - >-
+      odin-internal-node-validator-1.nine-chronicles.com,
+      odin-internal-rpc-1.nine-chronicles.com,
+      odin-preview-rpc-1.nine-chronicles.com
 
   loadBalancerIPs:
   - 115.68.193.230
@@ -134,7 +152,7 @@ validator:
       node.kubernetes.io/node-index: '1'
 
 arenaService:
-  enabled: false
+  enabled: true
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
@@ -158,11 +176,3 @@ mimir:
 
   diffWorker:
     enabled: true
-
-seasonpass:
-  enabled: true
-  serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-tracker"
-
-backoffice:
-  enabled: true
