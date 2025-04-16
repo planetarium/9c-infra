@@ -137,7 +137,7 @@ remoteHeadless:
     rpc: 31238
 
   storage:
-    data: 100Gi
+    data: 200Gi
 
   resources:
     requests:
@@ -166,8 +166,6 @@ validator:
   loadBalancerIPs:
   - 49.247.14.84
 
-  storePath: "/data/headless"
-
   ports:
     rpc: 31238
 
@@ -188,8 +186,7 @@ validator:
   - --consensus-enter-precommit-delay=300
 
   storage:
-    volumeNames:
-    - remote-headless-data-2-remote-headless-2-0
+    data: 200Gi
 
   nodeSelector:
     - node.kubernetes.io/network: heimdall
