@@ -89,9 +89,6 @@ bridgeService:
       upstream: "13579355"
       downstream: "5147976"
 
-bridgeServiceApi:
-  enabled: true
-
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
