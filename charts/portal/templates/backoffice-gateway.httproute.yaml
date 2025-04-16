@@ -23,6 +23,6 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: backoffice-service
+        - name: {{ .Release.Name }}-backoffice-service
           port: {{ .Values.backofficeService.service.port }}
 {{- end }}
