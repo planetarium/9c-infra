@@ -465,9 +465,6 @@ bridgeService:
       upstream: "8521305"
       downstream: "134016"
 
-bridgeServiceApi:
-  enabled: true
-
 mimir:
   enabled: true
   planetType: "heimdall"
