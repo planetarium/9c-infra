@@ -24,7 +24,7 @@ RKE2:
 externalSecret:
   enabled: true
   provider: AWS
-  prefix: "9c-internal-v2/odin"
+  prefix: "9c-internal-v2"
 
 gateway:
   services:
