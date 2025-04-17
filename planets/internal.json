@@ -11,7 +11,7 @@
       "arena.rest": ["https://odin-internal-arena.9c.gg"],
       "arena.gql": ["https://odin-internal-arena.9c.gg"],
       "mimir.gql": ["https://odin-internal-mimir.9c.gg/graphql"],
-      "market.rest": ["https://odin-internal-market.9c.gg"],
+      "market.rest": ["https://odin-internal-market.9c.gg"]
     },
     "bridges": {
       "0x100000000001": {
@@ -36,7 +36,7 @@
       "arena.rest": ["https://heimdall-internal-arena.9c.gg"],
       "arena.gql": ["https://heimdall-internal-arena.9c.gg"],
       "mimir.gql": ["https://heimdall-internal-mimir.9c.gg/graphql"],
-      "market.rest": ["https://heimdall-internal-market.9c.gg"],
+      "market.rest": ["https://heimdall-internal-market.9c.gg"]
     },
     "bridges": {
       "0x100000000000": {
