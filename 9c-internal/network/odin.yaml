@@ -50,6 +50,10 @@ gateway:
     hostnames:
       - odin-internal-mimir.9c.gg
       - odin-preview-mimir.9c.gg
+  - name: market-service
+    hostnames:
+      - odin-internal-market.9c.gg
+      - odin-preview-market.9c.gg
 
 bridgeService:
   enabled: false

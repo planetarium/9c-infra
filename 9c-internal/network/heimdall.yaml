@@ -51,6 +51,10 @@ gateway:
     hostnames:
       - heimdall-internal-mimir.9c.gg
       - heimdall-preview-mimir.9c.gg
+  - name: market-service
+    hostnames:
+      - heimdall-internal-market.9c.gg
+      - heimdall-preview-market.9c.gg
 
 bridgeService:
   enabled: true
