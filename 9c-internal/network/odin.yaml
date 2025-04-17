@@ -27,6 +27,7 @@ externalSecret:
   prefix: "9c-internal-v2"
 
 gateway:
+  enabled: true
   services:
   - name: remote-headless
     hostnames:

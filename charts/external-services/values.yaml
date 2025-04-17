@@ -8,6 +8,9 @@ externalSecret:
   separator: /
   provider: ""
 
+gateway:
+  enabled: false
+
 seasonpass:
   image:
     tag: "git-e5a245c9d6c19ac7572c7f74b6a26ceadec94c9b"

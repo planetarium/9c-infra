@@ -7,6 +7,7 @@ externalSecret:
   prefix: "9c-main-v2/external-services"
 
 gateway:
+  enabled: true
   services:
   - name: seasonpass-api-service
     hostname: seasonpass.9c.gg
