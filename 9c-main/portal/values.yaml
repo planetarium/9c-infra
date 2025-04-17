@@ -44,7 +44,7 @@ backofficeService:
       cpu: 2
       memory: 3Gi
   image:
-    repository: planetariumhq/9c-backoffice
+    repository: planetariumhq/9c-portal-backoffice
     tag: latest
     pullPolicy: Always
   externalSecret:
