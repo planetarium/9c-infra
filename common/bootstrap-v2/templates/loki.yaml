@@ -1,5 +1,4 @@
-{{ if .Values.loki.enabled }}
----
+{{- if .Values.loki.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,6 +8,13 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
@@ -30,7 +36,7 @@ spec:
               chunks: {{ $.Values.loki.bucketName }}
               ruler: {{ $.Values.loki.bucketName }}
             s3:
-              endpoint: "${R2_ENDPOINT}}"
+              endpoint: "${R2_ENDPOINT}"
               region: "apac"
               bucketnames: "{{ $.Values.loki.bucketName }}"
               accessKeyId: "${R2_ACCESS_KEY_ID}"
@@ -160,12 +166,4 @@ spec:
               enabled: false
             grafanaAgent:
               installOperator: false
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
-  # syncPolicy:
-  #   automated:
-  #     prune: true
-  #     selfHeal: true
----
-{{ end }}
+{{- end }}
