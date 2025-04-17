@@ -16,7 +16,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-30e312973cd514d667d057f38d2e59d069251451"
+    tag: "git-63a10cbf3acc7d35ccb41b88497247ea4037bf61"
 
   api:
     enabled: true
@@ -46,6 +46,11 @@ seasonpass:
       node.kubernetes.io/node-index: "2"
       node.kubernetes.io/provisioner: "cloudv"
       node.kubernetes.io/type: "general"
+
+    odin:
+      planetId: "0x000000000000"
+    heimdall:
+      planetId: "0x000000000001"
 
     resources:
       limits:
