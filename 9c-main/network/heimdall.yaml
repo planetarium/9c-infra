@@ -32,6 +32,7 @@ externalSecret:
   prefix: "9c-main-v2/heimdall"
 
 gateway:
+  enabled: true
   services:
     - name: remote-headless
       hostnames:

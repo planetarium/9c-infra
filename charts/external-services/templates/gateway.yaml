@@ -1,82 +1,4 @@
-{{- if $.Values.gateway }}
 {{- if $.Values.gateway.enabled }}
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: traefik-{{ $.Release.Name }}
-  namespace: argocd
-spec:
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: {{ $.Release.Name }}
-  source:
-    repoURL: https://traefik.github.io/charts
-    chart: traefik
-    targetRevision: 34.1.0
-    helm:
-      values: |
-        ingressClass:
-          enabled: false
-        providers:
-          kubernetesIngress:
-            enabled: false
-          kubernetesCRD:
-            enabled: false
-          kubernetesGateway:
-            enabled: true
-            experimentalChannel: true
-            labelselector: app.kubernetes.io/instance=traefik-{{ $.Release.Name }}
-        gatewayClass:
-          name: traefik-{{ $.Release.Name }}
-        logs:
-          access:
-            enabled: true
-        service:
-          annotations:
-            {{- with $.Values.global.service.annotations }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
-            service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: proxy_protocol_v2.enabled=true
-        ports:
-          websecure:
-            targetPort: web
-          web: &trustedIPs
-            {{- with $.Values.gateway.trustedIPs }}
-            forwardedHeaders:
-              trustedIPs:
-                {{- toYaml . | nindent 16 }}
-            proxyProtocol:
-              trustedIPs:
-                {{- toYaml . | nindent 16 }}
-            {{- end }}
-          {{- range $name, $config := $.Values.gateway.ports }}
-          {{ $name }}:
-            port: {{ $config.port }}
-            <<: *trustedIPs
-            expose:
-              default: true
-            {{- with $config.transport }}
-            transport:
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
-          {{- end }}
-        gateway:
-          listeners:
-            web:
-              port: 8000
-              protocol: HTTP
-            {{- range $name, $config := $.Values.gateway.ports }}
-            {{ $name }}:
-              port: {{ $config.port }}
-              protocol: {{ eq $config.kind "TCPRoute" | ternary "TCP" "HTTP" }}
-            {{- end }}
----
-{{- end }}
 {{- range $service := $.Values.gateway.services }}
 {{- range $protocol := $service.protocols | default (list "web") }}
 {{- range $p, $obj := merge (dict "web" dict) ($.Values.gateway.ports) }}
@@ -98,15 +20,9 @@ spec:
   - name: traefik-gateway
     namespace: traefik
     sectionName: {{ $protocol }}
-  - name: traefik-gateway
-    namespace: {{ $.Release.Name }}
-    sectionName: {{ $protocol }}
   {{- if eq $protocol "web" }}
   - name: traefik-gateway
     namespace: traefik
-    sectionName: websecure
-  - name: traefik-gateway
-    namespace: {{ $.Release.Name }}
     sectionName: websecure
   {{- end }}
   {{- if not (eq $obj.kind "TCPRoute") }}

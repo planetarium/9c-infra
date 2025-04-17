@@ -30,6 +30,7 @@ externalSecret:
   enabled: true
 
 gateway:
+  enabled: true
   namespacedTraefik: true
   services:
   - name: remote-headless
