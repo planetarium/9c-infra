@@ -65,6 +65,10 @@ spec:
             - name: API_STAGE
               value: {{ $.Values.seasonpass.api.stage }}
           image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.api.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
           ports:
             - containerPort: 8000
           name: seasonpass-api

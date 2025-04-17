@@ -25,6 +25,10 @@ seasonpass:
   api:
     enabled: true
     stage: "internal"
+    resources:
+      limits:
+        cpu: 0.5
+        memory: 1Gi
 
   worker:
     enabled: true
@@ -32,14 +36,18 @@ seasonpass:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
     flower:
       enabled: true
+    resources:
+      limits:
+        cpu: 0.5
+        memory: 1Gi
 
   tracker:
     enabled: true
 
     resources:
-      requests:
-        cpu: 1
-        memory: 4Gi
+      limits:
+        cpu: 0.5
+        memory: 1Gi
 
 iap:
   backoffice:
