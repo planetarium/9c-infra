@@ -33,10 +33,6 @@ on:
         description: 'Same, for market-service'
       rudolf-service:
         description: 'Same, for rudolf-service'
-      portal-service:
-        description: 'Git commit hash for portal (e.g. a1b2c3d)'
-      portal-backoffice-service:
-        description: 'Git commit hash for portal-backoffice (e.g. a1b2c3d)'
 
 jobs:
   update-values-file:
@@ -57,6 +53,6 @@ jobs:
       - name: Update values
         id: update-values
         run: |
-          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.rudolf-service }}" "${{ github.event.inputs.portal-service }}" "${{ github.event.inputs.portal-backoffice-service }}"
+          bash .github/scripts/update-values.sh "${{ github.event.inputs.dir }}" "${{ github.event.inputs.file-name }}" "${{ github.event.inputs.headless }}" "${{ github.event.inputs.seed }}" "${{ github.event.inputs.bridge-service }}" "${{ github.event.inputs.data-provider }}" "${{ github.event.inputs.world-boss-service }}" "${{ github.event.inputs.market-service }}" "${{ github.event.inputs.rudolf-service }}"
         env:
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}

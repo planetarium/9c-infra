@@ -10,8 +10,6 @@ DATA_PROVIDER=$6
 WORLD_BOSS=$7
 MARKET_SERVICE=$8
 RUDOLF_SERVICE=$9
-PORTAL_SERVICE=$10
-PORTAL_BACKOFFICE_SERVICE=$11
 
 file_path="$DIR/network/$FILE_NAME.yaml"
 
@@ -46,18 +44,6 @@ else
 
     if [ "$RUDOLF_SERVICE" ]; then
         sources="rudolfService|planetariumhq/9c-rudolf:$RUDOLF_SERVICE $sources"
-    fi
-
-    if [ "$PORTAL_SERVICE" ]; then
-        sources="portalService|planetariumhq/9c-portal:main-$PORTAL_SERVICE $sources"
-    else
-        sources="portalService|planetariumhq/9c-portal:internal-$PORTAL_SERVICE $sources"
-    fi
-
-    if [ "$PORTAL_BACKOFFICE_SERVICE" ]; then
-        sources="backofficeService|planetariumhq/9c-portal-backoffice:main-$PORTAL_BACKOFFICE_SERVICE $sources"
-    else
-        sources="backofficeService|planetariumhq/9c-portal-backoffice:internal-$PORTAL_BACKOFFICE_SERVICE $sources"
     fi
 fi
 
