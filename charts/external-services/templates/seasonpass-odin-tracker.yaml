@@ -56,7 +56,7 @@ spec:
                   key: headless-jwt-token
                   name: seasonpass-env
             - name: TRACKER_ENABLED_PLANETS
-              value: '["0x000000000000"]'
+              value: '[{{ $.Values.seasonpass.tracker.odin.planetId }}]'
             - name: TRACKER_ENABLED_TRACKERS
               value: '["AdventureBossTracker", "CourageTracker", "WorldClearTracker"]'
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}

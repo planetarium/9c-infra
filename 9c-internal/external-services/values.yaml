@@ -20,7 +20,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-1ee6503e60177e123da188d1fc2d67ed9edd3387"
+    tag: "git-63a10cbf3acc7d35ccb41b88497247ea4037bf61"
 
   api:
     enabled: true
@@ -43,6 +43,11 @@ seasonpass:
 
   tracker:
     enabled: true
+
+    odin:
+      planetId: "0x100000000000"
+    heimdall:
+      planetId: "0x100000000001"
 
     resources:
       limits:
