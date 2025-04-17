@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: monitoring
 ---
-{{- if eq .Values.provider "RKE2" }}
+{{- if and (eq .Values.provider "RKE2") (or .Values.fluentBit.enabled .Values.loki.enabled) }}
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
