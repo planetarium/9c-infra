@@ -214,3 +214,14 @@ mimir:
 
   diffWorker:
     enabled: true
+
+marketService:
+  enabled: true
+  rwMode: false
+  env:
+    - name: DOTNET_gcServer
+      value: "1"
+    - name: WorkerConfig__SyncShop
+      value: "false"
+    - name: WorkerConfig__SyncProduct
+      value: "true"
