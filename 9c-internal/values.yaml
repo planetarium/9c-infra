@@ -35,8 +35,3 @@ grafana:
 prometheus:
   server:
     extraScrapeConfigs:
-      - job_name: scrape-headlesses
-        metrics_path: /metrics
-        scrape_interval: 8s
-        scrape_timeout: 6s
-        static_configs:
