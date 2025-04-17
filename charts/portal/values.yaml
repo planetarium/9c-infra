@@ -13,8 +13,8 @@ portalService:
       cpu: 200m
       memory: 256Mi
   image:
-    repository: planetariumhq/9c-portal-internal
-    tag: latest
+    repository: planetariumhq/9c-portal
+    tag: "internal-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -55,8 +55,8 @@ backofficeService:
       cpu: 200m
       memory: 256Mi
   image:
-    repository: planetariumhq/9c-backoffice-internal
-    tag: latest
+    repository: planetariumhq/9c-backoffice
+    tag: "internal-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
     pullPolicy: Always
   externalSecret:
     enabled: true

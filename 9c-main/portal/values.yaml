@@ -14,7 +14,7 @@ portalService:
       memory: 3Gi
   image:
     repository: planetariumhq/9c-portal
-    tag: latest
+    tag: "main-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -45,7 +45,7 @@ backofficeService:
       memory: 3Gi
   image:
     repository: planetariumhq/9c-backoffice
-    tag: latest
+    tag: "main-092dcd7cc1b728e181c93e5b195787e7dc6f2746"
     pullPolicy: Always
   externalSecret:
     enabled: true
