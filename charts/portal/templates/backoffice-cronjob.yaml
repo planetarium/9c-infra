@@ -2,10 +2,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ .Release.Name }}-backoffice-{{ .name }}
-  namespace: {{ .Release.Name }}
+  name: {{ $.Release.Name }}-backoffice-{{ .name }}
+  namespace: {{ $.Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+    app: {{ $.Release.Name }}
     component: backoffice
     cronjob: {{ .name }}
 spec:
@@ -28,7 +28,7 @@ spec:
                 - name: SCHEDULER_API_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ .Release.Name }}-backoffice-secrets
+                      name: {{ $.Release.Name }}-backoffice-secrets
                       key: {{ .tokenEnvName | quote }}
           restartPolicy: Never
 ---
