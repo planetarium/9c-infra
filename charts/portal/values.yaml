@@ -62,3 +62,4 @@ backofficeService:
     enabled: true
     provider: AWS
     prefix: "9c-internal-v2/backoffice"
+  cronjobs:

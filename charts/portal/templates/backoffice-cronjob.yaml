@@ -1,0 +1,35 @@
+{{- range .Values.cronjobs }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $.Release.Name }}-backoffice-{{ .name }}
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: {{ $.Release.Name }}
+    component: backoffice
+    cronjob: {{ .name }}
+spec:
+  schedule: "{{ .schedule }}"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: curl
+              image: curlimages/curl:latest
+              args:
+                - curl
+                - -s
+                - -H
+                - "Authorization: Bearer $(SCHEDULER_API_KEY)"
+                - {{ .endpoint }}
+              env:
+                - name: SCHEDULER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Release.Name }}-backoffice-secrets
+                      key: {{ .tokenEnvName | quote }}
+          restartPolicy: Never
+---
+{{- end }}
