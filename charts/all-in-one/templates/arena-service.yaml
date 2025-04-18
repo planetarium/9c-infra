@@ -20,6 +20,10 @@ spec:
       containers:
         - name: arena-service
           image: {{ $.Values.arenaService.image.repository }}:{{ $.Values.arenaService.image.tag }}
+          {{- with $.Values.arenaService.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
           ports:
             - containerPort: 8080
           env:
