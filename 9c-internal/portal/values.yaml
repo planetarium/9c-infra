@@ -51,3 +51,12 @@ backofficeService:
     enabled: true
     provider: AWS
     prefix: "9c-internal-v2/backoffice"
+  cronjobs:
+    - name: withdrawal
+      schedule: "*/2 * * * *"
+      endpoint: "https://dev-portal.planetarium.team/api/scheduler/withdrawal"
+      tokenEnvName: "SCHEDULER_API_KEY"
+    - name: withdrawal-status
+      schedule: "*/15 * * * *"
+      endpoint: "https://dev-portal.planetarium.team/api/scheduler/transaction"
+      tokenEnvName: "SCHEDULER_API_KEY"
