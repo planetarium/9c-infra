@@ -381,10 +381,14 @@ arenaService:
   enabled: true
 
   nodeSelector:
-    node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '2'
+    node.kubernetes.io/type: general
 
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
 
   redis:
     port: "6379"
