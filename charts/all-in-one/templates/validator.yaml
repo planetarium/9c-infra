@@ -1,5 +1,5 @@
-{{ range $idx := until (int .Values.validator.count) }}
-{{ $index := add $idx 5 }}
+{{- range $idx := until (int .Values.validator.count) }}
+{{- $index := add $idx 5 }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -339,17 +339,16 @@ spec:
     type: RollingUpdate
 ---
 {{- if $.Values.validator.ingress.enabled }}
-{{- $hosts := split "," (index ($.Values.validator.ingress.hosts | default $.Values.validator.hosts) $idx) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: validator-{{ $index }}-ingress
   namespace: {{ $.Release.Name }}
   annotations:
-    traefik.ingress.kubernetes.io/affinity: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   rules:
-    {{- range $host := $hosts }}
+    {{- range $host := split "," (index $.Values.validator.ingress.hosts $idx) }}
     - host: {{ $host }}
       http:
         paths:
@@ -359,8 +358,30 @@ spec:
               service:
                 name: validator-{{ $index }}
                 port:
-                  number: 80
+                  number: {{ $.Values.validator.ports.graphql }}
     {{- end }}
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: validator-{{ $index }}-ingress-grpc
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: grpc
+spec:
+  rules:
+    {{- range $host := split "," (index $.Values.validator.ingress.hosts $idx) }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: validator-{{ $index }}
+                port:
+                  number: {{ $.Values.validator.ports.rpc }}
+    {{- end }}
 {{- end }}
-{{ end }}
+---
+{{- end }}

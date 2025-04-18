@@ -130,6 +130,11 @@ remoteHeadless:
       heimdall-internal-rpc-1.nine-chronicles.com,
       heimdall-preview-rpc-1.nine-chronicles.com
 
+  ingress:
+    enabled: true
+    hosts:
+    - "heimdall-internal-test-1.nine-chronicles.com,heimdall-internal-rpc-test-1.nine-chronicles.com"
+
   loadBalancerIPs:
   - 49.247.14.86
 
