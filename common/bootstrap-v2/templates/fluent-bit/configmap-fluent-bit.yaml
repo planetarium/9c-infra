@@ -169,13 +169,6 @@ data:
         S3_key_format_tag_delimiters ._
 
     [INPUT]
-        Name                systemd
-        Tag                 dataplane.systemd.*
-        Systemd_Filter      _SYSTEMD_UNIT=docker.service
-        DB                  /var/fluent-bit/state/systemd.db
-        Path                /var/log/journal
-        Read_From_Tail      ${READ_FROM_TAIL}
-    [INPUT]
         Name                tail
         Tag                 dataplane.tail.*
         Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
@@ -190,13 +183,6 @@ data:
         Rotate_Wait         30
         storage.type        filesystem
         Read_from_Head      ${READ_FROM_HEAD}
-    [FILTER]
-        Name                modify
-        Match               dataplane.systemd.*
-        Rename              _HOSTNAME                   hostname
-        Rename              _SYSTEMD_UNIT               systemd_unit
-        Rename              MESSAGE                     message
-        Remove_regex        ^((?!hostname|systemd_unit|message).)*$
     [OUTPUT]
         Name                         s3
         Match                        dataplane.*
