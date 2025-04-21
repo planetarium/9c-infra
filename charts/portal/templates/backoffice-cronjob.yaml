@@ -22,7 +22,7 @@ spec:
                 - curl
                 - -s
                 - -H
-                - "Authorization: Bearer $(SCHEDULER_API_KEY)"
+                - "x-api-key: $(SCHEDULER_API_KEY)"
                 - {{ .endpoint }}
               env:
                 - name: SCHEDULER_API_KEY
