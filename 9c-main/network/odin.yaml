@@ -79,9 +79,10 @@ snapshot:
 
   nodeSelector:
     node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '5'
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: '1'
 
-  storage: 360Gi
+  storage: 500Gi
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
