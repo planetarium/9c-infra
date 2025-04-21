@@ -15,9 +15,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: snapshot-bm-hostpath
+  storageClassName: odin-longhorn
   hostPath:
-    path: /data-default
+    path: /data
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -25,7 +25,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - 9c-main-bm-1
+                - 9c-main-baremetal-1
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -43,7 +43,7 @@ spec:
   resources:
     requests:
       storage: {{ default "100Gi" $.Values.snapshot.storage }}
-  storageClassName: snapshot-bm-hostpath
+  storageClassName: odin-longhorn
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -61,9 +61,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: snapshot-bm-output
+  storageClassName: odin-longhorn
   hostPath:
-    path: /data
+    path: /output
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -71,7 +71,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - 9c-main-bm-1
+                - 9c-main-baremetal-1
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -89,7 +89,7 @@ spec:
   resources:
     requests:
       storage: {{ default "240Gi" $.Values.snapshot.outputStorage }}
-  storageClassName: snapshot-bm-output
+  storageClassName: odin-longhorn
   volumeMode: Filesystem
 {{- else }}
 
