@@ -17,7 +17,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: snapshot-bm-hostpath
   hostPath:
-    path: /data-default
+    path: /data
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -25,7 +25,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - 9c-main-bm-1
+                - 9c-main-baremetal-1
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -63,7 +63,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: snapshot-bm-output
   hostPath:
-    path: /data
+    path: /output
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -71,7 +71,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - 9c-main-bm-1
+                - 9c-main-baremetal-1
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
