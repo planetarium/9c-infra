@@ -1,5 +1,5 @@
 {{- if $.Values.snapshot.partition.enabled }}
-{{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+{{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -58,7 +58,7 @@ metadata:
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
 spec:
   capacity:
-    storage: {{ default "240Gi" $.Values.snapshot.outputStorage }}
+    storage: {{ default "300Gi" $.Values.snapshot.outputStorage }}
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain

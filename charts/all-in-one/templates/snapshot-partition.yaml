@@ -91,7 +91,7 @@ spec:
             {{- else }}
             - {{ $.Values.snapshot.path }}
             {{- end }}
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+            {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
             - /output/snapshots
             {{- end }}
             env:
@@ -130,7 +130,7 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+            {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
             - name: snapshot-volume-output
               mountPath: /output
             {{- end }}
@@ -157,7 +157,7 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
-          {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+          {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
           - name: snapshot-volume-output
             persistentVolumeClaim:
               claimName: snapshot-volume-output
