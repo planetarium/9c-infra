@@ -21,6 +21,8 @@ spec:
               args:
                 - curl
                 - -s
+                - -X
+                - POST
                 - -H
                 - "Authorization: Bearer $(SCHEDULER_API_KEY)"
                 - {{ .endpoint }}
