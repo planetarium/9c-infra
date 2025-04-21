@@ -43,6 +43,7 @@ spec:
   resources:
     requests:
       storage: {{ default "100Gi" $.Values.snapshot.storage }}
+  volumeName: snapshot-volume-partition
   storageClassName: odin-longhorn
   volumeMode: Filesystem
 ---
@@ -89,6 +90,7 @@ spec:
   resources:
     requests:
       storage: {{ default "300Gi" $.Values.snapshot.outputStorage }}
+  volumeName: snapshot-volume-output
   storageClassName: odin-longhorn
   volumeMode: Filesystem
 {{- else }}
