@@ -10,7 +10,8 @@
       "headless.grpc": ["http://odin-preview-rpc-1.nine-chronicles.com:31238"],
       "arena.rest": ["https://odin-preview-arena.9c.gg"],
       "arena.gql": ["https://odin-preview-arena.9c.gg"],
-      "mimir.gql": ["https://odin-preview-mimir.9c.gg/graphql"]
+      "mimir.gql": ["https://odin-preview-mimir.9c.gg/graphql"],
+      "market.rest": ["https://odin-preview-market.9c.gg"]
     },
     "bridges": {
       "0x100000000001": {
@@ -34,7 +35,8 @@
       ],
       "arena.rest": ["https://heimdall-preview-arena.9c.gg"],
       "arena.gql": ["https://heimdall-preview-arena.9c.gg"],
-      "mimir.gql": ["https://heimdall-preview-mimir.9c.gg/graphql"]
+      "mimir.gql": ["https://heimdall-preview-mimir.9c.gg/graphql"],
+      "market.rest": ["https://heimdall-preview-market.9c.gg"]
     },
     "bridges": {
       "0x100000000000": {
