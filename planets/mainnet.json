@@ -65,7 +65,7 @@
       "arena.rest": ["https://heimdall-arena.9c.gg"],
       "arena.gql": ["https://heimdall-arena.9c.gg"],
       "mimir.gql": [
-        "https://odin-mimir.9c.gg/graphql"
+        "https://heimdall-mimir.9c.gg/graphql"
       ]
     },
     "bridges": {
