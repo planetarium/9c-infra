@@ -14,7 +14,7 @@ portalService:
       memory: 3Gi
   image:
     repository: planetariumhq/9c-portal
-    tag: main-cac34f026ad92f27e9d95b55fa3cfc574a0e4a2f
+    tag: main-8cbcb7ece9ac32698fa6396772f5560658ea9181
     pullPolicy: Always
   externalSecret:
     enabled: true
