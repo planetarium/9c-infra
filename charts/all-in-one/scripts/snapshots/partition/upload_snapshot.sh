@@ -16,6 +16,7 @@ VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
+echo "[DEBUG] Args: $1 $2 $3 $4 $5"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -63,8 +64,8 @@ function retry_until_success() {
 
 function make_and_upload_snapshot() {
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
- # Use $5 as override if provided, otherwise fallback to /data/snapshots
-  OUTPUT_DIR="${5:-/data/snapshots}"
+  echo "[DEBUG] Args: $1"
+  OUTPUT_DIR="${1:-/data/snapshots}"
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
@@ -184,4 +185,4 @@ echo "[INFO] Setting up rclone..."
 setup_rclone
 
 echo "[INFO] Starting snapshot process..."
-make_and_upload_snapshot
+make_and_upload_snapshot $5
