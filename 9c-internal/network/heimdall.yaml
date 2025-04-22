@@ -197,6 +197,8 @@ validator:
 arenaService:
   enabled: true
 
+  planet: "heimdall"
+
   recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
 
   redis:

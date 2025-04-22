@@ -380,6 +380,8 @@ blockIntervalNotifier:
 arenaService:
   enabled: true
 
+  planet: "heimdall"
+
   nodeSelector:
     node.kubernetes.io/type: general
 
