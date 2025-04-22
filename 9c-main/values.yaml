@@ -7,6 +7,7 @@ RKE2:
   domain: rke2-main.planetarium.network
   publicIPs:
     - 49.247.14.88/32
+    - 115.68.199.177/32
 argocd:
   domain: argocd.planetarium.network
 externalSecrets:
@@ -32,7 +33,10 @@ certManager:
   issuer:
     email: devops@planetariumhq.com
 traefik:
-  replicas: 3
+  replicas: 1
+  service:
+    externalIPs:
+      - 115.68.199.177
 loki:
   enabled: true
   bucketName: 9c-loki
