@@ -14,6 +14,8 @@ portalService:
     requests:
       cpu: 2
       memory: 3Gi
+  nodeSelector:
+    node.kubernetes.io/type: general
   image:
     repository: planetariumhq/9c-portal
     tag: main-8cbcb7ece9ac32698fa6396772f5560658ea9181
@@ -45,6 +47,8 @@ backofficeService:
     requests:
       cpu: 2
       memory: 3Gi
+  nodeSelector:
+    node.kubernetes.io/type: general
   image:
     repository: planetariumhq/9c-portal-backoffice
     tag: main-ac6255891e58a7f3f22952c766dd5eb44f7d185f
