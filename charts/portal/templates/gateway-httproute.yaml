@@ -16,7 +16,9 @@ spec:
       namespace: traefik
       sectionName: websecure
   hostnames:
-    - {{ .Values.portalService.hostname }}
+    {{- range (.Values.portalService.hostnames | default (list .Values.portalService.hostname)) }}
+    - {{ . }}
+    {{- end }}
   rules:
     - matches:
         - path:

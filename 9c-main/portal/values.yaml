@@ -1,6 +1,8 @@
 portalService:
   name: portal
-  hostname: "nine-chronicles.com"
+  hostnames:
+    - "nine-chronicles.com"
+    - "www.nine-chronicles.com"
   replicaCount: 2
   service:
     type: ClusterIP
