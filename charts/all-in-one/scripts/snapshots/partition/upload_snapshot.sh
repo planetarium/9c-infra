@@ -71,6 +71,7 @@ function make_and_upload_snapshot() {
   FULL_DIR="$OUTPUT_DIR/full"
   URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
+  mkdir -p "$OUTPUT_DIR"
   mkdir -p "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
 
   if curl --output /dev/null --silent --head --fail "$URL"; then
