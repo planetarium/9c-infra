@@ -19,7 +19,7 @@ portalService:
   externalSecret:
     enabled: true
     provider: AWS
-    prefix: "9c-main/portal"
+    prefix: "9c-main-v2/portal"
   env:
     NODE_ENV: production
     BASE_URL: "https://nine-chronicles.com"
@@ -50,7 +50,7 @@ backofficeService:
   externalSecret:
     enabled: true
     provider: AWS
-    prefix: "9c-main/backoffice"
+    prefix: "9c-main-v2/backoffice"
   cronjobs:
     - name: withdrawal
       schedule: "*/2 * * * *"
