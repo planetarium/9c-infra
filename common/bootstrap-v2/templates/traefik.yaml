@@ -43,6 +43,10 @@ spec:
             {{- with .Values.global.service.annotations }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- with .Values.traefik.service.externalIPs }}
+            externalIPs:
+              {{- toYaml . | nindent 12 }}
+          {{- end }}
         ports:
           metrics:
             exposedPort: 39100
