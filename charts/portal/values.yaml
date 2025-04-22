@@ -12,6 +12,7 @@ portalService:
     requests:
       cpu: 200m
       memory: 256Mi
+  nodeSelector: {}
   image:
     repository: planetariumhq/9c-portal
     tag: "internal-latest"
@@ -54,6 +55,7 @@ backofficeService:
     requests:
       cpu: 200m
       memory: 256Mi
+  nodeSelector: {}
   image:
     repository: planetariumhq/9c-portal-backoffice
     tag: "internal-latest"
