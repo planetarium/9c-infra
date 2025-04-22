@@ -1,8 +1,5 @@
 clusterName: 9c-main
 provider: RKE2
-global:
-  service:
-    annotations:
 RKE2:
   domain: rke2-main.planetarium.network
   publicIPs:
@@ -33,10 +30,8 @@ certManager:
   issuer:
     email: devops@planetariumhq.com
 traefik:
-  replicas: 1
   service:
-    externalIPs:
-      - 115.68.199.177
+    loadBalancerIP: 115.68.199.177
 loki:
   enabled: true
   bucketName: 9c-loki

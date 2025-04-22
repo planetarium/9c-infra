@@ -39,14 +39,11 @@ spec:
         deployment:
           replicas: {{ .Values.traefik.replicas }}
         service:
+          {{- with merge dict .Values.global.service.annotations .Values.traefik.service.annotations }}
           annotations:
-            {{- with .Values.global.service.annotations }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
-          {{- with .Values.traefik.service.externalIPs }}
-          externalIPs:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
+          loadBalancerIP: {{ .Values.traefik.service.loadBalancerIP }}
         ports:
           metrics:
             exposedPort: 39100
