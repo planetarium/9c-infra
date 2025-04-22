@@ -28,7 +28,7 @@
     "9cscanUrl": "https://heimdall-preview.9cscan.com",
     "rpcEndpoints": {
       "headless.gql": [
-        "https://heimdall-preview-rpc-1.nine-chronicles.com/graphql"
+        "https://heimdall-preview-rpc.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://heimdall-preview-rpc-1.nine-chronicles.com:31238"
