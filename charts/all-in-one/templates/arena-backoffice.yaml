@@ -43,6 +43,8 @@ spec:
                 secretKeyRef:
                   key: HEADLESS_ENDPOINT
                   name: arena
+            - name: Headless__Planet
+              value: "{{ .Values.arenaService.planet }}"
             - name: Redis__Port
               value: "{{ .Values.arenaService.redis.port }}"
             - name: Redis__RankingDbNumber

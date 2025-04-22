@@ -413,6 +413,8 @@ blockIntervalNotifier:
 
 arenaService:
   enabled: true
+  
+  planet: "odin"
 
   nodeSelector:
     node.kubernetes.io/type: general
