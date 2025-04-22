@@ -11,6 +11,8 @@ metadata:
 spec:
   schedule: "{{ .schedule }}"
   concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
