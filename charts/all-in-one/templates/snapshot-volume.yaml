@@ -1,11 +1,11 @@
 {{- if $.Values.snapshot.partition.enabled }}
-{{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
+{{- if and (eq $.Values.provider "RKE2") }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: snapshot-volume-partition
   labels:
-    app.kubernetes.io/instance: odin
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
@@ -15,9 +15,13 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: odin-longhorn
+  storageClassName: {{ $.Release.Name }}-longhorn
   hostPath:
+    {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
     path: /data
+    {{- else if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+    path: /output
+    {{- end }}
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -31,9 +35,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume-partition
-  namespace: odin
+  namespace: {{ $.Release.Name }}
   labels:
-    app.kubernetes.io/instance: odin
+    app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
@@ -44,55 +48,9 @@ spec:
     requests:
       storage: {{ default "100Gi" $.Values.snapshot.storage }}
   volumeName: snapshot-volume-partition
-  storageClassName: odin-longhorn
+  storageClassName: {{ $.Release.Name }}-longhorn
   volumeMode: Filesystem
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: snapshot-volume-output
-  labels:
-    app.kubernetes.io/instance: odin
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
-spec:
-  capacity:
-    storage: {{ default "300Gi" $.Values.snapshot.outputStorage }}
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: odin-longhorn
-  hostPath:
-    path: /output
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - 9c-main-baremetal-1
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: snapshot-volume-output
-  namespace: odin
-  labels:
-    app.kubernetes.io/instance: odin
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ default "300Gi" $.Values.snapshot.outputStorage }}
-  volumeName: snapshot-volume-output
-  storageClassName: odin-longhorn
-  volumeMode: Filesystem
 {{- else }}
 
 apiVersion: v1
