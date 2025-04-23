@@ -18,7 +18,7 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    tag: main-bd3333642fc61f5e63c1fa244a13f2ad29416648
+    tag: main-dbb43eb5bc7009d21dfd6f1ddad9b9f8fc0febc9
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -51,7 +51,7 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: main-ac6255891e58a7f3f22952c766dd5eb44f7d185f
+    tag: main-d0dff55846193ac831c40082dbf8dcea1a0e0870
     pullPolicy: Always
   externalSecret:
     enabled: true
