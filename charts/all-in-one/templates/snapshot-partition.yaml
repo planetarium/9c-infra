@@ -52,8 +52,13 @@ spec:
               mountPath: /bin/download_snapshot.sh
               readOnly: true
               subPath: download_snapshot.sh
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - name: snapshot-volume-output
+              mountPath: /output
+            {{- else }}
             - name: snapshot-volume-partition
               mountPath: /data
+            {{- end }}
           {{- end }}
 
           - name: preload-headless
@@ -84,8 +89,13 @@ spec:
               mountPath: /bin/preload_headless.sh
               readOnly: true
               subPath: preload_headless.sh
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - name: snapshot-volume-output
+              mountPath: /output
+            {{- else }}
             - name: snapshot-volume-partition
               mountPath: /data
+            {{- end }}
 
           containers:
           - name: upload-snapshot
