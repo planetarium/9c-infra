@@ -1,15 +1,9 @@
 {{ if $.Values.snapshot.partition.enabled }}
 apiVersion: batch/v1
 kind: CronJob
-{{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-metadata:
-  name: snapshot-partition-heimdall
-  namespace: odin
-{{- else }}
 metadata:
   name: snapshot-partition
   namespace: {{ $.Release.Name }}
-{{- end }}
 spec:
   jobTemplate:
     spec:
@@ -52,11 +46,10 @@ spec:
               mountPath: /bin/download_snapshot.sh
               readOnly: true
               subPath: download_snapshot.sh
+            - name: snapshot-volume-partition
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-            - name: snapshot-volume-output
               mountPath: /output
             {{- else }}
-            - name: snapshot-volume-partition
               mountPath: /data
             {{- end }}
           {{- end }}
@@ -89,11 +82,10 @@ spec:
               mountPath: /bin/preload_headless.sh
               readOnly: true
               subPath: preload_headless.sh
+            - name: snapshot-volume-partition
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-            - name: snapshot-volume-output
               mountPath: /output
             {{- else }}
-            - name: snapshot-volume-partition
               mountPath: /data
             {{- end }}
 
@@ -151,11 +143,10 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
+            - name: snapshot-volume-partition
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-            - name: snapshot-volume-output
               mountPath: /output
             {{- else }}
-            - name: snapshot-volume-partition
               mountPath: /data
             {{- end }}
 
@@ -167,16 +158,6 @@ spec:
           {{- end }}
 
           volumes:
-          {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-          - name: script-volume
-            configMap:
-              defaultMode: 0700
-              name: odin-snapshot-script-partition
-          - name: download-snapshot-script
-            configMap:
-              defaultMode: 0700
-              name: odin-download-snapshot-script
-          {{- else }}
           - name: script-volume
             configMap:
               defaultMode: 0700
@@ -185,19 +166,12 @@ spec:
             configMap:
               defaultMode: 0700
               name: {{ $.Release.Name }}-download-snapshot-script
-          {{- end }}
           - name: aws-keys
             secret:
               secretName: aws-keys
-          {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-          - name: snapshot-volume-output
-            persistentVolumeClaim:
-              claimName: snapshot-volume-output
-          {{- else }}
           - name: snapshot-volume-partition
             persistentVolumeClaim:
               claimName: snapshot-volume-partition
-          {{- end }}
 
 
   schedule: 0 0 * * *
