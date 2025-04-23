@@ -1,5 +1,6 @@
 {{- if $.Values.snapshot.partition.enabled }}
-{{- if and (eq $.Values.provider "RKE2") }}
+{{- if (eq $.Values.provider "RKE2") }}
+{{- if (eq $.Release.Name "odin") }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -17,11 +18,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: {{ $.Release.Name }}-longhorn
   hostPath:
-    {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
     path: /data
-    {{- else if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-    path: /output
-    {{- end }}
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -51,6 +48,7 @@ spec:
   storageClassName: {{ $.Release.Name }}-longhorn
   volumeMode: Filesystem
 ---
+{{- end }}
 {{- else }}
 
 apiVersion: v1
