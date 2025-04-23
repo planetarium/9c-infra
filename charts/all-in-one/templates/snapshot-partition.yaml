@@ -112,8 +112,10 @@ spec:
             {{- end }}
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - /output/snapshots
+            - /output/headless
             {{- else }}
             - /data/snapshots
+            - /data/headless
             {{- end }}
 
             env:
