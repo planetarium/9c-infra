@@ -10,7 +10,7 @@ APP_PROTOCOL_VERSION=$1
 SLACK_WEBHOOK=$2
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
-STORE_PATH="/data/headless"
+STORE_PATH=$3
 TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
 {{- range $i, $s := $.Values.global.peerStrings }}
@@ -21,7 +21,7 @@ ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c
 
 HEADLESS="$HOME/NineChronicles.Headless.Executable"
 HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
-HEADLESS_LOG_DIR="/data/snapshot_logs"
+HEADLESS_LOG_DIR=$4
 HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
 mkdir -p "$HEADLESS_LOG_DIR"
 

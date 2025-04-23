@@ -10,12 +10,13 @@ apt-get -y install curl zip unzip sudo p7zip-full
 curl https://rclone.org/install.sh | bash
 
 HOME="/app"
-STORE_PATH="/data/headless"
 APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
+STORE_PATH="$6"
+echo "[DEBUG] Args: $1 $2 $3 $4 $5 $6"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -63,14 +64,15 @@ function retry_until_success() {
 
 function make_and_upload_snapshot() {
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
- # Use $5 as override if provided, otherwise fallback to /data/snapshots
-  OUTPUT_DIR="${5:-/data/snapshots}"
+  echo "[DEBUG] Args: $1"
+  OUTPUT_DIR="${1:-/data/snapshots}"
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
   FULL_DIR="$OUTPUT_DIR/full"
   URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
+  mkdir -p "$OUTPUT_DIR"
   mkdir -p "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
 
   if curl --output /dev/null --silent --head --fail "$URL"; then
@@ -183,4 +185,4 @@ echo "[INFO] Setting up rclone..."
 setup_rclone
 
 echo "[INFO] Starting snapshot process..."
-make_and_upload_snapshot
+make_and_upload_snapshot $5

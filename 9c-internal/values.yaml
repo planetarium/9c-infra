@@ -1,8 +1,5 @@
 clusterName: 9c-internal
 provider: RKE2
-global:
-  service:
-    annotations:
 RKE2:
   domain: rke2.planetarium.network
   publicIPs:

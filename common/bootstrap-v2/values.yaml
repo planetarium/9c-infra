@@ -3,13 +3,15 @@ provider:
 
 global:
   service:
-    annotations:
+    annotations: {}
 
 argocd:
   domain:
 
 traefik:
   replicas: 1
+  service:
+    annotations: {}
   trustedIPs:
   - 10.0.0.0/8
   - 172.0.0.0/8

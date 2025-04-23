@@ -1,17 +1,21 @@
 portalService:
   name: portal
-  hostname: "nine-chronicles.com"
+  hostnames:
+    - "nine-chronicles.com"
+    - "www.nine-chronicles.com"
   replicaCount: 2
   service:
     type: ClusterIP
     port: 3000
   resources:
     limits:
-      cpu: 4
-      memory: 4Gi
+      cpu: 2
+      memory: 3Gi
     requests:
       cpu: 2
       memory: 3Gi
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
     tag: main-dbb43eb5bc7009d21dfd6f1ddad9b9f8fc0febc9
@@ -38,11 +42,13 @@ backofficeService:
     port: 3001
   resources:
     limits:
-      cpu: 4
-      memory: 4Gi
+      cpu: 2
+      memory: 3Gi
     requests:
       cpu: 2
       memory: 3Gi
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
     tag: main-d0dff55846193ac831c40082dbf8dcea1a0e0870

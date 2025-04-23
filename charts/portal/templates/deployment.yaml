@@ -32,3 +32,7 @@ spec:
                 name: {{ .Release.Name }}-secrets
           resources:
             {{- toYaml .Values.portalService.resources | nindent 12 }}
+      {{- with .Values.portalService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

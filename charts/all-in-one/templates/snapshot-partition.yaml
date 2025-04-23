@@ -22,7 +22,11 @@ spec:
             - /bin/download_snapshot.sh
             args:
             - 'https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}'
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            {{- else }}
             - /data/headless
+            {{- end }}
             - $(RESET_SNAPSHOT_OPTION)
             - snapshot
             - $(SLACK_WEBHOOK_URL)
@@ -43,7 +47,11 @@ spec:
               readOnly: true
               subPath: download_snapshot.sh
             - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+              mountPath: /output
+            {{- else }}
               mountPath: /data
+            {{- end }}
           {{- end }}
 
           - name: preload-headless
@@ -57,6 +65,13 @@ spec:
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            - /output/snapshot_logs
+            {{- else }}
+            - /data/headless
+            - /data/snapshot_logs
+            {{- end }}
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -75,7 +90,11 @@ spec:
               readOnly: true
               subPath: preload_headless.sh
             - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+              mountPath: /output
+            {{- else }}
               mountPath: /data
+            {{- end }}
 
           containers:
           - name: upload-snapshot
@@ -91,9 +110,14 @@ spec:
             {{- else }}
             - {{ $.Values.snapshot.path }}
             {{- end }}
-            {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - /output/snapshots
+            - /output/headless
+            {{- else }}
+            - /data/snapshots
+            - /data/headless
             {{- end }}
+
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -125,14 +149,14 @@ spec:
               mountPath: /bin/download_snapshot.sh
               readOnly: true
               subPath: download_snapshot.sh
-            - name: snapshot-volume-partition
-              mountPath: /data
             - name: aws-keys
               mountPath: /secret
               readOnly: true
-            {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
-            - name: snapshot-volume-output
+            - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
               mountPath: /output
+            {{- else }}
+              mountPath: /data
             {{- end }}
 
           restartPolicy: OnFailure
@@ -151,17 +175,19 @@ spec:
             configMap:
               defaultMode: 0700
               name: {{ $.Release.Name }}-download-snapshot-script
-          - name: snapshot-volume-partition
-            persistentVolumeClaim:
-              claimName: snapshot-volume-partition
           - name: aws-keys
             secret:
               secretName: aws-keys
-          {{- if and (eq $.Values.provider "RKE2") (or (eq $.Release.Name "odin") (eq $.Release.Name "heimdall")) }}
-          - name: snapshot-volume-output
+          - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            hostPath:
+              path: /output
+              type: Directory
+            {{- else }}
             persistentVolumeClaim:
-              claimName: snapshot-volume-output
-          {{- end }}
+              claimName: snapshot-volume-partition
+            {{- end }}
+
 
   schedule: 0 0 * * *
   successfulJobsHistoryLimit: 1
