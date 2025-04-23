@@ -65,6 +65,11 @@ spec:
             args:
             - $(APP_PROTOCOL_VERSION_KEY)
             - $(SLACK_WEBHOOK_URL)
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            {{- else }}
+            - /data/headless
+            {{- end }}
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -170,8 +175,14 @@ spec:
             secret:
               secretName: aws-keys
           - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            hostPath:
+              path: /output
+              type: Directory
+            {{- else }}
             persistentVolumeClaim:
               claimName: snapshot-volume-partition
+            {{- end }}
 
 
   schedule: 0 0 * * *

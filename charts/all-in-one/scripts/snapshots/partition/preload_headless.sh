@@ -10,7 +10,7 @@ APP_PROTOCOL_VERSION=$1
 SLACK_WEBHOOK=$2
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
-STORE_PATH="/data/headless"
+STORE_PATH=$3
 TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
 {{- range $i, $s := $.Values.global.peerStrings }}
