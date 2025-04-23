@@ -5,7 +5,7 @@ kind: PersistentVolume
 metadata:
   name: snapshot-volume-partition
   labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/instance: odin
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
@@ -31,9 +31,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume-partition
-  namespace: {{ $.Release.Name }}
+  namespace: odin
   labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/instance: odin
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
@@ -52,7 +52,7 @@ kind: PersistentVolume
 metadata:
   name: snapshot-volume-output
   labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/instance: odin
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
@@ -78,9 +78,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: snapshot-volume-output
-  namespace: {{ $.Release.Name }}
+  namespace: odin
   labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/instance: odin
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
