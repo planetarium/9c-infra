@@ -78,7 +78,6 @@ snapshot:
       memory: 56Gi
 
   nodeSelector:
-    node.kubernetes.io/network: odin
     node.kubernetes.io/type: baremetal
     node.kubernetes.io/node-index: '1'
 

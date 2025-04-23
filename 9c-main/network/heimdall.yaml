@@ -73,6 +73,8 @@ snapshot:
       memory: 10Gi
 
   nodeSelector:
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: '1'
 
   storage: 300Gi
 
