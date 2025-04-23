@@ -10,13 +10,13 @@ apt-get -y install curl zip unzip sudo p7zip-full
 curl https://rclone.org/install.sh | bash
 
 HOME="/app"
-STORE_PATH="/data/headless"
 APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
-echo "[DEBUG] Args: $1 $2 $3 $4 $5"
+STORE_PATH="$6"
+echo "[DEBUG] Args: $1 $2 $3 $4 $5 $6"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
