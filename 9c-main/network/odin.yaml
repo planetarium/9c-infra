@@ -161,8 +161,6 @@ validator:
       operator: Equal
       value: validator-test
 
-  nodeSelector:
-
   resources:
     requests:
       cpu: "3"
@@ -227,8 +225,6 @@ remoteHeadless:
 dataProviderDataMigrator:
   enabled: true
 
-  nodeSelector:
-
   resources:
     requests:
       cpu: "5"
@@ -244,8 +240,6 @@ dataProviderDataMigrator:
 
 dataProviderDailyMetric:
   enabled: false
-
-  nodeSelector:
 
   resources:
     requests:
@@ -271,17 +265,12 @@ marketService:
     - name: WorkerConfig__SyncProduct
       value: "true"
 
-  nodeSelector:
-    read:
-    write:
-
 bridge:
   enabled: true
   bridgeObserverImage:
     tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
   bridgeStatusBotImage:
     tag: "20210913-01"
-  nodeSelector:
 
 testHeadless1:
   enabled: false
@@ -337,8 +326,6 @@ testHeadless1:
       key: dedicated
       operator: Equal
       value: remote-headless-test
-
-  nodeSelector:
 
   storage:
     volumeName: "volume-rotator-2"
@@ -451,8 +438,6 @@ volumePreloader:
 
   extraArgs:
     - --tx-quota-per-signer=1
-
-  nodeSelector:
 
   resources:
     requests:
