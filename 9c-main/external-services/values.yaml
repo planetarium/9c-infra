@@ -63,4 +63,4 @@ backoffice:
 
   image:
     pullPolicy: Always
-    tag: "git-6d61c0c58f86493bdc2e8d173199058f3894f9d0"
+    tag: "git-05714e09da0657a5368b70a5f8b4196ef3ab42ca"
