@@ -13,8 +13,6 @@ backoffice:
     repository: planetariumhq/petpop
     tag: server-be3b3a5101eaa6408b196ebe168fe1fa333e6cd0
   hostname: petpop-internal-backoffice.9c.gg
-  nodeSelector:
-    node.kubernetes.io/type: general
 
 workers:
   image:
