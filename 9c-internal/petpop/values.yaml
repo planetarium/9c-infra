@@ -24,3 +24,5 @@ workers:
     enabled: true
   blockResetWorker:
     enabled: true
+  walletMonitorWorker:
+    enabled: true

@@ -23,3 +23,7 @@ workers:
     enabled: false
     schedule: "0 0 * * *"
     command: "reset"
+  walletMonitorWorker:
+    enabled: false
+    schedule: "0 0 * * *"
+    command: "wallet"
