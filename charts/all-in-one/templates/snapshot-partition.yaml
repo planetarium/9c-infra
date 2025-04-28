@@ -53,7 +53,6 @@ spec:
               mountPath: /data
             {{- end }}
           {{- end }}
-
           - name: preload-headless
             {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
             image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
@@ -95,7 +94,228 @@ spec:
             {{- else }}
               mountPath: /data
             {{- end }}
-
+          - name: set-date
+            image: debian:latest
+            command:
+              - sh
+              - -c
+              - >
+                apt-get update && apt-get install -y coreutils &&
+                echo -n $(date -d '2 days ago' +%Y-%m-%d) > /etc/config/date &&
+                echo "Date set to: $(cat /etc/config/date)"
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+          - name: chain-migration
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            args:
+            - NineChronicles.DataProvider.Executable.dll
+            - mysql-migration
+            - migration
+            - -o
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            {{- else }}
+            - /data/headless
+            {{- end }}
+            - --mysql-server
+            - $(DP_HOST)
+            - --mysql-port
+            - $(DP_PORT)
+            - --mysql-username
+            - $(DP_USER)
+            - --mysql-password
+            - $(DP_TOKEN)
+            - --mysql-database
+            - $(DP_DATABASE)
+            - --date
+            - "$(cat /etc/config/date)"
+            command:
+            - dotnet
+            env:
+              - name: DP_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: write-host
+              - name: DP_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: user
+              - name: DP_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: token
+              - name: DP_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: port
+              - name: DP_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: database
+            resources:
+              requests:
+                cpu: '1'
+                memory: 10Gi
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+              - name: snapshot-volume-partition
+                {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+                mountPath: /output
+                {{- else }}
+                mountPath: /data
+                {{- end }}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            imagePullPolicy: Always
+          - command:
+            - sh
+            - -c
+            - >
+              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration migration
+              --mysql-server $(DP_HOST)
+              --mysql-port $(DP_PORT)
+              --mysql-username $(DP_USER)
+              --mysql-password $(DP_TOKEN)
+              --mysql-database $(DP_DATABASE)
+              --date "$(cat /etc/config/date)"
+            env:
+            - name: DP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: write-host
+                  name: data-provider
+            - name: DP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: data-provider
+            - name: DP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: data-provider
+            - name: DP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: data-provider
+            - name: DP_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            imagePullPolicy: Always
+            name: dailymetric
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            {{- with $.Values.snapshot.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+          - args:
+            - NineChronicles.DataProvider.Executable.dll
+            - user-data-migration
+            -  migration
+            - -o
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            {{- else }}
+            - /data/headless
+            {{- end }}
+            - --rocksdb-storetype
+            - new
+            - --mysql-server
+            - $(DP_HOST)
+            - --mysql-port
+            - $(DP_PORT)
+            - --mysql-username
+            - $(DP_USER)
+            - --mysql-password
+            - $(DP_TOKEN)
+            - --mysql-database
+            - $(DP_DATABASE)
+            - --slack-token
+            - $(DP_SLACK_TOKEN)
+            - --slack-channel
+            - $(DP_SLACK_CHANNEL)
+            - --network
+            - $(DP_NETWORK)
+            - --bulk-files-folder
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output
+            {{- else }}
+            - /data
+            {{- end }}
+            command:
+            - dotnet
+            env:
+            - name: DP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: write-host
+                  name: data-provider
+            - name: DP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: data-provider
+            - name: DP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: data-provider
+            - name: DP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: data-provider
+            - name: DP_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            - name: DP_SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: data-provider
+            - name: DP_SLACK_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel
+                  name: data-provider
+            - name: DP_NETWORK
+              valueFrom:
+                secretKeyRef:
+                  key: network
+                  name: data-provider
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            imagePullPolicy: Always
+            name: migration
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            {{- with $.Values.snapshot.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: snapshot-volume-partition
+              {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+              mountPath: /output
+              {{- else }}
+              mountPath: /data
+              {{- end }}
           containers:
           - name: upload-snapshot
             image: {{ $.Values.snapshot.image }}
@@ -117,7 +337,6 @@ spec:
             - /data/snapshots
             - /data/headless
             {{- end }}
-
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
@@ -158,14 +377,11 @@ spec:
             {{- else }}
               mountPath: /data
             {{- end }}
-
           restartPolicy: OnFailure
-
           {{- with $.Values.snapshot.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-
           volumes:
           - name: script-volume
             configMap:
@@ -178,6 +394,8 @@ spec:
           - name: aws-keys
             secret:
               secretName: aws-keys
+          - name: date-config
+            emptyDir: {}
           - name: snapshot-volume-partition
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             hostPath:
@@ -187,8 +405,6 @@ spec:
             persistentVolumeClaim:
               claimName: snapshot-volume-partition
             {{- end }}
-
-
   schedule: 0 0 * * *
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
