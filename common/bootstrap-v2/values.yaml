@@ -17,6 +17,7 @@ traefik:
   - 172.0.0.0/8
   ports:
     grpc:
+      gateway: true
       kind: GRPCRoute
       port: 31238
       transport:

@@ -84,8 +84,10 @@ spec:
               certificateRefs:
                 - name: certificate-secret
             {{- range $name, $config := $.Values.traefik.ports }}
+            {{- if $config.gateway }}
             {{ $name }}:
               port: {{ $config.port }}
               protocol: {{ eq $config.kind "TCPRoute" | ternary "TCP" "HTTP" }}
               namespacePolicy: All
+            {{- end }}
             {{- end }}
