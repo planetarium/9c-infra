@@ -26,6 +26,13 @@ certManager:
     - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
+traefik:
+  ports:
+    postgresql:
+      port: 5432
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
 grafana:
   hosts:
     - monitoring-internal.planetarium.network
