@@ -1,4 +1,4 @@
-
+{{- if .Values.fluentBit.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -54,17 +54,21 @@ data:
         Match                        application.*
         Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_s3
-    {{- if eq .Values.provider "AWS" }}
     [OUTPUT]
         Name                         s3
         Match                        s3.*
+        {{- if eq .Values.provider "AWS" }}
         region                       ${AWS_REGION}
         Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        {{- end }}
         compression                  gzip
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
-    {{- end }}
 
     [INPUT]
         Name                         tail
@@ -166,6 +170,21 @@ data:
         compression                  gzip
         Total_file_size              100M
         S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters ._
+    [OUTPUT]
+        Name                         s3
+        Match                        s3json.*
+        {{- if eq .Values.provider "AWS" }}
+        region                       ${AWS_REGION}
+        Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        {{- end }}
+        compression                  gzip
+        Total_file_size              100M
+        S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/glue/$TAG[3]/%Y/%m/%d/%H/$TAG-$UUID.gz
         S3_key_format_tag_delimiters ._
 
     [INPUT]
@@ -274,3 +293,4 @@ data:
         Time_Key            time_local
         Time_Format         %d/%b/%Y:%H:%M:%S %z
         Decode_Field        json request_body
+{{- end }}

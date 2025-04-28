@@ -14,6 +14,12 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: datadog
   source:
     repoURL: https://helm.datadoghq.com
     chart: datadog
@@ -67,14 +73,6 @@ spec:
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: datadog
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
 ---
 apiVersion: "external-secrets.io/v1beta1"
 kind: SecretStore

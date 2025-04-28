@@ -26,14 +26,15 @@ certManager:
     - "*.petpop.fun"
   issuer:
     email: devops@planetariumhq.com
+traefik:
+  trustedIPs:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 49.247.0.0/16
+  - 115.68.0.0/16
 grafana:
   hosts:
     - monitoring-internal.planetarium.network
 prometheus:
   server:
     extraScrapeConfigs:
-      - job_name: scrape-headlesses
-        metrics_path: /metrics
-        scrape_interval: 8s
-        scrape_timeout: 6s
-        static_configs:
