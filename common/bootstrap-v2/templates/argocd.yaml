@@ -61,3 +61,6 @@ spec:
                       - name: planetarium
                     clientID: "$github-ssh-client:dex.github.clientId"
                     clientSecret: "$github-ssh-client:dex.github.clientSecret"
+            {{- with .Values.argocd.cssUrl }}
+            ui.cssUrl: {{ . }}
+            {{- end }}
