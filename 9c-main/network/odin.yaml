@@ -153,7 +153,7 @@ validator:
 
   storage:
     volumeNames:
-    - "remote-headless-data-3-remote-headless-3-0"
+    - "remote-headless-data-2-remote-headless-2-0"
 
   tolerations:
   - effect: NoSchedule
