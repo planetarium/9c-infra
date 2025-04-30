@@ -6,7 +6,6 @@ RKE2:
     - 49.247.14.112/32
 argocd:
   domain: argocd-internal.planetarium.network
-  cssUrl: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/css/argocd.css
 externalSecrets:
   serviceAccount:
     annotations:
