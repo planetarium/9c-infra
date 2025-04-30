@@ -152,10 +152,10 @@ spec:
                   secretKeyRef:
                     name: data-provider
                     key: database
+            {{- with $.Values.snapshot.resources }}
             resources:
-              requests:
-                cpu: '1'
-                memory: 10Gi
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
               - name: date-config
                 mountPath: /etc/config
@@ -399,7 +399,11 @@ spec:
             persistentVolumeClaim:
               claimName: snapshot-volume-partition
             {{- end }}
+  {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+  schedule: 0 0 */2 * *
+  {{- else }}
   schedule: 0 0 * * *
+  {{- end }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   suspend: {{ $.Values.snapshot.partition.suspend }}
