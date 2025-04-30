@@ -62,5 +62,5 @@ spec:
                     clientID: "$github-ssh-client:dex.github.clientId"
                     clientSecret: "$github-ssh-client:dex.github.clientSecret"
             {{- with .Values.argocd.cssUrl }}
-            ui.cssUrl: {{ . }}
+            ui.cssurl: {{ . }}
             {{- end }}
