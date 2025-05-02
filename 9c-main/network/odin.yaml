@@ -167,7 +167,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 2
+  count: 3
   replicas: 1
 
   useTurnServer: false
@@ -185,6 +185,8 @@ remoteHeadless:
     node.kubernetes.io/node-index: '1'
   - node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '2'
+  - node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: '4'
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
@@ -331,7 +333,7 @@ testHeadless1:
     volumeName: "volume-rotator-2"
 
 jwtHeadless:
-  enabled: true
+  enabled: false
 
   loggingEnabled: true
 
