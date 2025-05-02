@@ -179,6 +179,7 @@ remoteHeadless:
   loadBalancerIPs:
   - 115.68.194.60
   - 115.68.194.98
+  - 115.68.194.103
 
   nodeSelector:
   - node.kubernetes.io/network: odin
@@ -342,7 +343,7 @@ jwtHeadless:
 
   host: "odin-node-jwt.nine-chronicles.com"
 
-  loadBalancerIP: "115.68.194.103"
+  loadBalancerIP: ""
 
   ingress:
     enabled: true
@@ -350,7 +351,6 @@ jwtHeadless:
 
   nodeSelector:
     node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '4'
 
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/appsettings-nodeinfra.json"
 
