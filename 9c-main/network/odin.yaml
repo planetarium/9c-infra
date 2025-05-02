@@ -175,6 +175,7 @@ remoteHeadless:
   hosts:
   - "odin-node-1.nine-chronicles.com"
   - "odin-node-2.nine-chronicles.com"
+  - "odin-node-3.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.194.60
