@@ -79,6 +79,13 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - name: PLUGIN_PATH
+              value: "/output"
+            {{- else }}
+            - name: PLUGIN_PATH
+              value: "/data"
+            {{- end }}
             {{- with $.Values.snapshot.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
