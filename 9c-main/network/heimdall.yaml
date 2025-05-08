@@ -1,16 +1,16 @@
 global:
-  appProtocolVersion: "200300/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIA6EUj40u.ODOeefhcFYCxkfxBp7OVAv.xgVkGkSBWZwAiAgpBiRX4Yo40EbXmpKgc37msnyFFVf7GBrnenBTZDcYA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTA0LTAxZQ=="
+  appProtocolVersion: "200310/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEQCIAICPCkF9yD6EFcruRP4+0UVqRNwz+iauRGICTWbfGeUAiBhdHqfDan7w6DyoQeyp1+AuNJGBvCvwTUieZdxAfyllg==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTA0LTI0ZQ=="
   validatorPath: "heimdall-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings-nodeinfra.json"
 
   peerStrings:
-    - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
 
   iceServers:
-    - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
-    - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
+  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478"
 
   networkType: Main
   planet: Heimdall
@@ -21,10 +21,10 @@ global:
 
 RKE2:
   loadBalancerIPs:
-    - 115.68.194.150/32
-    - 115.68.194.151/32
-    - 115.68.194.214/32
-    - 115.68.193.219/32
+  - 115.68.194.150/32
+  - 115.68.194.151/32
+  - 115.68.194.214/32
+  - 115.68.193.219/32
 
 externalSecret:
   enabled: true
@@ -34,23 +34,23 @@ externalSecret:
 gateway:
   enabled: true
   services:
-    - name: remote-headless
-      hostnames:
-        - heimdall-rpc.nine-chronicles.com
-      backendRefs:
-        - name: remote-headless-1
-        - name: remote-headless-2
-      protocols:
-        - web
-        - grpc
-    - name: market-service
-      hostname: heimdall-market.9c.gg
-    - name: arena-service
-      hostname: heimdall-arena.9c.gg
-    - name: arena-backoffice
-      hostname: heimdall-arena-backoffice.9c.gg
-    - name: mimir-gql
-      hostname: heimdall-mimir.9c.gg
+  - name: remote-headless
+    hostnames:
+    - heimdall-rpc.nine-chronicles.com
+    backendRefs:
+    - name: remote-headless-1
+    - name: remote-headless-2
+    protocols:
+    - web
+    - grpc
+  - name: market-service
+    hostname: heimdall-market.9c.gg
+  - name: arena-service
+    hostname: heimdall-arena.9c.gg
+  - name: arena-backoffice
+    hostname: heimdall-arena-backoffice.9c.gg
+  - name: mimir-gql
+    hostname: heimdall-mimir.9c.gg
 
 snapshot:
   slackChannel: "9c-mainnet"
@@ -87,10 +87,10 @@ seed:
   useTurnServer: false
 
   hosts:
-    - "heimdall-seed-1.nine-chronicles.com"
+  - "heimdall-seed-1.nine-chronicles.com"
 
   loadBalancerIPs:
-    - "115.68.193.219"
+  - "115.68.193.219"
 
   loggingEnabled: true
 
@@ -103,40 +103,40 @@ seed:
       memory: 500Mi
 
   nodeSelector:
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '1'
-      node.kubernetes.io/type: seed
+  - node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '1'
+    node.kubernetes.io/type: seed
 
 validator:
   count: 1
 
   env:
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   loggingEnabled: true
   datadog:
     enabled: true
 
   extraArgs:
-    - --tx-quota-per-signer=1
-    - --tx-life-time=10
-    - --consensus-target-block-interval=8000
+  - --tx-quota-per-signer=1
+  - --tx-life-time=10
+  - --consensus-target-block-interval=8000
 
   consensusSeedStrings:
-    - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
 
   hosts:
-    - "heimdall-node-validator-1.nine-chronicles.com"
+  - "heimdall-node-validator-1.nine-chronicles.com"
 
   loadBalancerIPs:
-    - "115.68.194.214"
+  - "115.68.194.214"
 
   resources:
     limits:
@@ -150,13 +150,13 @@ validator:
 
   storage:
     volumeNames:
-      - "remote-headless-data-3-remote-headless-3-0"
+    - "remote-headless-data-3-remote-headless-3-0"
 
   tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: validator-test
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: validator-test
 
 remoteHeadless:
   count: 2
@@ -165,36 +165,36 @@ remoteHeadless:
   useTurnServer: false
 
   hosts:
-    - "heimdall-node-1.nine-chronicles.com"
-    - "heimdall-node-2.nine-chronicles.com"
+  - "heimdall-node-1.nine-chronicles.com"
+  - "heimdall-node-2.nine-chronicles.com"
 
   loadBalancerIPs:
-    - 115.68.194.150
-    - 115.68.194.151
+  - 115.68.194.150
+  - 115.68.194.151
 
   nodeSelector:
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '1'
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '2'
+  - node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '1'
+  - node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '2'
 
   env:
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: JWT__Key
-      valueFrom:
-        secretKeyRef:
-          key: jwt
-          name: private-keys
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
 
   extraArgs:
-    - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=1
 
   resources:
     requests:
@@ -207,10 +207,10 @@ remoteHeadless:
     data: 500Gi
 
   tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
   loggingEnabled: true
   datadog:
@@ -243,20 +243,20 @@ marketService:
   rwMode: false
 
   env:
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: WorkerConfig__SyncShop
-      value: "false"
-    - name: WorkerConfig__SyncProduct
-      value: "false"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "false"
 
   envForWrite:
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: WorkerConfig__SyncShop
-      value: "true"
-    - name: WorkerConfig__SyncProduct
-      value: "true"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
 
   nodeSelector:
     read:
@@ -289,37 +289,37 @@ testHeadless1:
   loggingEnabled: true
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "true"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "12"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
-    - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=1
 
   tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 testHeadless2:
   enabled: false
@@ -345,35 +345,35 @@ testHeadless2:
   loggingEnabled: true
 
   env:
-    - name: IpRateLimiting__EnableEndpointRateLimiting
-      value: "true"
-    - name: IpRateLimiting__GeneralRules__0__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__0__Limit
-      value: "12"
-    - name: IpRateLimiting__GeneralRules__1__Period
-      value: "60s"
-    - name: IpRateLimiting__GeneralRules__1__Limit
-      value: "12"
-    - name: IpRateLimiting__IpBanMinute
-      value: "10"
-    - name: IpRateLimiting__IpBanThresholdCount
-      value: "5"
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
 
   extraArgs:
-    - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=1
 
   tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 blockIntervalNotifier:
   enabled: true
@@ -409,17 +409,17 @@ volumePreloader:
   useTurnServer: true
 
   env:
-    - name: Headless__AccessControlService__AccessControlServiceType
-      value: "local"
-    - name: Headless__AccessControlService__AccessControlServiceConnectionString
-      value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-    - name: PLUGIN_PATH
-      value: "/data"
-    - name: DOTNET_gcServer
-      value: "1"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
 
   extraArgs:
-    - --tx-quota-per-signer=1
+  - --tx-quota-per-signer=1
 
   nodeSelector:
 
@@ -432,10 +432,10 @@ volumePreloader:
     data: 300Gi
 
   tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Equal
-      value: remote-headless-test
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
 
 bridge:
   enabled: true

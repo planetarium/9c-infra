@@ -47,6 +47,7 @@ spec:
               g, planetarium:Engineers, role:admin
               g, planetarium:Nine Chronicles (engineers), role:admin
               g, planetarium:Growth, role:admin
+              g, planetarium:GameFi, role:admin
           cm:
             admin.enabled: true
             statusbadge.enabled: true
@@ -60,3 +61,6 @@ spec:
                       - name: planetarium
                     clientID: "$github-ssh-client:dex.github.clientId"
                     clientSecret: "$github-ssh-client:dex.github.clientSecret"
+            {{- with .Values.argocd.cssUrl }}
+            ui.cssurl: {{ . }}
+            {{- end }}

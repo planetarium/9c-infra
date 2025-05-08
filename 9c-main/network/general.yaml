@@ -4,7 +4,7 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "270"
+    tag: "280"
 
 seed:
   image:
@@ -16,7 +16,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-84c095751b760792820290569b072ec83d827926"
+    tag: "git-927e2b1c47161654f5215bf43a0408a4d03c34ee"
 
 worldBoss:
   image:
@@ -71,10 +71,10 @@ mimir:
     image:
       repository: planetariumhq/mimir
       pullPolicy: Always
-      tag: "git-2758c99c7a275db7b62ff15e573a80e3a97660a2"
+      tag: "git-84f0200c8a36060fd4949b6ba4a61837d8a723b0"
 
   diffWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-2758c99c7a275db7b62ff15e573a80e3a97660a2"
+      tag: "git-84f0200c8a36060fd4949b6ba4a61837d8a723b0"
     pullPolicy: Always
