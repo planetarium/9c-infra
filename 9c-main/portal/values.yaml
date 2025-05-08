@@ -51,7 +51,7 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: main-01278e38e15232be77f3ebcda5e15c32c99fac44
+    tag: main-56844b56ac698c61bd0d691dca44ecb8b6871b5d
     pullPolicy: Always
   externalSecret:
     enabled: true
