@@ -74,14 +74,11 @@ prometheus:
             targets:
               - remote-headless-1.odin.svc.cluster.local:80
               - remote-headless-2.odin.svc.cluster.local:80
+              - remote-headless-3.odin.svc.cluster.local:80
           - labels:
               group: odin-validator
             targets:
               - validator-5.odin.svc.cluster.local:80
-          - labels:
-              group: odin-jwt
-            targets:
-              - jwt-headless.odin.svc.cluster.local:80
           - labels:
               group: heimdall-rpc
             targets:
@@ -91,10 +88,6 @@ prometheus:
               group: heimdall-validator
             targets:
               - validator-5.heimdall.svc.cluster.local:80
-          - labels:
-              group: heimdall-jwt
-            targets:
-              - jwt-headless.heimdall.svc.cluster.local:80
 datadog:
   enabled: true
   clusterAgent:
