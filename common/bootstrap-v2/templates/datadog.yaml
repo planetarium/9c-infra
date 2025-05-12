@@ -21,6 +21,13 @@ spec:
     helm:
       values: |-
         datadog:
+          kubelet:
+            tlsVerify: false
+          env:
+            - name: DD_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           apiKeyExistingSecret: datadog-secret
           appKeyExistingSecret: datadog-secret
           site: datadoghq.com
@@ -29,12 +36,17 @@ spec:
             serviceEndpoints: true
           apm:
             portEnabled: true
+          logs:
+            enabled: true
           processAgent:
             enabled: true
             processCollection: true
             stripProcessArguments: true
           networkMonitoring:
             enabled: true
+          containerExcludeMetrics: "image:.*"
+          containerExcludeLogs: "image:.*"
+          containerIncludeLogs: "name:validator-.*"
           otlp:
             receiver:
               protocols:
