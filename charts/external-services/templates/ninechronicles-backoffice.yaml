@@ -183,6 +183,36 @@ spec:
                 secretKeyRef:
                   key: NC_SEASONPASS_JWT_ISSUER
                   name: ninechronicles-backoffice-env
+            - name: NC_MAINNET_IAP_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAINNET_IAP_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAINNET_IAP_JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAINNET_IAP_JWT_ISSUER
+                  name: ninechronicles-backoffice-env
+            - name: NC_MAINNET_IAP_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAINNET_IAP_API_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_IAP_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_IAP_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_IAP_JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_IAP_JWT_ISSUER
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_IAP_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_IAP_API_URL
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
