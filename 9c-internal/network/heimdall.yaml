@@ -19,8 +19,8 @@ global:
 
 RKE2:
   loadBalancerIPs:
-    - 49.247.14.86/32
-    - 49.247.14.84/32
+  - 49.247.14.86/32
+  - 49.247.14.84/32
 
 externalSecret:
   enabled: true
@@ -32,29 +32,29 @@ gateway:
   services:
   - name: remote-headless
     hostnames:
-      - heimdall-internal-rpc.nine-chronicles.com
-      - heimdall-preview-rpc.nine-chronicles.com
+    - heimdall-internal-rpc.nine-chronicles.com
+    - heimdall-preview-rpc.nine-chronicles.com
     backendRefs:
-      - name: remote-headless-1
+    - name: remote-headless-1
     protocols:
-      - web
-      - grpc
+    - web
+    - grpc
   - name: arena-service
     hostnames:
-      - heimdall-internal-arena.9c.gg
-      - heimdall-preview-arena.9c.gg
+    - heimdall-internal-arena.9c.gg
+    - heimdall-preview-arena.9c.gg
   - name: arena-backoffice
     hostnames:
-      - heimdall-internal-arena-backoffice.9c.gg
-      - heimdall-preview-arena-backoffice.9c.gg
+    - heimdall-internal-arena-backoffice.9c.gg
+    - heimdall-preview-arena-backoffice.9c.gg
   - name: mimir-gql
     hostnames:
-      - heimdall-internal-mimir.9c.gg
-      - heimdall-preview-mimir.9c.gg
+    - heimdall-internal-mimir.9c.gg
+    - heimdall-preview-mimir.9c.gg
   - name: market-service
     hostnames:
-      - heimdall-internal-market.9c.gg
-      - heimdall-preview-market.9c.gg
+    - heimdall-internal-market.9c.gg
+    - heimdall-preview-market.9c.gg
 
 bridgeService:
   enabled: true
@@ -91,8 +91,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "13579355"
-      downstream: "5147976"
+      upstream: "14345080"
+      downstream: "5896947"
 
 snapshot:
   downloadSnapshot: true
@@ -126,9 +126,9 @@ remoteHeadless:
 
   hosts:
   - >-
-      heimdall-internal-node-1.nine-chronicles.com,
-      heimdall-internal-rpc-1.nine-chronicles.com,
-      heimdall-preview-rpc-1.nine-chronicles.com
+    heimdall-internal-node-1.nine-chronicles.com,
+    heimdall-internal-rpc-1.nine-chronicles.com,
+    heimdall-preview-rpc-1.nine-chronicles.com
 
   loadBalancerIPs:
   - 49.247.14.86
@@ -153,8 +153,8 @@ remoteHeadless:
   - --remote-key-value-service
 
   nodeSelector:
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '1'
+  - node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '1'
 
 validator:
   count: 1
@@ -191,8 +191,8 @@ validator:
     data: 200Gi
 
   nodeSelector:
-    - node.kubernetes.io/network: heimdall
-      node.kubernetes.io/node-index: '2'
+  - node.kubernetes.io/network: heimdall
+    node.kubernetes.io/node-index: '2'
 
 arenaService:
   enabled: true
@@ -226,9 +226,9 @@ marketService:
   enabled: true
   rwMode: false
   env:
-    - name: DOTNET_gcServer
-      value: "1"
-    - name: WorkerConfig__SyncShop
-      value: "false"
-    - name: WorkerConfig__SyncProduct
-      value: "true"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
