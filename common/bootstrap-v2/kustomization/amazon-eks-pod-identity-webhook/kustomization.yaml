@@ -16,6 +16,5 @@ patches:
         path: /spec/template/spec/containers/0/image
         value: amazon/amazon-eks-pod-identity-webhook:latest
       - op: add
-        path: /spec/template/spec/containers/0/command
-        value:
-          - --aws-default-region us-east-2
+        path: /spec/template/spec/containers/0/command/-
+        value: --aws-default-region=us-east-2
