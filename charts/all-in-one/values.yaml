@@ -42,6 +42,10 @@ global:
   service:
     annotations: {}
 
+  storage:
+  - name: ""
+    data: 500Gi
+
 externalSecret:
   enabled: false
   prefix: ""
@@ -166,7 +170,7 @@ validator:
   # - "<private key>"
 
   storage:
-    data: 1000Gi
+    volumeNames: []
 
   env: []
 
@@ -209,7 +213,7 @@ remoteHeadless:
     rpc: 31238
 
   storage:
-    data: 1000Gi
+    volumeNames: []
 
   resources:
     requests:

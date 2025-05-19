@@ -314,27 +314,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-      {{- if and $.Values.validator.storage.volumeNames (gt (len $.Values.validator.storage.volumeNames) $idx) (ne (index $.Values.validator.storage.volumeNames $idx) "") }}
       - name: validator-data-{{ $index }}
         persistentVolumeClaim:
           claimName: {{ index $.Values.validator.storage.volumeNames $idx }}
       {{- else }}
-  volumeClaimTemplates:
-  - metadata:
-      name: validator-data-{{ $index }}
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ $.Values.validator.storage.data }}
-      {{- if eq $.Values.provider "AWS" }}
-      storageClassName: {{ $.Release.Name }}-gp3
-      {{- else if eq $.Values.provider "RKE2" }}
-      storageClassName: {{ $.Release.Name }}-longhorn
-      {{- end }}
-      volumeMode: Filesystem
-      {{- end }}
   updateStrategy:
     type: RollingUpdate
 ---

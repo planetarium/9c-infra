@@ -20,6 +20,16 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+  storage:
+  - name: remote-headless-data-1-remote-headless-1-0
+    data: 850Gi
+  - name: remote-headless-data-2-remote-headless-2-0
+    data: 850Gi
+  - name: remote-headless-data-3-remote-headless-3-0
+    data: 850Gi
+  - name: remote-headless-data-4-remote-headless-4-0
+    data: 850Gi
+
 RKE2:
   loadBalancerIPs:
   - 115.68.194.60/32
@@ -218,7 +228,6 @@ remoteHeadless:
     - remote-headless-data-1-remote-headless-1-0
     - remote-headless-data-2-remote-headless-2-0
     - remote-headless-data-4-remote-headless-4-0
-    data: 850Gi
 
   tolerations:
   - effect: NoSchedule
