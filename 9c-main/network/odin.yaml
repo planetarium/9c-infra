@@ -167,7 +167,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 2
+  count: 3
   replicas: 1
 
   useTurnServer: false
@@ -214,6 +214,10 @@ remoteHeadless:
       memory: 25Gi
 
   storage:
+    volumeNames:
+    - remote-headless-data-1-remote-headless-1-0
+    - remote-headless-data-2-remote-headless-2-0
+    - remote-headless-data-4-remote-headless-4-0
     data: 850Gi
 
   tolerations:
