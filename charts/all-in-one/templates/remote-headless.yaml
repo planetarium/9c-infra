@@ -334,25 +334,6 @@ spec:
   updateStrategy:
     type: RollingUpdate
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: remote-headless-data-{{ $index }}-remote-headless-{{ $index }}-0
-  namespace: odin
-  labels:
-    app: remote-headless-{{ $index }}
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ $.Values.remoteHeadless.storage.data }}
-  storageClassName: {{ $.Release.Name }}-longhorn
-  volumeMode: Filesystem
----
 {{- if $.Values.remoteHeadless.ingress.enabled }}
 {{- $hosts := split "," (index ($.Values.remoteHeadless.ingress.hosts | default $.Values.remoteHeadless.hosts) $idx) }}
 apiVersion: networking.k8s.io/v1
