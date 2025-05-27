@@ -17,6 +17,10 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+  storage:
+  - name: validator-data-5-validator-5-0
+    data: 200Gi
+
 RKE2:
   loadBalancerIPs:
   - 49.247.14.86/32
@@ -188,7 +192,8 @@ validator:
   - --consensus-enter-precommit-delay=300
 
   storage:
-    data: 200Gi
+    volumeNames:
+    - "validator-data-5-validator-5-0"
 
   nodeSelector:
   - node.kubernetes.io/network: heimdall
