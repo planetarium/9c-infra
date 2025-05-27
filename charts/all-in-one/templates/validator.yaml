@@ -317,7 +317,6 @@ spec:
       - name: validator-data-{{ $index }}
         persistentVolumeClaim:
           claimName: {{ index $.Values.validator.storage.volumeNames $idx }}
-      {{- else }}
   updateStrategy:
     type: RollingUpdate
 ---
