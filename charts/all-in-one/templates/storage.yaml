@@ -1,0 +1,21 @@
+{{- range .Values.global.storage }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: {{ .name }}
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .data }}
+  storageClassName: {{ $.Release.Name }}-longhorn
+  volumeMode: Filesystem
+---
+{{- end }}

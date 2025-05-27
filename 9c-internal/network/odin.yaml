@@ -17,6 +17,10 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+  storage:
+  - name: validator-data-5-validator-5-0
+    data: 600Gi
+
 RKE2:
   loadBalancerIPs:
     - 115.68.193.230/32
@@ -147,7 +151,8 @@ validator:
   - --consensus-enter-precommit-delay=300
 
   storage:
-    data: 600Gi
+    volumeNames:
+    - "validator-data-5-validator-5-0"
 
   nodeSelector:
     - node.kubernetes.io/network: odin

@@ -328,27 +328,9 @@ spec:
         configMap:
           defaultMode: 0700
           name: appsettings
-      {{- if and $.Values.remoteHeadless.storage.volumeNames (gt (len $.Values.remoteHeadless.storage.volumeNames) $idx) (ne (index $.Values.remoteHeadless.storage.volumeNames $idx) "") }}
       - name: remote-headless-data-{{ $index }}
         persistentVolumeClaim:
-          claimName: {{ index $.Values.remoteHeadless.storage.volumeNames $idx }}
-      {{- else }}
-  volumeClaimTemplates:
-  - metadata:
-      name: remote-headless-data-{{ $index }}
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ $.Values.remoteHeadless.storage.data }}
-      {{- if eq $.Values.provider "AWS" }}
-      storageClassName: {{ $.Release.Name }}-gp3
-      {{- else if eq $.Values.provider "RKE2" }}
-      storageClassName: {{ $.Release.Name }}-longhorn
-      {{- end }}
-      volumeMode: Filesystem
-      {{- end }}
+          claimName: {{ (index $.Values.remoteHeadless.storage.volumeNames $idx) | default "remote-headless-data-{{ $index }}-remote-headless-{{ $index }}-0" }}
   updateStrategy:
     type: RollingUpdate
 ---
