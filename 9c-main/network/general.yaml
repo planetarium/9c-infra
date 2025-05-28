@@ -4,7 +4,7 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "280"
+    tag: "290"
 
 seed:
   image:
@@ -16,7 +16,7 @@ dataProvider:
   image:
     repository: planetariumhq/ninechronicles-dataprovider
     pullPolicy: Always
-    tag: "git-927e2b1c47161654f5215bf43a0408a4d03c34ee"
+    tag: "290"
 
 worldBoss:
   image:
