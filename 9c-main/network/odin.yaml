@@ -22,7 +22,7 @@ global:
 
   storage:
   - name: remote-headless-data-1-remote-headless-1-0
-    data: 850Gi
+    data: 1000Gi
   - name: remote-headless-data-2-remote-headless-2-0
     data: 850Gi
   - name: remote-headless-data-3-remote-headless-3-0
