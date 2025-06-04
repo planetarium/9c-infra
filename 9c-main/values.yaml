@@ -33,6 +33,14 @@ certManager:
 traefik:
   service:
     loadBalancerIP: 115.68.199.177
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: "1"
+  trustedIPs:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 49.247.0.0/16
+  - 115.68.0.0/16
 loki:
   enabled: true
   bucketName: 9c-loki

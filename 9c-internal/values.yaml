@@ -27,6 +27,16 @@ certManager:
   issuer:
     email: devops@planetariumhq.com
 traefik:
+  service:
+    loadBalancerIP: 49.247.14.112
+  nodeSelector:
+    node.kubernetes.io/type: general
+    node.kubernetes.io/node-index: "1"
+  trustedIPs:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 49.247.0.0/16
+  - 115.68.0.0/16
   ports:
     postgresql:
       port: 5432
