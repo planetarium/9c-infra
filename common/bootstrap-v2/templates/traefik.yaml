@@ -44,6 +44,8 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           loadBalancerIP: {{ .Values.traefik.service.loadBalancerIP }}
+          spec:
+            externalTrafficPolicy: Local
         ports:
           metrics:
             exposedPort: 39100
