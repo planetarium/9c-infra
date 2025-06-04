@@ -33,6 +33,9 @@ certManager:
 traefik:
   service:
     loadBalancerIP: 115.68.199.177
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: "1"
   trustedIPs:
   - 10.0.0.0/8
   - 172.16.0.0/12
