@@ -26,7 +26,7 @@ global:
   - name: remote-headless-data-2-remote-headless-2-0
     data: 850Gi
   - name: remote-headless-data-3-remote-headless-3-0
-    data: 850Gi
+    data: 1000Gi
   - name: remote-headless-data-4-remote-headless-4-0
     data: 850Gi
 
