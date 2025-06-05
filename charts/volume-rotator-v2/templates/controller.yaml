@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: volume-rotator-controller
+  namespace: { { $.Release.Namespace } }
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: volume-rotator-controller
+          containers:
+            - name: volume-rotator-controller
+              image: "denoland/deno:latest"
+              imagePullPolicy: Always
+              command:
+                - sh
+                - -c
+                - >
+                    deno run -A - << EOF
+                    {{ tpl (.Files.Get "controller.ts") . }}
+                    EOF
