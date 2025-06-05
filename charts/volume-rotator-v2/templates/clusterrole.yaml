@@ -1,0 +1,29 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: volume-rotator-role
+rules:
+  - apiGroups: [""]
+    resources: [
+      "persistentvolumeclaims",
+      "persistentvolumes",
+      "services",
+      "configmaps",
+    ]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets", "statefulsets/scale"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: volume-rotator-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: volume-rotator-controller
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: volume-rotator-role
+  apiGroup: rbac.authorization.k8s.io

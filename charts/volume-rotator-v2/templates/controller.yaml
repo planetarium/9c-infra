@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volume-rotator-controller-script
+  namespace: {{ .Release.Namespace }}
+data:
+  controller.ts: |-
+    {{ tpl (.Files.Get "controller.ts") . | nindent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: volume-rotator-controller
+  namespace: {{ $.Release.Namespace }}
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: volume-rotator-controller
+          containers:
+            - name: volume-rotator-controller
+              image: "denoland/deno:latest"
+              args:
+                - run
+                - -A
+                - /controller.ts
+              env:
+                - name: NAMESPACE
+                  value: "{{ .Values.namespace | default .Release.Namespace }}"
+                - name: VOLUME_PREFIX
+                  value: "{{ .Values.volumePrefix }}"
+                - name: REPLICA_COUNT
+                  value: "{{ .Values.replicaCount }}"
+              volumeMounts:
+                - name: volume-rotator-controller-script
+                  mountPath: /controller.ts
+                  subPath: controller.ts
+                  readOnly: true
+          volumes:
+            - name: volume-rotator-controller-script
+              configMap:
+                name: volume-rotator-controller-script

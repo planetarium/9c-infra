@@ -238,3 +238,6 @@ marketService:
     value: "false"
   - name: WorkerConfig__SyncProduct
     value: "true"
+
+volumeRotator:
+  enabled: true
