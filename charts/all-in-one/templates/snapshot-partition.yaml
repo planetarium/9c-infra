@@ -407,7 +407,7 @@ spec:
               claimName: snapshot-volume-partition
             {{- end }}
   {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
-  schedule: 0 0 */2 * *
+  schedule: 0 0 * * 0
   {{- else }}
   schedule: 0 0 * * *
   {{- end }}
