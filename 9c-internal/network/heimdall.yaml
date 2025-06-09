@@ -39,7 +39,7 @@ gateway:
     - heimdall-internal-rpc.nine-chronicles.com
     - heimdall-preview-rpc.nine-chronicles.com
     backendRefs:
-    - name: remote-headless-1
+    - name: validator-5
     protocols:
     - web
     - grpc
@@ -143,7 +143,8 @@ remoteHeadless:
     rpc: 31238
 
   storage:
-    data: 200Gi
+    volumeNames:
+    - remote-headless-data-1-remote-headless-1-0
 
   resources:
     requests:
