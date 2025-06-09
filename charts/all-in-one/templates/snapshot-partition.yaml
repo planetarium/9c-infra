@@ -1,10 +1,19 @@
-{{ if $.Values.snapshot.partition.enabled }}
+{{- if $.Values.snapshot.partition.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: snapshot-partition
   namespace: {{ $.Release.Name }}
 spec:
+  concurrencyPolicy: Forbid
+  suspend: {{ $.Values.snapshot.partition.suspend }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
+  schedule: 0 0 * * 0
+  {{- else }}
+  schedule: 0 0 * * *
+  {{- end }}
   jobTemplate:
     spec:
       template:
@@ -406,12 +415,4 @@ spec:
             persistentVolumeClaim:
               claimName: snapshot-volume-partition
             {{- end }}
-  {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
-  schedule: 0 0 * * 0
-  {{- else }}
-  schedule: 0 0 * * *
-  {{- end }}
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  suspend: {{ $.Values.snapshot.partition.suspend }}
-{{ end }}
+{{- end }}
