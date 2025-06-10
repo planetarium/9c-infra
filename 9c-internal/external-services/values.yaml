@@ -66,6 +66,7 @@ iap:
 
   api:
     enabled: true
+    stage: "internal"
     image:
       tag: "git-a9f56ad3dff246fe9f892ea0bf5d9f7e171d5ecb"
 
