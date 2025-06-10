@@ -47,7 +47,7 @@ spec:
                   name: iap-env
             - name: API_STAGE
               value: {{ $.Values.iap.api.stage }}
-          image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.image.tag }}
+          image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
           resources:
             {{- toYaml . | nindent 14 }}
