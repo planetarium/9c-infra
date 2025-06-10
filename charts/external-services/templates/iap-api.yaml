@@ -1,0 +1,65 @@
+{{- if $.Values.iap.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: iap-api
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: iap-api
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iap-api
+  template:
+    metadata:
+      labels:
+        app: iap-api
+    spec:
+      containers:
+        - name: iap-api
+          env:
+            - name: API_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: iap-env
+            - name: API_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: iap-env
+            - name: API_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: iap-env
+            - name: API_CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: iap-env
+            - name: API_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: iap-env
+            - name: API_STAGE
+              value: {{ $.Values.iap.api.stage }}
+          image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.image.tag }}
+          {{- with $.Values.iap.api.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          ports:
+            - containerPort: 8000
+          name: iap-api
+      {{- with $.Values.iap.api.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-iap-iam-role
+      serviceAccountName: {{ $.Release.Name }}-iap-iam-role
+{{- end }}
