@@ -23,3 +23,29 @@ spec:
 ---
 
 {{ end }}
+
+{{ if .Values.iap.api.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-api
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8000
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: iap-api
+  type: ClusterIP
+
+---
+
+{{ end }}

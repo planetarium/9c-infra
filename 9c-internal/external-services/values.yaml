@@ -15,6 +15,9 @@ gateway:
   - name: iap-backoffice
     hostnames:
     - iap-internal-backoffice.9c.gg
+  - name: iap-api
+    hostnames:
+    - iap-internal-api.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
@@ -60,3 +63,8 @@ iap:
     enabled: false
     image:
       tag: "git-9d98f43bbef5e5dadc3d30c26b7cdae482e01baf"
+
+  api:
+    enabled: true
+    image:
+      tag: "git-508c7d2f9bcf6277156bbd8a2c0a70931a835421"
