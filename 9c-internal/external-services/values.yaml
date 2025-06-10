@@ -67,11 +67,11 @@ iap:
   api:
     enabled: true
     image:
-      tag: "git-508c7d2f9bcf6277156bbd8a2c0a70931a835421"
+      tag: "git-a9f56ad3dff246fe9f892ea0bf5d9f7e171d5ecb"
 
   worker:
     enabled: true
     image:
-      tag: "git-508c7d2f9bcf6277156bbd8a2c0a70931a835421"
+      tag: "git-a9f56ad3dff246fe9f892ea0bf5d9f7e171d5ecb"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"

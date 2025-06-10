@@ -45,6 +45,13 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: iap-env
+            - name: API_SEASONPASS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: seasonpass-jwt-token
+                  name: iap-env
+            - name: API_HOST
+              value: "0.0.0.0"
             - name: API_STAGE
               value: {{ $.Values.iap.api.stage }}
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
