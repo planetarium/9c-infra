@@ -60,6 +60,4 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
-      serviceAccount: {{ $.Release.Name }}-iap-iam-role
-      serviceAccountName: {{ $.Release.Name }}-iap-iam-role
 {{- end }}
