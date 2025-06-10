@@ -100,6 +100,22 @@ iap:
     serviceAccount:
       roleArn: ""
 
+  worker:
+    enabled: false
+    image:
+      repository: planetariumhq/iap-worker
+      pullPolicy: Always
+    nodeSelector: {}
+    env:
+      region: ""
+      gqlUrl: ""
+      currentPlanet: ""
+      dbUri: ""
+      sqsUrl: ""
+      arenaServiceJwtPublicKey: ""
+    serviceAccount:
+      roleArn: ""
+
 backoffice:
   enabled: false
   image:
