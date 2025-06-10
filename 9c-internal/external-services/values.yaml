@@ -59,6 +59,7 @@ seasonpass:
         memory: 1Gi
 
 iap:
+  enabled: true
   backoffice:
     enabled: false
     image:
