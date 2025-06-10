@@ -1,0 +1,76 @@
+{{- if $.Values.iap.worker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: iap-worker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: iap-worker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iap-worker
+  template:
+    metadata:
+      labels:
+        app: iap-worker
+    spec:
+      containers:
+        - name: iap-worker
+          args:
+            - celery -A app.celery_app worker --loglevel=info -Q product_queue --concurrency=1 -n product_worker@%h
+          command:
+            - /bin/sh
+            - -c
+          env:
+            - name: WORKER_KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: kms-key-id
+                  name: iap-env
+            - name: WORKER_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: region
+                  name: iap-env
+            - name: WORKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: iap-env
+            - name: WORKER_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: iap-env
+            - name: WORKER_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: iap-env
+            - name: WORKER_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: iap-env
+            - name: WORKER_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: iap-env
+          image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
+          {{- with $.Values.iap.worker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          name: iap-worker
+      {{- with $.Values.iap.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-iap-iam-role
+      serviceAccountName: {{ $.Release.Name }}-iap-iam-role
+{{- end }}
