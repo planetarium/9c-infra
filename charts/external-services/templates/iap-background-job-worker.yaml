@@ -3,22 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: iap-worker
+    app: iap-background-job-worker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: iap-worker
+  name: iap-background-job-worker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: iap-worker
+      app: iap-background-job-worker
   template:
     metadata:
       labels:
-        app: iap-worker
+        app: iap-background-job-worker
     spec:
       containers:
-        - name: iap-worker
+        - name: iap-background-job-worker
           args:
             - celery -A app.celery_app worker --loglevel=info -Q background_job_queue --concurrency=1 -n background_job_worker@%h
           command:
@@ -65,7 +65,7 @@ spec:
           resources:
             {{- toYaml . | nindent 14 }}
           {{- end }}
-          name: iap-worker
+          name: iap-background-job-worker
       {{- with $.Values.iap.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
