@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   key: db-uri
                   name: iap-env
+            - name: API_GOOGLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: GOOGLE_CREDENTIAL
+                  name: iap-env
             - name: API_CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
