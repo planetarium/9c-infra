@@ -21,7 +21,7 @@ spec:
         - name: iap-worker
           args:
             - celery -A app.celery_app worker --loglevel=info -Q background_job_queue --concurrency=1 -n background_job_worker@%h
-          command:s
+          command:
             - /bin/sh
             - -c
           env:
