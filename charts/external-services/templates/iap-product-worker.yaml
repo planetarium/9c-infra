@@ -3,22 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: iap-worker
+    app: iap-product-worker
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: iap-worker
+  name: iap-product-worker
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: iap-worker
+      app: iap-product-worker
   template:
     metadata:
       labels:
-        app: iap-worker
+        app: iap-product-worker
     spec:
       containers:
-        - name: iap-worker
+        - name: iap-product-worker
           args:
             - celery -A app.celery_app worker --loglevel=info -Q product_queue --concurrency=1 -n product_worker@%h
           command:
@@ -65,7 +65,7 @@ spec:
           resources:
             {{- toYaml . | nindent 14 }}
           {{- end }}
-          name: iap-worker
+          name: iap-product-worker
       {{- with $.Values.iap.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

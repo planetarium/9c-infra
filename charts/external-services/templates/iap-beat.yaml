@@ -3,22 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: iap-worker
+    app: iap-beat
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: iap-worker
+  name: iap-beat
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: iap-worker
+      app: iap-beat
   template:
     metadata:
       labels:
-        app: iap-worker
+        app: iap-beat
     spec:
       containers:
-        - name: iap-worker
+        - name: iap-beat
           args:
             - celery -A app.celery_app beat --loglevel=info
           command:
@@ -65,7 +65,7 @@ spec:
           resources:
             {{- toYaml . | nindent 14 }}
           {{- end }}
-          name: iap-worker
+          name: iap-beat
       {{- with $.Values.iap.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
