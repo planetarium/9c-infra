@@ -40,6 +40,26 @@ spec:
                 secretKeyRef:
                   key: GOOGLE_CREDENTIAL
                   name: iap-env
+            - name: API_APPLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_CREDENTIAL
+                  name: iap-env
+            - name: API_APPLE_VALIDATION_URL
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_VALIDATION_URL
+                  name: iap-env
+            - name: API_APPLE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_KEY_ID
+                  name: iap-env
+            - name: API_APPLE_ISSUER_ID
+              valueFrom:
+                secretKeyRef:
+                  key: APPLE_ISSUER_ID
+                  name: iap-env
             - name: API_BROKER_URL
               valueFrom:
                 secretKeyRef:
