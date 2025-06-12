@@ -69,12 +69,12 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-dd828fc2aee6e7c965bd6a1e8cec08f76a0a6e50"
+      tag: "git-c4a6820ae2c587908b9376791fd1db36c7f2a760"
 
   worker:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-dd828fc2aee6e7c965bd6a1e8cec08f76a0a6e50"
+      tag: "git-c4a6820ae2c587908b9376791fd1db36c7f2a760"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
