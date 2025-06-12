@@ -35,12 +35,12 @@ spec:
                 secretKeyRef:
                   key: GOOGLE_CREDENTIAL
                   name: iap-env
-            - name: API_CELERY_BROKER_URL
+            - name: API_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   key: rmq-url
                   name: iap-env
-            - name: API_CELERY_RESULT_BACKEND
+            - name: API_RESULT_BACKEND
               valueFrom:
                 secretKeyRef:
                   key: redis-url
