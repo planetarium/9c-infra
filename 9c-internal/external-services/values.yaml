@@ -63,17 +63,17 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-c3a2a373a976b849b921b90badaf10bca59139b5"
+      tag: "git-365624eafaa9baf938832cebf1d2a5d3e139d136"
 
   api:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-c3a2a373a976b849b921b90badaf10bca59139b5"
+      tag: "git-365624eafaa9baf938832cebf1d2a5d3e139d136"
 
   worker:
     enabled: true
     image:
-      tag: "git-c3a2a373a976b849b921b90badaf10bca59139b5"
+      tag: "git-365624eafaa9baf938832cebf1d2a5d3e139d136"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
