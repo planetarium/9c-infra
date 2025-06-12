@@ -25,6 +25,11 @@ spec:
                 secretKeyRef:
                   key: gql-url-dict
                   name: iap-env
+            - name: API_CDN_HOST_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: cdn-url-dict
+                  name: iap-env
             - name: API_PG_DSN
               valueFrom:
                 secretKeyRef:
