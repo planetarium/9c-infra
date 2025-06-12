@@ -50,6 +50,11 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: iap-env
+            - name: API_SEASONPASS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: seasonpass-host
+                  name: iap-env
             - name: API_SEASONPASS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
