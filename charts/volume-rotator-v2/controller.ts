@@ -2,6 +2,7 @@ import {
   AppsV1Api,
   CoreV1Api,
   KubeConfig,
+  KubernetesObjectApi,
   type V1PersistentVolumeClaim,
 } from "npm:@kubernetes/client-node";
 
@@ -10,6 +11,7 @@ kubeConfig.loadFromDefault();
 
 const kubeApi = kubeConfig.makeApiClient(CoreV1Api);
 const kubeAppsApi = kubeConfig.makeApiClient(AppsV1Api);
+const kubeObjectApi = kubeConfig.makeApiClient(KubernetesObjectApi);
 
 const namespace = Deno.env.get("NAMESPACE") ?? "heimdall";
 const volumePrefix = Deno.env.get("VOLUME_PREFIX") ?? "volume-rotator";
@@ -60,38 +62,79 @@ const destroyedPvcs = await Promise.all(
 ) as V1PersistentVolumeClaim[];
 
 if (destroyedPvcs.length > 0) {
-  console.log(
-    `Removed unbound ${destroyedPvcs.length} PVCs:
-    ${destroyedPvcs.map((v) => v.metadata?.name).join(", ")}`,
-  );
+  console.log(`Removed ${destroyedPvcs.length} unbound PVCs`);
 }
 
 const countToRecreate = replicaCount - pvcs.length + destroyedPvcs.length;
 
-for (let i = 0; i < countToRecreate; i++) {
-  const name = `${volumePrefix}-${time}-${i}`;
-  console.log(`Creating PVC ${name}`);
-  await kubeApi.createNamespacedPersistentVolumeClaim({
-    namespace,
-    body: {
-      metadata: {
-        name,
-      },
-      spec: {
-        storageClassName: `${namespace}-volume-rotator-longhorn`,
-        dataSource: {
-          kind: "PersistentVolumeClaim",
-          name: preloaderVolumeClaim.metadata?.name!,
+const createdPvcs = await Promise.all(
+  Array.from({ length: countToRecreate }, async (_, i) => {
+    const name = `${volumePrefix}-${time}-${i}`;
+    console.log(`Creating PVC ${name}`);
+    await kubeApi.createNamespacedPersistentVolumeClaim({
+      namespace,
+      body: {
+        metadata: {
+          name,
         },
-        accessModes: ["ReadWriteOnce"],
-        resources: {
-          requests: {
-            storage: (await kubeApi.readPersistentVolume({
-              name: preloaderVolumeClaim.spec?.volumeName!,
-            })).spec?.capacity?.storage!,
+        spec: {
+          storageClassName: `${namespace}-volume-rotator-longhorn`,
+          dataSource: {
+            kind: "PersistentVolumeClaim",
+            name: preloaderVolumeClaim.metadata?.name!,
+          },
+          accessModes: ["ReadWriteOnce"],
+          resources: {
+            requests: {
+              storage: (await kubeApi.readPersistentVolume({
+                name: preloaderVolumeClaim.spec?.volumeName!,
+              })).spec?.capacity?.storage!,
+            },
           },
         },
       },
-    },
-  });
-}
+    });
+
+    let volumeName: string | undefined;
+    while (!volumeName) {
+      const updatedPvc = await kubeApi
+        .readNamespacedPersistentVolumeClaimStatus({
+          name,
+          namespace,
+        });
+      volumeName = updatedPvc.spec?.volumeName;
+      if (!volumeName) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    while (true) {
+      const volume = await kubeObjectApi.read({
+        apiVersion: "longhorn.io/v1beta2",
+        kind: "Volume",
+        metadata: {
+          name: volumeName,
+          namespace: "longhorn-system",
+        },
+      }) as { status?: { cloneStatus?: { state?: string } } };
+
+      const state = volume.status?.cloneStatus?.state;
+      if (state === "completed") {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  }),
+);
+
+console.log(`${createdPvcs.length} PVCs have been created`);
+
+await kubeAppsApi.patchNamespacedStatefulSet({
+  name: preloaderSts.metadata.name,
+  namespace,
+  body: [{
+    op: "replace",
+    path: "/spec/replicas",
+    value: 1,
+  }],
+});

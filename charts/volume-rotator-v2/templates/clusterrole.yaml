@@ -5,14 +5,18 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: [
-      "persistentvolumeclaims",
       "persistentvolumes",
+      "persistentvolumeclaims",
+      "persistentvolumeclaims/status",
       "services",
       "configmaps",
     ]
     verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
   - apiGroups: ["apps"]
     resources: ["statefulsets", "statefulsets/scale"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+  - apiGroups: ["longhorn.io"]
+    resources: ["volumes"]
     verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
