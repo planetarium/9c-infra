@@ -38,17 +38,22 @@ spec:
             - name: API_GOOGLE_CREDENTIAL
               valueFrom:
                 secretKeyRef:
-                  key: GOOGLE_CREDENTIAL
+                  key: google-credential
+                  name: iap-env
+            - name: API_APPLE_BUNDLE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: apple-bundle-id
                   name: iap-env
             - name: API_APPLE_CREDENTIAL
               valueFrom:
                 secretKeyRef:
-                  key: APPLE_CREDENTIAL
+                  key: apple-credential
                   name: iap-env
             - name: API_APPLE_VALIDATION_URL
               valueFrom:
                 secretKeyRef:
-                  key: APPLE_VALIDATION_URL
+                  key: apple-validation-url
                   name: iap-env
             - name: API_APPLE_KEY_ID
               valueFrom:
@@ -84,6 +89,66 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: seasonpass-jwt-token
+                  name: iap-env
+            - name: API_BACKOFFICE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: backoffice-jwt-token
+                  name: iap-env
+            - name: API_CLOUDFLARE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-api-key
+                  name: iap-env
+            - name: API_CLOUDFLARE_ASSETS_K_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-assets-k-zone-id
+                  name: iap-env
+            - name: API_CLOUDFLARE_ASSETS_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-assets-zone-id
+                  name: iap-env
+            - name: API_CLOUDFLARE_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-email
+                  name: iap-env
+            - name: API_R2_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: r2-access-key-id
+                  name: iap-env
+            - name: API_R2_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: r2-account-id
+                  name: iap-env
+            - name: API_R2_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: r2-bucket
+                  name: iap-env
+            - name: API_R2_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: r2-secret-access-key
+                  name: iap-env
+            - name: API_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: s3-bucket
+                  name: iap-env
+            - name: API_CLOUDFLARE_DISTRIBUTION_1
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-distribution-1
+                  name: iap-env
+            - name: API_CLOUDFLARE_DISTRIBUTION_2
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-distribution-2
                   name: iap-env
             - name: API_HOST
               value: "0.0.0.0"
