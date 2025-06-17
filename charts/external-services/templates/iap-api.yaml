@@ -63,7 +63,7 @@ spec:
             - name: API_APPLE_ISSUER_ID
               valueFrom:
                 secretKeyRef:
-                  key: APPLE_ISSUER_ID
+                  key: apple-issuer-id
                   name: iap-env
             - name: API_BROKER_URL
               valueFrom:
