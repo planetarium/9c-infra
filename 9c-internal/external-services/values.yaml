@@ -69,7 +69,7 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-2a27999dd8517b28ff8c31223b14dc9522792108"
+      tag: "git-726f3252c66a7941b2beab5aeab7d8b4b6644832"
 
   worker:
     enabled: true
