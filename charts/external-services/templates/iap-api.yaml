@@ -140,15 +140,15 @@ spec:
                 secretKeyRef:
                   key: s3-bucket
                   name: iap-env
-            - name: API_CLOUDFLARE_DISTRIBUTION_1
+            - name: API_CLOUDFRONT_DISTRIBUTION_1
               valueFrom:
                 secretKeyRef:
-                  key: cloudflare-distribution-1
+                  key: cloudfront-distribution-1
                   name: iap-env
-            - name: API_CLOUDFLARE_DISTRIBUTION_2
+            - name: API_CLOUDFRONT_DISTRIBUTION_2
               valueFrom:
                 secretKeyRef:
-                  key: cloudflare-distribution-2
+                  key: cloudfront-distribution-2
                   name: iap-env
             - name: API_HOST
               value: "0.0.0.0"
