@@ -58,7 +58,7 @@ spec:
             - name: API_APPLE_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  key: APPLE_KEY_ID
+                  key: apple-key-id
                   name: iap-env
             - name: API_APPLE_ISSUER_ID
               valueFrom:
