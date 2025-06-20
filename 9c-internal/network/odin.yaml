@@ -167,8 +167,8 @@ arenaService:
 
   redis:
     port: "6379"
-    hangfireDbNumber: "2"
-    rankingDbNumber: "3"
+    hangfireDbNumber: "0"
+    rankingDbNumber: "1"
 
   ssh:
     enabled: false
