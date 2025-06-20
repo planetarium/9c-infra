@@ -43,6 +43,21 @@ traefik:
       transport:
         respondingTimeouts:
           readTimeout: 0
+    redis:
+      port: 6379 
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
+    rmq:
+      port: 5672
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
+    mongodb:
+      port: 27017
+      transport:
+        respondingTimeouts:
+          readTimeout: 0
 grafana:
   hosts:
     - monitoring-internal.planetarium.network
