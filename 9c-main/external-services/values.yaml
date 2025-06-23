@@ -11,6 +11,12 @@ gateway:
   services:
   - name: seasonpass-api-service
     hostname: seasonpass.9c.gg
+  - name: iap-backoffice
+    hostnames:
+    - iap-backoffice.9c.gg
+  - name: iap-api
+    hostnames:
+    - iap-api.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
@@ -64,3 +70,25 @@ backoffice:
   image:
     pullPolicy: Always
     tag: "git-be716ad5d1ae9374ec8281bb5e9de73338e00f86"
+
+
+iap:
+  enabled: true
+  backoffice:
+    enabled: false
+    image:
+      tag: "git-2278159e4c8f1878096a6a57986acc926cd51dae"
+
+  api:
+    enabled: true
+    stage: "mainnet"
+    image:
+      tag: "git-2278159e4c8f1878096a6a57986acc926cd51dae"
+
+  worker:
+    enabled: true
+    stage: "mainnet"
+    image:
+      tag: "git-2278159e4c8f1878096a6a57986acc926cd51dae"
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
