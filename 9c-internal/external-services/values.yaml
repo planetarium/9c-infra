@@ -15,6 +15,9 @@ gateway:
   - name: iap-backoffice
     hostnames:
     - iap-internal-backoffice.9c.gg
+  - name: iap-api
+    hostnames:
+    - iap-internal-api.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
@@ -56,7 +59,22 @@ seasonpass:
         memory: 1Gi
 
 iap:
+  enabled: true
   backoffice:
     enabled: false
     image:
-      tag: "git-9d98f43bbef5e5dadc3d30c26b7cdae482e01baf"
+      tag: "git-365624eafaa9baf938832cebf1d2a5d3e139d136"
+
+  api:
+    enabled: true
+    stage: "internal"
+    image:
+      tag: "git-726f3252c66a7941b2beab5aeab7d8b4b6644832"
+
+  worker:
+    enabled: true
+    stage: "internal"
+    image:
+      tag: "git-2a27999dd8517b28ff8c31223b14dc9522792108"
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"

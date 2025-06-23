@@ -1,0 +1,170 @@
+{{- if $.Values.iap.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: iap-api
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: iap-api
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iap-api
+  template:
+    metadata:
+      labels:
+        app: iap-api
+    spec:
+      containers:
+        - name: iap-api
+          env:
+            - name: API_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: iap-env
+            - name: API_CDN_HOST_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: cdn-url-dict
+                  name: iap-env
+            - name: API_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: iap-env
+            - name: API_GOOGLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: google-credential
+                  name: iap-env
+            - name: API_APPLE_BUNDLE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: apple-bundle-id
+                  name: iap-env
+            - name: API_APPLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: apple-credential
+                  name: iap-env
+            - name: API_APPLE_VALIDATION_URL
+              valueFrom:
+                secretKeyRef:
+                  key: apple-validation-url
+                  name: iap-env
+            - name: API_APPLE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: apple-key-id
+                  name: iap-env
+            - name: API_APPLE_ISSUER_ID
+              valueFrom:
+                secretKeyRef:
+                  key: apple-issuer-id
+                  name: iap-env
+            - name: API_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: iap-env
+            - name: API_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: iap-env
+            - name: API_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: iap-env
+            - name: API_SEASON_PASS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: seasonpass-host
+                  name: iap-env
+            - name: API_SEASON_PASS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: seasonpass-jwt-token
+                  name: iap-env
+            - name: API_BACKOFFICE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: backoffice-jwt-token
+                  name: iap-env
+            - name: API_CLOUDFLARE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-api-key
+                  name: iap-env
+            - name: API_CLOUDFLARE_ASSETS_K_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-assets-k-zone-id
+                  name: iap-env
+            - name: API_CLOUDFLARE_ASSETS_ZONE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-assets-zone-id
+                  name: iap-env
+            - name: API_CLOUDFLARE_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: cloudflare-email
+                  name: iap-env
+            - name: API_R2_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: r2-access-key-id
+                  name: iap-env
+            - name: API_R2_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: r2-account-id
+                  name: iap-env
+            - name: API_R2_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: r2-bucket
+                  name: iap-env
+            - name: API_R2_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: r2-secret-access-key
+                  name: iap-env
+            - name: API_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: s3-bucket
+                  name: iap-env
+            - name: API_CLOUDFRONT_DISTRIBUTION_1
+              valueFrom:
+                secretKeyRef:
+                  key: cloudfront-distribution-1
+                  name: iap-env
+            - name: API_CLOUDFRONT_DISTRIBUTION_2
+              valueFrom:
+                secretKeyRef:
+                  key: cloudfront-distribution-2
+                  name: iap-env
+            - name: API_HOST
+              value: "0.0.0.0"
+            - name: API_STAGE
+              value: {{ $.Values.iap.api.stage }}
+          image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
+          {{- with $.Values.iap.api.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          ports:
+            - containerPort: 8000
+          name: iap-api
+      {{- with $.Values.iap.api.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
