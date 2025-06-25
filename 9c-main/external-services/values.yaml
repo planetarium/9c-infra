@@ -89,6 +89,6 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-8f4b1bd23c62a214bb08a634c268540ee42b839a"
+      tag: "git-205ed5fa5407f8020dce6d4155ddf6cc711c4e35"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
