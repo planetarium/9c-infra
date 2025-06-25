@@ -22,13 +22,13 @@ global:
 
   storage:
   - name: remote-headless-data-1-remote-headless-1-0
-    data: 1000Gi
+    data: 650Gi
   - name: remote-headless-data-2-remote-headless-2-0
-    data: 850Gi
+    data: 650Gi
   - name: remote-headless-data-3-remote-headless-3-0
-    data: 1000Gi
+    data: 650Gi
   - name: remote-headless-data-4-remote-headless-4-0
-    data: 850Gi
+    data: 650Gi
 
 RKE2:
   loadBalancerIPs:
@@ -163,7 +163,7 @@ validator:
 
   storage:
     volumeNames:
-    - "remote-headless-data-1-remote-headless-1-0"
+    - "remote-headless-data-4-remote-headless-4-0"
 
   tolerations:
   - effect: NoSchedule
@@ -227,7 +227,7 @@ remoteHeadless:
     volumeNames:
     - remote-headless-data-3-remote-headless-3-0
     - remote-headless-data-2-remote-headless-2-0
-    - remote-headless-data-4-remote-headless-4-0
+    - remote-headless-data-1-remote-headless-1-0
 
   tolerations:
   - effect: NoSchedule
