@@ -23,6 +23,10 @@ spec:
     targetRevision: 1.8.1
     helm:
       values: |-
+        annotations:
+          prometheus.io/path: "/metrics"
+          prometheus.io/port: "9500"
+          prometheus.io/scrape: "true"
         preUpgradeChecker:
           jobEnabled: false
 {{- end }}
