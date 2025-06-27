@@ -1,0 +1,60 @@
+name: Update extra values
+on:
+  workflow_dispatch:
+    inputs:
+      dir:
+        required: true
+        description: 'Dir'
+        default: '9c-internal'
+        type: choice
+        options:
+        - 9c-main
+        - 9c-internal
+      selector:
+        required: true
+        description: 'Value to update'
+        type: choice
+        options:
+        - petpop | .server.image.tag / .backoffice.image.tag
+        - petpop | .workers.image.tag
+        - portal | .portalService.image.tag
+        - portal | .backofficeService.image.tag
+      value:
+        required: true
+        description: 'Value'
+        type: string
+
+jobs:
+  update-values-file:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup env vars
+        run: |
+          echo "DIR=${{ github.event.inputs.dir }}" >> $GITHUB_ENV
+          echo "VALUE=${{ github.event.inputs.value }}" >> $GITHUB_ENV
+          SELECTOR="${{ github.event.inputs.selector }}"
+          echo "SERVICE=$(echo $SELECTOR | cut -d '|' -f 1 | xargs)" >> $GITHUB_ENV
+          echo "SELECTOR=$(echo $SELECTOR | cut -d '|' -f 2 | sed 's/ *\/ */,/g' | xargs)" >> $GITHUB_ENV
+
+      - uses: mikefarah/yq@v4.45.4
+        with:
+          cmd: yq -i "($SELECTOR) = strenv(VALUE)" "$DIR/$SERVICE/values.yaml"
+
+      - run: |
+          BRANCH_NAME="update-$DIR-values-$(date +%s)"
+          git switch -c "$BRANCH_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$DIR/$SERVICE/values.yaml"
+          git commit -m "Update $DIR/$SERVICE/values.yaml"
+          git push -u origin "$BRANCH_NAME"
+
+          gh pr create \
+            --title "Update $DIR/$SERVICE/values.yaml" \
+            --body "Update $DIR/$SERVICE/values.yaml" \
+            --base main \
+            --head "$BRANCH_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}
