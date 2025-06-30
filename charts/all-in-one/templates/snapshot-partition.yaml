@@ -196,6 +196,11 @@ spec:
               --mysql-database $(DP_DATABASE)
               --date "$(cat /etc/config/date)"
             env:
+            - name: NC_MySqlConnectionString
+              valueFrom:
+                secretKeyRef:
+                  key: write-value
+                  name: data-provider
             - name: DP_HOST
               valueFrom:
                 secretKeyRef:
@@ -270,6 +275,11 @@ spec:
             command:
             - dotnet
             env:
+            - name: NC_MySqlConnectionString
+              valueFrom:
+                secretKeyRef:
+                  key: write-value
+                  name: data-provider
             - name: DP_HOST
               valueFrom:
                 secretKeyRef:
