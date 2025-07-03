@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- namespace.yaml
+- secret-store.yaml
+- r2-secrets.yaml
+- python-script-configmap.yaml
+- python-script.yaml 

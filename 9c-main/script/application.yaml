@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: batch-jobs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: 9c-main/script
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: batch-jobs 

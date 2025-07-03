@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: arena-staking-collector
+  namespace: batch-jobs
+  labels:
+    app.kubernetes.io/instance: batch-jobs
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: python-script
+            image: python:3.11-slim
+            command:
+            - /bin/bash
+            - -c
+            - |
+              pip install --no-cache-dir -r /app/requirements.txt
+              python /app/script.py
+            env:
+            - name: R2_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: r2-credentials
+                  key: R2_ENDPOINT
+            - name: R2_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: r2-credentials
+                  key: R2_ACCESS_KEY_ID
+            - name: R2_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: r2-credentials
+                  key: R2_SECRET_ACCESS_KEY
+            - name: R2_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: r2-credentials
+                  key: R2_BUCKET_NAME
+            volumeMounts:
+            - name: script-volume
+              mountPath: /app
+                      volumes:
+            - name: script-volume
+              configMap:
+                name: arena-staking-collector-config
+          restartPolicy: OnFailure 
