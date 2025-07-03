@@ -20,7 +20,10 @@ spec:
             - -c
             - |
               pip install --no-cache-dir -r /app/requirements.txt
-              python /app/script.py
+              echo "Starting arena staking data collection for main Heimdall..."
+              python /app/script.py main Heimdall
+              echo "Starting arena staking data collection for main Odin..."
+              python /app/script.py main Odin
             env:
             - name: R2_ENDPOINT
               valueFrom:
