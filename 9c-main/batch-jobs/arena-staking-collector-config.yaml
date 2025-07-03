@@ -7,6 +7,7 @@ metadata:
     app.kubernetes.io/instance: batch-jobs
 data:
   script.py: |
+    #!/usr/bin/env python3
     # /// script
     # dependencies = [
     #   "requests<3",
@@ -397,6 +398,10 @@ data:
             
             # 스테이킹 정보 가져오기
             staking_info = self.get_staking_info(graphql_url, agent_addresses, end_block_index)
+            
+            # 스테이킹 정보가 비어있으면 에러 발생
+            if not staking_info:
+                raise ValueError(f"스테이킹 정보를 가져올 수 없습니다. 시즌 ID: {season_id}, 플래닛: {planet}")
             
             # 결과 데이터 구성 (스테이킹 데이터만 포함)
             timestamp = datetime.now(timezone.utc).isoformat()
