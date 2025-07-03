@@ -1,0 +1,479 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arena-staking-collector-config
+  namespace: batch-jobs
+  labels:
+    app.kubernetes.io/instance: batch-jobs
+data:
+  script.py: |
+    # /// script
+    # dependencies = [
+    #   "requests<3",
+    #   "boto3",
+    #   "python-dotenv",
+    # ]
+    # ///
+
+    """
+    아레나 시즌 정보를 불러와서 직전에 종료된 시즌의 리더보드와 스테이킹 정보를 JSON으로 저장하는 스크립트
+    사용법: python arena_staking_export.py <network> <planet> [output_dir]
+    예시: python arena_staking_export.py main Odin ./output
+    """
+
+    import sys
+    import json
+    import requests
+    import argparse
+    import os
+    import boto3
+    from datetime import datetime, timezone
+    from typing import Dict, List, Optional, Tuple
+    import logging
+    from dotenv import load_dotenv
+
+    # .env 파일 로드
+    load_dotenv()
+
+    # 로깅 설정
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    logger = logging.getLogger(__name__)
+
+    class ArenaStakingExporter:
+        def __init__(self):
+            self.session = requests.Session()
+            self.session.headers.update({
+                'User-Agent': 'ArenaStakingExporter/1.0'
+            })
+            
+            # R2 설정
+            self.r2_endpoint = os.getenv('R2_ENDPOINT')
+            self.r2_access_key_id = os.getenv('R2_ACCESS_KEY_ID')
+            self.r2_secret_access_key = os.getenv('R2_SECRET_ACCESS_KEY')
+            self.r2_bucket_name = os.getenv('R2_BUCKET_NAME')
+            
+            # R2 클라이언트 초기화
+            if all([self.r2_endpoint, self.r2_access_key_id, self.r2_secret_access_key, self.r2_bucket_name]):
+                self.s3_client = boto3.client(
+                    's3',
+                    endpoint_url=self.r2_endpoint,
+                    aws_access_key_id=self.r2_access_key_id,
+                    aws_secret_access_key=self.r2_secret_access_key,
+                    region_name='auto'  # R2는 'auto' 리전 사용
+                )
+                logger.info("R2 클라이언트 초기화 완료")
+            else:
+                self.s3_client = None
+                logger.warning("R2 환경변수가 설정되지 않아 R2 업로드 기능을 사용할 수 없습니다")
+            
+            # 플래닛 설정
+            self.planet_configs = {
+                'main': {
+                    'Odin': {
+                        'id': '0x000000000000',
+                        'graphql_url': 'http://odin-gql.nine-chronicles.com/graphql',
+                        'arena_service_url': 'http://odin-arena.9c.gg'
+                    },
+                    'Heimdall': {
+                        'id': '0x000000000001',
+                        'graphql_url': 'http://heimdall-gql.nine-chronicles.com/graphql',
+                        'arena_service_url': 'http://heimdall-arena.9c.gg'
+                    }
+                },
+                'internal': {
+                    'Odin': {
+                        'id': '0x100000000000',
+                        'graphql_url': 'http://odin-internal-rpc-1.nine-chronicles.com/graphql',
+                        'arena_service_url': 'http://odin-internal-arena.9c.gg'
+                    },
+                    'Heimdall': {
+                        'id': '0x100000000001',
+                        'graphql_url': 'http://heimdall-internal-rpc-1.nine-chronicles.com/graphql',
+                        'arena_service_url': 'http://heimdall-internal-arena.9c.gg'
+                    }
+                }
+            }
+
+        def check_file_exists_in_r2(self, network: str, season_id: int) -> bool:
+            """R2에 해당 시즌 ID의 파일이 이미 존재하는지 확인"""
+            if not self.s3_client:
+                logger.warning("R2 클라이언트가 초기화되지 않았습니다")
+                return False
+            
+            try:
+                key = f"staking-for-arena/{network}/{season_id}.json"
+                
+                # 파일 존재 여부 확인
+                self.s3_client.head_object(Bucket=self.r2_bucket_name, Key=key)
+                logger.info(f"파일이 이미 존재합니다: {key}")
+                return True
+                
+            except self.s3_client.exceptions.NoSuchKey:
+                logger.info(f"파일이 존재하지 않습니다: {key}")
+                return False
+            except Exception as e:
+                logger.error(f"파일 존재 여부 확인 실패: {e}")
+                return False
+
+        def upload_to_r2(self, data: Dict, network: str, season_id: int) -> bool:
+            """R2에 데이터 업로드"""
+            if not self.s3_client:
+                logger.warning("R2 클라이언트가 초기화되지 않았습니다")
+                return False
+            
+            try:
+                # 파일 경로 설정
+                key = f"staking-for-arena/{network}/{season_id}.json"
+                
+                # JSON 데이터를 문자열로 변환
+                json_data = json.dumps(data, indent=2, ensure_ascii=False)
+                
+                # R2에 업로드
+                self.s3_client.put_object(
+                    Bucket=self.r2_bucket_name,
+                    Key=key,
+                    Body=json_data.encode('utf-8'),
+                    ContentType='application/json'
+                )
+                
+                logger.info(f"R2 업로드 완료: {key}")
+                return True
+                
+            except Exception as e:
+                logger.error(f"R2 업로드 실패: {e}")
+                return False
+
+        def get_planet_config(self, network: str, planet: str) -> Dict:
+            """플래닛 설정 가져오기"""
+            if network not in self.planet_configs:
+                raise ValueError(f"지원하지 않는 네트워크입니다: {network}")
+            
+            if planet not in self.planet_configs[network]:
+                raise ValueError(f"지원하지 않는 플래닛입니다: {planet}")
+            
+            return self.planet_configs[network][planet]
+
+        def get_current_block_index(self, arena_service_url: str) -> int:
+            """현재 블록 인덱스 가져오기"""
+            logger.info("현재 블록 인덱스 조회 중...")
+            
+            try:
+                response = self.session.get(f"{arena_service_url}/cached-block-info")
+                response.raise_for_status()
+                
+                data = response.json()
+                current_block_index = data.get('currentBlockIndex')
+                
+                if current_block_index is None:
+                    raise ValueError("현재 블록 인덱스를 가져올 수 없습니다")
+                
+                logger.info(f"현재 블록 인덱스: {current_block_index}")
+                return current_block_index
+                
+            except requests.RequestException as e:
+                logger.error(f"API 요청 실패: {e}")
+                raise
+            except (KeyError, ValueError) as e:
+                logger.error(f"응답 파싱 실패: {e}")
+                raise
+
+        def get_seasons(self, arena_service_url: str) -> List[Dict]:
+            """시즌 목록 가져오기"""
+            logger.info("시즌 목록 조회 중...")
+            
+            all_seasons = []
+            page_number = 1
+            
+            while True:
+                logger.info(f"시즌 페이지 {page_number} 조회 중...")
+                
+                try:
+                    response = self.session.get(
+                        f"{arena_service_url}/seasons",
+                        params={'pageNumber': page_number, 'pageSize': 100}
+                    )
+                    response.raise_for_status()
+                    
+                    data = response.json()
+                    # logger.info(f"[API 응답] 시즌 페이지 {page_number}: {data}")
+                    
+                    seasons = data.get('seasons', [])
+                    if not seasons:
+                        break
+                    
+                    all_seasons.extend(seasons)
+                    
+                    if not data.get('hasNextPage', False):
+                        break
+                    
+                    page_number += 1
+                    
+                except requests.RequestException as e:
+                    logger.error(f"API 요청 실패: {e}")
+                    raise
+                except (KeyError, ValueError) as e:
+                    logger.error(f"응답 파싱 실패: {e}")
+                    raise
+            
+            if not all_seasons:
+                raise ValueError("시즌 데이터가 하나도 없습니다")
+            
+            logger.info(f"총 {len(all_seasons)} 개의 시즌을 찾았습니다")
+            return all_seasons
+
+        def filter_completed_seasons(self, seasons: List[Dict], current_block_index: int) -> List[Dict]:
+            """완료된 시즌 필터링"""
+            logger.info(f"완료된 시즌 필터링 중... (현재 블록: {current_block_index})")
+            
+            completed_seasons = [
+                season for season in seasons
+                if (season.get('arenaType') != 'OFF_SEASON' and 
+                    season.get('endBlockIndex', 0) < current_block_index)
+            ]
+            
+            # ID 기준으로 내림차순 정렬
+            completed_seasons.sort(key=lambda x: x.get('id', 0), reverse=True)
+            
+            if not completed_seasons:
+                raise ValueError("완료된 시즌이 없습니다")
+            
+            logger.info(f"완료된 시즌: {len(completed_seasons)} 개")
+            return completed_seasons
+
+        def get_leaderboard(self, arena_service_url: str, season_id: int) -> List[Dict]:
+            """리더보드 가져오기"""
+            logger.info(f"시즌 {season_id} 리더보드 조회 중...")
+            
+            try:
+                response = self.session.get(
+                    f"{arena_service_url}/leaderboard/completed",
+                    params={'seasonId': season_id}
+                )
+                response.raise_for_status()
+                
+                data = response.json()
+                # logger.info(f"[API 응답] 리더보드: {data}")
+                
+                leaderboard = data.get('leaderboard', [])
+                
+                if not leaderboard:
+                    raise ValueError("리더보드가 비어있습니다")
+                
+                logger.info(f"리더보드 항목: {len(leaderboard)} 개")
+                return leaderboard
+                
+            except requests.RequestException as e:
+                logger.error(f"API 요청 실패: {e}")
+                raise
+            except (KeyError, ValueError) as e:
+                logger.error(f"응답 파싱 실패: {e}")
+                raise
+
+        def get_staking_info(self, graphql_url: str, addresses: List[str], block_index: int) -> List[Dict]:
+            """스테이킹 정보 가져오기"""
+            logger.info(f"스테이킹 정보 조회 중 (블록 인덱스: {block_index})")
+            
+            query = """
+            query GetStakeState($addresses: [Address]!, $blockIndex: Long!) {
+                stateQuery(index: $blockIndex) {
+                    stakeStates(addresses: $addresses) {
+                        address
+                        deposit
+                        startedBlockIndex
+                        receivedBlockIndex
+                        cancellableBlockIndex
+                    }
+                }
+            }
+            """
+            
+            variables = {
+                "addresses": addresses,
+                "blockIndex": block_index
+            }
+            
+            try:
+                response = self.session.post(
+                    graphql_url,
+                    json={
+                        "query": query,
+                        "variables": variables
+                    },
+                    headers={'Content-Type': 'application/json'}
+                )
+                response.raise_for_status()
+                
+                data = response.json()
+                # logger.info(f"[API 응답] 스테이킹: {data}")
+                
+                # GraphQL 에러 확인
+                if 'errors' in data and data['errors']:
+                    error_messages = [error.get('message', 'Unknown error') for error in data['errors']]
+                    logger.warning(f"GraphQL 에러 발생: {error_messages}")
+                    logger.warning("스테이킹 정보를 가져올 수 없습니다. 빈 배열을 반환합니다.")
+                    return []
+                
+                # data가 None인 경우 처리
+                if data.get('data') is None:
+                    logger.warning("GraphQL 응답에 data가 없습니다. 스테이킹 정보를 가져올 수 없습니다.")
+                    return []
+                
+                stake_states = data.get('data', {}).get('stateQuery', {}).get('stakeStates', [])
+                
+                # null 값 제거하고 agentAddress 추가
+                processed_stake_states = []
+                for i, stake_state in enumerate(stake_states):
+                    if stake_state is not None:
+                        # agentAddress 추가 (조회 순서대로)
+                        stake_state_with_agent = stake_state.copy()
+                        stake_state_with_agent['agentAddress'] = addresses[i] if i < len(addresses) else None
+                        processed_stake_states.append(stake_state_with_agent)
+                
+                logger.info(f"스테이킹 정보: {len(processed_stake_states)} 개 (null 제외)")
+                return processed_stake_states
+                
+            except requests.RequestException as e:
+                logger.error(f"API 요청 실패: {e}")
+                logger.warning("스테이킹 정보를 가져올 수 없습니다. 빈 배열을 반환합니다.")
+                return []
+            except (KeyError, ValueError) as e:
+                logger.error(f"응답 파싱 실패: {e}")
+                logger.warning("스테이킹 정보를 가져올 수 없습니다. 빈 배열을 반환합니다.")
+                return []
+            except Exception as e:
+                logger.error(f"예상치 못한 오류: {e}")
+                logger.warning("스테이킹 정보를 가져올 수 없습니다. 빈 배열을 반환합니다.")
+                return []
+
+        def export_arena_staking_data(self, network: str, planet: str, output_dir: str = "./arena_staking_data"):
+            """아레나 스테이킹 데이터 내보내기"""
+            logger.info(f"네트워크: {network}, 플래닛: {planet}, 출력 디렉토리: {output_dir}")
+            
+            # 플래닛 설정 가져오기
+            planet_config = self.get_planet_config(network, planet)
+            planet_id = planet_config['id']
+            graphql_url = planet_config['graphql_url']
+            arena_service_url = planet_config['arena_service_url']
+            
+            logger.info(f"플래닛 ID: {planet_id}")
+            logger.info(f"GraphQL URL: {graphql_url}")
+            logger.info(f"Arena Service URL: {arena_service_url}")
+            
+            # 현재 블록 인덱스 가져오기
+            current_block_index = self.get_current_block_index(arena_service_url)
+            
+            # 시즌 목록 가져오기
+            all_seasons = self.get_seasons(arena_service_url)
+            
+            # 완료된 시즌 필터링
+            completed_seasons = self.filter_completed_seasons(all_seasons, current_block_index)
+            
+            # 가장 최근에 완료된 시즌 선택
+            target_season = completed_seasons[0]
+            
+            season_id = target_season['id']
+            season_name = target_season['seasonGroupId']
+            end_block_index = target_season['endBlockIndex']
+            
+            logger.info(f"대상 시즌: ID={season_id}, 시즌={season_name}, 종료 블록={end_block_index}")
+            
+            # R2에 파일이 이미 존재하는지 확인
+            if self.s3_client and self.check_file_exists_in_r2(network, season_id):
+                logger.info(f"시즌 {season_id}의 스테이킹 데이터가 이미 R2에 존재합니다. 스크립트를 종료합니다.")
+                return
+            
+            # 리더보드 가져오기 (Agent 주소 추출용)
+            leaderboard = self.get_leaderboard(arena_service_url, season_id)
+            
+            # Agent 주소 추출
+            agent_addresses = list(set(entry['agentAddress'] for entry in leaderboard))
+            logger.info(f"고유 Agent 주소: {len(agent_addresses)} 개")
+            
+            # 스테이킹 정보 가져오기
+            staking_info = self.get_staking_info(graphql_url, agent_addresses, end_block_index)
+            
+            # 결과 데이터 구성 (스테이킹 데이터만 포함)
+            timestamp = datetime.now(timezone.utc).isoformat()
+            
+            result_data = {
+                'metadata': {
+                    'network': network,
+                    'planet': planet,
+                    'planetId': planet_id,
+                    'timestamp': timestamp,
+                    'currentBlockIndex': current_block_index,
+                    'seasonId': season_id,
+                    'seasonName': season_name,
+                    'endBlockIndex': end_block_index
+                },
+                'stakingInfo': staking_info
+            }
+            
+            # 로컬 파일 저장 (선택사항)
+            if output_dir:
+                # 파일명 생성
+                filename = f"{network}_{planet}_season{season_name}_staking_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                output_file = f"{output_dir}/{filename}"
+                
+                # 출력 디렉토리 생성
+                os.makedirs(output_dir, exist_ok=True)
+                
+                # JSON 파일 저장
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(result_data, f, indent=2, ensure_ascii=False)
+                
+                logger.info(f"로컬 파일 저장 완료: {output_file}")
+            
+            # R2 업로드
+            if self.s3_client:
+                upload_success = self.upload_to_r2(result_data, network, season_id)
+                if upload_success:
+                    logger.info("R2 업로드 성공")
+                else:
+                    logger.error("R2 업로드 실패")
+            else:
+                logger.warning("R2 클라이언트가 없어 업로드를 건너뜁니다")
+            
+            logger.info(f"스테이킹 정보: {len(staking_info)} 개")
+            
+            # 요약 정보 출력
+            print("\n=== 요약 ===")
+            print(f"네트워크: {network}")
+            print(f"플래닛: {planet} ({planet_id})")
+            print(f"대상 시즌: {season_name} (ID: {season_id})")
+            print(f"종료 블록: {end_block_index}")
+            print(f"현재 블록: {current_block_index}")
+            print(f"스테이킹 정보: {len(staking_info)} 개")
+            if output_dir:
+                print(f"로컬 파일: {output_file}")
+            if self.s3_client:
+                print(f"R2 경로: staking-for-arena/{network}/{season_id}.json")
+
+    def main():
+        parser = argparse.ArgumentParser(description='아레나 스테이킹 데이터 내보내기')
+        parser.add_argument('network', choices=['main', 'internal'], help='네트워크 (main, internal)')
+        parser.add_argument('planet', choices=['Odin', 'Heimdall', 'Thor'], help='플래닛 (Odin, Heimdall, Thor)')
+        parser.add_argument('output_dir', nargs='?', default='./arena_staking_data', help='출력 디렉토리 (기본값: ./arena_staking_data)')
+        
+        args = parser.parse_args()
+        
+        try:
+            exporter = ArenaStakingExporter()
+            exporter.export_arena_staking_data(args.network, args.planet, args.output_dir)
+        except Exception as e:
+            logger.error(f"오류가 발생했습니다: {e}")
+            sys.exit(1)
+
+    if __name__ == '__main__':
+        main() 
+  
+  requirements.txt: |
+    boto3==1.34.0
+    python-dotenv==1.0.1
+    requests==2.31.0
