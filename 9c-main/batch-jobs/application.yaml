@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: main
-    path: 9c-main/script
+    path: 9c-main/batch-jobs
   destination:
     server: https://kubernetes.default.svc
     namespace: batch-jobs 
