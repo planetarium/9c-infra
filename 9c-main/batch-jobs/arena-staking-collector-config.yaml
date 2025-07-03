@@ -100,14 +100,14 @@ data:
                 }
             }
 
-        def check_file_exists_in_r2(self, network: str, season_id: int) -> bool:
+        def check_file_exists_in_r2(self, network: str, planet: str, season_id: int) -> bool:
             """R2에 해당 시즌 ID의 파일이 이미 존재하는지 확인"""
             if not self.s3_client:
                 logger.warning("R2 클라이언트가 초기화되지 않았습니다")
                 return False
             
             try:
-                key = f"staking-for-arena/{network}/{season_id}.json"
+                key = f"staking-for-arena/{network}/{planet}/{season_id}.json"
                 
                 # 파일 존재 여부 확인
                 self.s3_client.head_object(Bucket=self.r2_bucket_name, Key=key)
@@ -121,7 +121,7 @@ data:
                 logger.error(f"파일 존재 여부 확인 실패: {e}")
                 return False
 
-        def upload_to_r2(self, data: Dict, network: str, season_id: int) -> bool:
+        def upload_to_r2(self, data: Dict, network: str, planet: str, season_id: int) -> bool:
             """R2에 데이터 업로드"""
             if not self.s3_client:
                 logger.warning("R2 클라이언트가 초기화되지 않았습니다")
@@ -129,7 +129,7 @@ data:
             
             try:
                 # 파일 경로 설정
-                key = f"staking-for-arena/{network}/{season_id}.json"
+                key = f"staking-for-arena/{network}/{planet}/{season_id}.json"
                 
                 # JSON 데이터를 문자열로 변환
                 json_data = json.dumps(data, indent=2, ensure_ascii=False)
@@ -384,7 +384,7 @@ data:
             logger.info(f"대상 시즌: ID={season_id}, 시즌={season_name}, 종료 블록={end_block_index}")
             
             # R2에 파일이 이미 존재하는지 확인
-            if self.s3_client and self.check_file_exists_in_r2(network, season_id):
+            if self.s3_client and self.check_file_exists_in_r2(network, planet, season_id):
                 logger.info(f"시즌 {season_id}의 스테이킹 데이터가 이미 R2에 존재합니다. 스크립트를 종료합니다.")
                 return
             
@@ -432,7 +432,7 @@ data:
             
             # R2 업로드
             if self.s3_client:
-                upload_success = self.upload_to_r2(result_data, network, season_id)
+                upload_success = self.upload_to_r2(result_data, network, planet, season_id)
                 if upload_success:
                     logger.info("R2 업로드 성공")
                 else:
@@ -453,7 +453,7 @@ data:
             if output_dir:
                 print(f"로컬 파일: {output_file}")
             if self.s3_client:
-                print(f"R2 경로: staking-for-arena/{network}/{season_id}.json")
+                print(f"R2 경로: staking-for-arena/{network}/{planet}/{season_id}.json")
 
     def main():
         parser = argparse.ArgumentParser(description='아레나 스테이킹 데이터 내보내기')
@@ -472,7 +472,7 @@ data:
 
     if __name__ == '__main__':
         main() 
-  
+
   requirements.txt: |
     boto3==1.34.0
     python-dotenv==1.0.1
