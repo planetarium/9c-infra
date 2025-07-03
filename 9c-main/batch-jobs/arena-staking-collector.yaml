@@ -45,8 +45,8 @@ spec:
             volumeMounts:
             - name: script-volume
               mountPath: /app
-                      volumes:
-            - name: script-volume
-              configMap:
-                name: arena-staking-collector-config
+          volumes:
+          - name: script-volume
+            configMap:
+              name: arena-staking-collector-config
           restartPolicy: OnFailure 
