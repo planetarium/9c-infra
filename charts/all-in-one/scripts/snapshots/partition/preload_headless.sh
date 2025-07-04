@@ -2,8 +2,7 @@
 set -ex
 
 apt-get -y update
-apt-get -y install zip
-apt-get -y install curl
+apt-get -y install curl zip
 HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
@@ -88,8 +87,8 @@ function wait_preloading() {
     exit 1
   fi
 
-  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 "preloading is no longer needed"; then
-    sleep 60
+  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading"; then
+    sleep 5
   else
     senderr "grep failed. Failed to preload." $1
     kill "$PID"
