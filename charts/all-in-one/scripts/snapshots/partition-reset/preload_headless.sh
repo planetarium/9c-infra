@@ -2,8 +2,7 @@
 set -ex
 
 apt-get -y update
-apt-get -y install zip
-apt-get -y install curl
+apt-get -y install curl zip
 HOME="/app"
 
 APP_PROTOCOL_VERSION=$1

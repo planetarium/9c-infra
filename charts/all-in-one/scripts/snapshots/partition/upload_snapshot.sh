@@ -4,10 +4,7 @@ trap 'echo "[ERROR] Script failed at line $LINENO with exit code $?" >&2' ERR
 set -x
 
 apt-get -y update
-apt-get -y install curl zip unzip sudo p7zip-full
-
-# Install rclone
-curl https://rclone.org/install.sh | bash
+apt-get -y install curl rclone
 
 HOME="/app"
 APP_PROTOCOL_VERSION=$1
@@ -16,7 +13,8 @@ SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 STORE_PATH="$6"
-echo "[DEBUG] Args: $1 $2 $3 $4 $5 $6"
+PART_LENGTH=${7:-3}
+echo "[DEBUG] Args: $1 $2 $3 $4 $5 $6 $7"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -110,6 +108,19 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --low-level-retries 10
 
+  split -b 4G "$LATEST_SNAPSHOT" "$SNAPSHOT_FILENAME.part" --numeric-suffixes=1 -a $PART_LENGTH
+  for part in "$SNAPSHOT_FILENAME.part*"; do
+    retry_until_success rclone copyto "$part" "$DEST_PATH/$part" \
+      --s3-upload-cutoff 512M \
+      --s3-chunk-size 512M \
+      --s3-disable-checksum \
+      --multi-thread-streams 4 \
+      --retries 5 \
+      --low-level-retries 10 \
+      --no-traverse
+    rm "$part"
+  done
+
   echo "[INFO] Copying snapshot to latest path..."
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
     --no-traverse \
@@ -159,6 +170,19 @@ function make_and_upload_snapshot() {
     --no-traverse \
     --retries 5 \
     --low-level-retries 10
+
+  split -b 4G "$LATEST_STATE" "$STATE_FILENAME.part" --numeric-suffixes=1 -a $PART_LENGTH
+  for part in "$STATE_FILENAME.part*"; do
+    retry_until_success rclone copyto "$part" "$DEST_PATH/$part" \
+      --s3-upload-cutoff 512M \
+      --s3-chunk-size 512M \
+      --s3-disable-checksum \
+      --multi-thread-streams 4 \
+      --retries 5 \
+      --low-level-retries 10 \
+      --no-traverse
+    rm "$part"
+  done
 
   echo "[INFO] Copying state to latest path (with retry)..."
   retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" \
