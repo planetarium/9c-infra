@@ -4,10 +4,7 @@ trap 'echo "[ERROR] Script failed at line $LINENO with exit code $?" >&2' ERR
 set -x
 
 apt-get -y update
-apt-get -y install curl zip unzip sudo p7zip-full
-
-# Install rclone
-curl https://rclone.org/install.sh | bash
+apt-get -y install curl rclone
 
 HOME="/app"
 APP_PROTOCOL_VERSION=$1
@@ -16,7 +13,8 @@ SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 STORE_PATH="$6"
-echo "[DEBUG] Args: $1 $2 $3 $4 $5 $6"
+PRESERVE_PARTITIONS="${7:-false}"
+PART_LENGTH="${8:-3}"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -69,7 +67,6 @@ function make_and_upload_snapshot() {
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
-  FULL_DIR="$OUTPUT_DIR/full"
   URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
   mkdir -p "$OUTPUT_DIR"
@@ -175,7 +172,24 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --low-level-retries 10
 
-  rm "$LATEST_SNAPSHOT" "$LATEST_STATE"
+  for file in $( find "$OUTPUT_DIR" -size +4G ); do
+    split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
+    for part in "$file.part"*; do
+      retry_until_success rclone copyto "$part" "$DEST_PATH/${part##*/}" \
+        --s3-upload-cutoff 512M \
+        --s3-chunk-size 512M \
+        --s3-disable-checksum \
+        --multi-thread-streams 4 \
+        --retries 5 \
+        --low-level-retries 10 \
+        --no-traverse
+      rm "$part"
+    done
+  done
+
+  if [ "$PRESERVE_PARTITIONS" = "false" ]; then
+    rm "$LATEST_SNAPSHOT" "$LATEST_STATE" "$LATEST_METADATA"
+  fi
   rm -rf "$METADATA_DIR"
 }
 

@@ -4,12 +4,8 @@ trap 'echo "[ERROR] Script failed at line $LINENO with exit code $?" >&2' ERR
 set -x
 
 apt-get -y update
-apt-get -y install curl zip unzip sudo p7zip-full
+apt-get -y install curl rclone
 
-# Install rclone
-curl https://rclone.org/install.sh | bash
-
-# Set required paths
 HOME="/app"
 STORE_PATH="/data/headless"
 APP_PROTOCOL_VERSION=$1
@@ -17,6 +13,7 @@ VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
+PART_LENGTH="${5:-3}"
 
 # Define directories
 OUTPUT_DIR="/data/snapshots"
@@ -113,6 +110,19 @@ function make_and_upload_snapshot() {
   FINAL_NAME="9c-main-snapshot.zip"
   FINAL_DEST="$DEST_PATH/$FINAL_NAME"
 
+  split -b 4GB "$LATEST_FULL_SNAPSHOT" "$FINAL_NAME.part" --numeric-suffixes=1 -a $PART_LENGTH
+  for part in "$FINAL_NAME.part"*; do
+    retry_until_success rclone copyto "$part" "$DEST_PATH/$part" \
+      --s3-upload-cutoff 512M \
+      --s3-chunk-size 512M \
+      --s3-disable-checksum \
+      --multi-thread-streams 4 \
+      --retries 5 \
+      --low-level-retries 10 \
+      --no-traverse
+    rm "$part"
+  done
+
   echo "[INFO] Copying archive snapshot to $FINAL_DEST without re-upload..."
   retry_until_success rclone copyto "$ARCHIVED_PATH" "$FINAL_DEST" \
     --no-traverse \
@@ -120,7 +130,6 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --s3-copy-cutoff 1G \
     --low-level-retries 10
-
 
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
   if [ -n "$LATEST_METADATA" ]; then

@@ -74,6 +74,9 @@ snapshot:
 
   partition:
     enabled: true
+    suspend: false
+    dp:
+      enabled: true
 
   resources:
     requests:
