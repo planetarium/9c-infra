@@ -95,8 +95,8 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "14647693"
-      downstream: "6262448"
+      upstream: "14900662"
+      downstream: "6491955"
 
 snapshot:
   downloadSnapshot: true
