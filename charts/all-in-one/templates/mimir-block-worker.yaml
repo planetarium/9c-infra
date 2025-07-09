@@ -1,0 +1,72 @@
+{{ if and .Values.mimir.enabled .Values.mimir.blockWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mimir-block-worker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: mimir-block-worker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mimir-block-worker
+  template:
+    metadata:
+      labels:
+        app: mimir-block-worker
+    spec:
+      containers:
+        - name: mimir-block-worker
+          image: {{ $.Values.mimir.blockWorker.image.repository }}:{{ $.Values.mimir.blockWorker.image.tag }}
+          env:
+            - name: WORKER_Configuration__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: JWT_SECRET_KEY
+            - name: WORKER_Configuration__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: JWT_ISSUER
+            - name: WORKER_Configuration__MongoDbConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: MONGO_DB_CONNECTION_STRING
+            - name: WORKER_Configuration__SentryDsn
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: SENTRY_DSN
+            - name: WORKER_Logging__LogLevel__System.Net.Http.HttpClient
+              value: "warning"
+            - name: WORKER_Configuration__PollerType
+              value: "BlockPoller"
+            - name: WORKER_Configuration__EnableInitializing
+              value: "true"
+            - name: WORKER_Configuration__PlanetType
+              value: "{{ $.Values.mimir.planetType }}"
+            - name: WORKER_Configuration__HeadlessEndpoints__0
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HeadlessEndpoints__0
+            - name: WORKER_Configuration__HeadlessEndpoints__1
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HeadlessEndpoints__1
+          {{- with $.Values.mimir.blockWorker.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      restartPolicy: Always
+      {{- with $.Values.mimir.blockWorker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  strategy:
+    type: RollingUpdate
+{{ end }}

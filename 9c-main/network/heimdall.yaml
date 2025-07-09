@@ -493,3 +493,6 @@ mimir:
 
   diffWorker:
     enabled: true
+
+  blockWorker:
+    enabled: true
