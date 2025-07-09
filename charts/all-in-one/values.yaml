@@ -810,6 +810,9 @@ mimir:
   gql:
     enabled: false
     nodeSelector: {}
+  blockWorker:
+    enabled: true
+    nodeSelector: {}
 
 volumePreloader:
   count: 0
