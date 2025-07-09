@@ -78,3 +78,9 @@ mimir:
       repository: planetariumhq/mimir-worker
       tag: "git-f703cddbd7fa96cb9045b86197c96261ab1b5758"
     pullPolicy: Always
+
+  blockWorker:
+    image:
+      repository: planetariumhq/mimir-worker
+      tag: "git-f703cddbd7fa96cb9045b86197c96261ab1b5758"
+    pullPolicy: Always
