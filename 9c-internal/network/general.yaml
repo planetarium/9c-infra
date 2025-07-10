@@ -4,7 +4,7 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-c0bcd9e3c4ac052c384faeb49dabae3be5f2388c"
+    tag: "git-88aeb871f48ea537c2a3a1f6a0c0a9eec2ff4ff4"
 
 seed:
   image:
@@ -40,7 +40,7 @@ marketService:
   image:
     repository: planetariumhq/market-service
     pullPolicy: Always
-    tag: "git-59fc1a7ad0ab8c348cc5bd5886dcbcbe5c4ad091"
+    tag: "git-4bb643368050bc0f02d18aedac6c9721adf3f6b6"
 
 arenaService:
   image:
@@ -59,16 +59,16 @@ mimir:
     image:
       repository: planetariumhq/mimir
       pullPolicy: Always
-      tag: "git-2758c99c7a275db7b62ff15e573a80e3a97660a2"
+      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
 
   diffWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-2758c99c7a275db7b62ff15e573a80e3a97660a2"
+      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
     pullPolicy: Always
 
   blockWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-f703cddbd7fa96cb9045b86197c96261ab1b5758"
+      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
     pullPolicy: Always
