@@ -10,7 +10,7 @@
       "headless.grpc": ["http://odin-internal-rpc-1.nine-chronicles.com:31238"],
       "arena.rest": ["https://odin-internal-arena.9c.gg"],
       "arena.gql": ["https://odin-internal-arena.9c.gg"],
-      "mimir.gql": ["https://odin-internal-mimir.9c.gg/graphql"],
+      "mimir.gql": ["https://odin-internal-temp-mimir.9c.gg/graphql"],
       "market.rest": ["https://odin-internal-market.9c.gg"]
     },
     "bridges": {
@@ -35,7 +35,7 @@
       ],
       "arena.rest": ["https://heimdall-internal-arena.9c.gg"],
       "arena.gql": ["https://heimdall-internal-arena.9c.gg"],
-      "mimir.gql": ["https://heimdall-internal-mimir.9c.gg/graphql"],
+      "mimir.gql": ["https://heimdall-internal-temp-mimir.9c.gg/graphql"],
       "market.rest": ["https://heimdall-internal-market.9c.gg"]
     },
     "bridges": {
