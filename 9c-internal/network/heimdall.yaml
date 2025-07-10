@@ -167,7 +167,7 @@ validator:
 
   hosts:
   - >-
-    heimdall-internal-node-validator-1.nine-chronicles.com
+    heimdall-internal-node-validator-1.nine-chronicles.com,
     heimdall-internal-rpc-1.nine-chronicles.com,
     heimdall-preview-rpc-1.nine-chronicles.com
 
