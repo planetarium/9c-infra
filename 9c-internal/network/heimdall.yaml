@@ -130,9 +130,7 @@ remoteHeadless:
 
   hosts:
   - >-
-    heimdall-internal-node-1.nine-chronicles.com,
-    heimdall-internal-rpc-1.nine-chronicles.com,
-    heimdall-preview-rpc-1.nine-chronicles.com
+    heimdall-internal-node-1.nine-chronicles.com
 
   loadBalancerIPs:
   - 49.247.14.86
@@ -168,7 +166,10 @@ validator:
   - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.heimdall.svc.cluster.local,31235"
 
   hosts:
-  - "heimdall-internal-node-validator-1.nine-chronicles.com"
+  - >-
+    heimdall-internal-node-validator-1.nine-chronicles.com
+    heimdall-internal-rpc-1.nine-chronicles.com,
+    heimdall-preview-rpc-1.nine-chronicles.com
 
   loadBalancerIPs:
   - 49.247.14.84
