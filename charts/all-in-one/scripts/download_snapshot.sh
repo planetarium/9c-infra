@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
+apt-get update
+apt-get -y install curl jq aria2 libarchive-tools
+
 cd /data
-
-until apt-get -y update
-do
-  echo "Try again"
-done
-
-until apt-get -y install curl jq wget aria2 sudo zip
-do
-  echo "Try again"
-done
 
 base_url=${1:-https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}}
 save_dir=${2:-"9c-main-snapshot_$(date +%Y%m%d_%H)"}
@@ -19,6 +14,7 @@ service_name=$4
 SLACK_WEBHOOK=$5
 rollback_snapshot=${6:-"false"}
 complete_snapshot_reset=${7:-"false"}
+part_length="${8:-3}"
 mainnet_snapshot_json_filename={{- if eq $.Values.global.networkType "Main" }}"latest.json"{{- else }}"mainnet_latest.json"{{- end }}
 
 function download_with_retry() {
@@ -29,10 +25,10 @@ function download_with_retry() {
   while true; do
     echo "Downloading $url"
 
-    aria2c "$url" -d "$2" -o "$3" -j5 -x5 --continue=true
+    aria2c "$url" -d "$2" -o "$3" --continue=true --show-console-readout=false --summary-interval=10
     if [ ! -f "$save_dir/$output_file.aria2" ] && [ -f "$save_dir/$output_file" ]; then
-        echo "Download successful: $save_dir/$output_file"
-        return 0
+      echo "Download successful: $save_dir/$output_file"
+      return 0
     fi
 
     echo "Download failed (.aria2 file detected). Retrying in 10 seconds..."
@@ -41,188 +37,159 @@ function download_with_retry() {
   done
 }
 
+function download_partition() {
+  function test_extension() {
+    local base_url=$1
+    local filename=$2
 
-if [ $download_option = "true" ]
-then
-  echo "Start download snapshot"
-  if [ $service_name != "snapshot" ]
-  then
-    echo $service_name
+    EXTENSIONS=("zip")
+    for ext in "${EXTENSIONS[@]}"; do
+      curl -I --fail $(printf "$base_url/$filename.$ext.part%0${part_length}d" 1) > /dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        echo "$ext.part"
+        return 0
+      fi
+      curl -I --fail "$base_url/$filename.$ext" > /dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        echo "$ext"
+        return 0
+      fi
+    done
+    echo "zip"
+  }
+
+  local base_url=$1
+  local filename=$2
+  local save_dir=$3
+
+  local extension=$(test_extension "$base_url" "$filename")
+  if [[ "$extension" = *.part* ]]; then
+    extension=${extension%".part"*}
+    local idx=1
+    while true; do
+      local part_extension=$(printf "part%0${part_length}d" $idx)
+      local url=$base_url/$filename.$extension.$part_extension
+      curl -I --fail "$url" > /dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension"
+      else
+        break
+      fi
+      idx=$((idx + 1))
+    done
+    cat "$save_dir/$filename.$extension.part"* > "$save_dir/$filename.$extension"
+    rm "$save_dir/$filename.$extension.part"*
+  else
+    local url="$base_url/$filename.$extension"
+    download_with_retry "$url" "$save_dir" "$filename.$extension"
   fi
+
+  echo "$save_dir/$filename.$extension"
+}
+
+if [ $download_option = "true" ]; then
+  echo "Start download snapshot from $service_name"
 
   # strip tailing slash
   base_url=${base_url%/}
 
   function get_snapshot_value() {
-      snapshot_json_url="$1"
-      snapshot_param="$2"
+    snapshot_json_url="$1"
+    snapshot_param="$2"
 
-      snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param")
-      echo "$snapshot_param_return_value"
+    snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param")
+    echo "$snapshot_param_return_value"
   }
 
-  function download_unzip_partial_snapshot() {
+  function download_unzip_snapshot() {
+    snapshot_dir=$(realpath "$save_dir/../snapshots")
+    snapshot_partition_dir="$snapshot_dir/partition"
+    snapshot_state_dir="$snapshot_dir/state"
     snapshot_json_filename="latest.json"
-    snapshot_zip_filename="state_latest.zip"
+    snapshot_zip_filename="state_latest"
     snapshot_zip_filename_array=("$snapshot_zip_filename")
-    mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
-    mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
-    mainnet_snapshot_blockEpoch=$(get_snapshot_value "$mainnet_snapshot_json_url" "BlockEpoch")
 
-    if [ "$mainnet_snapshot_blockEpoch" -le $1 ]; then
-        if [ $rollback_snapshot = "false" ]; then
-          if [ "$mainnet_snapshot_blockIndex" -le $2 ]; then
-              echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
-              return
-          fi
-        fi
+    if [ $rollback_snapshot = "false" ] && [ ! -z "$1" ] && [ ! -z "$2" ]; then
+      mainnet_snapshot_json_url="$base_url/$mainnet_snapshot_json_filename"
+      mainnet_snapshot_blockIndex=$(get_snapshot_value "$mainnet_snapshot_json_url" "Index")
+      mainnet_snapshot_blockEpoch=$(get_snapshot_value "$mainnet_snapshot_json_url" "BlockEpoch")
+      if [ "$mainnet_snapshot_blockEpoch" -le $1 ] && [ "$mainnet_snapshot_blockIndex" -le $2 ]; then
+        echo "Skip snapshot download because the local chain tip is greater than the snapshot tip."
+        return
+      fi
     fi
 
-    while :
-    do
-        snapshot_json_url="$base_url/$snapshot_json_filename"
-        BlockEpoch=$(get_snapshot_value "$snapshot_json_url" "BlockEpoch")
-        TxEpoch=$(get_snapshot_value "$snapshot_json_url" "TxEpoch")
-        PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
-        PreviousTxEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousTxEpoch")
+    if [[ ! -d "$save_dir" ]]; then
+      echo "[Info] The directory $save_dir does not exist and is created."
+      mkdir -p "$save_dir/block" "$save_dir/tx"
+    fi
 
-        snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
-        snapshot_zip_filename_array+=("$snapshot_zip_filename")
-        rm -r $save_dir/block/epoch$BlockEpoch/*
-        rm -r $save_dir/tx/epoch$BlockEpoch/*
+    rm -rf $save_dir/block/blockindex
+    rm -rf $save_dir/tx/txindex
+    rm -rf $save_dir/txbindex
+    rm -rf $save_dir/blockcommit
+    rm -rf $save_dir/txexec
+    rm -rf $save_dir/states
 
-        if [ $(("$PreviousBlockEpoch"+2)) -lt $1 ]
-        then
-            break
-        fi
+    while true; do
+      snapshot_json_url="$base_url/$snapshot_json_filename"
+      echo "$snapshot_json_url"
 
-        snapshot_json_filename="snapshot-$PreviousBlockEpoch-$PreviousTxEpoch.json"
+      curl --silent --location "$snapshot_json_url" -o "$save_dir/$snapshot_json_filename"
+      BlockEpoch=$(cat "$save_dir/$snapshot_json_filename" | jq ".BlockEpoch")
+      TxEpoch=$(cat "$save_dir/$snapshot_json_filename" | jq ".TxEpoch")
+      PreviousBlockEpoch=$(cat "$save_dir/$snapshot_json_filename" | jq ".PreviousBlockEpoch")
+      PreviousTxEpoch=$(cat "$save_dir/$snapshot_json_filename" | jq ".PreviousTxEpoch")
+      rm "$save_dir/$snapshot_json_filename"
+
+      snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch"
+      snapshot_zip_filename_array+=("$snapshot_zip_filename")
+
+      rm -rf $save_dir/block/epoch$BlockEpoch
+      rm -rf $save_dir/tx/epoch$BlockEpoch
+
+      if [[ "$PreviousBlockEpoch" -le "$1" ]]; then break; fi
+
+      snapshot_json_filename="snapshot-$PreviousBlockEpoch-$PreviousTxEpoch.json"
     done
 
-    if [[ ! -d "$save_dir" ]]
-    then
-        echo "[Info] The directory $save_dir does not exist and is created."
-        mkdir -p "$save_dir"
-    fi
+    for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--)); do
+      snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
 
-    rm -r $save_dir/block/blockindex/*
-    rm -r $save_dir/tx/txindex/*
-    rm -r $save_dir/txbindex/*
-    rm -r $save_dir/blockcommit/*
-    rm -r $save_dir/txexec/*
-    rm -r $save_dir/states/*
+      if [ "$rollback_snapshot" = "true" ] || [ ! -f "$snapshot_partition_dir/$snapshot_zip_filename.z"* ]; then
+        download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
+      fi
 
-    for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
-    do
-        snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
-        rm "$snapshot_zip_filename" 2>/dev/null
-
-        snapshot_zip_url="$base_url/$snapshot_zip_filename"
-        echo "$snapshot_zip_url"
-
-        #aria2c "$snapshot_zip_url" -d "$save_dir" -j10 -x10 --continue=true
-        download_with_retry "$snapshot_zip_url" "$save_dir" "$snapshot_zip_filename"
-        echo "Unzipping $snapshot_zip_filename"
-        unzip -o "$save_dir/$snapshot_zip_filename" -d "$save_dir"
-        rm "$save_dir/$snapshot_zip_filename"
+      echo "Extracting $snapshot_zip_filename"
+      bsdtar -C "$save_dir" -xf "$snapshot_partition_dir/$snapshot_zip_filename.z"*
     done
 
-    if [ -f $save_dir/$mainnet_snapshot_json_filename ]; then
-      rm $save_dir/$mainnet_snapshot_json_filename
-    fi
+    mkdir -p "$snapshot_state_dir"
+    mv "$snapshot_partition_dir/state_latest.z"* "$snapshot_state_dir/"
 
-    # aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
+    rm -f "$save_dir/$mainnet_snapshot_json_filename"
     download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
   }
 
-  function download_unzip_full_snapshot() {
-      snapshot_json_filename="latest.json"
-      snapshot_zip_filename="state_latest.zip"
-      snapshot_zip_filename_array=("$snapshot_zip_filename")
-
-      while :
-      do
-          snapshot_json_url="$base_url/$snapshot_json_filename"
-          echo "$snapshot_json_url"
-
-          BlockEpoch=$(get_snapshot_value "$snapshot_json_url" "BlockEpoch")
-          TxEpoch=$(get_snapshot_value "$snapshot_json_url" "TxEpoch")
-          PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
-          PreviousTxEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousTxEpoch")
-
-          snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
-          snapshot_zip_filename_array+=("$snapshot_zip_filename")
-
-          if [ "$PreviousBlockEpoch" -eq 0 ]
-          then
-              break
-          fi
-
-          snapshot_json_filename="snapshot-$PreviousBlockEpoch-$PreviousTxEpoch.json"
-      done
-
-      if [[ ! -d "$save_dir" ]]
-      then
-          echo "[Info] The directory $save_dir does not exist and is created."
-          mkdir -p "$save_dir"
-      fi
-
-      for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--))
-      do
-          snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
-          rm "$snapshot_zip_filename" 2>/dev/null
-
-          snapshot_zip_url="$base_url/$snapshot_zip_filename"
-          echo "$snapshot_zip_url"
-
-          #aria2c "$snapshot_zip_url" -j10 -x10 --continue=true
-          download_with_retry "$snapshot_zip_url" "$save_dir" "$snapshot_zip_filename"
-          echo "Unzipping $snapshot_zip_filename"
-          unzip -o "$save_dir/$snapshot_zip_filename" -d "$save_dir"
-          rm "$save_dir/$snapshot_zip_filename"
-      done
-
-      #aria2c "$base_url/$mainnet_snapshot_json_filename" -d "$save_dir" -o "$mainnet_snapshot_json_filename" -j10 -x10 --continue=true
-      download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
-  }
-
-  if [ -f $save_dir/$mainnet_snapshot_json_filename ]
-  then
-    if [ $complete_snapshot_reset = "true" ]
-    then
-      echo "Completely delete the existing store and download a new snapshot"
-      rm -r "$save_dir"
-      mkdir -p "$save_dir"
-      download_unzip_full_snapshot
-    else
-      local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
-      if [ -f $save_dir/$mainnet_snapshot_json_filename ]
-      then
-        local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
-        download_unzip_partial_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
-      else
-        local_chain_tip_timestamp="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Timestamp')"
-        epoch_seconds=$(date -d "$local_chain_tip_timestamp" +%s)
-        echo $epoch_seconds
-        local_chain_tip_blockEpoch=$(($epoch_seconds / 86400))
-        echo $local_chain_tip_blockEpoch
-        download_unzip_partial_snapshot $local_chain_tip_blockEpoch $local_chain_tip_index
-      fi
-    fi
+  if [ -f $save_dir/$mainnet_snapshot_json_filename ] && [ ! $complete_snapshot_reset = "true" ]; then
+    local_previous_mainnet_blockEpoch=$(cat "$save_dir/$mainnet_snapshot_json_filename" | jq ".BlockEpoch")
+    local_chain_tip_index="$((/app/NineChronicles.Headless.Executable chain tip "RocksDb" "$save_dir") | jq -r '.Index')"
+    download_unzip_snapshot $local_previous_mainnet_blockEpoch $local_chain_tip_index
   else
-    download_unzip_full_snapshot
+    if [ $complete_snapshot_reset = "true" ]; then
+      echo "Completely delete the existing store and download a new snapshot"
+      rm -rf "$save_dir"
+      mkdir -p "$save_dir"
+    fi
+    download_unzip_snapshot
   fi
 
   # The return value for the program that calls this script
   echo "$save_dir"
-  if [ $service_name != "snapshot" ]
-  then
-    echo $service_name
-  fi
 else
   echo "Skip download snapshot"
-  if [ $service_name != "snapshot" ]
-  then
-    echo $service_name
-  fi
+fi
+
+if [ $service_name != "snapshot" ]; then
+  echo $service_name
 fi

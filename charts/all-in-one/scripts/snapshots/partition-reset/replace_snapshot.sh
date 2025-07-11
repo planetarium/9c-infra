@@ -2,10 +2,7 @@
 set -ex
 
 apt-get -y update
-apt-get -y install curl
-apt-get -y install zip
-apt-get -y install unzip
-apt-get -y install sudo
+apt-get -y install curl unzip sudo
 
 uname=$(uname -r)
 arch=${uname##*.}

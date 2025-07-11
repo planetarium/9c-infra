@@ -2,11 +2,7 @@
 set -ex
 
 apt-get -y update
-apt-get -y install curl
-apt-get -y install zip
-apt-get -y install unzip
-apt-get -y install sudo
-apt-get -y install p7zip
+apt-get -y install curl sudo unzip
 
 uname=$(uname -r)
 arch=${uname##*.}
@@ -67,7 +63,6 @@ function make_and_upload_snapshot() {
   # shellcheck disable=SC2012
   LATEST_STATE=$(ls -t $STATE_DIR/*.zip | head -1)
   LATEST_STATE_FILENAME=$(basename "$LATEST_STATE")
-  STATE_FILENAME=$(echo $LATEST_STATE_FILENAME | cut -d'.' -f 1)
 
   S3_BUCKET_NAME="9c-snapshots"
   S3_LATEST_SNAPSHOT_PATH="$2/$UPLOAD_SNAPSHOT_FILENAME"
@@ -87,30 +82,8 @@ function make_and_upload_snapshot() {
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
   "$AWS" s3 cp "s3://$S3_BUCKET_NAME/$2/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
 
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
-  
-  mkdir -p "$PARTITION_DIR/partition-snapshot" "$STATE_DIR/state-snapshot"
-  unzip -o "$LATEST_SNAPSHOT" -d "$PARTITION_DIR/partition-snapshot"
-  unzip -o "$LATEST_STATE" -d "$STATE_DIR/state-snapshot"
-
-  # Disable 7z snapshot
-  # 7zr a -r "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "$PARTITION_DIR/partition-snapshot/*"
-  # 7zr a -r "/data/snapshots/7z/partition/state_latest.7z" "$STATE_DIR/state-snapshot/*"
-
-  # "$AWS" s3 cp "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/$SNAPSHOT_FILENAME.7z" --quiet --acl public-read
-  # "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$SNAPSHOT_FILENAME.7z" "s3://$S3_BUCKET_NAME/$2/latest.7z" --quiet --acl public-read --copy-props none --metadata-directive COPY
-  # "$AWS" s3 cp "/data/snapshots/7z/partition/state_latest.7z" "s3://$S3_BUCKET_NAME/$2/state_latest.7z" --quiet --acl public-read
-
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$SNAPSHOT_FILENAME.*"
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$UPLOAD_FILENAME.*"
-  # "$AWS" cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/$2/$STATE_FILENAME.*"
-
   rm "$LATEST_SNAPSHOT"
   rm "$LATEST_STATE"
-  # rm "/data/snapshots/7z/partition/$SNAPSHOT_FILENAME.7z"
-  # rm "/data/snapshots/7z/partition/state_latest.7z"
   rm -r "$PARTITION_DIR/partition-snapshot"
   rm -r "$STATE_DIR/state-snapshot"
   rm -r "$METADATA_DIR"

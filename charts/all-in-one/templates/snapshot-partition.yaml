@@ -110,6 +110,7 @@ spec:
             {{- else }}
               mountPath: /data
             {{- end }}
+          {{- if $.Values.snapshot.partition.dp.enabled }}
           - name: set-date
             image: debian:latest
             command:
@@ -143,6 +144,11 @@ spec:
                 --mysql-database "$DP_DATABASE" \
                 --date "$(cat /etc/config/date)"
             env:
+              - name: NC_MySqlConnectionString
+                valueFrom:
+                  secretKeyRef:
+                    key: write-value
+                    name: data-provider
               - name: DP_HOST
                 valueFrom:
                   secretKeyRef:
@@ -336,6 +342,7 @@ spec:
               {{- else }}
               mountPath: /data
               {{- end }}
+          {{- end }}
           containers:
           - name: upload-snapshot
             image: {{ $.Values.snapshot.image }}
