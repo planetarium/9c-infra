@@ -28,6 +28,11 @@ spec:
                 secretKeyRef:
                   name: mimir
                   key: MONGO_DB_CONNECTION_STRING
+            - name: WncgApi__ApiKeys
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                key: WNCGAPI_APIKEYS
             - name: Database__Database
               value: "{{ $.Values.mimir.planetType }}"
           {{- with $.Values.mimir.gql.env }}
