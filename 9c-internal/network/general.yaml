@@ -40,29 +40,29 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-cfcc451e18bb9c1f070af4f23a39e7002a9b018d"
+    tag: "git-7ed58734da07b7b37a353fe2caab987d749bd0d9"
 
   backoffice:
     image:
       repository: planetariumhq/arena-service-backoffice
       pullPolicy: Always
-      tag: "git-cfcc451e18bb9c1f070af4f23a39e7002a9b018d"
+      tag: "git-7ed58734da07b7b37a353fe2caab987d749bd0d9"
 
 mimir:
   gql:
     image:
       repository: planetariumhq/mimir
       pullPolicy: Always
-      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
+      tag: "git-00095218e31f864a9b63589c321cab7f68be5f62"
 
   diffWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
+      tag: "git-00095218e31f864a9b63589c321cab7f68be5f62"
     pullPolicy: Always
 
   blockWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-04022aebc8ba27d7b2de63a84ce7ae5bd31ea8a2"
+      tag: "git-00095218e31f864a9b63589c321cab7f68be5f62"
     pullPolicy: Always

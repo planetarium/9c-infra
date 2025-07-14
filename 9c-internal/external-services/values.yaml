@@ -24,7 +24,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-63a10cbf3acc7d35ccb41b88497247ea4037bf61"
+    tag: "git-d73fb0317a07fd4f2862b60bea5646d6da29b3eb"
 
   api:
     enabled: true
@@ -63,18 +63,18 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-365624eafaa9baf938832cebf1d2a5d3e139d136"
+      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
 
   api:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-726f3252c66a7941b2beab5aeab7d8b4b6644832"
+      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
 
   worker:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-2a27999dd8517b28ff8c31223b14dc9522792108"
+      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
