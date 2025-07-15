@@ -17,6 +17,9 @@ gateway:
   - name: iap-api
     hostnames:
     - iap-api.9c.gg
+  - name: ncboard
+    hostnames:
+    - ncboard.9c.gg
 
 volumeReclaimPolicy: "Retain"
 
