@@ -55,6 +55,16 @@ spec:
                 secretKeyRef:
                   key: redis-url
                   name: iap-env
+            - name: WORKER_IAP_ALERT_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: iap-alert-webhook-url
+                  name: iap-env
+            - name: WORKER_IAP_GARAGE_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: iap-garage-webhook-url
+                  name: iap-env
             - name: WORKER_HEADLESS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
