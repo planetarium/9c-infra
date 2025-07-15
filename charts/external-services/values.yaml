@@ -159,3 +159,10 @@ backoffice:
     mainHeimdallUrl: ""
     mainThorId: ""
     mainThorUrl: ""
+
+ncboard:
+  enabled: false
+  image:
+    repository: planetariumhq/9c-board
+    tag: latest
+  nodeSelector: {}
