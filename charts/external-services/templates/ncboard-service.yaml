@@ -1,0 +1,20 @@
+{{ if .Values.ncboard.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: ncboard
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: ncboard
+  type: ClusterIP
+
+---
+{{ end }}

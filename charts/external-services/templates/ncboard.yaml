@@ -1,0 +1,38 @@
+{{- if $.Values.ncboard.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ncboard
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: ncboard
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ncboard
+  template:
+    metadata:
+      labels:
+        app: ncboard
+    spec:
+      containers:
+        - name: ncboard
+          env:
+            - name: NETWORK_CONF_MAP
+              value: "odin=https://odin-gql.nine-chronicles.com/graphql,odin-internal=https://odin-internal-rpc.nine-chronicles.com/graphql,heimdall-internal=https://heimdall-internal-rpc.nine-chronicles.com/graphql,heimdall=https://heimdall-gql.nine-chronicles.com/graphql"
+          image: {{ $.Values.ncboard.image.repository }}:{{ $.Values.ncboard.image.tag }}
+          {{- with $.Values.ncboard.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          ports:
+            - containerPort: 3000
+          name: ncboard
+      {{- with $.Values.ncboard.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

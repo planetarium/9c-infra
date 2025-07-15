@@ -92,3 +92,8 @@ iap:
       tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
+
+ncboard:
+  enabled: true
+  image:
+    tag: git-d876a80f84f1a6bdf01ef470282e710467954479
