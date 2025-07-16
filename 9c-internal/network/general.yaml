@@ -53,16 +53,16 @@ mimir:
     image:
       repository: planetariumhq/mimir
       pullPolicy: Always
-      tag: "git-08d5844e97ddd890a1148381d1086a1474f53538"
+      tag: "git-062459fc9df6a1d1f3fba544e04bcc5ef7415bc8"
 
   diffWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-08d5844e97ddd890a1148381d1086a1474f53538"
+      tag: "git-062459fc9df6a1d1f3fba544e04bcc5ef7415bc8"
     pullPolicy: Always
 
   blockWorker:
     image:
       repository: planetariumhq/mimir-worker
-      tag: "git-08d5844e97ddd890a1148381d1086a1474f53538"
+      tag: "git-062459fc9df6a1d1f3fba544e04bcc5ef7415bc8"
     pullPolicy: Always
