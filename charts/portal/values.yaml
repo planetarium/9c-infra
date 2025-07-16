@@ -7,11 +7,11 @@ portalService:
     port: 3000
   resources:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 2
+      memory: 3Gi
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 1
+      memory: 1.5Gi
   nodeSelector: {}
   image:
     repository: planetariumhq/9c-portal
@@ -50,11 +50,11 @@ backofficeService:
     port: 3001
   resources:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 2
+      memory: 3Gi
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 1
+      memory: 1.5Gi
   nodeSelector: {}
   image:
     repository: planetariumhq/9c-portal-backoffice

@@ -5,13 +5,6 @@ portalService:
   service:
     type: ClusterIP
     port: 3000
-  resources:
-    limits:
-      cpu: 2
-      memory: 2Gi
-    requests:
-      cpu: 1
-      memory: 1.5Gi
   image:
     repository: planetariumhq/9c-portal
     tag: "internal-latest"
@@ -36,13 +29,6 @@ backofficeService:
   service:
     type: ClusterIP
     port: 3001
-  resources:
-    limits:
-      cpu: 2
-      memory: 2Gi
-    requests:
-      cpu: 1
-      memory: 1.5Gi
   image:
     repository: planetariumhq/9c-portal-backoffice
     tag: "internal-latest"

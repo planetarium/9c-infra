@@ -7,13 +7,6 @@ portalService:
   service:
     type: ClusterIP
     port: 3000
-  resources:
-    limits:
-      cpu: 2
-      memory: 3Gi
-    requests:
-      cpu: 2
-      memory: 3Gi
   nodeSelector:
     node.kubernetes.io/type: baremetal
   image:
@@ -40,13 +33,6 @@ backofficeService:
   service:
     type: ClusterIP
     port: 3001
-  resources:
-    limits:
-      cpu: 2
-      memory: 3Gi
-    requests:
-      cpu: 2
-      memory: 3Gi
   nodeSelector:
     node.kubernetes.io/type: baremetal
   image:
