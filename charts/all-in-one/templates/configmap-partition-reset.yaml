@@ -6,6 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  preload_headless.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition-reset/preload_headless.sh") . | nindent 4 }}
+  preload_headless.sh: |- {{ tpl (.Files.Get "scripts/snapshots/preload_headless.sh") . | nindent 4 }}
   replace_snapshot.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition-reset/replace_snapshot.sh") . | nindent 4 }}
   upload_snapshot.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition-reset/upload_snapshot.sh") . | nindent 4 }}

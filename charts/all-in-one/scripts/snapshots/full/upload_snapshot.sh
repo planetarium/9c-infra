@@ -119,8 +119,7 @@ function make_and_upload_snapshot() {
       --multi-thread-streams 4 \
       --retries 5 \
       --low-level-retries 10 \
-      --no-traverse
-    rm "$part"
+      --no-traverse && rm "$part" &
   done
 
   echo "[INFO] Copying archive snapshot to $FINAL_DEST without re-upload..."
@@ -129,15 +128,17 @@ function make_and_upload_snapshot() {
     --s3-disable-checksum \
     --retries 5 \
     --s3-copy-cutoff 1G \
-    --low-level-retries 10
+    --low-level-retries 10 &
 
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Uploading metadata $LATEST_METADATA..."
-    rclone copyto "$LATEST_METADATA" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$LATEST_METADATA" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
   else
     echo "[INFO] No metadata file found to upload."
   fi
+
+  wait
 
   echo "[INFO] Snapshot upload complete."
   rm "$LATEST_FULL_SNAPSHOT"
