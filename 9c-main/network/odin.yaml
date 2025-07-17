@@ -180,7 +180,7 @@ validator:
       memory: 25Gi
 
 remoteHeadless:
-  count: 3
+  count: 4
   replicas: 1
 
   useTurnServer: false
@@ -189,11 +189,13 @@ remoteHeadless:
   - "odin-node-1.nine-chronicles.com"
   - "odin-node-2.nine-chronicles.com"
   - "odin-node-3.nine-chronicles.com"
+  - "odin-node-4.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.194.60
   - 115.68.194.98
   - 115.68.194.103
+  - 115.68.199.177
 
   nodeSelector:
   - node.kubernetes.io/network: odin
@@ -202,6 +204,8 @@ remoteHeadless:
     node.kubernetes.io/node-index: '2'
   - node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '4'
+  - node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: '1'
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
@@ -231,6 +235,7 @@ remoteHeadless:
     - remote-headless-data-3-remote-headless-3-0
     - remote-headless-data-2-remote-headless-2-0
     - remote-headless-data-1-remote-headless-1-0
+    - remote-headless-data-5-remote-headless-5-0
 
   tolerations:
   - effect: NoSchedule
