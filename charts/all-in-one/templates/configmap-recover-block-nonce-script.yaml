@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recover-block-nonce-script
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  recover-block-nonce.sh: |-
+    {{ tpl (.Files.Get "scripts/common/recover-block-nonce.sh") . | nindent 4 }}
