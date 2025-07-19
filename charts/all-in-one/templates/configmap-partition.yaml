@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  preload_headless.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition/preload_headless.sh") . | nindent 4 }}
+  preload_headless.sh: |- {{ tpl (.Files.Get "scripts/snapshots/preload_headless.sh") . | nindent 4 }}
   upload_snapshot.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition/upload_snapshot.sh") . | nindent 4 }}
   {{- if eq $.Values.global.networkType "Main" }}
   preload_dp_migrator.sh: |- {{ tpl (.Files.Get "scripts/snapshots/partition/preload_dp_migrator.sh") . | nindent 4 }}
