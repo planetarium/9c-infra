@@ -218,6 +218,11 @@ spec:
                 secretKeyRef:
                   key: ConnectionStrings__DefaultConnection
                   name: ninechronicles-backoffice-env
+            - name: GitHub__Token
+              valueFrom:
+                secretKeyRef:
+                  key: GitHub__Token
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
