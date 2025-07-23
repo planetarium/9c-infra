@@ -81,19 +81,19 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
+      tag: "git-4bfd68af48598532320d2f0849d6cda19148f5b2"
 
   api:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
+      tag: "git-4bfd68af48598532320d2f0849d6cda19148f5b2"
 
   worker:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
+      tag: "git-4bfd68af48598532320d2f0849d6cda19148f5b2"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
