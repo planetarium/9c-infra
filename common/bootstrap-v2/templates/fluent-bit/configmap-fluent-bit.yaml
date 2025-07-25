@@ -225,7 +225,7 @@ data:
         bucket                       9c-fluentbit
         endpoint                     ${R2_ENDPOINT}
         {{- end }}
-        Total_file_size              100M
+        Total_file_size              50M
         compression                  gzip
         S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .
