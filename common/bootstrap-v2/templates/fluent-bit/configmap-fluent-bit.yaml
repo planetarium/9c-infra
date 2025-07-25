@@ -208,7 +208,7 @@ data:
         Docker_Mode_Parser  container_firstline
         Parser              docker
         DB                  /var/fluent-bit/state/flb_portal_tail.db
-        Mem_Buf_Limit       50MB
+        Mem_Buf_Limit       10MB
         Skip_Long_Lines     On
         Refresh_Interval    10
         Rotate_Wait         30
@@ -225,7 +225,7 @@ data:
         bucket                       9c-fluentbit
         endpoint                     ${R2_ENDPOINT}
         {{- end }}
-        Total_file_size              50M
+        Total_file_size              10M
         compression                  gzip
         S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .
