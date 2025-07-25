@@ -198,6 +198,38 @@ data:
         compression                  gzip
         S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
         S3_key_format_tag_delimiters .
+
+    [INPUT]
+        Name                tail
+        Tag                 portal.tail.*
+        Path                /var/log/containers/portal*
+        Docker_Mode         On
+        Docker_Mode_Flush   5
+        Docker_Mode_Parser  container_firstline
+        Parser              docker
+        DB                  /var/fluent-bit/state/flb_portal_tail.db
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Rotate_Wait         30
+        storage.type        filesystem
+        Read_from_Head      ${READ_FROM_HEAD}
+    [OUTPUT]
+        Name                         s3
+        Match                        portal.*
+        {{- if eq .Values.provider "AWS" }}
+        region                       ${AWS_REGION}
+        Bucket                       fluent-bit.planetariumhq.com
+        {{- else if eq .Values.provider "RKE2" }}
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        {{- end }}
+        Total_file_size              100M
+        compression                  gzip
+        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
+        S3_key_format_tag_delimiters .
+
     [INPUT]
         Name                tail
         Tag                 host.dmesg
