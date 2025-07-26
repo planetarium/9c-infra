@@ -11,28 +11,13 @@ spec:
   project: default
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: main
-    path: charts/volume-rotator
+    targetRevision: volume-rotator-revival
+    path: charts/volume-rotator-v2
     helm:
       values: |-
         namespace: {{ $.Release.Name }}
-        serviceAccount:
-          roleArn: {{ $.Values.volumeRotator.serviceAccount.roleArn }}
-        
-        image:
-          repository: {{ $.Values.volumeRotator.image.repository }}
-          tag: {{ $.Values.volumeRotator.image.tag }}
-        
-        {{- with $.Values.volumeRotator.nodeSelector }}
-        nodeSelector:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        
-        headless:
-          image: {{ $.Values.volumeRotator.headlessImage }}
-          replicaCount: {{ $.Values.volumeRotator.replicaCount }}
-          snapshotPath: {{ $.Values.snapshot.path }}
-          nodeSelectorValue: {{ $.Values.volumeRotator.nodeSelectorValue }}
+        volumePrefix: {{ $.Values.volumeRotator.volumePrefix }}
+        replicaCount: {{ $.Values.volumeRotator.replicaCount }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $.Release.Name }}
