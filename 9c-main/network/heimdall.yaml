@@ -495,7 +495,7 @@ mimir:
     enabled: true
 
   diffWorker:
-    enabled: true
+    enabled: false
 
   blockWorker:
-    enabled: true
+    enabled: false
