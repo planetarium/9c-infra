@@ -70,6 +70,8 @@ iap:
     stage: "internal"
     image:
       tag: "git-89aa2475c0e818f70714e7203f505e45a5952570"
+    serviceAccount:
+      roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
   worker:
     enabled: true
