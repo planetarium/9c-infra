@@ -133,6 +133,8 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --low-level-retries 10 &
 
+  wait
+
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Archiving metadata..."
     ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
@@ -144,6 +146,8 @@ function make_and_upload_snapshot() {
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/mainnet_latest.json" --no-traverse --retries 5 --low-level-retries 10 &
+
+    wait
   fi
 
   echo "[INFO] Archiving state..."
@@ -171,6 +175,8 @@ function make_and_upload_snapshot() {
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+
+  wait
 
   for file in $( find "$OUTPUT_DIR" -size +4G ); do
     split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
