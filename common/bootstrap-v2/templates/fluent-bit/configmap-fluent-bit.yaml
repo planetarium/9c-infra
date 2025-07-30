@@ -169,6 +169,38 @@ data:
         S3_key_format_tag_delimiters ._
 
     [INPUT]
+        Name                         tail
+        Tag                          snapshot.*
+        Path                         /var/log/containers/snapshot-*.log
+        DB                           /var/fluent-bit/state/flb_snapshot.db
+        Skip_Long_Lines              On
+        Refresh_Interval             10
+        Rotate_Wait                  30
+        Read_from_Head               ${READ_FROM_HEAD}
+        multiline.parser             cri, docker
+        storage.type                 filesystem
+    [FILTER]
+        Name                         kubernetes
+        Match                        snapshot.*
+        Kube_Tag_Prefix              snapshot.var.log.containers.
+        K8S-Logging.Parser           On
+        Labels                       Off
+        Annotations                  Off
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        snapshot.*
+        Rule                         $kubernetes['container_name'] ^(upload-snapshot)$ snapshot-s3.$kubernetes['namespace_name'].$kubernetes['pod_name'].$kubernetes['container_name'].$kubernetes['docker_id'] false
+    [OUTPUT]
+        Name                         s3
+        Match                        snapshot-s3.*
+        region                       auto
+        bucket                       9c-fluentbit
+        endpoint                     ${R2_ENDPOINT}
+        compression                  gzip
+        Total_file_size              100M
+        S3_key_format                /${CLUSTER_NAME}/snapshot/$TAG[1]/%Y/%m/%d/%H-%M-%S_$TAG[2]_$TAG[3]_$TAG[4]_$UUID.gz
+
+    [INPUT]
         Name                tail
         Tag                 dataplane.tail.*
         Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
