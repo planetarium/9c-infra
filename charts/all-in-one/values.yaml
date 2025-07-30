@@ -242,7 +242,6 @@ dataProviderDataMigrator:
 
 dataProvider:
   enabled: false
-  rwMode: false
   render: true
   migrateDatabase: false
 
