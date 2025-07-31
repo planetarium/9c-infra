@@ -225,6 +225,7 @@ remoteHeadless:
 
   rateLimitEnabled: false
   loggingEnabled: false
+  syncNonceEnabled: false
   datadog:
     enabled: false
 

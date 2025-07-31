@@ -157,6 +157,24 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+        {{- if $.Values.remoteHeadless.syncNonceEnabled }}
+        - name: sync-nonce
+          image: mcr.microsoft.com/dotnet/sdk:6.0
+          command:
+            - sh
+            - -c
+            - /bin/recover-block-nonce.sh 0 $VALIDATOR_PATH/graphql /data/headless
+          env:
+            - name: VALIDATOR_PATH
+              value: {{ $.Values.global.validatorPath }}
+          volumeMounts:
+            - mountPath: /data
+              name: remote-headless-data-{{ $index }}
+            - name: recover-block-nonce-script
+              subPath: recover-block-nonce.sh
+              mountPath: /bin/recover-block-nonce.sh
+              readOnly: true
+        {{- end }}
       containers:
       - args:
         - NineChronicles.Headless.Executable.dll
@@ -318,6 +336,10 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
+      - name: recover-block-nonce-script
+        configMap:
+          defaultMode: 0700
+          name: recover-block-nonce-script
       {{- if $.Values.remoteHeadless.loggingEnabled }}
       - hostPath:
           path: /var/log/headless
