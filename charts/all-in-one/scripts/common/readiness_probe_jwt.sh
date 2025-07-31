@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 if [ -z "$JWT_TOKEN" ]; then
   echo "Token not provided"

@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
-apt-get -y update
-apt-get -y install jq
-apt-get -y install default-mysql-client
+apt-get update && apt-get install -y jq default-mysql-client
 
 HOME="/app"
 DP_HOST=$1

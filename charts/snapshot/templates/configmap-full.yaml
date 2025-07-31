@@ -122,14 +122,9 @@ data:
     rotate_log
   upload_snapshot.sh: |-
     #!/usr/bin/env bash
-    set -ex
+    set -e
 
-    apt-get -y update
-    apt-get -y install curl
-    apt-get -y install zip
-    apt-get -y install unzip
-    apt-get -y install sudo
-    apt-get -y install p7zip
+    apt-get update && apt-get install -y curl zip unzip
 
     uname=$(uname -r)
     arch=${uname##*.}
@@ -139,7 +134,7 @@ data:
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
     fi
     unzip awscliv2.zip
-    sudo ./aws/install
+    ./aws/install
 
     HOME="/app"
     STORE_PATH="/data/headless"
