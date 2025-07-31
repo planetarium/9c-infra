@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 apt-get -y update
-apt-get -y install curl unzip sudo
+apt-get -y install curl unzip
 
 uname=$(uname -r)
 arch=${uname##*.}
@@ -12,7 +12,7 @@ else
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.22.35.zip" -o "awscliv2.zip"
 fi
 unzip awscliv2.zip
-sudo ./aws/install
+./aws/install
 
 AWS="/usr/local/bin/aws"
 AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"

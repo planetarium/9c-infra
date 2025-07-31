@@ -16,7 +16,7 @@ data:
       echo "Try again"
     done
     
-    until apt-get -y install curl jq wget aria2 sudo zip
+    until apt-get -y install curl jq wget aria2 zip
     do
       echo "Try again"
     done

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 trap 'echo "[ERROR] Script failed at line $LINENO with exit code $?" >&2' ERR
-set -x
 
 apt-get -y update
 apt-get -y install curl rclone
