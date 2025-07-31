@@ -1,33 +1,4 @@
-{{- if $.Values.snapshot.partition.enabled }}
-{{- if (eq $.Values.provider "RKE2") }}
-{{- if (eq $.Release.Name "odin") }}
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: snapshot-volume-partition
-  labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
-spec:
-  capacity:
-    storage: {{ default "100Gi" $.Values.snapshot.storage }}
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ $.Release.Name }}-longhorn
-  hostPath:
-    path: /data
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - 9c-main-baremetal-1
----
+{{- if and (eq $.Values.provider "RKE2") $.Values.snapshot.partition.volume.create }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -43,53 +14,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ default "100Gi" $.Values.snapshot.storage }}
+      storage: {{ $.Values.snapshot.partition.volume.size }}
   volumeName: snapshot-volume-partition
   storageClassName: {{ $.Release.Name }}-longhorn
   volumeMode: Filesystem
----
 {{- end }}
-{{- else }}
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: snapshot-volume-partition
-  namespace: {{ $.Release.Name }}
-  labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
-    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ default "100Gi" $.Values.snapshot.storage }}
-  storageClassName: {{ $.Release.Name }}-gp3
-  volumeMode: Filesystem
-{{- end }}
-{{- end }}
-
----
-{{ if $.Values.snapshot.fullSnapshot.enabled }}
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: snapshot-volume-full
-  namespace: {{ $.Release.Name }}
-  labels:
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
-    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ default "100Gi" $.Values.snapshot.storage }}
-  storageClassName: {{ $.Release.Name }}-gp3
-  volumeMode: Filesystem
-{{ end }}

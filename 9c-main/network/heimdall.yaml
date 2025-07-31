@@ -88,8 +88,6 @@ snapshot:
     node.kubernetes.io/type: baremetal
     node.kubernetes.io/node-index: '1'
 
-  storage: 300Gi
-
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
 
