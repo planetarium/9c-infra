@@ -1,4 +1,4 @@
-name: Update extra values
+name: Update misc values
 on:
   workflow_dispatch:
     inputs:
