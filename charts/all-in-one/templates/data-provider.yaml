@@ -1,177 +1,11 @@
 {{ if $.Values.dataProvider.enabled }}
-{{ if $.Values.dataProvider.rwMode }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: data-provider-read
+    app: data-provider
     app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: data-provider-read
-  namespace: {{ $.Release.Name }}
-spec:
-  podManagementPolicy: OrderedReady
-  replicas: 0
-  revisionHistoryLimit: 3
-  selector:
-    matchLabels:
-      app: data-provider-read
-  serviceName: data-provider-read
-  template:
-    metadata:
-      labels:
-        app: data-provider-read
-    spec:
-      {{- if $.Values.global.resetSnapshot }}
-      initContainers:
-      - args:
-        - https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}
-        - {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
-        - $(RESET_SNAPSHOT_OPTION)
-        - data-provider
-        - $(SLACK_WEBHOOK_URL)
-        command:
-        - /bin/download_snapshot.sh
-        image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
-        volumeMounts:
-        - name: download-snapshot-script
-          mountPath: /bin/download_snapshot.sh
-          readOnly: true
-          subPath: download_snapshot.sh
-        - mountPath: /data
-          name: data-provider-data
-        name: reset-snapshot
-        env:
-        - name: RESET_SNAPSHOT_OPTION
-          value: "{{ $.Values.global.resetSnapshot }}"
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
-      {{- end }}
-      containers:
-      - args:
-        - /app/NineChronicles.DataProvider.Executable
-        command:
-        - /bin/sh
-        - -c
-        env:
-        - name: NC_StorePath
-          value: {{ $.Values.dataProvider.storePath | default "/data/data-provider" }}
-        - name: NC_AppProtocolVersionToken
-          value: {{ $.Values.global.appProtocolVersion }}
-        - name: NC_Confirmations
-          value: '0'
-        {{ range $idx, $peer := $.Values.global.peerStrings }}
-        - name: NC_PeerStrings__{{ $idx }}
-          value: {{ $peer }}
-        {{ end }}
-        - name: NC_Preload
-          value: 'true'
-        - name: NC_NoMiner
-          value: 'true'
-        - name: NC_Render
-          value: 'false'
-        - name: NC_Planet
-          value: "{{ $.Values.global.planet }}"
-        - name: NC_TrustedAppProtocolVersionSigners__0
-          value: {{ $.Values.global.trustedAppProtocolVersionSigner }}
-        - name: NC_GenesisBlockPath
-          value: {{ $.Values.global.genesisBlockPath }}
-        - name: NC_TxLifeTime
-          value: '10'
-        - name: NC_MySqlConnectionString
-          valueFrom:
-            secretKeyRef:
-              key: read-value
-              name: data-provider
-        {{- with $.Values.dataProvider.env }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
-        imagePullPolicy: {{ $.Values.dataProvider.image.pullPolicy }}
-        livenessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - "set -e\nlast_block=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
-              \ \\\n    --data '{\"query\":\"query{chainQuery{blockQuery{blocks(desc:true,limit:1){timestamp}}}}\"\
-              }' \\\n    http://localhost:80/graphql_headless \\\n  | jq -r '.data.chainQuery.blockQuery.blocks[0].timestamp'\n\
-              )\"\nlast_timestamp=\"$(date +%s -u --date=\"$last_block\")\"\nnow=\"\
-              $(date +%s -u)\"\n[[ $(( now - last_timestamp )) -lt 360 ]]\n"
-          initialDelaySeconds: 1800
-          periodSeconds: 60
-          timeoutSeconds: 60
-        readinessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - "set -e\npreloaded=\"$(\n  curl \\\n    -H 'Content-Type: application/json'\
-              \ \\\n    --data '{\"query\":\"query{nodeStatus{preloadEnded}}\"}' \\\
-              \n    http://localhost:80/graphql_headless \\\n  | jq .data.nodeStatus.preloadEnded\n\
-              )\"\n[[ \"$preloaded\" = \"true\" ]]\n"
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          timeoutSeconds: 10
-        name: data-provider-read
-        ports:
-        - containerPort: 80
-          name: graphql
-          protocol: TCP
-        - containerPort: 31234
-          name: headless
-          protocol: TCP
-        {{- with $.Values.dataProvider.resources }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /data
-          name: data-provider-read-data
-      {{- with $.Values.dataProvider.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      terminationGracePeriodSeconds: 30
-      volumes:
-      - name: download-snapshot-script
-        configMap:
-          defaultMode: 0700
-          name: {{ $.Release.Name }}-download-snapshot-script
-      {{- if $.Values.dataProvider.storage.readVolumeName }}
-      - name: data-provider-read-data
-        persistentVolumeClaim:
-          claimName: {{ $.Values.dataProvider.storage.readVolumeName }}
-      {{- else }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data-provider-read-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ $.Values.dataProvider.storage.data }}
-      storageClassName: {{ $.Release.Name }}-gp3
-      volumeMode: Filesystem
-      {{- end }}
-  updateStrategy:
-    type: RollingUpdate
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  labels:
-    app: data-provider-write
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-  name: data-provider-write
+  name: data-provider
   namespace: {{ $.Release.Name }}
 spec:
   podManagementPolicy: OrderedReady
@@ -179,12 +13,12 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: data-provider-write
-  serviceName: data-provider-write
+      app: data-provider
+  serviceName: data-provider
   template:
     metadata:
       labels:
-        app: data-provider-write
+        app: data-provider
     spec:
       {{- if $.Values.global.resetSnapshot }}
       initContainers:
@@ -307,7 +141,7 @@ spec:
           initialDelaySeconds: 1800
           periodSeconds: 60
           timeoutSeconds: 60
-        name: data-provider-write
+        name: data-provider
         ports:
         - containerPort: 80
           name: graphql
@@ -327,7 +161,7 @@ spec:
           readOnly: true
           subPath: check_chain_tip.sh
         - mountPath: /data
-          name: data-provider-write-data
+          name: data-provider-data
       {{- with $.Values.dataProvider.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -345,14 +179,14 @@ spec:
         configMap:
           defaultMode: 0700
           name: {{ $.Release.Name }}-download-snapshot-script
-      {{- if $.Values.dataProvider.storage.writeVolumeName }}
-      - name: data-provider-write-data
+      {{- if $.Values.dataProvider.storage.volumeName }}
+      - name: data-provider-data
         persistentVolumeClaim:
-          claimName: {{ $.Values.dataProvider.storage.writeVolumeName }}
+          claimName: {{ $.Values.dataProvider.storage.volumeName }}
       {{- else }}
   volumeClaimTemplates:
   - metadata:
-      name: data-provider-write-data
+      name: data-provider-data
     spec:
       accessModes:
       - ReadWriteOnce
@@ -585,5 +419,4 @@ spec:
       {{- end }}
   updateStrategy:
     type: RollingUpdate
-{{ end }}
 {{ end }}

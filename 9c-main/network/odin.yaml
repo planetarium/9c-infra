@@ -29,6 +29,8 @@ global:
     data: 650Gi
   - name: remote-headless-data-4-remote-headless-4-0
     data: 650Gi
+  - name: remote-headless-data-5-remote-headless-5-0
+    data: 650Gi
 
 RKE2:
   loadBalancerIPs:
@@ -349,6 +351,22 @@ testHeadless1:
 
   storage:
     volumeName: "volume-rotator-2"
+
+dataProvider:
+  enabled: true
+  render: true
+
+  image:
+    tag: 310
+  nodeSelector:
+    node.kubernetes.io/type: data-provider
+
+  storage:
+    volumeName: remote-headless-data-5-remote-headless-5-0
+
+  resources:
+    limit:
+      memory: 28Gi
 
 jwtHeadless:
   enabled: false
