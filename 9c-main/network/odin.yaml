@@ -85,7 +85,7 @@ snapshot:
     enabled: true
     suspend: false
     dp:
-      enabled: true
+      enabled: false
 
   resources:
     requests:
@@ -245,7 +245,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   resources:
     requests:
@@ -288,7 +288,7 @@ marketService:
     value: "true"
 
 bridge:
-  enabled: true
+  enabled: false
   bridgeObserverImage:
     tag: "git-da9637c9ee56051a252f11ff639ed2f0d674afc6"
   bridgeStatusBotImage:

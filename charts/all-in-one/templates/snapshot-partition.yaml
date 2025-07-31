@@ -9,11 +9,7 @@ spec:
   suspend: {{ $.Values.snapshot.partition.suspend }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
-  {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "odin") }}
-  schedule: 0 0 * * 0
-  {{- else }}
-  schedule: 0 0 * * *
-  {{- end }}
+  schedule: {{ $.Values.snapshot.partition.schedule }}
   jobTemplate:
     spec:
       template:

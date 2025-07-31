@@ -74,6 +74,7 @@ snapshot:
 
   partition:
     enabled: true
+    schedule: "0 0 */2 * *"
     suspend: false
     dp:
       enabled: true
@@ -230,7 +231,7 @@ remoteHeadless:
     enabled: true
 
 dataProviderDataMigrator:
-  enabled: true
+  enabled: false
 
   nodeSelector:
 
