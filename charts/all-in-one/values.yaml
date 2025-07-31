@@ -63,6 +63,8 @@ snapshot:
   partition:
     enabled: false
     suspend: false
+    volume:
+      create: false
     dp:
       enabled: false
   slackChannel: "bot-test"
