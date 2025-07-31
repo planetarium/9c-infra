@@ -365,7 +365,7 @@ dataProvider:
     volumeName: remote-headless-data-5-remote-headless-5-0
 
   resources:
-    limit:
+    limits:
       memory: 28Gi
 
 jwtHeadless:
