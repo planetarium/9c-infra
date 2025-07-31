@@ -6,8 +6,9 @@ metadata:
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
+    recurring-job.longhorn.io/source: enabled
+    recurring-job.longhorn.io/filesystem-trim: enabled
   annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     volume.kubernetes.io/storage-provisioner: driver.longhorn.io
 spec:
   accessModes:
