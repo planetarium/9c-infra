@@ -361,6 +361,7 @@ dataProvider:
   nodeSelector:
     node.kubernetes.io/type: data-provider
 
+  storePath: "/data/headless"
   storage:
     volumeName: remote-headless-data-5-remote-headless-5-0
 
