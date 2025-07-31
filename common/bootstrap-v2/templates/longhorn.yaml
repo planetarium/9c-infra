@@ -20,9 +20,22 @@ spec:
   source:
     repoURL: https://charts.longhorn.io
     chart: longhorn
-    targetRevision: 1.8.1
+    targetRevision: 1.9.1
     helm:
       values: |-
         preUpgradeChecker:
           jobEnabled: false
+        extraObjects:
+          - apiVersion: longhorn.io/v1beta2
+            kind: RecurringJob
+            metadata:
+              name: filesystem-trim
+              namespace: longhorn-system
+              labels:
+                app.kubernetes.io/instance: longhorn
+            spec:
+              task: filesystem-trim
+              cron: 0 */12 * * *
+              retain: 0
+              concurrency: 1
 {{- end }}
