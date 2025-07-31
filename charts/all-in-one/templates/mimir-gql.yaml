@@ -28,6 +28,20 @@ spec:
                 secretKeyRef:
                   name: mimir
                   key: MONGO_DB_CONNECTION_STRING
+            - name: RateLimit__PermitLimit
+              value: "500"
+            - name: RateLimit__Window
+              value: "60"
+            - name: RateLimit__ReplenishmentPeriod
+              value: "60"
+            - name: RateLimit__QueueLimit
+              value: "5"
+            - name: RateLimit__SegmentsPerWindow
+              value: "12"
+            - name: RateLimit__TokenLimit
+              value: "500"
+            - name: RateLimit__TokensPerPeriod
+              value: "500"
             - name: WncgApi__ApiKeys__0
               valueFrom:
                 secretKeyRef:
