@@ -8,7 +8,7 @@ metadata:
 data:
   check_chain_tip.sh: |-
     #!/usr/bin/env bash
-    set -ex
+    set -e
 
     apt-get -y update
     apt-get -y install jq
