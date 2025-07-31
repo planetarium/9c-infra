@@ -353,11 +353,10 @@ spec:
             {{- else }}
             - {{ $.Values.snapshot.path }}
             {{- end }}
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - /output/snapshots
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - /output/headless
             {{- else }}
-            - /data/snapshots
             - /data/headless
             {{- end }}
             env:
