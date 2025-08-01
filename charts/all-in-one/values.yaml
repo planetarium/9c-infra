@@ -246,11 +246,15 @@ dataProviderDataMigrator:
 
 dataProvider:
   enabled: false
+  cronjob:
+    enabled: false
+    chainMigration: {}
   render: true
   migrateDatabase: false
   db:
     local: false
   image: {}
+  storage: {}
   resources: {}
   nodeSelector: {}
 
