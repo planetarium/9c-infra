@@ -246,6 +246,8 @@ dataProviderDataMigrator:
 
 dataProvider:
   enabled: false
+  cronjob:
+    enabled: false
   render: true
   migrateDatabase: false
   db:

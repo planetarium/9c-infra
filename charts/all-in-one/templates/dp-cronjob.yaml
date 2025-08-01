@@ -1,0 +1,254 @@
+{{- if and $.values.dataProvider.enabled $.Values.dataProvider.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dp-cronjob
+  namespace: {{ $.Release.Name }}
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          initContainers:
+          - name: set-date
+            image: debian:latest
+            command:
+              - sh
+              - -c
+              - >
+                apt-get update && apt-get install -y coreutils &&
+                echo -n $(date -d '2 days ago' +%Y-%m-%d) > /etc/config/date &&
+                echo "Date set to: $(cat /etc/config/date)"
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+          - name: chain-migration
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            command:
+            - sh
+            - -c
+            - |
+              dotnet NineChronicles.DataProvider.Executable.dll \
+                mysql-migration \
+                migration \
+                -o /data/headless \
+                --mysql-server "$DP_HOST" \
+                --mysql-port "$DP_PORT" \
+                --mysql-username "$DP_USER" \
+                --mysql-password "$DP_TOKEN" \
+                --mysql-database "$DP_DATABASE" \
+                --date "$(cat /etc/config/date)"
+            env:
+              - name: NC_MySqlConnectionString
+                valueFrom:
+                  secretKeyRef:
+                    key: write-value
+                    name: data-provider
+              - name: DP_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: write-host
+              - name: DP_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: user
+              - name: DP_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: token
+              - name: DP_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: port
+              - name: DP_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: data-provider
+                    key: database
+            {{- with $.Values.dataProvider.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+              - name: data-provider-data
+                mountPath: /data
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            imagePullPolicy: Always
+          - command:
+            - sh
+            - -c
+            - >
+              dotnet NineChronicles.DataProvider.Executable.dll daily-metric-migration migration
+              --mysql-server $(DP_HOST)
+              --mysql-port $(DP_PORT)
+              --mysql-username $(DP_USER)
+              --mysql-password $(DP_TOKEN)
+              --mysql-database $(DP_DATABASE)
+              --date "$(cat /etc/config/date)"
+            env:
+            - name: NC_MySqlConnectionString
+              valueFrom:
+                secretKeyRef:
+                  key: write-value
+                  name: data-provider
+            - name: DP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: write-host
+                  name: data-provider
+            - name: DP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: data-provider
+            - name: DP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: data-provider
+            - name: DP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: data-provider
+            - name: DP_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            imagePullPolicy: Always
+            name: dailymetric
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            {{- with $.Values.dataProvider.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - name: date-config
+                mountPath: /etc/config
+          containers:
+          - args:
+            - NineChronicles.DataProvider.Executable.dll
+            - user-data-migration
+            -  migration
+            - -o
+            - /data/headless
+            - --rocksdb-storetype
+            - new
+            - --mysql-server
+            - $(DP_HOST)
+            - --mysql-port
+            - $(DP_PORT)
+            - --mysql-username
+            - $(DP_USER)
+            - --mysql-password
+            - $(DP_TOKEN)
+            - --mysql-database
+            - $(DP_DATABASE)
+            - --slack-token
+            - $(DP_SLACK_TOKEN)
+            - --slack-channel
+            - $(DP_SLACK_CHANNEL)
+            - --network
+            - $(DP_NETWORK)
+            - --bulk-files-folder
+            - /data
+            command:
+            - dotnet
+            env:
+            - name: NC_MySqlConnectionString
+              valueFrom:
+                secretKeyRef:
+                  key: write-value
+                  name: data-provider
+            - name: DP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: write-host
+                  name: data-provider
+            - name: DP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: user
+                  name: data-provider
+            - name: DP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: data-provider
+            - name: DP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: data-provider
+            - name: DP_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: data-provider
+            - name: DP_SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: slack-token
+                  name: data-provider
+            - name: DP_SLACK_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  key: slack-channel
+                  name: data-provider
+            - name: DP_NETWORK
+              valueFrom:
+                secretKeyRef:
+                  key: network
+                  name: data-provider
+            image: {{ $.Values.dataProvider.image.repository }}:{{ $.Values.dataProvider.image.tag }}
+            imagePullPolicy: Always
+            name: migration
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            {{- with $.Values.dataProvider.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: snapshot-volume-partition
+              mountPath: /data
+          {{- with $.Values.dataProvider.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.dataProvider.tolerations }}
+          tolerations:
+            {{- toYaml $.Values.dataProvider.tolerations | nindent 12 }}
+          {{- end }}
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: data-provider-script-volume
+            configMap:
+              defaultMode: 488
+              name: {{ $.Release.Name }}-data-provider-script
+          - name: download-snapshot-script
+            configMap:
+              defaultMode: 0700
+              name: {{ $.Release.Name }}-download-snapshot-script
+          - name: data-provider-data
+            persistentVolumeClaim:
+              claimName: {{ $.Values.dataProvider.storage.volumeName }}
+  schedule: 0 20 * * *
+  successfulJobsHistoryLimit: 1
+  suspend: false
+{{- end }}

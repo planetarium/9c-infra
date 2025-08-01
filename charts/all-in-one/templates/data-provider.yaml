@@ -1,4 +1,4 @@
-{{- if $.Values.dataProvider.enabled }}
+{{- if and $.Values.dataProvider.enabled (not $.Values.dataProvider.cronjob.enabled) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

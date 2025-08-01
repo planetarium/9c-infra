@@ -356,6 +356,8 @@ testHeadless1:
 dataProvider:
   enabled: true
   render: true
+  cronjob:
+    enabled: true
 
   image:
     tag: 310
