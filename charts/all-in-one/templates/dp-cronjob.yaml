@@ -5,11 +5,10 @@ metadata:
   name: dp-cronjob
   namespace: {{ $.Release.Name }}
 spec:
-  concurrencyPolicy: Allow
+  concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      backoffLimit: 2
       template:
         spec:
           initContainers:
@@ -295,5 +294,5 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   preload_headless.sh: |-
-    {{ tpl (.Files.Get "scripts/snapshots/partition/preload_headless.sh") . | nindent 4 }}
+    {{- tpl (.Files.Get "scripts/snapshots/partition/preload_headless.sh") . | nindent 4 }}
 {{- end }}
