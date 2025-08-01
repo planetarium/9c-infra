@@ -1,4 +1,4 @@
-{{- if and $.values.dataProvider.enabled $.Values.dataProvider.cronjob.enabled }}
+{{- if and $.Values.dataProvider.enabled $.Values.dataProvider.cronjob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -13,13 +13,46 @@ spec:
       template:
         spec:
           initContainers:
+          - name: preload-headless
+            {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
+            image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+            {{- else }}
+            image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+            {{- end }}
+            command:
+            - /bin/preload_headless.sh
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            - /data/headless
+            - /data/preload_logs
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.global.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: PLUGIN_PATH
+              value: "/data"
+            {{- with $.Values.dataProvider.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: preload-script-volume
+              mountPath: /bin/preload_headless.sh
+              readOnly: true
+              subPath: preload_headless.sh
+            - name: data-provider-data
+              mountPath: /data
           - name: set-date
             image: debian:latest
             command:
               - sh
               - -c
               - >
-                apt-get update && apt-get install -y coreutils &&
                 echo -n $(date -d '2 days ago' +%Y-%m-%d) > /etc/config/date &&
                 echo "Date set to: $(cat /etc/config/date)"
             volumeMounts:
@@ -40,6 +73,9 @@ spec:
                 --mysql-username "$DP_USER" \
                 --mysql-password "$DP_TOKEN" \
                 --mysql-database "$DP_DATABASE" \
+                {{- with $.Values.dataProvider.cronjob.chainMigration.offset }}
+                --offset {{ . }} \
+                {{- end }}
                 --date "$(cat /etc/config/date)"
             env:
               - name: NC_MySqlConnectionString
@@ -223,7 +259,7 @@ spec:
               {{- toYaml . | nindent 14 }}
             {{- end }}
             volumeMounts:
-            - name: snapshot-volume-partition
+            - name: data-provider-data
               mountPath: /data
           {{- with $.Values.dataProvider.nodeSelector }}
           nodeSelector:
@@ -237,18 +273,27 @@ spec:
           schedulerName: default-scheduler
           terminationGracePeriodSeconds: 30
           volumes:
-          - name: data-provider-script-volume
-            configMap:
-              defaultMode: 488
-              name: {{ $.Release.Name }}-data-provider-script
-          - name: download-snapshot-script
+          - name: date-config
+            emptyDir: {}
+          - name: preload-script-volume
             configMap:
               defaultMode: 0700
-              name: {{ $.Release.Name }}-download-snapshot-script
+              name: {{ $.Release.Name }}-dataprovider-preload-script
           - name: data-provider-data
             persistentVolumeClaim:
               claimName: {{ $.Values.dataProvider.storage.volumeName }}
   schedule: 0 20 * * *
   successfulJobsHistoryLimit: 1
   suspend: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dataprovider-preload-script
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  preload_headless.sh: |-
+    {{ tpl (.Files.Get "scripts/snapshots/partition/preload_headless.sh") . | nindent 4 }}
 {{- end }}
