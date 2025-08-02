@@ -113,7 +113,6 @@ spec:
               - sh
               - -c
               - >
-                apt-get update && apt-get install -y coreutils &&
                 echo -n $(date -d '2 days ago' +%Y-%m-%d) > /etc/config/date &&
                 echo "Date set to: $(cat /etc/config/date)"
             volumeMounts:
