@@ -101,11 +101,12 @@ bridgeService:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-c6757b9c3da24ae982a05f7f3e682de4d5d2dfb8"
+  image: "planetariumhq/ninechronicles-snapshot:git-1370232647270c1b69a6279657652c4e151636f2"
   partition:
-    enabled: false
+    enabled: true
     suspend: true
   path: internal/heimdall
+  uploadPath: internal/heimdall/migration
   nodeSelector:
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
