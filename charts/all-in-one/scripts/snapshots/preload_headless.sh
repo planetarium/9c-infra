@@ -6,11 +6,11 @@ apt-get -y install curl zip
 HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
-VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
-
+STORE_PATH=$3
+FORCE_CUTOFF_BLOCK=$4
+VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
-STORE_PATH="/data/headless"
 TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
 {{- range $i, $s := $.Values.global.peerStrings }}
@@ -21,14 +21,14 @@ ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c
 
 HEADLESS="$HOME/NineChronicles.Headless.Executable"
 HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
-HEADLESS_LOG_DIR="/data/snapshot_logs"
+HEADLESS_LOG_DIR=${4:-"/data/snapshot_logs"}
 HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
 mkdir -p "$HEADLESS_LOG_DIR"
 
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-partition-reset-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
 }
 
 function preload_complete() {
@@ -43,6 +43,10 @@ function waitpid() {
 }
 
 function run_headless() {
+  if [ ! -d "$STORE_PATH" ]; then
+    mkdir -p "$STORE_PATH"
+  fi
+
   chmod 777 -R "$STORE_PATH"
 
   "$HEADLESS" \
@@ -69,7 +73,7 @@ function run_headless() {
   echo "$PID" | tee "$PID_FILE"
 
   if ! kill -0 "$PID"; then
-    senderr "$PID doesn't exist. Failed to run headless"
+    senderr "$PID doesn't exist. Failed to run headless" $1
     exit 1
   fi
 }
@@ -79,18 +83,26 @@ function wait_preloading() {
   PID="$(cat "$PID_FILE")"
 
   if ! kill -0 "$PID"; then
-    senderr "$PID doesn't exist. Failed to run headless"
+    senderr "$PID doesn't exist. Failed to run headless" $1
     exit 1
   fi
 
-  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading"; then
+  CUTOFF_GREP=""
+  if [ -n "$FORCE_CUTOFF_BLOCK" ]; then
+    CUTOFF_GREP="-e \"Block #$FORCE_CUTOFF_BLOCK \""
+  fi
+
+  tail -f "$HEADLESS_LOG" | grep "Block #" &
+
+  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $CUTOFF_GREP; then
     sleep 5
   else
-    senderr "grep failed. Failed to preload."
+    senderr "grep failed. Failed to preload." $1
     kill "$PID"
     exit 1
   fi
 }
+
 
 function kill_headless() {
   touch "$PID_FILE"
@@ -98,7 +110,7 @@ function kill_headless() {
   if ! kill -0 "$PID"; then
     echo "$PID doesn't exist. Failed to kill headless"
   else
-    kill -KILL "$PID"
+    kill "$PID"; sleep 60; kill -9 "$PID" || true
     waitpid "$PID" || true
     chmod 777 -R "$STORE_PATH"
   fi
@@ -111,6 +123,7 @@ function rotate_log() {
     rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
   fi
 }
+
 trap '' HUP
 
 run_headless

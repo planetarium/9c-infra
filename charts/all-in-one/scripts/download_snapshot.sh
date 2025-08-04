@@ -25,7 +25,9 @@ function download_with_retry() {
   while true; do
     echo "Downloading $url"
 
-    aria2c "$url" -d "$2" -o "$3" --continue=true --show-console-readout=false --summary-interval=10
+    aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true --continue=true \
+      --show-console-readout=false --summary-interval=30 --max-tries=10
+
     if [ ! -f "$save_dir/$output_file.aria2" ] && [ -f "$save_dir/$output_file" ]; then
       echo "Download successful: $save_dir/$output_file"
       return 0
@@ -71,12 +73,13 @@ function download_partition() {
       local url=$base_url/$filename.$extension.$part_extension
       curl -I --fail "$url" > /dev/null 2>&1
       if [ $? -eq 0 ]; then
-        download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension"
+        download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension" &
       else
         break
       fi
       idx=$((idx + 1))
     done
+    wait
     cat "$save_dir/$filename.$extension.part"* > "$save_dir/$filename.$extension"
     rm "$save_dir/$filename.$extension.part"*
   else
