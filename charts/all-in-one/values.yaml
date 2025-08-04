@@ -69,6 +69,8 @@ snapshot:
       create: false
     dp:
       enabled: false
+  preload:
+    forceCutoffBlock: ""
   slackChannel: "bot-test"
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
 
