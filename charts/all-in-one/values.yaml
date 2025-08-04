@@ -60,6 +60,7 @@ snapshot:
   partitionReset:
     enabled: false
     suspend: false
+    bypassCopystates: false
   partition:
     enabled: false
     schedule: "0 0 * * 0"
