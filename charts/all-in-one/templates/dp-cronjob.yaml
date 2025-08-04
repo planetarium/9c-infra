@@ -294,5 +294,5 @@ metadata:
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
   preload_headless.sh: |-
-    {{- tpl (.Files.Get "scripts/snapshots/partition/preload_headless.sh") . | nindent 4 }}
+    {{- tpl (.Files.Get "scripts/snapshots/preload_headless.sh") . | nindent 4 }}
 {{- end }}
