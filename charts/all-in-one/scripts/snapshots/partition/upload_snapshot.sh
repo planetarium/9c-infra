@@ -13,8 +13,9 @@ SLACK_WEBHOOK=$2
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 STORE_PATH="$6"
-PRESERVE_PARTITIONS="${7:-false}"
-PART_LENGTH="${8:-3}"
+BYPASS_COPYSTATES="${7:-false}"
+PRESERVE_PARTITIONS="${8:-false}"
+PART_LENGTH="${9:-3}"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -78,7 +79,7 @@ function make_and_upload_snapshot() {
     echo "URL does not exist: $URL"
   fi
 
-  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition"; then
+  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES"; then
     senderr "Snapshot creation failed."
     exit 1
   fi

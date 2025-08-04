@@ -7,9 +7,10 @@ HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
 SLACK_WEBHOOK=$2
+STORE_PATH=$3
+FORCE_CUTOFF_BLOCK=$4
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
-STORE_PATH=$3
 TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
 {{- range $i, $s := $.Values.global.peerStrings }}
@@ -86,9 +87,14 @@ function wait_preloading() {
     exit 1
   fi
 
+  CUTOFF_GREP=""
+  if [ -n "$FORCE_CUTOFF_BLOCK" ]; then
+    CUTOFF_GREP="-e \"Block #$FORCE_CUTOFF_BLOCK \""
+  fi
+
   tail -f "$HEADLESS_LOG" | grep "Block #" &
 
-  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading"; then
+  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $CUTOFF_GREP; then
     sleep 5
   else
     senderr "grep failed. Failed to preload." $1
