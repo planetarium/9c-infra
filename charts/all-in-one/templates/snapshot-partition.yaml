@@ -71,10 +71,11 @@ spec:
             - $(SLACK_WEBHOOK_URL)
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - /output/headless
+            - /output/snapshot_logs
             {{- else }}
             - /data/headless
+            - /data/snapshot_logs
             {{- end }}
-            - ''
             - '{{ $.Values.snapshot.preload.forceCutoffBlock }}'
             env:
             - name: APP_PROTOCOL_VERSION_KEY
