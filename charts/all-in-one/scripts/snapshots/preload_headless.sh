@@ -89,7 +89,7 @@ function wait_preloading() {
 
   CUTOFF_GREP=""
   if [ -n "$FORCE_CUTOFF_BLOCK" ]; then
-    CUTOFF_GREP="-e \"Block #$FORCE_CUTOFF_BLOCK \""
+    CUTOFF_GREP='-e "Block #'"$FORCE_CUTOFF_BLOCK"'"'
   fi
 
   tail -f "$HEADLESS_LOG" | grep "Block #" &
