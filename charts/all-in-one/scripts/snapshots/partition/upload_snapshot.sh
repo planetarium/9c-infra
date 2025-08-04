@@ -93,8 +93,8 @@ function make_and_upload_snapshot() {
 
   NOW=$(date '+%Y%m%d%H%M%S')
 
-  DEST_PATH="r2:9c-snapshots/{{ $.Values.snapshot.path }}"
-  ARCHIVE_PATH="r2:9c-snapshots/{{ $.Values.snapshot.path }}/archive"
+  DEST_PATH="r2:9c-snapshots/$SNAPSHOT_PATH"
+  ARCHIVE_PATH="$DEST_PATH/archive"
 
   echo "[INFO] Archiving snapshot..."
   ARCHIVED_SNAPSHOT_PATH="$ARCHIVE_PATH/snapshots/${NOW}_$SNAPSHOT_FILENAME"
