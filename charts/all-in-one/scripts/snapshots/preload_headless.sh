@@ -94,7 +94,7 @@ function wait_preloading() {
 
   tail -f "$HEADLESS_LOG" | grep "Block #" &
 
-  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $CUTOFF_GREP; then
+  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP"); then
     sleep 5
   else
     senderr "grep failed. Failed to preload." $1
