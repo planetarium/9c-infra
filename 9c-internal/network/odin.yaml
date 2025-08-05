@@ -178,7 +178,7 @@ arenaService:
 
 mimir:
   enabled: true
-  planetType: "odin"
+  planetType: "Odin"
 
   gql:
     enabled: true

@@ -122,7 +122,7 @@ spec:
                 secretKeyRef:
                   name: mimir
                   key: WNCGAPI_APIKEYS_4
-            - name: Database__Database
+            - name: Database__PlanetType
               value: "{{ $.Values.mimir.planetType }}"
           {{- with $.Values.mimir.gql.env }}
             {{- toYaml . | nindent 12 }}
