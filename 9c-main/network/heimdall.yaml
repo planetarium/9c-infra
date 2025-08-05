@@ -488,7 +488,7 @@ bridgeService:
 
 mimir:
   enabled: true
-  planetType: "heimdall"
+  planetType: "Heimdall"
 
   gql:
     enabled: true
