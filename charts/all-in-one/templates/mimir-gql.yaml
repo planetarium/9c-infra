@@ -23,6 +23,61 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: Headless__HeadlessEndpoints__0
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HEADLESS_ENDPOINTS_0
+            - name: Headless__JwtSecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HEADLESS_JWT_SECRET_KEY
+            - name: Headless__JwtIssuer
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HEADLESS_JWT_ISSUER
+            - name: Hangfire__RedisHost
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: REDIS_HOST
+            - name: Hangfire__RedisPort
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: REDIS_PORT
+            - name: Hangfire__RedisUsername
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: REDIS_USERNAME
+            - name: Hangfire__RedisPassword
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: REDIS_PASSWORD
+            - name: Hangfire__Username
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HANGFIRE_USERNAME
+            - name: Hangfire__RedisDatabase
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HANGFIRE_REDIS_DATABASE
+            - name: Hangfire__RedisPrefix
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HANGFIRE_REDIS_PREFIX
+            - name: Hangfire__Password
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HANGFIRE_PASSWORD
             - name: Database__ConnectionString
               valueFrom:
                 secretKeyRef:
