@@ -65,6 +65,7 @@ snapshot:
     schedule: "0 0 * * 0"
     suspend: false
     bypassCopystates: false
+    zstd: false
     volume:
       create: false
     dp:

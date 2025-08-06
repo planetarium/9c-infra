@@ -360,6 +360,7 @@ spec:
             - /data/headless
             {{- end }}
             - "{{ $.Values.snapshot.partition.bypassCopystates }}"
+            - "{{ $.Values.snapshot.partition.zstd }}"
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}

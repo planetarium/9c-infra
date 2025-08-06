@@ -13,8 +13,9 @@ CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 STORE_PATH="$6"
 BYPASS_COPYSTATES="${7:-false}"
-PRESERVE_PARTITIONS="${8:-false}"
-PART_LENGTH="${9:-3}"
+ZSTD="${8:-false}"
+PRESERVE_PARTITIONS="${9:-false}"
+PART_LENGTH="${10:-3}"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -78,26 +79,30 @@ function make_and_upload_snapshot() {
     echo "URL does not exist: $URL"
   fi
 
-  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES"; then
+  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" --zstd="$ZSTD"; then
     senderr "Snapshot creation failed."
     exit 1
   fi
 
-  LATEST_SNAPSHOT=$(ls -t "$PARTITION_DIR"/*.zip | head -1)
+  LATEST_SNAPSHOT=$(ls -t "$PARTITION_DIR"/*.z* | head -1)
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
-  LATEST_STATE=$(ls -t "$STATE_DIR"/*.zip | head -1)
+  LATEST_STATE=$(ls -t "$STATE_DIR"/*.z* | head -1)
 
-  SNAPSHOT_FILENAME=$(basename "$LATEST_SNAPSHOT")
   METADATA_FILENAME=$(basename "$LATEST_METADATA" || echo "")
+  SNAPSHOT_FILENAME=$(basename "$LATEST_SNAPSHOT")
   STATE_FILENAME=$(basename "$LATEST_STATE")
+  SNAPSHOT_EXTENSION="${LATEST_SNAPSHOT#*.}"
+  STATE_EXTENSION="${LATEST_STATE#*.}"
+  SNAPSHOT_LATEST_FILENAME="latest.$SNAPSHOT_EXTENSION"
+  STATE_LATEST_FILENAME="latest.$STATE_EXTENSION"
 
   NOW=$(date '+%Y%m%d%H%M%S')
 
   DEST_PATH="r2:9c-snapshots/$SNAPSHOT_PATH"
   ARCHIVE_PATH="$DEST_PATH/archive"
 
-  echo "[INFO] Archiving snapshot..."
   ARCHIVED_SNAPSHOT_PATH="$ARCHIVE_PATH/snapshots/${NOW}_$SNAPSHOT_FILENAME"
+  echo "[INFO] Archiving snapshot: $ARCHIVED_SNAPSHOT_PATH"
   rclone copyto "$LATEST_SNAPSHOT" "$ARCHIVED_SNAPSHOT_PATH" \
     --s3-upload-cutoff 512M \
     --s3-chunk-size 512M \
@@ -107,14 +112,14 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --low-level-retries 10
 
-  echo "[INFO] Copying snapshot to latest path..."
+  echo "[INFO] Copying snapshot to latest path: $DEST_PATH/$SNAPSHOT_FILENAME"
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/latest.zip" \
+  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
@@ -126,7 +131,7 @@ function make_and_upload_snapshot() {
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/latest.zip" \
+  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
@@ -136,11 +141,11 @@ function make_and_upload_snapshot() {
   wait
 
   if [ -n "$LATEST_METADATA" ]; then
-    echo "[INFO] Archiving metadata..."
     ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
+    echo "[INFO] Archiving metadata: $ARCHIVED_METADATA_PATH"
     rclone copyto "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" --no-traverse --retries 5 --low-level-retries 10
 
-    echo "[INFO] Copying metadata to latest path..."
+    echo "[INFO] Copying metadata to latest path: $DEST_PATH/$METADATA_FILENAME"
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
@@ -150,8 +155,8 @@ function make_and_upload_snapshot() {
     wait
   fi
 
-  echo "[INFO] Archiving state..."
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
+  echo "[INFO] Archiving state: $ARCHIVED_STATE_PATH"
   rclone copyto "$LATEST_STATE" "$ARCHIVED_STATE_PATH" \
     --s3-upload-cutoff 512M \
     --s3-chunk-size 512M \
@@ -161,7 +166,7 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --low-level-retries 10
 
-  echo "[INFO] Copying state to latest path (with retry)..."
+  echo "[INFO] Copying state to latest path (with retry): $DEST_PATH/$STATE_FILENAME"
   retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
@@ -188,7 +193,7 @@ function make_and_upload_snapshot() {
         --multi-thread-streams 4 \
         --retries 5 \
         --low-level-retries 10 \
-        --no-traverse && rm "$part" &
+        --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
     done
   done
 
