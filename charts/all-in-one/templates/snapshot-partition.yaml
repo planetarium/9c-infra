@@ -361,6 +361,7 @@ spec:
             {{- end }}
             - "{{ $.Values.snapshot.partition.bypassCopystates }}"
             - "{{ $.Values.snapshot.partition.zstd }}"
+            - "{{ $.Values.snapshot.partition.compressionLevel }}"
             env:
             - name: APP_PROTOCOL_VERSION_KEY
               value: {{ $.Values.global.appProtocolVersion }}
