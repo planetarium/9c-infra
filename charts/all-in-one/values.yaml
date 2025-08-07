@@ -66,6 +66,7 @@ snapshot:
     suspend: false
     bypassCopystates: false
     zstd: false
+    compressionLevel: 0
     volume:
       create: false
     dp:

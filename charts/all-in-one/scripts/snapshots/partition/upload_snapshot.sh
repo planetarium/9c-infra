@@ -14,8 +14,9 @@ SNAPSHOT_PATH=$4
 STORE_PATH="$6"
 BYPASS_COPYSTATES="${7:-false}"
 ZSTD="${8:-false}"
-PRESERVE_PARTITIONS="${9:-false}"
-PART_LENGTH="${10:-3}"
+COMPRESSION_LEVEL="${9:-0}"
+PRESERVE_PARTITIONS="${10:-false}"
+PART_LENGTH="${11:-3}"
 
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
@@ -79,7 +80,9 @@ function make_and_upload_snapshot() {
     echo "URL does not exist: $URL"
   fi
 
-  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" --zstd="$ZSTD"; then
+  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 \
+      --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" \
+      --zstd="$ZSTD" --compression-level="$COMPRESSION_LEVEL"; then
     senderr "Snapshot creation failed."
     exit 1
   fi
