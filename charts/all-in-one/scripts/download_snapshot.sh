@@ -44,7 +44,7 @@ function download_partition() {
     local base_url=$1
     local filename=$2
 
-    EXTENSIONS=("zip")
+    EXTENSIONS=("tar.zst" "zip")
     for ext in "${EXTENSIONS[@]}"; do
       curl -I --fail $(printf "$base_url/$filename.$ext.part%0${part_length}d" 1) > /dev/null 2>&1
       if [ $? -eq 0 ]; then
@@ -73,13 +73,17 @@ function download_partition() {
       local url=$base_url/$filename.$extension.$part_extension
       curl -I --fail "$url" > /dev/null 2>&1
       if [ $? -eq 0 ]; then
-        download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension" &
+        echo "$save_dir/$filename.$extension.$part_extension"
+        if [ ! -f "$save_dir/$filename.$extension.$part_extension" ] || [ -f "$save_dir/$filename.$extension.$part_extension.aria2" ]; then
+          download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension" &
+        fi
       else
         break
       fi
       idx=$((idx + 1))
     done
     wait
+
     cat "$save_dir/$filename.$extension.part"* > "$save_dir/$filename.$extension"
     rm "$save_dir/$filename.$extension.part"*
   else
@@ -159,16 +163,32 @@ if [ $download_option = "true" ]; then
     for ((i=${#snapshot_zip_filename_array[@]}-1; i>=0; i--)); do
       snapshot_zip_filename="${snapshot_zip_filename_array[$i]}"
 
-      if [ "$rollback_snapshot" = "true" ] || [ ! -f "$snapshot_partition_dir/$snapshot_zip_filename.z"* ]; then
+      local has_archive="false"
+      local has_archive_part="false"
+
+      for archive_file in "$snapshot_partition_dir/$snapshot_zip_filename."*z*; do
+        if [ -f "$archive_file" ]; then
+          has_archive="true"
+          break
+        fi
+      done
+      for archive_part_file in "$snapshot_partition_dir/$snapshot_zip_filename."*z*.part*; do
+        if [ -f "$archive_part_file" ]; then
+          has_archive_part="true"
+          break
+        fi
+      done
+
+      if [[ "$rollback_snapshot" = "true" ]] || [[ "$has_archive" = "false" ]] || [[ "$has_archive_part" = "true" ]]; then
         download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
       fi
 
       echo "Extracting $snapshot_zip_filename"
-      bsdtar -C "$save_dir" -xf "$snapshot_partition_dir/$snapshot_zip_filename.z"*
+      bsdtar -C "$save_dir" -xf "$snapshot_partition_dir/$snapshot_zip_filename."*z*
     done
 
     mkdir -p "$snapshot_state_dir"
-    mv "$snapshot_partition_dir/state_latest.z"* "$snapshot_state_dir/"
+    mv "$snapshot_partition_dir/state_latest."*z* "$snapshot_state_dir/"
 
     rm -f "$save_dir/$mainnet_snapshot_json_filename"
     download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
