@@ -97,6 +97,16 @@ spec:
               value: "500"
             - name: RateLimit__TokensPerPeriod
               value: "500"
+            - name: Jwt__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: JWT_ISSUER
+            - name: Jwt__Key
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: JWT_SECRET_KEY
             - name: WncgApi__ApiKeys__0
               valueFrom:
                 secretKeyRef:
