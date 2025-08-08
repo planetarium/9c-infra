@@ -72,7 +72,7 @@ gateway:
 snapshot:
   slackChannel: "9c-mainnet"
   image: "planetariumhq/ninechronicles-snapshot:git-db123cb6db6295d4c268aed03de1d9f5046721d5"
-  path: "main/partition/migration"
+  path: "main/partition"
 
   fullSnapshot:
     enabled: false
@@ -84,7 +84,7 @@ snapshot:
   partition:
     enabled: true
     suspend: false
-    bypassCopystates: true
+    zstd: true
     volume:
       create: true
       size: 650Gi

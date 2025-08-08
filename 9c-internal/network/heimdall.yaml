@@ -105,6 +105,7 @@ snapshot:
   partition:
     enabled: true
     suspend: true
+    zstd: true
   path: internal/heimdall
   uploadPath: internal/heimdall/migration
   nodeSelector:
