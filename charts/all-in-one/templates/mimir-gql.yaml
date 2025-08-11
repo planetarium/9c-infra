@@ -73,6 +73,11 @@ spec:
                 secretKeyRef:
                   name: mimir
                   key: HANGFIRE_REDIS_PREFIX
+            - name: Hangfire__IsEnabled
+              valueFrom:
+                secretKeyRef:
+                  name: mimir
+                  key: HANGFIRE_IS_ENABLED
             - name: Hangfire__Password
               valueFrom:
                 secretKeyRef:
