@@ -495,7 +495,7 @@ mimir:
     enabled: true
 
     nodeSelector:
-      - node.kubernetes.io/type: baremetal
+      node.kubernetes.io/type: baremetal
 
   diffWorker:
     enabled: false
