@@ -182,6 +182,8 @@ validator:
     requests:
       cpu: "3"
       memory: 25Gi
+    limits:
+      memory: 30Gi
 
 remoteHeadless:
   count: 3
@@ -229,6 +231,8 @@ remoteHeadless:
     requests:
       cpu: "5"
       memory: 25Gi
+    limits:
+      memory: 30Gi
 
   storage:
     volumeNames:
