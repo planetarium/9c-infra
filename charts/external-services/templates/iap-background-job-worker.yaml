@@ -70,6 +70,11 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: iap-env
+            - name: WORKER_GOOGLE_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  key: google-credential
+                  name: iap-env
           image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
           {{- with $.Values.iap.worker.resources }}
           resources:
