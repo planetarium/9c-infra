@@ -139,6 +139,11 @@ if [ $download_option = "true" ]; then
     rm -rf $save_dir/states
 
     while true; do
+      local base_url=$base_url
+      while ! curl --silent -f "$base_url/$snapshot_json_filename" > /dev/null; do
+        base_url=${base_url%/*}
+      done
+
       snapshot_json_url="$base_url/$snapshot_json_filename"
       echo "$snapshot_json_url"
 
