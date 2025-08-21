@@ -138,8 +138,10 @@ if [ $download_option = "true" ]; then
     rm -rf $save_dir/txexec
     rm -rf $save_dir/states
 
+    local org_base_url=$base_url
+
     while true; do
-      local base_url=$base_url
+      local base_url=$org_base_url
       while ! curl --silent -f "$base_url/$snapshot_json_filename" > /dev/null; do
         base_url=${base_url%/*}
       done
