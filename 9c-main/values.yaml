@@ -85,6 +85,8 @@ prometheus:
               - remote-headless-1.odin.svc.cluster.local:80
               - remote-headless-2.odin.svc.cluster.local:80
               - remote-headless-3.odin.svc.cluster.local:80
+              - odin-node-4.nine-chronicles.com:80
+              - odin-node-5.nine-chronicles.com:80
           - labels:
               group: odin-validator
             targets:
