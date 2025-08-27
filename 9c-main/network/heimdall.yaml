@@ -26,6 +26,8 @@ global:
     data: 500Gi
   - name: remote-headless-data-3-remote-headless-3-0
     data: 500Gi
+  - name: data-provider-data-1
+    data: 200Gi
 
 RKE2:
   loadBalancerIPs:
@@ -250,6 +252,26 @@ dataProviderDailyMetric:
     requests:
       cpu: "1"
       memory: 10Gi
+
+dataProvider:
+  enabled: true
+  render: true
+  cronjob:
+    enabled: true
+
+  image:
+    tag: 320
+  nodeSelector:
+    node.kubernetes.io/type: data-provider
+
+  storePath: "/data/headless"
+  storage:
+    volumeName: data-provider-data-1
+
+  resources:
+    limits:
+      memory: 16Gi
+
 
 marketService:
   enabled: false
