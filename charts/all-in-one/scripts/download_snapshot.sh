@@ -199,6 +199,8 @@ if [ $download_option = "true" ]; then
 
     rm -f "$save_dir/$mainnet_snapshot_json_filename"
     download_with_retry "$base_url/$mainnet_snapshot_json_filename" "$save_dir" "$mainnet_snapshot_json_filename"
+
+    rm -rf "$snapshot_dir"
   }
 
   if [ -f $save_dir/$mainnet_snapshot_json_filename ] && [ ! $complete_snapshot_reset = "true" ]; then
