@@ -11,14 +11,12 @@
       "headless.gql": [
         "https://odin-rpc-1.nine-chronicles.com/graphql",
         "https://odin-rpc-2.nine-chronicles.com/graphql",
-        "https://odin-rpc-3.nine-chronicles.com/graphql",
-        "https://odin-rpc-4.nine-chronicles.com/graphql"
+        "https://odin-rpc-3.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
         "http://odin-rpc-1.nine-chronicles.com:31238",
         "http://odin-rpc-2.nine-chronicles.com:31238",
-        "http://odin-rpc-3.nine-chronicles.com:31238",
-        "http://odin-rpc-4.nine-chronicles.com:31238"
+        "http://odin-rpc-3.nine-chronicles.com:31238"
       ],
       "market.rest": ["https://api.9capi.com/marketProviderOdin"],
       "world-boss.rest": ["https://odin-world-boss.9c.gg"],
