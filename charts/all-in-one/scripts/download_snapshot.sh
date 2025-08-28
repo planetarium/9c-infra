@@ -187,6 +187,10 @@ if [ $download_option = "true" ]; then
       done
 
       if [[ "$rollback_snapshot" = "true" ]] || [[ "$has_archive" = "false" ]] || [[ "$has_archive_part" = "true" ]]; then
+        local base_url=$org_base_url
+        while ! curl --silent -f "$base_url/$snapshot_zip_filename" > /dev/null; do
+          base_url=${base_url%/*}
+        done
         download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
       fi
 
