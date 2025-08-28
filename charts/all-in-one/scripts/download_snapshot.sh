@@ -57,7 +57,7 @@ function download_partition() {
         return 0
       fi
     done
-    echo "zip"
+    echo ""
   }
 
   local base_url=$1
@@ -65,6 +65,11 @@ function download_partition() {
   local save_dir=$3
 
   local extension=$(test_extension "$base_url" "$filename")
+  while [[ "$extension" = "" ]]; do
+    base_url=${base_url%/*}
+    extension=$(test_extension "$base_url" "$filename")
+  done
+
   if [[ "$extension" = *.part* ]]; then
     extension=${extension%".part"*}
     local idx=1
@@ -187,10 +192,6 @@ if [ $download_option = "true" ]; then
       done
 
       if [[ "$rollback_snapshot" = "true" ]] || [[ "$has_archive" = "false" ]] || [[ "$has_archive_part" = "true" ]]; then
-        local base_url=$org_base_url
-        while ! curl --silent -f "$base_url/$snapshot_zip_filename" > /dev/null; do
-          base_url=${base_url%/*}
-        done
         download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
       fi
 
