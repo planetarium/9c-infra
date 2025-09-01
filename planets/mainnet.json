@@ -9,12 +9,14 @@
       "dp.gql": ["http://odin-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api.9cscan.com"],
       "headless.gql": [
+        "https://odin-rpc-1.nine-chronicles.com/graphql",
         "https://odin-rpc-2.nine-chronicles.com/graphql",
         "https://odin-rpc-3.nine-chronicles.com/graphql",
         "https://odin-rpc-4.nine-chronicles.com/graphql",
         "https://odin-rpc-5.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
+        "http://odin-rpc-1.nine-chronicles.com:31238",
         "http://odin-rpc-2.nine-chronicles.com:31238",
         "http://odin-rpc-3.nine-chronicles.com:31238",
         "http://odin-rpc-4.nine-chronicles.com:31238",
