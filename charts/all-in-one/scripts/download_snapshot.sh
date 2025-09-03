@@ -22,63 +22,71 @@ function download_with_retry() {
   local save_dir=$2
   local output_file=$3
 
-  while true; do
-    echo "Downloading $url"
-
-    aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true --continue=true \
-      --show-console-readout=false --summary-interval=30 --max-tries=10
-
-    if [ ! -f "$save_dir/$output_file.aria2" ] && [ -f "$save_dir/$output_file" ]; then
-      echo "Download successful: $save_dir/$output_file"
-      return 0
-    fi
-
-    echo "Download failed (.aria2 file detected). Retrying in 10 seconds..."
-    rm -f "$save_dir/$output_file" "$save_dir/$output_file.aria2"
-    sleep 10
-  done
+  aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true --continue=true \
+    --show-console-readout=false --summary-interval=30 --max-tries=10
 }
 
 function download_partition() {
-  function test_extension() {
+  EXTENSIONS=("tar.zst" "zip")
+
+  function test_ext_path() {
     local base_url=$1
     local filename=$2
 
-    EXTENSIONS=("tar.zst" "zip")
-    for ext in "${EXTENSIONS[@]}"; do
-      curl -I --fail $(printf "$base_url/$filename.$ext.part%0${part_length}d" 1) > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
-        echo "$ext.part"
-        return 0
+    while true; do
+      for ext in "${EXTENSIONS[@]}"; do
+        ARCHIVE_PATH=$(printf "$base_url/$filename.$ext.part%0${part_length}d" 1)
+        curl -I --fail "$ARCHIVE_PATH" > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+          echo "$ARCHIVE_PATH"
+          return 0
+        fi
+
+        ARCHIVE_PATH=$base_url/$filename.$ext
+        curl -I --fail "$ARCHIVE_PATH" > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+          echo "$ARCHIVE_PATH"
+          return 0
+        fi
+      done
+
+      base_url=${base_url%/*}
+      if [[ ! "$base_url" =~ '/' ]]; then
+        return 1
       fi
-      curl -I --fail "$base_url/$filename.$ext" > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
+    done
+  }
+
+  function test_ext() {
+    local url=$1
+    for ext in "${EXTENSIONS[@]}"; do
+      if [[ "$url" = *".$ext" ]]; then
         echo "$ext"
         return 0
       fi
     done
-    echo ""
+    return 1
   }
 
   local base_url=$1
   local filename=$2
   local save_dir=$3
 
-  local extension=$(test_extension "$base_url" "$filename")
-  while [[ "$extension" = "" ]]; do
-    base_url=${base_url%/*}
-    extension=$(test_extension "$base_url" "$filename")
-  done
+  local archive_path=$(test_ext_path "$base_url" "$filename")
+  if [ -z "$archive_path" ]; then
+    return 1
+  fi
 
-  if [[ "$extension" = *.part* ]]; then
-    extension=${extension%".part"*}
+  if [[ "$archive_path" = *.part* ]]; then
+    archive_path=${archive_path%".part"*}
+    local extension=$(test_ext "$archive_path")
     local idx=1
     while true; do
       local part_extension=$(printf "part%0${part_length}d" $idx)
-      local url=$base_url/$filename.$extension.$part_extension
+      local url=$archive_path.$part_extension
       curl -I --fail "$url" > /dev/null 2>&1
       if [ $? -eq 0 ]; then
-        echo "$save_dir/$filename.$extension.$part_extension"
+        echo "$url"
         if [ ! -f "$save_dir/$filename.$extension.$part_extension" ] || [ -f "$save_dir/$filename.$extension.$part_extension.aria2" ]; then
           download_with_retry "$url" "$save_dir" "$filename.$extension.$part_extension" &
         fi
@@ -92,8 +100,8 @@ function download_partition() {
     cat "$save_dir/$filename.$extension.part"* > "$save_dir/$filename.$extension"
     rm "$save_dir/$filename.$extension.part"*
   else
-    local url="$base_url/$filename.$extension"
-    download_with_retry "$url" "$save_dir" "$filename.$extension"
+    local extension=$(test_ext "$archive_path")
+    download_with_retry "$archive_path" "$save_dir" "$filename.$extension"
   fi
 
   echo "$save_dir/$filename.$extension"
@@ -143,15 +151,16 @@ if [ $download_option = "true" ]; then
     rm -rf $save_dir/txexec
     rm -rf $save_dir/states
 
-    local org_base_url=$base_url
-
     while true; do
-      local base_url=$org_base_url
-      while ! curl --silent -f "$base_url/$snapshot_json_filename" > /dev/null; do
-        base_url=${base_url%/*}
+      local traverse_base_url=$base_url
+      while true; do
+        if curl --silent -f "$traverse_base_url/$snapshot_json_filename" > /dev/null; then
+          break
+        fi
+        traverse_base_url=${traverse_base_url%/*}
       done
 
-      snapshot_json_url="$base_url/$snapshot_json_filename"
+      snapshot_json_url="$traverse_base_url/$snapshot_json_filename"
       echo "$snapshot_json_url"
 
       curl --silent --location "$snapshot_json_url" -o "$save_dir/$snapshot_json_filename"
@@ -192,6 +201,7 @@ if [ $download_option = "true" ]; then
       done
 
       if [[ "$rollback_snapshot" = "true" ]] || [[ "$has_archive" = "false" ]] || [[ "$has_archive_part" = "true" ]]; then
+        echo "Downloading $base_url/$snapshot_zip_filename"
         download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
       fi
 
