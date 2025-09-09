@@ -80,7 +80,7 @@ snapshot:
     suspend: false
     zstd: true
     dp:
-      enabled: true
+      enabled: false
 
   resources:
     requests:
