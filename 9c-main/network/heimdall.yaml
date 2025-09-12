@@ -181,6 +181,12 @@ remoteHeadless:
   - "heimdall-node-1.nine-chronicles.com"
   - "heimdall-node-2.nine-chronicles.com"
 
+  ingress:
+    enabled: true
+    hosts:
+      - "heimdall-rpc-test-1.nine-chronicles.com"
+      - "heimdall-rpc-test-2.nine-chronicles.com"
+
   loadBalancerIPs:
   - 115.68.194.150
   - 115.68.194.151
