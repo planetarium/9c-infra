@@ -44,10 +44,12 @@
       "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-heimdall.9cscan.com"],
       "headless.gql": [
-        "https://heimdall-rpc-1.nine-chronicles.com/graphql"
+        "https://heimdall-rpc-1.nine-chronicles.com/graphql",
+        "https://heimdall-rpc-2.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://heimdall-rpc-1.nine-chronicles.com:31238"
+        "http://heimdall-rpc-1.nine-chronicles.com:31238",
+        "http://heimdall-rpc-2.nine-chronicles.com:31238"
       ],
       "market.rest": ["https://api.9capi.com/marketProviderHeimdall"],
       "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
