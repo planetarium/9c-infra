@@ -101,7 +101,7 @@ bridgeService:
 snapshot:
   downloadSnapshot: true
   slackChannel: "9c-internal"
-  image: "planetariumhq/ninechronicles-snapshot:git-db123cb6db6295d4c268aed03de1d9f5046721d5"
+  image: "planetariumhq/ninechronicles-snapshot:git-9e25be8ff023d76a8393cc20a282a870611400eb"
   partition:
     enabled: true
     suspend: true
