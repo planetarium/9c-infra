@@ -22,8 +22,9 @@ reset_snapshot() {
     get_snapshot_value() {
         snapshot_json_url="$1"
         snapshot_param="$2"
+        snapshot_json_fallback_url="${snapshot_json_url%/internal/*}/migration/internal/${snapshot_json_url#*/internal/}"
 
-        snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param")
+        snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param" || curl --silent "$snapshot_json_fallback_url" | jq ".$snapshot_param")
         echo "$snapshot_param_return_value"
     }
 
