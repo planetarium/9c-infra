@@ -96,7 +96,7 @@ bridgeService:
     enabled: true
     defaultStartBlockIndex:
       upstream: "15645642"
-      downstream: "6917799"
+      downstream: "7156731"
 
 snapshot:
   downloadSnapshot: true
