@@ -223,6 +223,21 @@ spec:
                 secretKeyRef:
                   key: GitHub__Token
                   name: ninechronicles-backoffice-env
+            - name: NC_CLOUDFRONT_DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_CLOUDFRONT_DISTRIBUTION_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: NC_AWS_ACCESS_KEY_ID
+                  name: ninechronicles-backoffice-env
+            - name: NC_AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_AWS_SECRET_ACCESS_KEY
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
