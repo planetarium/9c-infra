@@ -22,19 +22,59 @@ reset_snapshot() {
     get_snapshot_value() {
         snapshot_json_url="$1"
         snapshot_param="$2"
+        snapshot_json_fallback_url="${snapshot_json_url%/internal/*}/migration/internal/${snapshot_json_url#*/internal/}"
 
-        snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param")
+        snapshot_param_return_value=$(curl --silent "$snapshot_json_url" | jq ".$snapshot_param" || curl --silent "$snapshot_json_fallback_url" | jq ".$snapshot_param")
         echo "$snapshot_param_return_value"
+    }
+
+    get_snapshot_file_url() {
+        base_url="$1"
+        filename="$2"
+        extensions=("tar.zst" "zip")
+        
+        for ext in "${extensions[@]}"; do
+            url="$base_url/$filename.$ext"
+            if curl --silent --head --fail "$url" > /dev/null 2>&1; then
+                echo "$url"
+                return 0
+            fi
+        done
+        
+        # Try fallback URL with /migration/ path
+        fallback_base_url="${base_url%/internal/*}/migration/internal/${base_url#*/internal/}"
+        for ext in "${extensions[@]}"; do
+            url="$fallback_base_url/$filename.$ext"
+            if curl --silent --head --fail "$url" > /dev/null 2>&1; then
+                echo "$url"
+                return 0
+            fi
+        done
+        
+        return 1
     }
 
     copy_snapshot() {
         snapshot_json_filename="latest.json"
-        snapshot_zip_filename="state_latest.zip"
+        snapshot_zip_filename="state_latest"
         snapshot_zip_filename_array=("$snapshot_zip_filename")
-        snapshot_zip_filename_array+=("latest.zip")
+        snapshot_zip_filename_array+=("latest")
         snapshot_zip_filename_array+=("latest.json")
-        aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip" --copy-props none --metadata-directive COPY
-        aws s3 cp "$2/latest.zip" "$1/latest.zip" --copy-props none --metadata-directive COPY
+        
+        # Copy state_latest files with proper extension detection
+        state_latest_url=$(get_snapshot_file_url "$2" "state_latest")
+        if [ -n "$state_latest_url" ]; then
+            state_latest_filename=$(basename "$state_latest_url")
+            aws s3 cp "$state_latest_url" "$1/$state_latest_filename" --copy-props none --metadata-directive COPY
+        fi
+        
+        # Copy latest files with proper extension detection
+        latest_url=$(get_snapshot_file_url "$2" "latest")
+        if [ -n "$latest_url" ]; then
+            latest_filename=$(basename "$latest_url")
+            aws s3 cp "$latest_url" "$1/$latest_filename" --copy-props none --metadata-directive COPY
+        fi
+        
         aws s3 cp "$2/latest.json" "$1/latest.json"
         aws s3 cp "$2/latest.json" "$1/mainnet_latest.json"
         NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
@@ -48,11 +88,18 @@ reset_snapshot() {
             PreviousBlockEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousBlockEpoch")
             PreviousTxEpoch=$(get_snapshot_value "$snapshot_json_url" "PreviousTxEpoch")
 
-            snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch.zip"
+            snapshot_zip_filename="snapshot-$BlockEpoch-$TxEpoch"
             snapshot_json_filename="snapshot-$BlockEpoch-$TxEpoch.json"
-            aws s3 cp "$2/$snapshot_zip_filename" "$1/$snapshot_zip_filename" --copy-props none --metadata-directive COPY
+            
+            # Copy snapshot file with proper extension detection
+            snapshot_url=$(get_snapshot_file_url "$2" "$snapshot_zip_filename")
+            if [ -n "$snapshot_url" ]; then
+                snapshot_filename=$(basename "$snapshot_url")
+                aws s3 cp "$snapshot_url" "$1/$snapshot_filename" --copy-props none --metadata-directive COPY
+                snapshot_zip_filename_array+=("$snapshot_filename")
+            fi
+            
             aws s3 cp "$2/$snapshot_json_filename" "$1/$snapshot_json_filename"
-            snapshot_zip_filename_array+=("$snapshot_zip_filename")
             snapshot_zip_filename_array+=("$snapshot_json_filename")
 
             if [ "$PreviousBlockEpoch" -lt $Previous_Mainnet_BlockEpoch ]
@@ -79,14 +126,19 @@ reset_snapshot() {
     NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
 
     # archive internal cluster chain
-    for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|json"); do
+    for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|tar\.zst\|json"); do
       echo $f
       aws s3 mv $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/")
     done
 
-    # copy main cluster chain to internal (copy state_latest.zip first)
-    aws s3 cp "$2/state_latest.zip" "$1/state_latest.zip" --copy-props none --metadata-directive COPY
-    for f in $(aws s3 ls $2/ | sort -k1,2 | sort -r | awk 'NF>1{print $4}' | grep "zip\|json" | grep -v "state_latest.zip"); do
+    # copy main cluster chain to internal (copy state_latest files first)
+    state_latest_url=$(get_snapshot_file_url "$2" "state_latest")
+    if [ -n "$state_latest_url" ]; then
+      state_latest_filename=$(basename "$state_latest_url")
+      aws s3 cp "$state_latest_url" "$1/$state_latest_filename" --copy-props none --metadata-directive COPY
+    fi
+    
+    for f in $(aws s3 ls $2/ | sort -k1,2 | sort -r | awk 'NF>1{print $4}' | grep "zip\|tar\.zst\|json" | grep -v "state_latest"); do
       echo $f
       aws s3 cp $(echo $f | sed "s/.*/$MAIN_PREFIX&/") $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") --copy-props none --metadata-directive COPY
     done
