@@ -1,0 +1,8 @@
+externalSecretKey: ragnarok-breaker/staging
+
+server:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker
+    tag: server-e0e34523f6bd7e14ae52e94f90d3599444b04ed8
+  hostname: ragnarok-breaker.9c.gg
