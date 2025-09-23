@@ -121,27 +121,25 @@ function make_and_upload_snapshot() {
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
+    --low-level-retries 10
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
+    --low-level-retries 10
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
+    --low-level-retries 10
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
-
-  wait
+    --low-level-retries 10
 
   if [ -n "$LATEST_METADATA" ]; then
     ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
@@ -149,13 +147,11 @@ function make_and_upload_snapshot() {
     rclone copyto "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" --no-traverse --retries 5 --low-level-retries 10
 
     echo "[INFO] Copying metadata to latest path: $DEST_PATH/$METADATA_FILENAME"
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/mainnet_latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-
-    wait
+    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/latest.json" --no-traverse --retries 5 --low-level-retries 10
+    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/mainnet_latest.json" --no-traverse --retries 5 --low-level-retries 10
   fi
 
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
@@ -175,16 +171,14 @@ function make_and_upload_snapshot() {
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
+    --low-level-retries 10
 
   retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/internal/$STATE_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
-    --low-level-retries 10 &
-
-  wait
+    --low-level-retries 10
 
   for file in $( find "$OUTPUT_DIR" -size +4G ); do
     split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
@@ -196,7 +190,7 @@ function make_and_upload_snapshot() {
         --multi-thread-streams 4 \
         --retries 5 \
         --low-level-retries 10 \
-        --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
+        --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part"
     done
   done
 
