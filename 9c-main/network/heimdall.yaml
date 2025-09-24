@@ -259,8 +259,6 @@ dataProvider:
   cronjob:
     enabled: true
 
-  image:
-    tag: 320
   nodeSelector:
     node.kubernetes.io/type: data-provider
 
