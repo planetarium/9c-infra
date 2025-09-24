@@ -31,6 +31,8 @@ global:
     data: 650Gi
   - name: remote-headless-data-5-remote-headless-5-0
     data: 650Gi
+  - name: data-provider-data
+    data: 650Gi
 
 RKE2:
   loadBalancerIPs:
@@ -94,11 +96,11 @@ snapshot:
   resources:
     requests:
       cpu: "5"
-      memory: 56Gi
+      memory: 28Gi
 
   nodeSelector:
-    node.kubernetes.io/type: baremetal
-    node.kubernetes.io/node-index: '1'
+    node.kubernetes.io/network: odin
+    node.kubernetes.io/node-index: '5'
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
@@ -364,14 +366,12 @@ dataProvider:
   cronjob:
     enabled: true
 
-  image:
-    tag: 320
   nodeSelector:
     node.kubernetes.io/type: data-provider
 
   storePath: "/data/headless"
   storage:
-    volumeName: remote-headless-data-5-remote-headless-5-0
+    volumeName: data-provider-data
 
   resources:
     limits:
