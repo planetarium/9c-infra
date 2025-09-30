@@ -146,7 +146,7 @@ validator:
 
   loggingEnabled: true
   datadog:
-    enabled: true
+    enabled: false
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -250,7 +250,7 @@ remoteHeadless:
 
   loggingEnabled: true
   datadog:
-    enabled: true
+    enabled: false
 
 dataProviderDataMigrator:
   enabled: false
@@ -313,7 +313,7 @@ testHeadless1:
       http: 5001
 
   datadog:
-    enabled: true
+    enabled: false
 
   host: "odin-node-test-1.nine-chronicles.com"
 
@@ -383,7 +383,7 @@ jwtHeadless:
   loggingEnabled: true
 
   datadog:
-    enabled: true
+    enabled: false
 
   host: "odin-node-jwt.nine-chronicles.com"
 

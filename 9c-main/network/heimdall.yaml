@@ -135,7 +135,7 @@ validator:
 
   loggingEnabled: true
   datadog:
-    enabled: true
+    enabled: false
 
   extraArgs:
   - --tx-quota-per-signer=1
@@ -229,7 +229,7 @@ remoteHeadless:
 
   loggingEnabled: true
   datadog:
-    enabled: true
+    enabled: false
 
 dataProviderDataMigrator:
   enabled: false
@@ -300,7 +300,7 @@ testHeadless1:
   replicas: 1
 
   datadog:
-    enabled: true
+    enabled: false
 
   host: "heimdall-node-test-1.nine-chronicles.com"
 
