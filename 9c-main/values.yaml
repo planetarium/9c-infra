@@ -101,7 +101,7 @@ prometheus:
             targets:
               - validator-5.heimdall.svc.cluster.local:80
 datadog:
-  enabled: true
+  enabled: false
   clusterAgent:
     nodeSelector:
       node.kubernetes.io/type: general
