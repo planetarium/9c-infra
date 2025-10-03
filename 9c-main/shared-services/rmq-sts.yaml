@@ -40,8 +40,9 @@ spec:
             - name: rmq-data
               mountPath: /var/lib/rabbitmq
       nodeSelector:
-        node.kubernetes.io/network: heimdall
+        node.kubernetes.io/type: general
         node.kubernetes.io/node-index: '2'
+        node.kubernetes.io/provisioner: cloudv
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
