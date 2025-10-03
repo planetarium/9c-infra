@@ -91,6 +91,11 @@ iap:
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
+    nodeSelector:
+      node.kubernetes.io/node-index: "2"
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
+
   worker:
     enabled: true
     stage: "mainnet"
@@ -98,6 +103,11 @@ iap:
       tag: "git-f037eae0558166e0f51360b921adef17f8005e6f"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
+
+    nodeSelector:
+      node.kubernetes.io/node-index: "2"
+      node.kubernetes.io/provisioner: "cloudv"
+      node.kubernetes.io/type: "general"
 
 ncboard:
   enabled: true
