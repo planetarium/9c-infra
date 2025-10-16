@@ -23,6 +23,22 @@ spec:
           commonConfig:
             path_prefix: /var/loki
             replication_factor: 3
+          {{- if $.Values.loki.metrics.enabled }}
+          structuredConfig:
+            ruler:
+              storage:
+                type: local
+                local:
+                  directory: /rules
+              rule_path: /tmp/ruler-scratch
+              wal:
+                dir: /var/loki/ruler-wal
+              remote_write:
+                enabled: true
+                clients:
+                  prometheus:
+                    url: "http://prometheus-server.monitoring.svc.cluster.local/api/v1/write"
+          {{- end }}
           storage:
             type: s3
             bucketNames:
@@ -160,6 +176,22 @@ spec:
               enabled: false
             grafanaAgent:
               installOperator: false
+        {{- if $.Values.loki.metrics.enabled }}
+        ruler:
+          enabled: true
+          replicas: 0
+          persistence:
+            enabled: false
+
+        sidecar:
+          rules:
+            enabled: true
+            folder: /rules/fake
+            label: loki_rule
+            labelValue: "true"
+            resource: both
+            searchNamespace: ALL
+        {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -168,4 +200,29 @@ spec:
   #     prune: true
   #     selfHeal: true
 ---
+{{- if $.Values.loki.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-rules
+  namespace: monitoring
+  labels:
+    loki_rule: "true"
+data:
+  tx_eval.yaml: |
+    groups:
+      - name: tx_eval
+        interval: 30s
+        rules:
+          - record: action_duration_ms_avg1m
+            expr: |
+              avg_over_time({subtag="TxEvaluationDuration", tag="Metric"} |= `ActionEvaluator` | json action="ActionTypes[1]", duration="DurationMs" | unwrap duration [1m])
+      - name: tx_count
+        interval: 30s
+        rules:
+          - record: action_count_avg1m
+            expr: |
+              count_over_time({subtag="TxEvaluationDuration", tag="Metric"} |= `ActionEvaluator` | json action="ActionTypes[1]" [1m])
+
+{{- end }}
 {{ end }}

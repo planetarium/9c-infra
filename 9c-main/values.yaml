@@ -46,6 +46,8 @@ traefik:
 loki:
   enabled: true
   bucketName: 9c-loki
+  metrics:
+    enabled: true
   write:
     count: 2
     nodeSelector:
