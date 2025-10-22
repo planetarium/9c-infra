@@ -73,7 +73,7 @@ gateway:
 
 snapshot:
   slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-9e25be8ff023d76a8393cc20a282a870611400eb"
+  image: "planetariumhq/ninechronicles-snapshot:git-ee1f00bec2e678fece2b17f73a45c7f7891f1ac2"
   path: "main/partition"
 
   fullSnapshot:

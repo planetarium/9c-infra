@@ -82,7 +82,7 @@ function make_and_upload_snapshot() {
 
   if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 \
       --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" \
-      --zstd="$ZSTD" --compression-level="$COMPRESSION_LEVEL"; then
+      --zstd="$ZSTD" --compression-level="$COMPRESSION_LEVEL" --slack-webhook-url="$SLACK_WEBHOOK"; then
     senderr "Snapshot creation failed."
     exit 1
   fi
