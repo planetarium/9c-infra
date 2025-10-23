@@ -27,7 +27,7 @@ function download_with_retry() {
 }
 
 function download_partition() {
-  EXTENSIONS=("tar.zst" "zip")
+  EXTENSIONS=("zip" "tar.zst")
 
   function test_ext_path() {
     local base_url=$1
