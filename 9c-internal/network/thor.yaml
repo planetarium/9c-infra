@@ -1,0 +1,207 @@
+global:
+  validatorPath: "thor-internal-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings-x64.json"
+
+  appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
+
+  peerStrings:
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,tcp-seed-1.thor.svc.cluster.local,31234"
+
+  trustedAppProtocolVersionSigner: "028857c146f57d7a24409d9b5da178c62e7becd756259b5ea32e7b5a0dd30545fd"
+
+  networkType: Internal
+  planet: ThorInternal
+  consensusType: pbft
+
+  resetSnapshot: false
+  rollbackSnapshot: false
+
+  storage:
+  - name: validator-data-5-validator-5-0
+    data: 200Gi
+
+RKE2:
+  loadBalancerIPs:
+  - 115.68.194.187/32
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-internal-v2/thor"
+
+gateway:
+  enabled: true
+  services:
+  - name: remote-headless
+    hostnames:
+    - thor-internal-rpc.nine-chronicles.com
+    - thor-preview-rpc.nine-chronicles.com
+    backendRefs:
+    - name: validator-5
+    protocols:
+    - web
+    - grpc
+  - name: arena-service
+    hostnames:
+    - thor-internal-arena.9c.gg
+    - thor-preview-arena.9c.gg
+  - name: arena-backoffice
+    hostnames:
+    - thor-internal-arena-backoffice.9c.gg
+    - thor-preview-arena-backoffice.9c.gg
+  - name: mimir-gql
+    hostnames:
+    - thor-internal-mimir.9c.gg
+    - thor-preview-mimir.9c.gg
+  - name: market-service
+    hostnames:
+    - thor-internal-market.9c.gg
+    - thor-preview-market.9c.gg
+
+bridgeService:
+  enabled: true
+
+  multiplanetary:
+    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets-internal.json"
+    upstream: "0x100000000000"
+    downstream: "0x100000000002"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+  account:
+    type: "kms"
+    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
+    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
+
+  txpool:
+    type: "local"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge Test (Odin ↔ Thor)"
+      channel: "9c-relay-bridge-bot-test-rdb"
+
+  db:
+    enabled: true
+    size: "10Gi"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "15645642"
+      downstream: "7156731"
+
+snapshot:
+  downloadSnapshot: true
+  slackChannel: "9c-internal"
+  image: "planetariumhq/ninechronicles-snapshot:git-9e25be8ff023d76a8393cc20a282a870611400eb"
+  partition:
+    enabled: true
+    suspend: true
+    zstd: true
+  path: internal/thor
+  nodeSelector:
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
+seed:
+  count: 1
+  clusterLocal: true
+  useTurnServer: false
+  image:
+    repository: planetariumhq/libplanet-seed
+    pullPolicy: Always # Overrides the image tag whose default is the chart appVersion.
+
+  hosts:
+  - "tcp-seed-1.thor.svc.cluster.local"
+
+remoteHeadless:
+  count: 0
+
+validator:
+  count: 1
+
+  consensusSeedStrings:
+  - "029fd8f05609cd98f716ca5245a1ebb85ab52289f9499e8453fa367bded66a945c,tcp-seed-1.thor.svc.cluster.local,31235"
+
+  hosts:
+  - >-
+    thor-internal-node-validator-1.nine-chronicles.com,
+    thor-internal-rpc-1.nine-chronicles.com,
+    thor-preview-rpc-1.nine-chronicles.com
+
+  loadBalancerIPs:
+  - 115.68.194.187
+
+  ports:
+    rpc: 31238
+
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 12Gi
+
+  loggingEnabled: true
+
+  extraArgs:
+  - --tx-life-time=2000000000
+  - --planet=ThorInternal
+  - --rpc-server
+  - --rpc-remote-server
+  - --rpc-listen-host=0.0.0.0
+  - --rpc-listen-port=31238
+  - --consensus-enter-precommit-delay=300
+
+  storage:
+    volumeNames:
+    - "validator-data-5-validator-5-0"
+
+  nodeSelector:
+  - node.kubernetes.io/network: thor
+    node.kubernetes.io/node-index: '1'
+
+arenaService:
+  enabled: true
+
+  planet: "thor"
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "2"
+    rankingDbNumber: "3"
+
+  ssh:
+    enabled: false
+
+  backoffice:
+    enabled: true
+
+mimir:
+  enabled: true
+  planetType: "Thor"
+
+  gql:
+    enabled: true
+
+  diffWorker:
+    enabled: true
+
+marketService:
+  enabled: true
+  rwMode: false
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
