@@ -1,6 +1,6 @@
 global:
   validatorPath: "thor-internal-validator-1.nine-chronicles.com"
-  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000002/genesis"
+  genesisBlockPath: "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis"
   headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-internal/thor/appsettings-x64.json"
 
   appProtocolVersion: "200071/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCjmCK+qUHtgiVfmFIO+uBw.mI4Kpj9T20U4xdIK8I+MgIgSZPL7qAAplhILfRgXwUSDjjfQgQ7A8jgGNqzwDe+h3I=/ZHU5OnRpbWVzdGFtcHUxMDoyMDIzLTA5LTAxZQ=="
@@ -65,7 +65,7 @@ bridgeService:
   multiplanetary:
     registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets-internal.json"
     upstream: "0x100000000000"
-    downstream: "0x100000000002"
+    downstream: "0x100000000003"
 
   serviceAccount:
     roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-bridge-service"
