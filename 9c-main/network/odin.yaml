@@ -88,8 +88,8 @@ snapshot:
     suspend: false
     zstd: true
     volume:
-      create: true
-      size: 650Gi
+      create: false
+      name: remote-headless-data-5-remote-headless-5-0
     dp:
       enabled: false
 
