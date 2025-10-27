@@ -86,7 +86,7 @@ snapshot:
   partition:
     enabled: true
     suspend: false
-    zstd: true
+    zstd: false
     volume:
       create: false
       name: remote-headless-data-5-remote-headless-5-0

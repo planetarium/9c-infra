@@ -62,7 +62,7 @@ snapshot:
     suspend: false
   partition:
     enabled: false
-    schedule: "0 * * * 0"
+    schedule: "0 0 * * *"
     suspend: false
     bypassCopystates: false
     zstd: false
