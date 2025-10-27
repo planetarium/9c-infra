@@ -69,6 +69,7 @@ snapshot:
     compressionLevel: 0
     volume:
       create: false
+      name: snapshot-volume-partition
     dp:
       enabled: false
   preload:

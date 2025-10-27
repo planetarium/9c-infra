@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: snapshot-volume-partition
+  name: {{ $.Values.snapshot.partition.name }}
   namespace: {{ $.Release.Name }}
   labels:
     app.kubernetes.io/instance: {{ $.Release.Name }}
@@ -16,7 +16,7 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.snapshot.partition.volume.size }}
-  volumeName: snapshot-volume-partition
+  volumeName: {{ $.Values.snapshot.partition.volume.name }}
   storageClassName: {{ $.Release.Name }}-longhorn
   volumeMode: Filesystem
 {{- end }}
