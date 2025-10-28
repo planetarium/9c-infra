@@ -154,6 +154,16 @@ spec:
               value: "0.0.0.0"
             - name: API_STAGE
               value: {{ $.Values.iap.api.stage }}
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: stripe-secret-key
+                  name: iap-env
+            - name: STRIPE_TEST_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: stripe-test-secret-key
+                  name: iap-env
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
           resources:
