@@ -215,6 +215,16 @@ spec:
                 secretKeyRef:
                   key: SESSION_SECRET_KEY
                   name: iap-env
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: stripe-secret-key
+                  name: iap-env
+            - name: STRIPE_TEST_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: stripe-test-secret-key
+                  name: iap-env
           image: {{ $.Values.iap.backoffice.image.repository }}:{{ $.Values.iap.backoffice.image.tag }}
           ports:
             - containerPort: 8000
