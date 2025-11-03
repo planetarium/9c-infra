@@ -22,6 +22,7 @@ portalService:
     QA_ENABLED: true
     NEXT_PUBLIC_MAINNET_ENV: local
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_51SK9CYErXvjnwTCwJEM7lt2VqPwgLUdkv4IVQoeXGbTJP5tAorIqzOPaT368fAxOI9pu1IBLDNjJ9dXW5XpJh7TU00GyCHq706"
 backofficeService:
   name: backoffice
   hostname: "dev-portal.planetarium.team"
