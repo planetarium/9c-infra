@@ -127,7 +127,7 @@ reset_snapshot() {
     # archive internal cluster chain
     for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|tar\.zst\|json"); do
       echo $f
-      aws s3 mv $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/")
+      aws s3 mv $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/") --copy-props none
     done
 
     # copy main cluster chain to internal (copy state_latest files first)
