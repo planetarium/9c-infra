@@ -1,524 +1,414 @@
 global:
-  appProtocolVersion: "200370/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDzW9D3x+lH52PisOljAPTjvXcYTi8F28O0+KZ7WLCkZgIgYpqSeG7i1PciXO2Dfc5eXM7NMBaNsESLf5n5VCiygRo=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTEwLTIzZQ=="
-  validatorPath: "heimdall-validator-1.nine-chronicles.com"
-  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000001/genesis"
-  trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
-  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings-nodeinfra.json"
-
+  appProtocolVersion: >-
+    200370/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDzW9D3x+lH52PisOljAPTjvXcYTi8F28O0+KZ7WLCkZgIgYpqSeG7i1PciXO2Dfc5eXM7NMBaNsESLf5n5VCiygRo=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTEwLTIzZQ==
+  validatorPath: heimdall-validator-1.nine-chronicles.com
+  genesisBlockPath: https://planets.nine-chronicles.com/planets/0x000000000001/genesis
+  trustedAppProtocolVersionSigner: 031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf
+  headlessAppsettingsPath: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/heimdall/appsettings-nodeinfra.json
   peerStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234"
-
+    - 03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31234
   iceServers:
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478"
-  - "turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478"
-
+    - >-
+      turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.nine-chronicles.com:3478
+    - >-
+      turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us2.nine-chronicles.com:3478
   networkType: Main
   planet: Heimdall
   consensusType: pbft
-
   resetSnapshot: false
   rollbackSnapshot: false
-
   storage:
-  - name: remote-headless-data-1-remote-headless-1-0
-    data: 500Gi
-  - name: remote-headless-data-2-remote-headless-2-0
-    data: 500Gi
-  - name: remote-headless-data-3-remote-headless-3-0
-    data: 500Gi
-  - name: data-provider-data-1
-    data: 200Gi
-
+    - name: remote-headless-data-1-remote-headless-1-0
+      data: 500Gi
+    - name: remote-headless-data-2-remote-headless-2-0
+      data: 500Gi
+    - name: remote-headless-data-3-remote-headless-3-0
+      data: 500Gi
+    - name: data-provider-data-1
+      data: 200Gi
 RKE2:
   loadBalancerIPs:
-  - 115.68.194.150/32
-  - 115.68.194.151/32
-  - 115.68.194.214/32
-  - 115.68.193.219/32
-
+    - 115.68.194.150/32
+    - 115.68.194.151/32
+    - 115.68.194.214/32
+    - 115.68.193.219/32
 externalSecret:
   enabled: true
   provider: AWS
-  prefix: "9c-main-v2/heimdall"
-
+  prefix: 9c-main-v2/heimdall
 gateway:
   enabled: true
   services:
-  - name: remote-headless
-    hostnames:
-    - heimdall-rpc.nine-chronicles.com
-    backendRefs:
-    - name: remote-headless-1
-    - name: remote-headless-2
-    protocols:
-    - web
-    - grpc
-  - name: market-service
-    hostname: heimdall-market.9c.gg
-  - name: arena-service
-    hostname: heimdall-arena.9c.gg
-  - name: arena-backoffice
-    hostname: heimdall-arena-backoffice.9c.gg
-  - name: mimir-gql
-    hostname: heimdall-mimir.9c.gg
-
+    - name: remote-headless
+      hostnames:
+        - heimdall-rpc.nine-chronicles.com
+      backendRefs:
+        - name: remote-headless-1
+        - name: remote-headless-2
+      protocols:
+        - web
+        - grpc
+    - name: market-service
+      hostname: heimdall-market.9c.gg
+    - name: arena-service
+      hostname: heimdall-arena.9c.gg
+    - name: arena-backoffice
+      hostname: heimdall-arena-backoffice.9c.gg
+    - name: mimir-gql
+      hostname: heimdall-mimir.9c.gg
 snapshot:
-  slackChannel: "9c-mainnet"
-  image: "planetariumhq/ninechronicles-snapshot:git-ee1f00bec2e678fece2b17f73a45c7f7891f1ac2"
-  path: "main/heimdall/partition"
-
+  slackChannel: 9c-mainnet
+  image: planetariumhq/ninechronicles-snapshot:git-ee1f00bec2e678fece2b17f73a45c7f7891f1ac2
+  path: main/heimdall/partition
   fullSnapshot:
     enabled: false
     suspend: false
-
   partitionReset:
     enabled: false
-
   partition:
     enabled: true
-    schedule: "0 0 */2 * *"
+    schedule: 0 0 */2 * *
     suspend: false
     zstd: true
     dp:
       enabled: false
-
   resources:
     requests:
-      cpu: "1"
+      cpu: '1'
       memory: 10Gi
-
   nodeSelector:
     node.kubernetes.io/type: baremetal
     node.kubernetes.io/node-index: '1'
-
-# if you want to delete PVC with the volume provisioned together, set this value "Delete"
-volumeReclaimPolicy: "Retain"
-
+volumeReclaimPolicy: Retain
 seed:
   count: 1
   clusterLocal: false
   useTurnServer: false
-
   hosts:
-  - "heimdall-seed-1.nine-chronicles.com"
-
+    - heimdall-seed-1.nine-chronicles.com
   loadBalancerIPs:
-  - "115.68.193.219"
-
+    - 115.68.193.219
   loggingEnabled: true
-
-  # dotnet args
   workerCount: 1000
-
   resources:
     requests:
       cpu: 500m
       memory: 500Mi
-
   nodeSelector:
-  - node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '1'
-    node.kubernetes.io/type: seed
-
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '1'
+      node.kubernetes.io/type: seed
 validator:
   count: 1
-
   env:
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-  - name: DOTNET_gcServer
-    value: "1"
-
+    - name: Headless__AccessControlService__AccessControlServiceType
+      value: local
+    - name: Headless__AccessControlService__AccessControlServiceConnectionString
+      value: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json
+    - name: PLUGIN_PATH
+      value: /data
+    - name: DOTNET_gcServer
+      value: '1'
   loggingEnabled: true
   datadog:
     enabled: false
-
   extraArgs:
-  - --tx-quota-per-signer=1
-  - --tx-life-time=10
-  - --consensus-target-block-interval=8000
-
+    - '--tx-quota-per-signer=1'
+    - '--tx-life-time=10'
+    - '--consensus-target-block-interval=8000'
   consensusSeedStrings:
-  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235"
-
+    - 03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,heimdall-seed-1.nine-chronicles.com,31235
   hosts:
-  - "heimdall-node-validator-1.nine-chronicles.com"
-
+    - heimdall-node-validator-1.nine-chronicles.com
   loadBalancerIPs:
-  - "115.68.194.214"
-
+    - 115.68.194.214
   resources:
     limits:
       memory: 30Gi
-
   nodeSelector:
     node.kubernetes.io/network: heimdall
     node.kubernetes.io/node-index: '3'
-
-  storePath: "/data/headless"
-
+  storePath: /data/headless
   storage:
     volumeNames:
-    - "remote-headless-data-3-remote-headless-3-0"
-
+      - remote-headless-data-1-remote-headless-1-0
   tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: validator-test
-
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: validator-test
 remoteHeadless:
   count: 2
   replicas: 1
-
   useTurnServer: false
-
   hosts:
-  - "heimdall-node-1.nine-chronicles.com"
-  - "heimdall-node-2.nine-chronicles.com"
-
+    - heimdall-node-1.nine-chronicles.com
+    - heimdall-node-2.nine-chronicles.com
   loadBalancerIPs:
-  - 115.68.194.150
-  - 115.68.194.151
-
+    - 115.68.194.150
+    - 115.68.194.151
   nodeSelector:
-  - node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '1'
-  - node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '2'
-
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '1'
+    - node.kubernetes.io/network: heimdall
+      node.kubernetes.io/node-index: '2'
   env:
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: JWT__Key
-    valueFrom:
-      secretKeyRef:
-        key: jwt
-        name: private-keys
-
+    - name: Headless__AccessControlService__AccessControlServiceType
+      value: local
+    - name: Headless__AccessControlService__AccessControlServiceConnectionString
+      value: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json
+    - name: PLUGIN_PATH
+      value: /data
+    - name: DOTNET_gcServer
+      value: '1'
+    - name: JWT__Key
+      valueFrom:
+        secretKeyRef:
+          key: jwt
+          name: private-keys
   extraArgs:
-  - --tx-quota-per-signer=1
-
+    - '--tx-quota-per-signer=1'
   resources:
     requests:
-      cpu: "2"
+      cpu: '2'
       memory: 12Gi
     limits:
       memory: 30Gi
-
   storage:
     volumeNames:
-    - remote-headless-data-1-remote-headless-1-0
-    - remote-headless-data-2-remote-headless-2-0
-
+      - remote-headless-data-3-remote-headless-3-0
+      - remote-headless-data-2-remote-headless-2-0
   tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: remote-headless-test
   loggingEnabled: true
   datadog:
     enabled: false
-
 dataProviderDataMigrator:
   enabled: false
-
-  nodeSelector:
-
+  nodeSelector: null
   resources:
     requests:
-      cpu: "1"
+      cpu: '1'
       memory: 10Gi
-
   storage: 300Gi
-
 dataProviderDailyMetric:
   enabled: false
-
-  nodeSelector:
-
+  nodeSelector: null
   resources:
     requests:
-      cpu: "1"
+      cpu: '1'
       memory: 10Gi
-
 dataProvider:
   enabled: true
   render: true
   cronjob:
     enabled: true
-
   nodeSelector:
     node.kubernetes.io/type: data-provider
-
-  storePath: "/data/headless"
+  storePath: /data/headless
   storage:
     volumeName: data-provider-data-1
-
   resources:
     limits:
       memory: 16Gi
-
-
 marketService:
   enabled: false
   rwMode: false
-
   env:
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: WorkerConfig__SyncShop
-    value: "false"
-  - name: WorkerConfig__SyncProduct
-    value: "false"
-
+    - name: DOTNET_gcServer
+      value: '1'
+    - name: WorkerConfig__SyncShop
+      value: 'false'
+    - name: WorkerConfig__SyncProduct
+      value: 'false'
   envForWrite:
-  - name: DOTNET_gcServer
-    value: "1"
-  - name: WorkerConfig__SyncShop
-    value: "true"
-  - name: WorkerConfig__SyncProduct
-    value: "true"
-
+    - name: DOTNET_gcServer
+      value: '1'
+    - name: WorkerConfig__SyncShop
+      value: 'true'
+    - name: WorkerConfig__SyncProduct
+      value: 'true'
   nodeSelector:
-    read:
-    write:
-
+    read: null
+    write: null
 testHeadless1:
   enabled: false
   replicas: 1
-
   datadog:
     enabled: false
-
-  host: "heimdall-node-test-1.nine-chronicles.com"
-
+  host: heimdall-node-test-1.nine-chronicles.com
   ports:
     headless: 31234
     graphql: 80
     rpc: 31238
-
   storage:
     data: 300Gi
-
   resources:
     requests:
       cpu: 1
       memory: 10Gi
-
-  nodeSelector:
-
+  nodeSelector: null
   loggingEnabled: true
-
   env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-  - name: IpRateLimiting__IpBanMinute
-    value: "10"
-  - name: IpRateLimiting__IpBanThresholdCount
-    value: "5"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-  - name: DOTNET_gcServer
-    value: "1"
-
+    - name: IpRateLimiting__EnableEndpointRateLimiting
+      value: 'true'
+    - name: IpRateLimiting__GeneralRules__0__Period
+      value: 60s
+    - name: IpRateLimiting__GeneralRules__0__Limit
+      value: '12'
+    - name: IpRateLimiting__GeneralRules__1__Period
+      value: 60s
+    - name: IpRateLimiting__GeneralRules__1__Limit
+      value: '12'
+    - name: IpRateLimiting__IpBanMinute
+      value: '10'
+    - name: IpRateLimiting__IpBanThresholdCount
+      value: '5'
+    - name: Headless__AccessControlService__AccessControlServiceType
+      value: local
+    - name: Headless__AccessControlService__AccessControlServiceConnectionString
+      value: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json
+    - name: PLUGIN_PATH
+      value: /data
+    - name: DOTNET_gcServer
+      value: '1'
   extraArgs:
-  - --tx-quota-per-signer=1
-
+    - '--tx-quota-per-signer=1'
   tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: remote-headless-test
 testHeadless2:
   enabled: false
   replicas: 1
-
-  host: "heimdall-node-test-2.nine-chronicles.com"
-
+  host: heimdall-node-test-2.nine-chronicles.com
   ports:
     headless: 31234
     graphql: 80
     rpc: 31238
-
   storage:
     data: 300Gi
-
   resources:
     requests:
       cpu: 2
       memory: 10Gi
-
-  nodeSelector:
-
+  nodeSelector: null
   loggingEnabled: true
-
   env:
-  - name: IpRateLimiting__EnableEndpointRateLimiting
-    value: "true"
-  - name: IpRateLimiting__GeneralRules__0__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__0__Limit
-    value: "12"
-  - name: IpRateLimiting__GeneralRules__1__Period
-    value: "60s"
-  - name: IpRateLimiting__GeneralRules__1__Limit
-    value: "12"
-  - name: IpRateLimiting__IpBanMinute
-    value: "10"
-  - name: IpRateLimiting__IpBanThresholdCount
-    value: "5"
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-
+    - name: IpRateLimiting__EnableEndpointRateLimiting
+      value: 'true'
+    - name: IpRateLimiting__GeneralRules__0__Period
+      value: 60s
+    - name: IpRateLimiting__GeneralRules__0__Limit
+      value: '12'
+    - name: IpRateLimiting__GeneralRules__1__Period
+      value: 60s
+    - name: IpRateLimiting__GeneralRules__1__Limit
+      value: '12'
+    - name: IpRateLimiting__IpBanMinute
+      value: '10'
+    - name: IpRateLimiting__IpBanThresholdCount
+      value: '5'
+    - name: Headless__AccessControlService__AccessControlServiceType
+      value: local
+    - name: Headless__AccessControlService__AccessControlServiceConnectionString
+      value: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json
+    - name: PLUGIN_PATH
+      value: /data
   extraArgs:
-  - --tx-quota-per-signer=1
-
+    - '--tx-quota-per-signer=1'
   tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: remote-headless-test
 blockIntervalNotifier:
   enabled: true
   group: heimdall-validator
-
 arenaService:
   enabled: true
-
-  planet: "heimdall"
-
+  planet: heimdall
   nodeSelector:
     node.kubernetes.io/type: general
-
-  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
-
+  recipientAddress: '0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C'
   resources:
     limits:
-      cpu: "500m"
-      memory: "1Gi"
-
+      cpu: 500m
+      memory: 1Gi
   redis:
-    port: "6379"
-    hangfireDbNumber: "2"
-    rankingDbNumber: "3"
-
+    port: '6379'
+    hangfireDbNumber: '2'
+    rankingDbNumber: '3'
   backoffice:
     enabled: true
-
 volumePreloader:
   count: 0
   replicas: 1
-
   useTurnServer: true
-
   env:
-  - name: Headless__AccessControlService__AccessControlServiceType
-    value: "local"
-  - name: Headless__AccessControlService__AccessControlServiceConnectionString
-    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
-  - name: PLUGIN_PATH
-    value: "/data"
-  - name: DOTNET_gcServer
-    value: "1"
-
+    - name: Headless__AccessControlService__AccessControlServiceType
+      value: local
+    - name: Headless__AccessControlService__AccessControlServiceConnectionString
+      value: https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json
+    - name: PLUGIN_PATH
+      value: /data
+    - name: DOTNET_gcServer
+      value: '1'
   extraArgs:
-  - --tx-quota-per-signer=1
-
-  nodeSelector:
-
+    - '--tx-quota-per-signer=1'
+  nodeSelector: null
   resources:
     requests:
-      cpu: "3"
+      cpu: '3'
       memory: 20Gi
-
   storage:
     data: 300Gi
-
   tolerations:
-  - effect: NoSchedule
-    key: dedicated
-    operator: Equal
-    value: remote-headless-test
-
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: remote-headless-test
 bridge:
   enabled: true
-
 bridgeService:
   enabled: true
-
   multiplanetary:
-    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
-    upstream: "0x000000000000"
-    downstream: "0x000000000001"
-
+    registryEndpoint: https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json
+    upstream: '0x000000000000'
+    downstream: '0x000000000001'
   serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
-
+    roleArn: arn:aws:iam::319679068466:role/9c-main-v2-bridge-service
   storage:
-    size: "50Gi"
-
+    size: 50Gi
   account:
-    type: "kms"
-    keyId: "7b912d9b-b682-4403-a794-2d6421d108c9"
-    publicKey: "04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789"
-
+    type: kms
+    keyId: 7b912d9b-b682-4403-a794-2d6421d108c9
+    publicKey: >-
+      04ab9e31a20d8dbf5042bfc26ce9d9ed9a0e32ad787a1e5aa3ae8188fa5143861535acc7132cd8e74d4c1f0b94f843575e3add6988d3ccb1f54d7c59fb9535d789
   txpool:
-    type: "local"
-
+    type: local
   notification:
     slack:
       bot:
-        username: "Relay Bridge (Odin ↔ Heimdall)"
-      channel: "9c-relay-bridge-bot-rdb"
-
+        username: Relay Bridge (Odin ↔ Heimdall)
+      channel: 9c-relay-bridge-bot-rdb
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "8521305"
-      downstream: "134016"
-
+      upstream: '8521305'
+      downstream: '134016'
 mimir:
   enabled: true
-  planetType: "Heimdall"
-
+  planetType: Heimdall
   gql:
     enabled: true
-
     nodeSelector:
       node.kubernetes.io/type: baremetal
-
   diffWorker:
     enabled: false
-
   blockWorker:
     enabled: false
