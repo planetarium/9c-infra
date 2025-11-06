@@ -29,8 +29,7 @@ reset_snapshot() {
     }
 
     get_snapshot_file_url() {
-        base_url="$1"
-        filename="$2"
+        filename="$1"
         extensions=("zip" "tar.zst")
         
         for ext in "${extensions[@]}"; do
@@ -62,14 +61,14 @@ reset_snapshot() {
         snapshot_zip_filename_array+=("latest.json")
         
         # Copy state_latest files with proper extension detection
-        state_latest_url=$(get_snapshot_file_url "$2" "state_latest")
+        state_latest_url=$(get_snapshot_file_url "state_latest")
         if [ -n "$state_latest_url" ]; then
             state_latest_filename=$(basename "$state_latest_url")
             aws s3 cp "$state_latest_url" "$1/$state_latest_filename" --copy-props none --metadata-directive COPY
         fi
         
         # Copy latest files with proper extension detection
-        latest_url=$(get_snapshot_file_url "$2" "latest")
+        latest_url=$(get_snapshot_file_url "latest")
         if [ -n "$latest_url" ]; then
             latest_filename=$(basename "$latest_url")
             aws s3 cp "$latest_url" "$1/$latest_filename" --copy-props none --metadata-directive COPY
@@ -77,7 +76,7 @@ reset_snapshot() {
         
         aws s3 cp "$2/latest.json" "$1/latest.json"
         aws s3 cp "$2/latest.json" "$1/mainnet_latest.json"
-        NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
+        NEW_SNAPSHOT_TIP=$(curl --silent "$base_url/latest.json" | jq ".Index")
 
         while :
         do
@@ -92,7 +91,7 @@ reset_snapshot() {
             snapshot_json_filename="snapshot-$BlockEpoch-$TxEpoch.json"
             
             # Copy snapshot file with proper extension detection
-            snapshot_url=$(get_snapshot_file_url "$2" "$snapshot_zip_filename")
+            snapshot_url=$(get_snapshot_file_url "$snapshot_zip_filename")
             if [ -n "$snapshot_url" ]; then
                 snapshot_filename=$(basename "$snapshot_url")
                 aws s3 cp "$snapshot_url" "$1/$snapshot_filename" --copy-props none --metadata-directive COPY
