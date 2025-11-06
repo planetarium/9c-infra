@@ -94,7 +94,7 @@ reset_snapshot() {
             snapshot_url=$(get_snapshot_file_url "$snapshot_zip_filename")
             if [ -n "$snapshot_url" ]; then
                 snapshot_filename=$(basename "$snapshot_url")
-                aws s3 cp "$snapshot_url" "$1/$snapshot_filename" --copy-props none --metadata-directive COPY
+                aws s3 cp "$2/$snapshot_filename" "$1/$snapshot_filename" --copy-props none --metadata-directive COPY
                 snapshot_zip_filename_array+=("$snapshot_filename")
             fi
             
