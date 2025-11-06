@@ -31,7 +31,7 @@ reset_snapshot() {
     get_snapshot_file_url() {
         base_url="$1"
         filename="$2"
-        extensions=("tar.zst" "zip")
+        extensions=("zip" "tar.zst")
         
         for ext in "${extensions[@]}"; do
             url="$base_url/$filename.$ext"
