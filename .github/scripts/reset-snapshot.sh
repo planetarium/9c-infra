@@ -64,14 +64,14 @@ reset_snapshot() {
         state_latest_url=$(get_snapshot_file_url "state_latest")
         if [ -n "$state_latest_url" ]; then
             state_latest_filename=$(basename "$state_latest_url")
-            aws s3 cp "$state_latest_url" "$1/$state_latest_filename" --copy-props none --metadata-directive COPY
+            aws s3 cp "$2/$state_latest_filename" "$1/$state_latest_filename" --copy-props none --metadata-directive COPY
         fi
         
         # Copy latest files with proper extension detection
         latest_url=$(get_snapshot_file_url "latest")
         if [ -n "$latest_url" ]; then
             latest_filename=$(basename "$latest_url")
-            aws s3 cp "$latest_url" "$1/$latest_filename" --copy-props none --metadata-directive COPY
+            aws s3 cp "$2/$latest_filename" "$1/$latest_filename" --copy-props none --metadata-directive COPY
         fi
         
         aws s3 cp "$2/latest.json" "$1/latest.json"
