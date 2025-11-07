@@ -5,6 +5,7 @@ BASEDIR=$(dirname "$0")
 echo "$BASEDIR"
 
 BUCKET="s3://9c-snapshots"
+BASE_URL="snapshots.nine-chronicles.com"
 
 export AWS_ENDPOINT_URL_S3="https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com"
 export AWS_DEFAULT_REGION=auto
@@ -16,9 +17,9 @@ reset_snapshot() {
   PREVIOUS_MAINNET_EPOCH_PATH="${1#$PREFIX}"
   BASE_URL_PATH="${2#$PREFIX}"
   NEW_SNAPSHOT_TIP=0
-  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "snapshots.nine-chronicles.com/$PREVIOUS_MAINNET_EPOCH_PATH/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
-    base_url="snapshots.nine-chronicles.com/$BASE_URL_PATH"
+  base_url="$BASE_URL/$BASE_URL_PATH"
 
+  if [[ Previous_Mainnet_BlockEpoch=$(curl --silent "$BASE_URL/$PREVIOUS_MAINNET_EPOCH_PATH/mainnet_latest.json" | jq ".BlockEpoch") -gt 0 ]]; then
     get_snapshot_value() {
         snapshot_json_url="$1"
         snapshot_param="$2"
@@ -122,12 +123,12 @@ reset_snapshot() {
     ARCHIVE_PATH=$1/$ARCHIVE/
     ARCHIVE_PREFIX=$(echo $ARCHIVE_PATH | awk '{gsub(/\//,"\\/");print}')
     MAIN_PREFIX=$(echo $2/ | awk '{gsub(/\//,"\\/");print}')
-    NEW_SNAPSHOT_TIP=$(curl --silent "snapshots.nine-chronicles.com/$BASE_URL_PATH/latest.json" | jq ".Index")
+    NEW_SNAPSHOT_TIP=$(curl --silent "$base_url/latest.json" | jq ".Index")
 
     # archive internal cluster chain
     for f in $(aws s3 ls $1/ | awk 'NF>1{print $4}' | grep "zip\|tar\.zst\|json"); do
       echo $f
-      aws s3 mv $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/") --copy-props none
+      aws s3 mv $(echo $f | sed "s/.*/$INTERNAL_PREFIX&/") $(echo $f | sed "s/.*/$ARCHIVE_PREFIX&/") --copy-props none --metadata-directive COPY
     done
 
     # copy main cluster chain to internal (copy state_latest files first)
