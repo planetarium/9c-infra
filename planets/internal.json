@@ -52,7 +52,7 @@
   {
     "id": "0x100000000003",
     "name": "thor (internal)",
-    "genesisUri": "https://planets.nine-chronicles.com/planets/0x100000000003/genesis",
+    "genesisUri": "https://planets-internal.nine-chronicles.com/planets/0x100000000003/genesis",
     "genesisHash": "aa5bc2d6525eed0b78444c7c7e2ccbbf09e0f070f6f4634442d7a7c9115c751f",
     "9cscanUrl": "https://thor.9cscan.com",
     "rpcEndpoints": {
