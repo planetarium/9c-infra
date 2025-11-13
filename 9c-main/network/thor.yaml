@@ -25,6 +25,7 @@ RKE2:
   loadBalancerIPs:
   - 115.68.194.237/32
   - 115.68.194.243/32
+  - 115.68.193.208/32
 
 externalSecret:
   enabled: true
