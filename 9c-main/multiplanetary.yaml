@@ -3,3 +3,4 @@ path: 9c-main
 network:
 - odin
 - heimdall
+- thor

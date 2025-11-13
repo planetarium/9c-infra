@@ -1,0 +1,442 @@
+global:
+  appProtocolVersion: "200370/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDzW9D3x+lH52PisOljAPTjvXcYTi8F28O0+KZ7WLCkZgIgYpqSeG7i1PciXO2Dfc5eXM7NMBaNsESLf5n5VCiygRo=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTEwLTIzZQ=="
+  validatorPath: "thor-validator-1.nine-chronicles.com"
+  genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000003/genesis"
+  trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
+  headlessAppsettingsPath: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/thor/appsettings.json"
+
+  peerStrings:
+  - "03380b4ba8722057c9b4d8594f8de9481eb296aba4b3c168666f57b17596452ae7,thor-seed-1.nine-chronicles.com,31234"
+
+  networkType: Main
+  planet: Thor
+  consensusType: pbft
+
+  resetSnapshot: false
+  rollbackSnapshot: false
+
+  storage:
+  - name: remote-headless-data-1-remote-headless-1-0
+    data: 300Gi
+  - name: remote-headless-data-2-remote-headless-2-0
+    data: 300Gi
+
+RKE2:
+  loadBalancerIPs:
+  - 115.68.194.237/32
+  - 115.68.194.243/32
+
+externalSecret:
+  enabled: true
+  provider: AWS
+  prefix: "9c-main-v2/thor"
+
+gateway:
+  enabled: true
+  services:
+  - name: market-service
+    hostname: thor-market.9c.gg
+  - name: arena-service
+    hostname: thor-arena.9c.gg
+  - name: arena-backoffice
+    hostname: thor-arena-backoffice.9c.gg
+  - name: mimir-gql
+    hostname: thor-mimir.9c.gg
+
+snapshot:
+  slackChannel: "9c-mainnet"
+  image: "planetariumhq/ninechronicles-snapshot:git-ee1f00bec2e678fece2b17f73a45c7f7891f1ac2"
+  path: "main/thor/partition"
+
+  fullSnapshot:
+    enabled: false
+    suspend: false
+
+  partitionReset:
+    enabled: false
+
+  partition:
+    enabled: true
+    schedule: "0 0 */2 * *"
+    suspend: false
+    zstd: true
+    dp:
+      enabled: false
+
+  resources:
+    requests:
+      cpu: "1"
+      memory: 10Gi
+
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: '1'
+
+# if you want to delete PVC with the volume provisioned together, set this value "Delete"
+volumeReclaimPolicy: "Retain"
+
+seed:
+  count: 1
+  clusterLocal: false
+  useTurnServer: false
+
+  hosts:
+  - "thor-seed-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - "115.68.193.208"
+
+  loggingEnabled: true
+
+  # dotnet args
+  workerCount: 1000
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+
+  nodeSelector:
+  - node.kubernetes.io/node-index: '4'
+    node.kubernetes.io/type: general
+
+validator:
+  count: 1
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/thor/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  loggingEnabled: true
+  datadog:
+    enabled: false
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+  - --tx-life-time=10
+  - --consensus-target-block-interval=8000
+
+  consensusSeedStrings:
+  - "03bfc4221069d995b55df46cfa651c1fce3ac9ec7def7415faba40cd5e019ea5af,thor-seed-1.nine-chronicles.com,31235"
+
+  hosts:
+  - "thor-node-validator-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - "115.68.194.237"
+
+  resources:
+    limits:
+      memory: 30Gi
+
+  nodeSelector:
+    node.kubernetes.io/network: thor
+    node.kubernetes.io/node-index: '1'
+
+  storePath: "/data/headless"
+
+  storage:
+    volumeNames:
+    - "remote-headless-data-1-remote-headless-1-0"
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: validator-test
+
+remoteHeadless:
+  count: 1
+  replicas: 1
+
+  useTurnServer: false
+
+  hosts:
+  - "thor-node-1.nine-chronicles.com"
+
+  loadBalancerIPs:
+  - 115.68.194.243
+
+  nodeSelector:
+  - node.kubernetes.io/network: thor
+    node.kubernetes.io/node-index: '2'
+
+  env:
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/thor/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: JWT__Key
+    valueFrom:
+      secretKeyRef:
+        key: jwt
+        name: private-keys
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  resources:
+    requests:
+      cpu: "2"
+      memory: 12Gi
+    limits:
+      memory: 30Gi
+
+  storage:
+    volumeNames:
+    - remote-headless-data-2-remote-headless-2-0
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+  loggingEnabled: true
+  datadog:
+    enabled: false
+
+dataProvider:
+  enabled: true
+  render: true
+  cronjob:
+    enabled: true
+
+  nodeSelector:
+    node.kubernetes.io/type: data-provider
+
+  storePath: "/data/headless"
+  storage:
+    volumeName: data-provider-data-1
+
+  resources:
+    limits:
+      memory: 16Gi
+
+
+marketService:
+  enabled: false
+  rwMode: false
+
+  env:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "false"
+  - name: WorkerConfig__SyncProduct
+    value: "false"
+
+  envForWrite:
+  - name: DOTNET_gcServer
+    value: "1"
+  - name: WorkerConfig__SyncShop
+    value: "true"
+  - name: WorkerConfig__SyncProduct
+    value: "true"
+
+  nodeSelector:
+    read:
+    write:
+
+testHeadless1:
+  enabled: false
+  replicas: 1
+
+  datadog:
+    enabled: false
+
+  host: "thor-node-test-1.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 300Gi
+
+  resources:
+    requests:
+      cpu: 1
+      memory: 10Gi
+
+  nodeSelector:
+
+  loggingEnabled: true
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+  - name: DOTNET_gcServer
+    value: "1"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+testHeadless2:
+  enabled: false
+  replicas: 1
+
+  host: "thor-node-test-2.nine-chronicles.com"
+
+  ports:
+    headless: 31234
+    graphql: 80
+    rpc: 31238
+
+  storage:
+    data: 300Gi
+
+  resources:
+    requests:
+      cpu: 2
+      memory: 10Gi
+
+  nodeSelector:
+
+  loggingEnabled: true
+
+  env:
+  - name: IpRateLimiting__EnableEndpointRateLimiting
+    value: "true"
+  - name: IpRateLimiting__GeneralRules__0__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__0__Limit
+    value: "12"
+  - name: IpRateLimiting__GeneralRules__1__Period
+    value: "60s"
+  - name: IpRateLimiting__GeneralRules__1__Limit
+    value: "12"
+  - name: IpRateLimiting__IpBanMinute
+    value: "10"
+  - name: IpRateLimiting__IpBanThresholdCount
+    value: "5"
+  - name: Headless__AccessControlService__AccessControlServiceType
+    value: "local"
+  - name: Headless__AccessControlService__AccessControlServiceConnectionString
+    value: "https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/odin/whitelist.json"
+  - name: PLUGIN_PATH
+    value: "/data"
+
+  extraArgs:
+  - --tx-quota-per-signer=1
+
+  tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: remote-headless-test
+
+blockIntervalNotifier:
+  enabled: true
+  group: thor-validator
+
+arenaService:
+  enabled: true
+
+  planet: "thor"
+
+  nodeSelector:
+    node.kubernetes.io/type: general
+
+  recipientAddress: "0x6EC1Fd2c95C409747CAE6F836182666F8EC31C9C"
+
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+  redis:
+    port: "6379"
+    hangfireDbNumber: "9"
+    rankingDbNumber: ""
+
+  backoffice:
+    enabled: true
+
+bridge:
+  enabled: true
+
+bridgeService:
+  enabled: true
+
+  multiplanetary:
+    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
+    upstream: "0x000000000000"
+    downstream: "0x000000000003"
+
+  serviceAccount:
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+
+  storage:
+    size: "50Gi"
+
+  account:
+    type: "kms"
+    keyId: "178553bb-ca39-4959-8e08-ec48a562a887"
+    publicKey: "047cfee101490623b3efae7062b7c915f467c8e996636dffb1696b51e2ae368c0ab096af7e2d4bc98561ee6dabe112d4804da352e310fe016f5b793d9241ba501b"
+
+  txpool:
+    type: "local"
+
+  notification:
+    slack:
+      bot:
+        username: "Relay Bridge (Odin ↔ Thor)"
+      channel: "9c-relay-bridge-bot-rdb"
+
+  rdb:
+    enabled: true
+    defaultStartBlockIndex:
+      upstream: "16363191"
+      downstream: "0"
+
+mimir:
+  enabled: true
+  planetType: "Thor"
+
+  gql:
+    enabled: true
+
+    nodeSelector:
+      node.kubernetes.io/type: baremetal
+
+  diffWorker:
+    enabled: false
+
+  blockWorker:
+    enabled: false
