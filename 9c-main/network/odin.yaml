@@ -172,7 +172,7 @@ validator:
 
   storage:
     volumeNames:
-    - "remote-headless-data-1-remote-headless-1-0"
+    - "remote-headless-data-2-remote-headless-2-0"
 
   tolerations:
   - effect: NoSchedule
@@ -239,7 +239,7 @@ remoteHeadless:
   storage:
     volumeNames:
     - remote-headless-data-4-remote-headless-4-0
-    - remote-headless-data-2-remote-headless-2-0
+    - remote-headless-data-1-remote-headless-1-0
     - remote-headless-data-3-remote-headless-3-0
 
   tolerations:
