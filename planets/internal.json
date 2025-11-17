@@ -63,7 +63,8 @@
         "http://thor-internal-rpc-1.nine-chronicles.com:31238"
       ],
       "market.rest": ["http://thor-internal-market.9c.gg"],
-      "arena.gql": ["http://thor-internal-arena.9c.gg/graphql"],
+      "arena.rest": ["https://thor-internal-arena.9c.gg"],
+      "arena.gql": ["https://thor-internal-arena.9c.gg"],
       "mimir.gql": ["https://thor-internal-mimir.9c.gg/graphql"]
     },
     "bridges": {
