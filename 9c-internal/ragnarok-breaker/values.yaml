@@ -4,5 +4,5 @@ server:
   enabled: true
   image:
     repository: planetariumhq/ragnarok-breaker
-    tag: server-e0e34523f6bd7e14ae52e94f90d3599444b04ed8
+    tag: server-2e2d378852b2aacd4a3b58185f0564943c3974fd
   hostname: ragnarok-breaker.9c.gg
