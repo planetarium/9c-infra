@@ -102,6 +102,14 @@ prometheus:
               group: heimdall-validator
             targets:
               - validator-5.heimdall.svc.cluster.local:80
+          - labels:
+              group: thor-rpc
+            targets:
+              - remote-headless-1.thor.svc.cluster.local:80
+          - labels:
+              group: thor-validator
+            targets:
+              - validator-5.thor.svc.cluster.local:80
 datadog:
   enabled: false
   clusterAgent:
