@@ -401,7 +401,7 @@ bridgeService:
     downstream: "0x000000000003"
 
   serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-relay-bridge-odin-thor"
 
   storage:
     size: "50Gi"
