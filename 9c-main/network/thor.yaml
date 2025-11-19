@@ -396,7 +396,7 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://planets.nine-chronicles.com/planets"
+    registryEndpoint: "https://planets.nine-chronicles.com/planets/planet-for-bridge.json"
     upstream: "0x000000000000"
     downstream: "0x000000000003"
 
