@@ -1,0 +1,75 @@
+{{- if $.Values.seasonpass.tracker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seasonpass-thor-tracker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: seasonpass-thor-tracker
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seasonpass-thor-tracker
+  template:
+    metadata:
+      labels:
+        app: seasonpass-thor-tracker
+    spec:
+      containers:
+        - name: seasonpass-thor-tracker
+          env:
+            - name: TRACKER_GQL_URL_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: gql-url-dict
+                  name: seasonpass-env
+            - name: TRACKER_PG_DSN
+              valueFrom:
+                secretKeyRef:
+                  key: db-uri
+                  name: seasonpass-env
+            - name: TRACKER_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: rmq-url
+                  name: seasonpass-env
+            - name: TRACKER_CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: redis-url
+                  name: seasonpass-env
+            - name: TRACKER_ARENA_SERVICE_JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: arena-service-jwt-public-key
+                  name: seasonpass-env
+            - name: TRACKER_START_BLOCK_INDEX_MAP
+              valueFrom:
+                secretKeyRef:
+                  key: start-block-index-dict
+                  name: seasonpass-env
+            - name: TRACKER_HEADLESS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: headless-jwt-token
+                  name: seasonpass-env
+            - name: TRACKER_ENABLED_PLANETS
+              value: '["{{ $.Values.seasonpass.tracker.thor.planetId }}"]'
+            - name: TRACKER_ENABLED_TRACKERS
+              value: '["AdventureBossTracker", "CourageTracker", "WorldClearTracker"]'
+          image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+          {{- with $.Values.seasonpass.tracker.resources }}
+          resources:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          name: seasonpass-thor-tracker
+      {{- with $.Values.seasonpass.tracker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccount: {{ $.Release.Name }}-seasonpass-iam-role
+      serviceAccountName: {{ $.Release.Name }}-seasonpass-iam-role
+{{- end }}
