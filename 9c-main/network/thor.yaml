@@ -384,7 +384,7 @@ arenaService:
   redis:
     port: "6379"
     hangfireDbNumber: "9"
-    rankingDbNumber: ""
+    rankingDbNumber: "10"
 
   backoffice:
     enabled: true
@@ -396,7 +396,7 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
+    registryEndpoint: "https://planets.nine-chronicles.com/planets"
     upstream: "0x000000000000"
     downstream: "0x000000000003"
 
@@ -423,7 +423,7 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "16363191"
+      upstream: "16429531"
       downstream: "0"
 
 mimir:
