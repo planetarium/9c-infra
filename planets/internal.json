@@ -82,10 +82,10 @@
     "9cscanUrl": "https://thor.9cscan.com",
     "rpcEndpoints": {
       "headless.gql": [
-        "https://thor-rpc-1.nine-chronicles.com/graphql"
+        "https://thor-validator-1.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
-        "http://thor-rpc-1.nine-chronicles.com:31238"
+        "http://thor-validator-1.nine-chronicles.com:31238"
       ],
       "market.rest": [
         "https://api.9capi.com/marketProviderThor"
