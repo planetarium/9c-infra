@@ -4,7 +4,7 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-cc5a791eaad278064b4f226c17b73d9f20eaa4bf"
+    tag: "git-b00f8e76b9b1eb445ff4626f139ced4c83cc49aa"
 
 seed:
   image:
