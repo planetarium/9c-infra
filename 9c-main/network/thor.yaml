@@ -1,5 +1,8 @@
 global:
   appProtocolVersion: "200370/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDzW9D3x+lH52PisOljAPTjvXcYTi8F28O0+KZ7WLCkZgIgYpqSeG7i1PciXO2Dfc5eXM7NMBaNsESLf5n5VCiygRo=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTEwLTIzZQ=="
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: git-b00f8e76b9b1eb445ff4626f139ced4c83cc49aa
   validatorPath: "thor-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000003/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
@@ -384,7 +387,7 @@ arenaService:
   redis:
     port: "6379"
     hangfireDbNumber: "9"
-    rankingDbNumber: ""
+    rankingDbNumber: "10"
 
   backoffice:
     enabled: true
@@ -396,12 +399,12 @@ bridgeService:
   enabled: true
 
   multiplanetary:
-    registryEndpoint: "https://9c-dx.s3.ap-northeast-2.amazonaws.com/planets.json"
+    registryEndpoint: "https://planets.nine-chronicles.com/planets/planet-for-bridge.json"
     upstream: "0x000000000000"
     downstream: "0x000000000003"
 
   serviceAccount:
-    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-bridge-service"
+    roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-relay-bridge-odin-thor"
 
   storage:
     size: "50Gi"
@@ -423,7 +426,7 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "16363191"
+      upstream: "16429531"
       downstream: "0"
 
 mimir:

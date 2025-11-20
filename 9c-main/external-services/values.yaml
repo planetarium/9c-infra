@@ -27,7 +27,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-9f76b2ed613360cd2aefa12538a3dec6484d9011"
+    tag: "git-6a3733ddf22b204fee2646ed9b03d94df57230ac"
 
   api:
     enabled: true
@@ -62,6 +62,8 @@ seasonpass:
       planetId: "0x000000000000"
     heimdall:
       planetId: "0x000000000001"
+    thor:
+      planetId: "0x000000000003"
 
     resources:
       limits:
@@ -81,13 +83,13 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-3e9e40f99396613419912c58ace448318124da5c"
+      tag: "git-1cf989397957c7de49cd4ec8a6cacd7b2c8c3927"
 
   api:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-3e9e40f99396613419912c58ace448318124da5c"
+      tag: "git-1cf989397957c7de49cd4ec8a6cacd7b2c8c3927"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -100,7 +102,7 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-3e9e40f99396613419912c58ace448318124da5c"
+      tag: "git-1cf989397957c7de49cd4ec8a6cacd7b2c8c3927"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
