@@ -426,7 +426,7 @@ bridgeService:
   rdb:
     enabled: true
     defaultStartBlockIndex:
-      upstream: "16429531"
+      upstream: "16482918"
       downstream: "0"
 
 mimir:
