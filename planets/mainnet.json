@@ -73,7 +73,7 @@
   },
   {
     "id": "0x000000000003",
-    "name": "thor-mainnet",
+    "name": "thor",
     "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000003/genesis",
     "genesisHash": "7eacf897e54eb4ba5e1b99050e77aaa74d514b98b0eaab2eee25189e8c801228",
     "9cscanUrl": "https://thor.9cscan.com",
@@ -105,6 +105,7 @@
     }
   }
 ]
+
 
 
 
