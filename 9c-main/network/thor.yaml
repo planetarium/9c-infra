@@ -1,8 +1,5 @@
 global:
   appProtocolVersion: "200380/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEUCIQC+cQM7knFraCM7IWo7AwsDghmM0ROETyoMU2CepIYLawIgKIdqSaq.eeCdXGlDq8k9jluq5qrDAgthf5WF+JRRqaY=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTExLTI1ZQ=="
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    tag: git-882018efc91b740451ca3b3e3c38e61cfa024330
   validatorPath: "thor-validator-1.nine-chronicles.com"
   genesisBlockPath: "https://planets.nine-chronicles.com/planets/0x000000000003/genesis"
   trustedAppProtocolVersionSigner: "031c5b9cb11b1cc07f8530599fa32338967e41cb364cca552a34ad2157ccb237bf"
