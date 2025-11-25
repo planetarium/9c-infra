@@ -11,7 +11,7 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    tag: main-31c36f1005bd1561192904b8f87e4f1234a05217
+    tag: main-eab37ed7f4c6ba2f397cd07730cda49f788bee38
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -25,7 +25,7 @@ portalService:
     BANNER_CLOUD_FRONT_DOMAIN: "https://d20llolvuaz1gj.cloudfront.net/"
     QA_ENABLED: false
     NEXT_PUBLIC_MAINNET_ENV: production
-    NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets.nine-chronicles.com/planets/planet-for-bridge.json"
+    NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets.nine-chronicles.com/planets/"
 backofficeService:
   name: backoffice
   hostname: "portal.planetarium.team"
