@@ -1,5 +1,5 @@
 global:
-  appProtocolVersion: "200370/eE394bb942fa7c2d807C170C7Db7F26cb3EA037F/MEUCIQDzW9D3x+lH52PisOljAPTjvXcYTi8F28O0+KZ7WLCkZgIgYpqSeG7i1PciXO2Dfc5eXM7NMBaNsESLf5n5VCiygRo=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTEwLTIzZQ=="
+  appProtocolVersion: "200380/C6553c8e634bEE685F264F4C5720d65919dc9c9c/MEUCIQC+cQM7knFraCM7IWo7AwsDghmM0ROETyoMU2CepIYLawIgKIdqSaq.eeCdXGlDq8k9jluq5qrDAgthf5WF+JRRqaY=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI1LTExLTI1ZQ=="
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: git-882018efc91b740451ca3b3e3c38e61cfa024330
