@@ -88,6 +88,8 @@ spec:
                 secretKeyRef:
                   name: mimir
                   key: MONGO_DB_CONNECTION_STRING
+            - name: RateLimit__IsEnabled
+              value: "{{ $.Values.mimir.rateLimit.enabled }}"
             - name: RateLimit__PermitLimit
               value: "500"
             - name: RateLimit__Window

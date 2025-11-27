@@ -441,3 +441,6 @@ mimir:
 
   blockWorker:
     enabled: false
+
+  rateLimit:
+    enabled: false

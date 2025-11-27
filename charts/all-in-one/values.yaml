@@ -810,6 +810,8 @@ mimir:
   blockWorker:
     enabled: true
     nodeSelector: {}
+  rateLimit:
+    enabled: false
 
 volumePreloader:
   count: 0
