@@ -71,7 +71,7 @@ mimir:
     image:
       repository: planetariumhq/mimir
       pullPolicy: Always
-      tag: "git-4981a8000c9dc207eae36d67a526a7c93cd976b1"
+      tag: "git-b7fe99d12436109852bafb707579a8efd27bc554"
 
   diffWorker:
     image:
