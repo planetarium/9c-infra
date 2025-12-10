@@ -75,6 +75,11 @@ spec:
                 secretKeyRef:
                   key: google-credential
                   name: iap-env
+            - name: WORKER_IAP_SALES_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: iap-sales-webhook-url
+                  name: iap-env
           image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
           {{- with $.Values.iap.worker.resources }}
           resources:
