@@ -11,7 +11,7 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    tag: main-6b2dc476050acdf2f3024a87ba5f1837b00b672b
+    tag: main-e97cd6aac144a62693e6a16bb32c0cdbbfc62297
     pullPolicy: Always
   externalSecret:
     enabled: true
