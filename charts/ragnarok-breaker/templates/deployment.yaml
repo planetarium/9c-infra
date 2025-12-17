@@ -1,0 +1,75 @@
+{{- if .Values.server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ragnarok-breaker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: ragnarok-breaker
+  {{- if and .Values.server.replicas (not .Values.server.hpa) }}
+  replicas: {{ .Values.server.replicas }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: ragnarok-breaker
+    spec:
+      containers:
+        - name: ragnarok-breaker
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          command:
+            - pnpm
+            - run
+            - start
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
+---
+{{- if .Values.server.hpa }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ragnarok-breaker-server-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ragnarok-breaker
+  minReplicas: {{ .Values.server.hpa.minReplicas }}
+  maxReplicas: {{ .Values.server.hpa.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.server.hpa.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.server.hpa.targetMemoryUtilizationPercentage }}
+{{- end }}

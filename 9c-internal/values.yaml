@@ -24,6 +24,7 @@ certManager:
     - "*.planetarium.team"
     - "*.9c.gg"
     - "*.petpop.fun"
+    - "*.libplanet.io"
   issuer:
     email: devops@planetariumhq.com
 traefik:
