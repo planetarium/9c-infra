@@ -62,7 +62,7 @@
       "headless.grpc": [
         "http://thor-preview-rpc-1.nine-chronicles.com:31238"
       ],
-      "market.rest": ["http://thor-preview-market.9c.gg"],
+      "market.rest": ["https://thor-preview-market.9c.gg"],
       "arena.rest": ["https://thor-preview-arena.9c.gg"],
       "arena.gql": ["https://thor-preview-arena.9c.gg"],
       "mimir.gql": ["https://thor-preview-mimir.9c.gg/graphql"]
