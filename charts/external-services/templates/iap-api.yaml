@@ -164,6 +164,11 @@ spec:
                 secretKeyRef:
                   key: stripe-test-secret-key
                   name: iap-env
+            - name: API_REDEEM_API_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: redeem-api-base-url
+                  name: iap-env
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
           resources:
