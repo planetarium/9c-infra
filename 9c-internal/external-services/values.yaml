@@ -65,14 +65,14 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-b087a094c4f748fcd723e8e6d82fb84df718a4a8"
+      tag: "git-7b6d6739f37cee421fa198129b49636340b260c1"
 
 
   api:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-b087a094c4f748fcd723e8e6d82fb84df718a4a8"
+      tag: "git-7b6d6739f37cee421fa198129b49636340b260c1"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -80,6 +80,6 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-b087a094c4f748fcd723e8e6d82fb84df718a4a8"
+      tag: "git-7b6d6739f37cee421fa198129b49636340b260c1"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
