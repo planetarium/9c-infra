@@ -41,9 +41,6 @@ spec:
           name: bridge-service-db
           ports:
             - containerPort: 5432
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: bridge-service-db-data
       {{- with $.Values.bridgeService.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -51,21 +48,6 @@ spec:
       restartPolicy: Always
   updateStrategy:
     type: RollingUpdate
-  volumeClaimTemplates:
-    - metadata:
-        name: bridge-service-db-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: {{ $.Values.bridgeService.db.size }}
-        {{- if eq $.Values.provider "RKE2" }}
-        storageClassName: {{ $.Release.Name }}-longhorn
-        {{- else }}
-        storageClassName: {{ $.Release.Name }}-gp3
-        {{- end }}
-        volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: Service
