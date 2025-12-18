@@ -1,6 +1,6 @@
 {{ if .Values.bridgeService.db.enabled }}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: bridge-service-db
@@ -12,7 +12,6 @@ spec:
   selector:
     matchLabels:
       app: bridge-service-db
-  serviceName: bridge-service-db
   template:
     metadata:
       labels:
@@ -46,7 +45,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
-  updateStrategy:
+  strategy:
     type: RollingUpdate
 ---
 apiVersion: v1
