@@ -168,20 +168,20 @@ spec:
                 secretKeyRef:
                   key: NC_ARENA_PRIVATE_KEY
                   name: ninechronicles-backoffice-env
-            - name: NC_SEASONPASS_API_URL
+            - name: NC_MAINNET_SEASONPASS_API_URL
               valueFrom:
                 secretKeyRef:
-                  key: NC_SEASONPASS_API_URL
+                  key: NC_MAINNET_SEASONPASS_API_URL
                   name: ninechronicles-backoffice-env
-            - name: NC_SEASONPASS_JWT_KEY
+            - name: NC_MAINNET_SEASONPASS_JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  key: NC_SEASONPASS_JWT_KEY
+                  key: NC_MAINNET_SEASONPASS_JWT_KEY
                   name: ninechronicles-backoffice-env
-            - name: NC_SEASONPASS_JWT_ISSUER
+            - name: NC_MAINNET_SEASONPASS_JWT_ISSUER
               valueFrom:
                 secretKeyRef:
-                  key: NC_SEASONPASS_JWT_ISSUER
+                  key: NC_MAINNET_SEASONPASS_JWT_ISSUER
                   name: ninechronicles-backoffice-env
             - name: NC_MAINNET_IAP_JWT_KEY
               valueFrom:
@@ -238,6 +238,22 @@ spec:
                 secretKeyRef:
                   key: NC_AWS_SECRET_ACCESS_KEY
                   name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_SEASONPASS_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_SEASONPASS_API_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_SEASONPASS_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_SEASONPASS_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_SEASONPASS_JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_SEASONPASS_JWT_ISSUER
+                  name: ninechronicles-backoffice-env
+
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
