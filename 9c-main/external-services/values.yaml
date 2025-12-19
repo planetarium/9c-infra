@@ -75,7 +75,7 @@ backoffice:
 
   image:
     pullPolicy: Always
-    tag: "git-b0da9170fa33fc8f4adff3d1afea4099300e702e"
+    tag: "git-630154ebdf1cebfe35fa1868aa5247627dcc25c1"
 
 
 iap:
