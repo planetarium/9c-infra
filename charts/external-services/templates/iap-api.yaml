@@ -169,10 +169,10 @@ spec:
                 secretKeyRef:
                   key: redeem-api-base-url
                   name: iap-env
-            - name: API_9C_JWT_SECRET
+            - name: API_JWT_SECRET_9C
               valueFrom:
                 secretKeyRef:
-                  key: 9c-jwt-secret
+                  key: jwt-secret-9c
                   name: iap-env
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
