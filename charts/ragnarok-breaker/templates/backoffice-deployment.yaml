@@ -1,0 +1,76 @@
+{{- if .Values.backoffice.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ragnarok-breaker-backoffice
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ragnarok-breaker-backoffice
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  {{- if and .Values.backoffice.replicas (not .Values.backoffice.hpa) }}
+  replicas: {{ .Values.backoffice.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: ragnarok-breaker-backoffice
+  template:
+    metadata:
+      labels:
+        app: ragnarok-breaker-backoffice
+    spec:
+      containers:
+        - name: ragnarok-breaker-backoffice
+          image: "{{ .Values.backoffice.image.repository }}:{{ .Values.backoffice.image.tag }}"
+          command:
+            - pnpm
+            - run
+            - start
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+      {{- with .Values.backoffice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
+---
+{{- if .Values.backoffice.hpa }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ragnarok-breaker-backoffice-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ragnarok-breaker-backoffice
+  minReplicas: {{ .Values.backoffice.hpa.minReplicas }}
+  maxReplicas: {{ .Values.backoffice.hpa.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.backoffice.hpa.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.backoffice.hpa.targetMemoryUtilizationPercentage }}
+{{- end }}

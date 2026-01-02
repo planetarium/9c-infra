@@ -4,3 +4,10 @@ server:
   image:
     repository: ""
     tag: ""
+
+backoffice:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""

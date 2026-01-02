@@ -16,3 +16,21 @@ spec:
       targetPort: 8000
 {{- end }}
 ---
+{{- if .Values.backoffice.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: ragnarok-breaker-backoffice
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app: ragnarok-breaker-backoffice
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3001
+{{- end }}
+---
