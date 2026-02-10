@@ -50,7 +50,7 @@
       "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
       "9cscan.rest": ["https://api-heimdall.9cscan.com"],
       "headless.gql": [
-        "https://heimdall-rpc-1.nine-chronicles.com/graphql",        
+        "https://heimdall-rpc-1.nine-chronicles.com/graphql",
         "https://heimdall-rpc-2.nine-chronicles.com/graphql"
       ],
       "headless.grpc": [
@@ -107,30 +107,3 @@
     }
   }
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
