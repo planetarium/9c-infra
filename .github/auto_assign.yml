@@ -1,7 +1,2 @@
-addReviewers: true
 addAssignees: author
-
-reviewers:
-  - eseiker
-
 numberOfReviewers: 0
