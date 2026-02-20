@@ -1,5 +1,5 @@
-{{ range $idx := until (int .Values.seed.count) }}
-{{ $index := add $idx 1 }}
+{{- range $idx := until (int .Values.seed.count) }}
+{{- $index := add $idx 1 }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -43,11 +43,10 @@ spec:
   selector:
     app: tcp-seed-{{ $index }}
 ---
-{{ end }}
+{{- end }}
 
-{{ range $idx := until (int .Values.remoteHeadless.count) }}
-{{ $index := add $idx 1 }}
-
+{{- range $idx := until (int .Values.remoteHeadless.count) }}
+{{- $index := add $idx 1 }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -59,23 +58,18 @@ metadata:
     {{- with $.Values.global.service.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=remote-headless-{{ $index }}
-    {{- with (index $.Values.remoteHeadless.hosts $idx) }}
-    {{- if or (not $.Values.remoteHeadless.ingress.enabled) ($.Values.remoteHeadless.ingress.hosts) }}
+    {{- with index $.Values.remoteHeadless.hosts $idx }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    {{- end }}
 spec:
-  {{- if and $.Values.remoteHeadless.ingress.enabled (not $.Values.remoteHeadless.ingress.hosts) }}
-  type: ClusterIP
-  {{- else }}
+  externalTrafficPolicy: Local
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.remoteHeadless.loadBalancerIPs $idx }}
-  {{- end }}
-  externalTrafficPolicy: Local
   {{- end }}
   ports:
   - name: graphql
@@ -92,11 +86,10 @@ spec:
     targetPort: {{ $.Values.remoteHeadless.ports.graphql }}
   selector:
     app: remote-headless-{{ $index }}
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if $.Values.dataProvider.enabled }}
+{{- if $.Values.dataProvider.enabled }}
 {{- if eq $.Values.clusterName "9c-main-v2" }}
 apiVersion: v1
 kind: Service
@@ -124,10 +117,8 @@ spec:
   {{- else }}
   type: ClusterIP
   {{- end }}
-
-{{ else }}
+{{- else }}
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -155,9 +146,9 @@ spec:
   type: ClusterIP
   {{- end }}
 ---
-{{ end }}
+{{- end }}
 
-{{ if and .Values.dataProvider.enabled $.Values.dataProvider.db.local }}
+{{- if and .Values.dataProvider.enabled $.Values.dataProvider.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -176,10 +167,10 @@ spec:
     app: data-provider-db
   type: ClusterIP
 ---
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}
 
-{{ if $.Values.explorer.enabled }}
+{{- if $.Values.explorer.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -208,10 +199,10 @@ spec:
   selector:
     app: explorer
   type: LoadBalancer
-{{ end }}
+{{- end }}
 ---
 
-{{ if $.Values.fullState.enabled }}
+{{- if $.Values.fullState.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -247,12 +238,10 @@ spec:
   selector:
     app: main-full-state
   type: LoadBalancer
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.testHeadless1.enabled }}
-
+{{- if .Values.testHeadless1.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -294,12 +283,10 @@ spec:
   selector:
     app: test-headless-1
   type: LoadBalancer
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.testHeadless2.enabled }}
-
+{{- if .Values.testHeadless2.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -335,12 +322,10 @@ spec:
   selector:
     app: test-headless-2
   type: LoadBalancer
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.jwtHeadless.enabled }}
-
+{{- if .Values.jwtHeadless.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -354,18 +339,17 @@ metadata:
     {{- end }}
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=jwt-headless
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     {{- with $.Values.jwtHeadless.host }}
-    {{- if or (not $.Values.jwtHeadless.ingress.enabled) ($.Values.jwtHeadless.ingress.host) }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
     {{- end }}
-    {{- end }}
 spec:
+  externalTrafficPolicy: Local
   type: LoadBalancer
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ $.Values.jwtHeadless.loadBalancerIP }}
   {{- end }}
-  externalTrafficPolicy: Local
   ports:
   - name: graphql
     port: {{ $.Values.jwtHeadless.ports.graphql }}
@@ -381,11 +365,10 @@ spec:
     targetPort: {{ $.Values.jwtHeadless.ports.graphql }}
   selector:
     app: jwt-headless
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.worldBoss.enabled }}
+{{- if .Values.worldBoss.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -424,9 +407,8 @@ spec:
   {{- else }}
   type: ClusterIP
   {{- end }}
-
 ---
-{{ end }}
+{{- end }}
 
 {{- if and $.Values.worldBoss.enabled $.Values.worldBoss.db.local }}
 apiVersion: v1
@@ -449,9 +431,7 @@ spec:
   selector:
     app: world-boss-db
   type: ClusterIP
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -475,7 +455,7 @@ spec:
 ---
 {{- end }}
 
-{{ if .Values.testWorldBoss.enabled }}
+{{- if .Values.testWorldBoss.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -506,11 +486,10 @@ spec:
   selector:
     app: test-world-boss-service
   type: LoadBalancer
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.marketService.enabled }}
+{{- if .Values.marketService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -544,9 +523,9 @@ spec:
   {{- end }}
 
 ---
-{{ end }}
+{{- end }}
 
-{{ if and .Values.marketService.enabled .Values.marketService.db.local }}
+{{- if and .Values.marketService.enabled .Values.marketService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -565,10 +544,10 @@ spec:
     app: market-db
   type: ClusterIP
 ---
-{{ end }}
+{{- end }}
 
-{{ range $idx := until (int .Values.validator.count) }}
-{{ $index := add $idx 5 }}
+{{- range $idx := until (int .Values.validator.count) }}
+{{- $index := add $idx 5 }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -580,13 +559,12 @@ metadata:
     {{- with $.Values.global.service.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,preserve_client_ip.enabled=true
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Environment={{- if eq $.Values.clusterName "9c-main-v2" }}production{{- else }}development{{- end }},Team=game,Owner=jihyung,Service={{ $.Release.Name }},Name=validator-{{ $index }}
-    {{- with (index $.Values.validator.hosts $idx) }}
-    {{- if or (not $.Values.validator.ingress.enabled) ($.Values.validator.ingress.hosts) }}
+    {{- with index $.Values.validator.hosts $idx }}
     external-dns.alpha.kubernetes.io/hostname: {{ . }}
     external-dns.alpha.kubernetes.io/ttl: '60'
-    {{- end }}
     {{- end }}
 spec:
   ports:
@@ -615,12 +593,10 @@ spec:
   {{- if eq $.Values.provider "RKE2" }}
   loadBalancerIP: {{ index $.Values.validator.loadBalancerIPs $idx }}
   {{- end }}
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.remoteActionEvaluatorHeadless.enabled }}
-
+{{- if .Values.remoteActionEvaluatorHeadless.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -652,12 +628,10 @@ spec:
   selector:
     app: remote-action-evaluator-headless
   type: LoadBalancer
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.lib9cStateService.enabled }}
-
+{{- if .Values.lib9cStateService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -673,11 +647,10 @@ spec:
   selector:
     app: lib9c-state-service
   type: ClusterIP
-
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.acc.redis.enabled }}
+{{- if .Values.acc.redis.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -694,9 +667,9 @@ spec:
   selector:
     app: acc-redis
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.acc.enabled }}
+{{- if .Values.acc.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -713,9 +686,9 @@ spec:
   selector:
     app: acc
 ---
-{{ end }}
+{{- end }}
 
-{{ if and .Values.rudolfService.enabled .Values.rudolfService.db.local }}
+{{- if and .Values.rudolfService.enabled .Values.rudolfService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -732,9 +705,9 @@ spec:
     app: rudolf-db
   type: ClusterIP
 ---
-{{ end }}
+{{- end }}
 
-{{ if .Values.stateMigrationService.enabled }}
+{{- if .Values.stateMigrationService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -752,7 +725,7 @@ spec:
   type: ClusterIP
 ---
 
-{{ if and .Values.stateMigrationService.enabled .Values.stateMigrationService.db.local }}
+{{- if and .Values.stateMigrationService.enabled .Values.stateMigrationService.db.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -769,10 +742,10 @@ spec:
     app: state-migration-db
   type: ClusterIP
 ---
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}
 
-{{ if .Values.arenaService.enabled }}
+{{- if .Values.arenaService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -788,12 +761,10 @@ spec:
   selector:
     app: arena-service
   type: ClusterIP
-
 ---
+{{- end }}
 
-{{ end }}
-
-{{ if .Values.arenaService.backoffice.enabled }}
+{{- if .Values.arenaService.backoffice.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -809,12 +780,10 @@ spec:
   selector:
     app: arena-backoffice
   type: ClusterIP
-
 ---
+{{- end }}
 
-{{ end }}
-
-{{ if .Values.mimir.gql.enabled }}
+{{- if .Values.mimir.gql.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -830,12 +799,10 @@ spec:
   selector:
     app: mimir-gql
   type: ClusterIP
-
 ---
+{{- end }}
 
-{{ end }}
-
-{{ if .Values.iap.backoffice.enabled }}
+{{- if .Values.iap.backoffice.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -856,7 +823,5 @@ spec:
   selector:
     app: iap-backoffice
   type: ClusterIP
-
 ---
-
-{{ end }}
+{{- end }}
