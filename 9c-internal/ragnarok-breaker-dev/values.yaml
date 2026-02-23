@@ -1,0 +1,15 @@
+externalSecretKey: ragnarok-breaker/dev
+
+server:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker
+    tag: server-f348f425d632560bb04b750b3fa4369bc7b050c5
+  hostname: rb-api-dev.9c.gg
+
+backoffice:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker
+    tag: backoffice-f348f425d632560bb04b750b3fa4369bc7b050c5
+  hostname: rb-admin-dev.9c.gg

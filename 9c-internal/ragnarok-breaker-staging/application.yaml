@@ -10,7 +10,7 @@ spec:
     namespace: ragnarok-breaker
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
-    targetRevision: ragnarok-breaker
+    targetRevision: main
     path: charts/ragnarok-breaker
     helm:
       valueFiles:
