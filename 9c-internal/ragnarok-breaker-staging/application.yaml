@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ragnarok-breaker
+  name: ragnarok-breaker-staging
   namespace: argocd
 spec:
   project: default
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ragnarok-breaker
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: main
     path: charts/ragnarok-breaker
     helm:
       valueFiles:
-        - /9c-internal/ragnarok-breaker/values.yaml
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+        - /9c-internal/ragnarok-breaker-staging/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ragnarok-breaker-staging
