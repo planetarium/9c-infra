@@ -5,9 +5,6 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ragnarok-breaker-dev
   source:
     repoURL: https://github.com/planetarium/9c-infra.git
     targetRevision: main
@@ -15,6 +12,6 @@ spec:
     helm:
       valueFiles:
         - /9c-internal/ragnarok-breaker-dev/values.yaml
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ragnarok-breaker-dev
