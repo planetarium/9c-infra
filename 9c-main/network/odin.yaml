@@ -361,10 +361,10 @@ testHeadless1:
     volumeName: "volume-rotator-2"
 
 dataProvider:
-  enabled: true
+  enabled: false
   render: true
   cronjob:
-    enabled: true
+    enabled: false
 
   nodeSelector:
     node.kubernetes.io/type: data-provider

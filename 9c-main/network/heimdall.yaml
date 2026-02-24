@@ -254,10 +254,10 @@ dataProviderDailyMetric:
       memory: 10Gi
 
 dataProvider:
-  enabled: true
+  enabled: false
   render: true
   cronjob:
-    enabled: true
+    enabled: false
 
   nodeSelector:
     node.kubernetes.io/type: data-provider
