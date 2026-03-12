@@ -1,8 +1,17 @@
 {{- range $.Values.network }}
+{{- $name := . }}
+{{- $enabled := true }}
+{{- if kindIs "map" . }}
+  {{- $name = .name }}
+  {{- if hasKey . "enabled" }}
+    {{- $enabled = .enabled }}
+  {{- end }}
+{{- end }}
+{{- if $enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ . }}
+  name: {{ $name }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -15,9 +24,10 @@ spec:
     helm:
       valueFiles:
       - /{{ $.Values.path }}/network/general.yaml
-      - /{{ $.Values.path }}/network/{{ . }}.yaml
+      - /{{ $.Values.path }}/network/{{ $name }}.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ . }}
+    namespace: {{ $name }}
 ---
+{{- end }}
 {{- end }}

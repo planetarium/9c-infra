@@ -3,4 +3,5 @@ path: 9c-main
 network:
 - odin
 - heimdall
-- thor
+- name: thor
+  enabled: false
