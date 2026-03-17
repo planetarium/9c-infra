@@ -65,10 +65,7 @@ spec:
             - name: API_STAGE
               value: {{ $.Values.seasonpass.api.stage }}
             - name: API_ENABLED_PLANETS
-              valueFrom:
-                secretKeyRef:
-                  key: enabled-planets
-                  name: seasonpass-env
+              value: '["0x000000000000","0x000000000001"]'
           image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           {{- with $.Values.seasonpass.api.resources }}
           resources:
