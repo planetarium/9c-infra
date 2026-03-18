@@ -253,7 +253,11 @@ spec:
                 secretKeyRef:
                   key: NC_INTERNAL_SEASONPASS_JWT_ISSUER
                   name: ninechronicles-backoffice-env
-
+            - name: NC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_API_KEY
+                  name: ninechronicles-backoffice-env
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
