@@ -46,13 +46,13 @@ arenaService:
   image:
     repository: planetariumhq/arena-service
     pullPolicy: Always
-    tag: "git-7848c1a1ae7ee09093f3273db9dcd505920bca12"
+    tag: "git-d605440054f5bf9dffe91a5bcba09bf8d02c2c89"
 
   backoffice:
     image:
       repository: planetariumhq/arena-service-backoffice
       pullPolicy: Always
-      tag: "git-7848c1a1ae7ee09093f3273db9dcd505920bca12"
+      tag: "git-d605440054f5bf9dffe91a5bcba09bf8d02c2c89"
 
 mimir:
   gql:
