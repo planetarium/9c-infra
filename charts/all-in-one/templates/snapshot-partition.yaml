@@ -107,6 +107,46 @@ spec:
             {{- else }}
               mountPath: /data
             {{- end }}
+          - name: create-snapshot
+            image: {{ $.Values.snapshot.image }}
+            command:
+            - /bin/create_snapshot.sh
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/snapshots
+            - /output/headless
+            {{- else }}
+            - /data/snapshots
+            - /data/headless
+            {{- end }}
+            - "{{ $.Values.snapshot.partition.bypassCopystates }}"
+            - "{{ $.Values.snapshot.partition.zstd }}"
+            - "{{ $.Values.snapshot.partition.compressionLevel }}"
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.global.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            {{- with $.Values.snapshot.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/create_snapshot.sh
+              readOnly: true
+              subPath: create_snapshot.sh
+            - name: snapshot-volume-partition
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+              mountPath: /output
+            {{- else }}
+              mountPath: /data
+            {{- end }}
           {{- if $.Values.snapshot.partition.dp.enabled }}
           - name: set-date
             image: debian:latest
@@ -381,7 +421,7 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-token
-            {{- with $.Values.snapshot.resources }}
+            {{- with $.Values.snapshot.uploadResources }}
             resources:
               {{- toYaml . | nindent 14 }}
             {{- end }}

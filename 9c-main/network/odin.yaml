@@ -98,6 +98,11 @@ snapshot:
       cpu: "5"
       memory: 28Gi
 
+  uploadResources:
+    requests:
+      cpu: "1"
+      memory: 4Gi
+
   nodeSelector:
     node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '5'

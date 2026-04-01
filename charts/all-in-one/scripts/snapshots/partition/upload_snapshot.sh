@@ -73,27 +73,14 @@ function retry_until_success() {
 }
 
 function make_and_upload_snapshot() {
-  SNAPSHOT="$HOME/NineChronicles.Snapshot"
   echo "[DEBUG] Args: $1"
   OUTPUT_DIR="${1:-/data/snapshots}"
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
-  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
-  mkdir -p "$OUTPUT_DIR"
-  mkdir -p "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
-
-  if curl --output /dev/null --silent --head --fail "$URL"; then
-    curl "$URL" -o "$METADATA_DIR/latest.json"
-  else
-    echo "URL does not exist: $URL"
-  fi
-
-  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 \
-      --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" \
-      --zstd="$ZSTD" --compression-level="$COMPRESSION_LEVEL" --slack-webhook-url="$SLACK_WEBHOOK"; then
-    senderr "Snapshot creation failed."
+  if ! ls "$PARTITION_DIR"/*.z* > /dev/null 2>&1; then
+    senderr "No snapshot files found in $PARTITION_DIR. Was create_snapshot step completed?"
     exit 1
   fi
 
