@@ -195,19 +195,26 @@ data:
       AWS="/usr/local/bin/aws"
       AWS_ACCESS_KEY_ID="$(cat "/secret/aws_access_key_id")"
       AWS_SECRET_ACCESS_KEY="$(cat "/secret/aws_secret_access_key")"
+      ORIG_AWS_ACCESS_KEY_ID="$(cat "/secret/orig__aws_access_key_id")"
+      ORIG_AWS_SECRET_ACCESS_KEY="$(cat "/secret/orig__aws_secret_access_key")"
       "$AWS" configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       "$AWS" configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
       "$AWS" configure set default.region us-east-2
       "$AWS" configure set default.output json
+      "$AWS" configure set --profile archive aws_access_key_id $ORIG_AWS_ACCESS_KEY_ID
+      "$AWS" configure set --profile archive aws_secret_access_key $ORIG_AWS_SECRET_ACCESS_KEY
+      "$AWS" configure set --profile archive region us-east-2
       NOW=$(date '+%Y%m%d%H%M%S')
+
+      S3_ARCHIVE_BUCKET_NAME="9c-snapshots-archive"
 
       "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" --quiet --acl public-read
       "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" --quiet --acl public-read
 
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
-      "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_STATE_FILENAME" "s3://$S3_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --acl public-read --copy-props none --metadata-directive COPY
+      "$AWS" s3 cp "$LATEST_SNAPSHOT" "s3://$S3_ARCHIVE_BUCKET_NAME/main/partition/archive/snapshots/${NOW}_$LATEST_SNAPSHOT_FILENAME" --quiet --profile archive
+      "$AWS" s3 cp "$LATEST_METADATA" "s3://$S3_ARCHIVE_BUCKET_NAME/main/partition/archive/metadata/${NOW}_$LATEST_METADATA_FILENAME" --quiet --profile archive
+      "$AWS" s3 cp "$LATEST_STATE" "s3://$S3_ARCHIVE_BUCKET_NAME/main/partition/archive/states/${NOW}_$LATEST_STATE_FILENAME" --quiet --profile archive
 
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_SNAPSHOT_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_SNAPSHOT_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
       "$AWS" s3 cp "s3://$S3_BUCKET_NAME/main/partition/$LATEST_METADATA_FILENAME" "s3://$S3_BUCKET_NAME/$S3_LATEST_METADATA_PATH" --quiet --acl public-read --copy-props none --metadata-directive COPY
