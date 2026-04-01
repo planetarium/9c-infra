@@ -24,6 +24,8 @@ function setup_rclone() {
 
   export AWS_ACCESS_KEY_ID="$(cat /secret/aws_access_key_id)"
   export AWS_SECRET_ACCESS_KEY="$(cat /secret/aws_secret_access_key)"
+  ORIG_AWS_ACCESS_KEY_ID="$(cat /secret/orig__aws_access_key_id)"
+  ORIG_AWS_SECRET_ACCESS_KEY="$(cat /secret/orig__aws_secret_access_key)"
 
   cat <<EOF > "$RCLONE_CONFIG_DIR/rclone.conf"
 [r2]
@@ -33,6 +35,14 @@ access_key_id = $AWS_ACCESS_KEY_ID
 secret_access_key = $AWS_SECRET_ACCESS_KEY
 endpoint = https://1cd1f38b21c0bfdde9501f7d8e43b663.r2.cloudflarestorage.com
 region = auto
+no_check_bucket = true
+
+[s3]
+type = s3
+provider = AWS
+access_key_id = $ORIG_AWS_ACCESS_KEY_ID
+secret_access_key = $ORIG_AWS_SECRET_ACCESS_KEY
+region = us-east-2
 no_check_bucket = true
 EOF
 
@@ -102,7 +112,7 @@ function make_and_upload_snapshot() {
   NOW=$(date '+%Y%m%d%H%M%S')
 
   DEST_PATH="r2:9c-snapshots/$SNAPSHOT_PATH"
-  ARCHIVE_PATH="$DEST_PATH/archive"
+  ARCHIVE_PATH="s3:9c-snapshots-archive/$SNAPSHOT_PATH/archive"
 
   ARCHIVED_SNAPSHOT_PATH="$ARCHIVE_PATH/snapshots/${NOW}_$SNAPSHOT_FILENAME"
   echo "[INFO] Archiving snapshot: $ARCHIVED_SNAPSHOT_PATH"
