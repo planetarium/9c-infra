@@ -73,33 +73,23 @@ function retry_until_success() {
 }
 
 function make_and_upload_snapshot() {
-  SNAPSHOT="$HOME/NineChronicles.Snapshot"
   echo "[DEBUG] Args: $1"
   OUTPUT_DIR="${1:-/data/snapshots}"
   PARTITION_DIR="$OUTPUT_DIR/partition"
   STATE_DIR="$OUTPUT_DIR/state"
   METADATA_DIR="$OUTPUT_DIR/metadata"
-  URL="https://snapshots.nine-chronicles.com/{{ $.Values.snapshot.path }}/latest.json"
 
-  mkdir -p "$OUTPUT_DIR"
-  mkdir -p "$PARTITION_DIR" "$STATE_DIR" "$METADATA_DIR"
+  # Clean up leftover split part files from any previous interrupted run
+  find "$OUTPUT_DIR" -name "*.part*" -delete 2>/dev/null || true
 
-  if curl --output /dev/null --silent --head --fail "$URL"; then
-    curl "$URL" -o "$METADATA_DIR/latest.json"
-  else
-    echo "URL does not exist: $URL"
-  fi
-
-  if ! "$SNAPSHOT" --output-directory "$OUTPUT_DIR" --store-path "$STORE_PATH" --block-before 0 \
-      --apv "$APP_PROTOCOL_VERSION" --snapshot-type "partition" --bypass-copystates="$BYPASS_COPYSTATES" \
-      --zstd="$ZSTD" --compression-level="$COMPRESSION_LEVEL" --slack-webhook-url="$SLACK_WEBHOOK"; then
-    senderr "Snapshot creation failed."
+  if ! ls "$PARTITION_DIR"/*.z* > /dev/null 2>&1; then
+    senderr "No snapshot files found in $PARTITION_DIR. Was create_snapshot step completed?"
     exit 1
   fi
 
-  LATEST_SNAPSHOT=$(ls -t "$PARTITION_DIR"/*.z* | head -1)
+  LATEST_SNAPSHOT=$(ls -t "$PARTITION_DIR"/*.z* | grep -v '\.part' | head -1)
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
-  LATEST_STATE=$(ls -t "$STATE_DIR"/*.z* | head -1)
+  LATEST_STATE=$(ls -t "$STATE_DIR"/*.z* | grep -v '\.part' | head -1)
 
   METADATA_FILENAME=$(basename "$LATEST_METADATA" || echo "")
   SNAPSHOT_FILENAME=$(basename "$LATEST_SNAPSHOT")
@@ -196,17 +186,22 @@ function make_and_upload_snapshot() {
 
   wait
 
+  _parallel_count=0
   for file in $( find "$OUTPUT_DIR" -size +4G ); do
     split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
     for part in "$file.part"*; do
       retry_until_success rclone copyto "$part" "$DEST_PATH/${part##*/}" \
-        --s3-upload-cutoff 512M \
-        --s3-chunk-size 512M \
+        --s3-upload-cutoff 64M \
+        --s3-chunk-size 64M \
         --s3-disable-checksum \
-        --multi-thread-streams 4 \
+        --multi-thread-streams 2 \
         --retries 5 \
         --low-level-retries 10 \
         --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
+      _parallel_count=$(( _parallel_count + 1 ))
+      if [ $(( _parallel_count % 5 )) -eq 0 ]; then
+        wait
+      fi
     done
   done
 
