@@ -26,6 +26,8 @@ spec:
         datasources:
           datasources.yaml:
             apiVersion: 1
+            deleteDatasources:
+              - name: Prometheus
             datasources:
             - name: Prometheus
               type: prometheus
