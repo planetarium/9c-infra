@@ -63,6 +63,7 @@ spec:
                 rules:
                   - uid: longhorn-volume-faulted
                     title: Longhorn Volume Faulted
+                    noDataState: OK
                     condition: C
                     data:
                       - refId: A
@@ -85,6 +86,7 @@ spec:
                       summary: 'Volume {{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} faulted (node: {{`{{ "{{" }} $labels.node {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}})'
                   - uid: longhorn-volume-degraded
                     title: Longhorn Volume Degraded
+                    noDataState: OK
                     condition: C
                     data:
                       - refId: A
