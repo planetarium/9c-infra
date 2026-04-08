@@ -20,12 +20,11 @@ spec:
     targetRevision: 10.1.2
     helm:
       values: |-
-        env:
+        envValueFrom:
           SLACK_WEBHOOK_URL:
-            valueFrom:
-              secretKeyRef:
-                name: slack
-                key: slack-webhook-url
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-url
         datasources:
           datasources.yaml:
             apiVersion: 1
