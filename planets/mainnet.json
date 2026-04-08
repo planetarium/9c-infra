@@ -6,21 +6,37 @@
     "genesisUri": "https://release.nine-chronicles.com/genesis-block-9c-main",
     "9cscanUrl": "https://9cscan.com",
     "rpcEndpoints": {
-      "dp.gql": ["http://odin-dp.9c.gg/graphql"],
-      "9cscan.rest": ["https://api.9cscan.com"],
+      "dp.gql": [
+        "http://odin-dp.9c.gg/graphql"
+      ],
+      "9cscan.rest": [
+        "https://api.9cscan.com"
+      ],
       "headless.gql": [
+        "https://odin-rpc-3.nine-chronicles.com/graphql",
         "https://odin5.9capi.com/graphql",
         "https://odin6.9capi.com/graphql"
       ],
       "headless.grpc": [
+        "http://odin-rpc-3.nine-chronicles.com:31238",
         "http://odin5.9capi.com:31238",
         "http://odin6.9capi.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderOdin"],
-      "world-boss.rest": ["https://odin-world-boss.9c.gg"],
-      "patrol-reward.gql": ["https://odin-patrol.9c.gg/graphql"],
-      "arena.rest": ["https://odin-arena.9c.gg"],
-      "arena.gql": ["https://odin-arena.9c.gg"],
+      "market.rest": [
+        "https://api.9capi.com/marketProviderOdin"
+      ],
+      "world-boss.rest": [
+        "https://odin-world-boss.9c.gg"
+      ],
+      "patrol-reward.gql": [
+        "https://odin-patrol.9c.gg/graphql"
+      ],
+      "arena.rest": [
+        "https://odin-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://odin-arena.9c.gg"
+      ],
       "mimir.gql": [
         "https://odin-mimir.9c.gg/graphql"
       ]
@@ -39,8 +55,12 @@
     "genesisUri": "https://planets.nine-chronicles.com/planets/0x000000000001/genesis",
     "9cscanUrl": "https://heimdall.9cscan.com",
     "rpcEndpoints": {
-      "dp.gql": ["http://heimdall-dp.9c.gg/graphql"],
-      "9cscan.rest": ["https://api-heimdall.9cscan.com"],
+      "dp.gql": [
+        "http://heimdall-dp.9c.gg/graphql"
+      ],
+      "9cscan.rest": [
+        "https://api-heimdall.9cscan.com"
+      ],
       "headless.gql": [
         "https://heimdall-rpc-1.nine-chronicles.com/graphql",
         "https://heimdall-rpc-2.nine-chronicles.com/graphql"
@@ -49,11 +69,21 @@
         "http://heimdall-rpc-1.nine-chronicles.com:31238",
         "http://heimdall-rpc-2.nine-chronicles.com:31238"
       ],
-      "market.rest": ["https://api.9capi.com/marketProviderHeimdall"],
-      "world-boss.rest": ["http://heimdall-world-boss.9c.gg"],
-      "patrol-reward.gql": ["https://heimdall-patrol.9c.gg/graphql"],
-      "arena.rest": ["https://heimdall-arena.9c.gg"],
-      "arena.gql": ["https://heimdall-arena.9c.gg"],
+      "market.rest": [
+        "https://api.9capi.com/marketProviderHeimdall"
+      ],
+      "world-boss.rest": [
+        "http://heimdall-world-boss.9c.gg"
+      ],
+      "patrol-reward.gql": [
+        "https://heimdall-patrol.9c.gg/graphql"
+      ],
+      "arena.rest": [
+        "https://heimdall-arena.9c.gg"
+      ],
+      "arena.gql": [
+        "https://heimdall-arena.9c.gg"
+      ],
       "mimir.gql": [
         "https://heimdall-mimir.9c.gg/graphql"
       ]
@@ -66,4 +96,3 @@
     }
   }
 ]
-
