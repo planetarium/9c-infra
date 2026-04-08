@@ -110,6 +110,13 @@ prometheus:
               group: thor-validator
             targets:
               - validator-5.thor.svc.cluster.local:80
+      - job_name: longhorn
+        metrics_path: /metrics
+        scrape_interval: 30s
+        scrape_timeout: 10s
+        static_configs:
+          - targets:
+            - longhorn-backend.longhorn-system.svc.cluster.local:9500
 datadog:
   enabled: false
   clusterAgent:
