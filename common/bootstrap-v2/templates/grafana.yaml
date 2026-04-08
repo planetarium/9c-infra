@@ -78,7 +78,7 @@ spec:
                     labels:
                       severity: critical
                     annotations:
-                      summary: "Volume {{`{{ $labels.pvc }}`}} faulted (node: {{`{{ $labels.node }}`}}, ns: {{`{{ $labels.pvc_namespace }}`}})"
+                      summary: 'Volume {{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} faulted (node: {{`{{ "{{" }} $labels.node {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}})'
                   - uid: longhorn-volume-degraded
                     title: Longhorn Volume Degraded
                     condition: C
@@ -100,7 +100,7 @@ spec:
                     labels:
                       severity: warning
                     annotations:
-                      summary: "Volume {{`{{ $labels.pvc }}`}} degraded (node: {{`{{ $labels.node }}`}}, ns: {{`{{ $labels.pvc_namespace }}`}})"
+                      summary: 'Volume {{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} degraded (node: {{`{{ "{{" }} $labels.node {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}})'
         persistence:
           enabled: true
         initChownData:
