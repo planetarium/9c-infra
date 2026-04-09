@@ -20,11 +20,6 @@ spec:
     targetRevision: 10.1.2
     helm:
       values: |-
-        envValueFrom:
-          SLACK_WEBHOOK_URL:
-            secretKeyRef:
-              name: slack
-              key: slack-webhook-url
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -37,76 +32,6 @@ spec:
               url: http://prometheus-server.monitoring.svc.cluster.local
               access: proxy
               isDefault: true
-        alerting:
-          contactpoints.yaml:
-            apiVersion: 1
-            contactPoints:
-              - orgId: 1
-                name: 9c-mainnet-slack
-                receivers:
-                  - uid: 9c-mainnet-slack
-                    type: slack
-                    settings:
-                      url: $SLACK_WEBHOOK_URL
-          policies.yaml:
-            apiVersion: 1
-            policies:
-              - orgId: 1
-                receiver: 9c-mainnet-slack
-          rules.yaml:
-            apiVersion: 1
-            groups:
-              - orgId: 1
-                name: longhorn-alerts
-                folder: Infrastructure
-                interval: 1m
-                rules:
-                  - uid: longhorn-volume-faulted
-                    title: Longhorn Volume Faulted
-                    noDataState: OK
-                    condition: C
-                    data:
-                      - refId: A
-                        relativeTimeRange: { from: 300, to: 0 }
-                        datasourceUid: prometheus
-                        model:
-                          expr: longhorn_volume_robustness == 3
-                          instant: true
-                      - refId: C
-                        datasourceUid: __expr__
-                        model:
-                          type: threshold
-                          expression: A
-                          conditions:
-                            - evaluator: { type: gt, params: [0] }
-                    for: 1m
-                    labels:
-                      severity: critical
-                    annotations:
-                      summary: 'Volume {{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} faulted (node: {{`{{ "{{" }} $labels.node {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}})'
-                  - uid: longhorn-volume-degraded
-                    title: Longhorn Volume Degraded
-                    noDataState: OK
-                    condition: C
-                    data:
-                      - refId: A
-                        relativeTimeRange: { from: 300, to: 0 }
-                        datasourceUid: prometheus
-                        model:
-                          expr: longhorn_volume_robustness == 2
-                          instant: true
-                      - refId: C
-                        datasourceUid: __expr__
-                        model:
-                          type: threshold
-                          expression: A
-                          conditions:
-                            - evaluator: { type: gt, params: [0] }
-                    for: 5m
-                    labels:
-                      severity: warning
-                    annotations:
-                      summary: 'Volume {{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} degraded (node: {{`{{ "{{" }} $labels.node {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}})'
         persistence:
           enabled: true
         initChownData:
