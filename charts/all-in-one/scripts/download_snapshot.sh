@@ -22,8 +22,13 @@ function download_with_retry() {
   local save_dir=$2
   local output_file=$3
 
-  aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true --continue=true \
-    --show-console-readout=false --summary-interval=30 --max-tries=10
+  if ! aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true --continue=true \
+    --show-console-readout=false --summary-interval=30 --max-tries=10; then
+    echo "[WARN] Download failed with --continue=true, retrying without resume..."
+    rm -f "$2/$3" "$2/$3.aria2"
+    aria2c "$url" -d "$2" -o "$3" -s1 --force-sequential=true \
+      --show-console-readout=false --summary-interval=30 --max-tries=10
+  fi
 }
 
 function download_partition() {
@@ -97,11 +102,21 @@ function download_partition() {
     done
     wait
 
+    for part_file in "$save_dir/$filename.$extension.part"*; do
+      if [ -f "$part_file.aria2" ]; then
+        echo "[ERROR] Incomplete part download: $part_file"
+        return 1
+      fi
+    done
+
     cat "$save_dir/$filename.$extension.part"* > "$save_dir/$filename.$extension"
     rm "$save_dir/$filename.$extension.part"*
   else
     local extension=$(test_ext "$archive_path")
-    download_with_retry "$archive_path" "$save_dir" "$filename.$extension"
+    if ! download_with_retry "$archive_path" "$save_dir" "$filename.$extension"; then
+      echo "[ERROR] Failed to download $archive_path"
+      return 1
+    fi
   fi
 
   echo "$save_dir/$filename.$extension"
@@ -202,11 +217,17 @@ if [ $download_option = "true" ]; then
 
       if [[ "$rollback_snapshot" = "true" ]] || [[ "$has_archive" = "false" ]] || [[ "$has_archive_part" = "true" ]]; then
         echo "Downloading $base_url/$snapshot_zip_filename"
-        download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"
+        if ! download_partition "$base_url" "$snapshot_zip_filename" "$snapshot_partition_dir"; then
+          echo "[ERROR] Failed to download $snapshot_zip_filename"
+          exit 1
+        fi
       fi
 
       echo "Extracting $snapshot_zip_filename"
-      bsdtar -C "$save_dir" -xf "$snapshot_partition_dir/$snapshot_zip_filename."*z*
+      if ! bsdtar -C "$save_dir" -xf "$snapshot_partition_dir/$snapshot_zip_filename."*z*; then
+        echo "[ERROR] Failed to extract $snapshot_zip_filename"
+        exit 1
+      fi
     done
 
     mkdir -p "$snapshot_state_dir"
