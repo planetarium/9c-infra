@@ -67,11 +67,13 @@
       ],
       "headless.gql": [
         "https://heimdall-rpc-1.nine-chronicles.com/graphql",
-        "https://heimdall-rpc-2.nine-chronicles.com/graphql"
+        "https://heimdall-rpc-2.nine-chronicles.com/graphql",
+        "https://heimdall6.9capi.com/graphql"
       ],
       "headless.grpc": [
         "http://heimdall-rpc-1.nine-chronicles.com:31238",
-        "http://heimdall-rpc-2.nine-chronicles.com:31238"
+        "http://heimdall-rpc-2.nine-chronicles.com:31238",
+        "http://heimdall6.9capi.com:31238"
       ],
       "market.rest": [
         "https://api.9capi.com/marketProviderHeimdall"
