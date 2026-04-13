@@ -6,8 +6,8 @@
     "genesisUri": "https://release.nine-chronicles.com/genesis-block-9c-main",
     "9cscanUrl": "https://internal.9cscan.com",
     "rpcEndpoints": {
-      "headless.gql": [],
-      "headless.grpc": [],
+      "headless.gql": ["https://odin-internal-rpc.nine-chronicles.com/graphql"],
+      "headless.grpc": ["http://odin-internal-rpc-1.nine-chronicles.com:31238"],
       "arena.rest": ["https://odin-internal-arena.9c.gg"],
       "arena.gql": ["https://odin-internal-arena.9c.gg"],
       "mimir.gql": ["https://odin-internal-mimir.9c.gg/graphql"],
