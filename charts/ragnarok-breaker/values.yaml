@@ -13,7 +13,7 @@ workers:
   scheduler:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "src/entry/scheduler.entry.ts"]
+    command: ["bun", "run", "worker/src/entry/scheduler.entry.ts"]
     resources:
       requests:
         cpu: 100m
@@ -24,7 +24,7 @@ workers:
   gameValidator:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "src/entry/game-worker.entry.ts"]
+    command: ["bun", "run", "worker/src/entry/game-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
@@ -35,7 +35,7 @@ workers:
   gameplayValidator:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "src/entry/gameplay-worker.entry.ts"]
+    command: ["bun", "run", "worker/src/entry/gameplay-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
@@ -46,7 +46,7 @@ workers:
   summonValidator:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "src/entry/summon-worker.entry.ts"]
+    command: ["bun", "run", "worker/src/entry/summon-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
@@ -57,7 +57,7 @@ workers:
   leagueSnapshot:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "src/entry/league-worker.entry.ts"]
+    command: ["bun", "run", "worker/src/entry/league-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
