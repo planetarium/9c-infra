@@ -1,4 +1,4 @@
-externalSecretKey: ragnarok-breaker/staging
+externalSecretKey: ragnarok-breaker/production
 
 image:
   repository: planetariumhq/ragnarok-breaker-worker

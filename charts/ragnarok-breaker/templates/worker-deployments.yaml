@@ -1,0 +1,42 @@
+{{- range $name, $w := .Values.workers }}
+{{- if $w.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ragnarok-breaker-{{ $name | kebabcase }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: ragnarok-breaker-{{ $name | kebabcase }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: {{ $w.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ragnarok-breaker-{{ $name | kebabcase }}
+  template:
+    metadata:
+      labels:
+        app: ragnarok-breaker-{{ $name | kebabcase }}
+    spec:
+      containers:
+        - name: worker
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          command:
+            {{- toYaml $w.command | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            {{- toYaml $w.resources | nindent 12 }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+---
+{{- end }}
+{{- end }}

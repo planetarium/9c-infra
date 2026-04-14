@@ -1,13 +1,65 @@
-server:
-  enabled: false
-  replicas: 1
-  image:
-    repository: ""
-    tag: ""
+externalSecretKey: ""
 
-backoffice:
-  enabled: false
-  replicas: 1
-  image:
-    repository: ""
-    tag: ""
+image:
+  repository: planetariumhq/ragnarok-breaker-worker
+  tag: develop
+  pullPolicy: IfNotPresent
+
+workers:
+  scheduler:
+    enabled: true
+    replicas: 1
+    command: ["bun", "run", "src/entry/scheduler.entry.ts"]
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  gameValidator:
+    enabled: true
+    replicas: 1
+    command: ["bun", "run", "src/entry/game-worker.entry.ts"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+  gameplayValidator:
+    enabled: true
+    replicas: 1
+    command: ["bun", "run", "src/entry/gameplay-worker.entry.ts"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+  summonValidator:
+    enabled: true
+    replicas: 1
+    command: ["bun", "run", "src/entry/summon-worker.entry.ts"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+  leagueSnapshot:
+    enabled: true
+    replicas: 1
+    command: ["bun", "run", "src/entry/league-worker.entry.ts"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+nodeSelector: {}

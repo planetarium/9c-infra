@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ragnarok-breaker
-description: ragnarok-breaker
+description: Ragnarok Breaker BullMQ workers (scheduler + validators + league snapshot)
 type: application
 version: 0.1.0
 appVersion: 0.1.0
