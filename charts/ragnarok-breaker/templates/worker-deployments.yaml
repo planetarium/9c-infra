@@ -21,6 +21,10 @@ spec:
       labels:
         app: ragnarok-breaker-{{ $name | kebabcase }}
     spec:
+      {{- if $.Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret.name }}
+      {{- end }}
       containers:
         - name: worker
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"

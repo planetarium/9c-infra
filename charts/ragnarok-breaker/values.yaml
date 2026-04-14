@@ -5,6 +5,10 @@ image:
   tag: develop
   pullPolicy: IfNotPresent
 
+imagePullSecret:
+  name: ragnarok-breaker-regcred
+  secretKey: ""
+
 workers:
   scheduler:
     enabled: true

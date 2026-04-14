@@ -3,3 +3,6 @@ externalSecretKey: ragnarok-breaker/staging
 image:
   repository: planetariumhq/ragnarok-breaker-worker
   tag: develop
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
