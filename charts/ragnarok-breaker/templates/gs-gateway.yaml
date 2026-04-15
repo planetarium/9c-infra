@@ -1,0 +1,74 @@
+{{- if .Values.gsGateway.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: gs-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: gs-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gs-gateway
+spec:
+  type: ClusterIP
+  selector:
+    app: gs-gateway
+  ports:
+    - name: http
+      port: {{ .Values.gsGateway.port }}
+      targetPort: {{ .Values.gsGateway.port }}
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gs-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: gs-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gs-gateway
+spec:
+  replicas: {{ .Values.gsGateway.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gs-gateway
+  template:
+    metadata:
+      labels:
+        app: gs-gateway
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: gs-gateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.gsGateway.command | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.gsGateway.port }}
+          env:
+            - name: GS_GATEWAY_HOST
+              value: {{ .Values.gsGateway.host | quote }}
+            - name: GS_GATEWAY_PORT
+              value: {{ .Values.gsGateway.port | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          livenessProbe:
+            {{- toYaml .Values.gsGateway.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.gsGateway.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.gsGateway.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

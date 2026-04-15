@@ -25,12 +25,28 @@ spec:
       imagePullSecrets:
         - name: {{ $.Values.imagePullSecret.name }}
       {{- end }}
+      {{- if and $.Values.gsGateway.enabled $.Values.gsGateway.waitForReady }}
+      initContainers:
+        - name: wait-for-gs-gateway
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until wget -q -O /dev/null {{ $.Values.gsGateway.serviceUrl }}/health; do
+                echo "waiting for gs-gateway..."
+                sleep 2
+              done
+      {{- end }}
       containers:
         - name: worker
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           command:
             {{- toYaml $w.command | nindent 12 }}
+          env:
+            - name: GS_GATEWAY_URL
+              value: {{ $.Values.gsGateway.serviceUrl | quote }}
           envFrom:
             - secretRef:
                 name: ragnarok-breaker-env
