@@ -133,8 +133,7 @@ seed:
 
   nodeSelector:
   - node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '1'
-    node.kubernetes.io/type: seed
+    node.kubernetes.io/node-index: '3'
 
 validator:
   count: 1
