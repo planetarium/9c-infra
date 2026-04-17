@@ -43,6 +43,7 @@ provider = AWS
 access_key_id = $ORIG_AWS_ACCESS_KEY_ID
 secret_access_key = $ORIG_AWS_SECRET_ACCESS_KEY
 region = us-east-2
+storage_class = GLACIER_IR
 no_check_bucket = true
 EOF
 
