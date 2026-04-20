@@ -10,7 +10,7 @@ set -euo pipefail
 #   --env          default: both. Pick staging/production/both.
 #   --separate     when --env both, open two PRs instead of one combined PR.
 #
-# Requires: git, gh (authenticated), yq (v4+).
+# Requires: git, gh (authenticated).
 
 usage() {
   sed -n '3,13p' "$0" | sed 's/^# \{0,1\}//'
@@ -81,7 +81,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 # Prereq checks.
-for bin in git gh yq; do
+for bin in git gh; do
   command -v "$bin" >/dev/null 2>&1 || { echo "error: missing binary: $bin" >&2; exit 1; }
 done
 if [[ -n "$(git status --porcelain)" ]]; then
@@ -147,7 +147,18 @@ bump_and_pr() {
   git checkout -b "$branch" "$REMOTE/main" --quiet
   for e in "${envs[@]}"; do
     file="$(file_for_env "$e")"
-    TAG="$TAG" yq -i '.image.tag = strenv(TAG)' "$file"
+    # In-place edit the top-level `image.tag:` line only. This keeps blank
+    # lines and formatting untouched (unlike yq, which reflows the file).
+    # The pattern matches a two-space-indented `tag:` which is the tag key
+    # under `image:` in the overlay values files.
+    if ! grep -qE '^  tag: ' "$file"; then
+      echo "error: cannot find 'image.tag' line in $file" >&2
+      git checkout "$ORIGINAL_BRANCH" --quiet
+      git branch -D "$branch" --quiet
+      exit 1
+    fi
+    sed -i.bak -E "s|^(  tag:) .*|\\1 ${TAG}|" "$file"
+    rm -f "${file}.bak"
     git add "$file"
   done
 

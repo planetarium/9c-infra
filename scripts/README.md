@@ -45,8 +45,8 @@ production overlays and open a PR against `planetarium/9c-infra`.
 - `--env`: default `both`. Pick `staging`, `production`, or `both`
 - `--separate`: when `--env both`, open two PRs instead of one combined PR
 
-Requires `git`, `gh` (authenticated via `gh auth login`), and `yq` v4+. Works
-from any directory if symlinked into `PATH`:
+Requires `git` and `gh` (authenticated via `gh auth login`). Works from any
+directory if symlinked into `PATH`:
 
 ```bash
 ln -s "$PWD/scripts/bump-rb-worker.sh" ~/bin/bump-rb-worker
