@@ -210,6 +210,9 @@ function make_and_upload_snapshot() {
 
   if [ "$PRESERVE_PARTITIONS" = "false" ]; then
     rm "$LATEST_SNAPSHOT" "$LATEST_STATE" "$LATEST_METADATA"
+    # Sentinel tracks whether output files are present; clear it alongside files
+    # so a subsequent create_snapshot run does not incorrectly skip as "recent".
+    rm -f "$OUTPUT_DIR/.snapshot-created"
   fi
   rm -rf "$METADATA_DIR"
 }
