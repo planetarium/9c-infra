@@ -85,11 +85,12 @@ snapshot:
 
   partition:
     enabled: true
+    schedule: "0 0 */3 * *"
     suspend: false
     zstd: false
     volume:
       create: false
-      name: remote-headless-data-5-remote-headless-5-0
+      name: snapshot-partition-data-baremetal
     dp:
       enabled: false
 
@@ -97,15 +98,19 @@ snapshot:
     requests:
       cpu: "5"
       memory: 28Gi
+    limits:
+      memory: 32Gi
 
   uploadResources:
     requests:
       cpu: "1"
       memory: 4Gi
+    limits:
+      memory: 6Gi
 
   nodeSelector:
-    node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '5'
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: '1'
 
 # if you want to delete PVC with the volume provisioned together, set this value "Delete"
 volumeReclaimPolicy: "Retain"
