@@ -1,0 +1,147 @@
+# pt6 odin overlay: only the snapshot CronJob runs here.
+# Inherits image tags, appProtocolVersion, peerStrings, etc. from
+# /9c-main/network/{general,odin}.yaml via multiplanetary sharedValueFiles.
+
+gateway:
+  enabled: false
+
+# pt6 does not provision the remote-headless / data-provider PVCs that
+# 9c-main lists under global.storage.
+global:
+  storage: []
+  resetSnapshot: false
+  rollbackSnapshot: false
+
+# Disable components that pt6 does not run.
+seed:
+  count: 0
+
+validator:
+  count: 0
+
+remoteHeadless:
+  count: 0
+
+volumePreloader:
+  count: 0
+
+dataProvider:
+  enabled: false
+
+marketService:
+  enabled: false
+
+arenaService:
+  enabled: false
+  backoffice:
+    enabled: false
+
+iap:
+  backoffice:
+    enabled: false
+
+seasonpass:
+  enabled: false
+
+mimir:
+  enabled: false
+  gql:
+    enabled: false
+  diffWorker:
+    enabled: false
+  blockWorker:
+    enabled: false
+
+stateMigrationService:
+  enabled: false
+
+bridgeService:
+  enabled: false
+
+bridgeServiceApi:
+  enabled: false
+
+bridge:
+  enabled: false
+
+worldBoss:
+  enabled: false
+
+remoteActionEvaluatorHeadless:
+  enabled: false
+
+blockIntervalNotifier:
+  enabled: false
+
+rudolfService:
+  enabled: false
+
+rudolfCurrencyNotifier:
+  enabled: false
+
+acc:
+  enabled: false
+  redis:
+    enabled: false
+
+fullState:
+  enabled: false
+
+jwtHeadless:
+  enabled: false
+
+lib9cStateService:
+  enabled: false
+
+dataProviderDataMigrator:
+  enabled: false
+
+# Snapshot CronJob is the only workload on pt6.
+snapshot:
+  slackChannel: "9c-mainnet"
+  sourceLabel: "pt6"
+  # Publish to a test prefix during parallel validation against baremetal-1.
+  # Cut over to "main/partition" in a follow-up PR once outputs are verified.
+  path: "main/partition-pt6"
+
+  fullSnapshot:
+    enabled: false
+    suspend: false
+
+  partitionReset:
+    enabled: false
+    suspend: false
+
+  partition:
+    enabled: true
+    schedule: "0 0 */1 * *"
+    suspend: false
+    zstd: false
+    volume:
+      # PVC is pre-created manually on pt6 with storageClass=local-path.
+      create: false
+      name: snapshot-partition-pt6
+    dp:
+      enabled: false
+
+  resources:
+    requests:
+      cpu: "4"
+      memory: 20Gi
+    limits:
+      memory: 24Gi
+
+  uploadResources:
+    requests:
+      cpu: "1"
+      memory: 4Gi
+    limits:
+      memory: 6Gi
+
+  # Override 9c-main inherited selector (baremetal-1) to target pt6's label.
+  # pt6 RKE2 node-label config must set node-index=6 and type=baremetal.
+  nodeSelector:
+    node.kubernetes.io/type: baremetal
+    node.kubernetes.io/node-index: "6"
+
+volumeReclaimPolicy: "Retain"

@@ -1,0 +1,13 @@
+targetRevision: main
+path: 9c-pt6
+destinationName: 9c-pt6
+
+# Inherit 9c-main odin base values (image tags, appProtocolVersion,
+# peerStrings, etc.) so RH image bumps propagate without touching pt6 files.
+# Per-path files (9c-pt6/network/{general,odin}.yaml) override specifics.
+sharedValueFiles:
+  - /9c-main/network/general.yaml
+  - /9c-main/network/odin.yaml
+
+network:
+  - odin
