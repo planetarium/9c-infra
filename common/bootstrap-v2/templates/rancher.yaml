@@ -1,4 +1,4 @@
-{{- if eq .Values.provider "RKE2" }}
+{{- if and (eq .Values.provider "RKE2") .Values.rancher.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

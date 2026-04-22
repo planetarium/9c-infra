@@ -47,6 +47,15 @@ prometheus:
 grafana:
   serviceAnnotations:
 
+metallb:
+  enabled: true
+
+longhorn:
+  enabled: true
+
+rancher:
+  enabled: true
+
 loki:
   enabled: false
   bucketName: ""

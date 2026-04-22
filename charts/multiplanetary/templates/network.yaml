@@ -23,10 +23,17 @@ spec:
     path: charts/all-in-one
     helm:
       valueFiles:
+      {{- range $f := $.Values.sharedValueFiles }}
+      - {{ $f }}
+      {{- end }}
       - /{{ $.Values.path }}/network/general.yaml
       - /{{ $.Values.path }}/network/{{ $name }}.yaml
   destination:
+    {{- if $.Values.destinationName }}
+    name: {{ $.Values.destinationName }}
+    {{- else }}
     server: https://kubernetes.default.svc
+    {{- end }}
     namespace: {{ $name }}
 ---
 {{- end }}

@@ -1,4 +1,13 @@
 clusterName: "9c-internal-v2"
 
+# Optional ArgoCD cluster alias (set via `argocd cluster add --name <alias>`).
+# When empty, Applications target the in-cluster API server.
+destinationName: ""
+
+# Optional list of value-file paths included before the per-network files.
+# Useful for overlay clusters (e.g. pt6) that inherit base values from an
+# existing cluster directory and only override specific keys.
+sharedValueFiles: []
+
 network:
   - "sample1"
