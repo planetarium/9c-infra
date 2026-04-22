@@ -85,6 +85,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - name: PLUGIN_PATH
               value: "/output"
@@ -132,6 +134,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             {{- with $.Values.snapshot.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
@@ -411,6 +415,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             - name: CF_DISTRIBUTION_ID
               valueFrom:
                 secretKeyRef:
