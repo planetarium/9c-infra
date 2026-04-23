@@ -67,9 +67,20 @@ snapshot:
     bypassCopystates: false
     zstd: false
     compressionLevel: 0
+    # Volume layout for the snapshot CronJob.
+    #   "single" (default) — one PVC mounted at /data (existing 9c-main setup)
+    #   "hybrid"           — two PVCs: chainDataVolume (SSD) at /data/headless,
+    #                        outputVolume (HDD) at /data/snapshots + /data/snapshot_logs
+    volumeMode: "single"
     volume:
       create: false
       name: snapshot-volume-partition
+    # Used only when volumeMode=hybrid. PVCs must be pre-created on the
+    # target cluster with appropriate storageClassName.
+    chainDataVolume:
+      name: snapshot-chain-data
+    outputVolume:
+      name: snapshot-output
     dp:
       enabled: false
   preload:
