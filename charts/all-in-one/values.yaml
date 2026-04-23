@@ -6,6 +6,12 @@ clusterName: "9c-sample"
 logLevel: "debug"
 provider: "AWS"
 
+# Per-network MetalLB IPAddressPool. Emitted only when provider=RKE2 and
+# the cluster actually runs MetalLB. Turn off on single-node clusters or
+# any RKE2 environment without MetalLB installed.
+metallb:
+  enabled: true
+
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
