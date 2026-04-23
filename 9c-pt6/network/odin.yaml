@@ -117,10 +117,17 @@ snapshot:
     schedule: "0 0 */1 * *"
     suspend: false
     zstd: false
+    # Hybrid layout: RocksDB chain on SSD (fast random I/O), snapshot zip on HDD
+    # (large sequential writes, preserves SSD life). Both PVCs pre-created
+    # manually on pt6 (see plan file Phase 2e).
+    volumeMode: hybrid
+    chainDataVolume:
+      name: snapshot-chain-data-pt6
+    outputVolume:
+      name: snapshot-output-pt6
     volume:
-      # PVC is pre-created manually on pt6 with storageClass=local-path.
       create: false
-      name: snapshot-partition-pt6
+      name: snapshot-partition-pt6  # unused in hybrid mode
     dp:
       enabled: false
 
