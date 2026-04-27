@@ -25,14 +25,21 @@ function senderr() {
     --data '{"text":"[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at create_snapshot.sh."}' "$SLACK_WEBHOOK"
 }
 
-# Skip if recent snapshot already exists (restart safety for initContainer restarts)
+# Skip if recent snapshot already exists (restart safety for initContainer restarts).
+# Require both sentinel freshness AND actual output files on disk — sentinel alone
+# can lie when a prior upload ran with PRESERVE_PARTITIONS=false, which deletes the
+# snapshot files but leaves the sentinel behind, causing the next run to skip
+# create_snapshot and then fail in upload_snapshot with "No snapshot files found".
 if [ -f "$SENTINEL" ]; then
   created_at=$(cat "$SENTINEL")
   now=$(date +%s)
   age=$(( now - created_at ))
-  if [ "$age" -lt 43200 ]; then
-    echo "[INFO] Recent snapshot exists (${age}s ago), skipping creation."
+  if [ "$age" -lt 43200 ] && ls "$PARTITION_DIR"/*.z* >/dev/null 2>&1 && ls "$STATE_DIR"/*.z* >/dev/null 2>&1; then
+    echo "[INFO] Recent snapshot exists (${age}s ago) with files, skipping creation."
     exit 0
+  elif [ "$age" -lt 43200 ]; then
+    echo "[WARN] Sentinel is fresh (${age}s) but output files missing; running create_snapshot anyway."
+    rm -f "$SENTINEL"
   fi
 fi
 
