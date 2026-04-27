@@ -6,6 +6,12 @@ clusterName: "9c-sample"
 logLevel: "debug"
 provider: "AWS"
 
+# Per-network MetalLB IPAddressPool. Emitted only when provider=RKE2 and
+# the cluster actually runs MetalLB. Turn off on single-node clusters or
+# any RKE2 environment without MetalLB installed.
+metallb:
+  enabled: true
+
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
@@ -67,14 +73,28 @@ snapshot:
     bypassCopystates: false
     zstd: false
     compressionLevel: 0
+    # Volume layout for the snapshot CronJob.
+    #   "single" (default) — one PVC mounted at /data (existing 9c-main setup)
+    #   "hybrid"           — two PVCs: chainDataVolume (SSD) at /data/headless,
+    #                        outputVolume (HDD) at /data/snapshots + /data/snapshot_logs
+    volumeMode: "single"
     volume:
       create: false
       name: snapshot-volume-partition
+    # Used only when volumeMode=hybrid. PVCs must be pre-created on the
+    # target cluster with appropriate storageClassName.
+    chainDataVolume:
+      name: snapshot-chain-data
+    outputVolume:
+      name: snapshot-output
     dp:
       enabled: false
   preload:
     forceCutoffBlock: ""
   slackChannel: "bot-test"
+  # Optional label prepended to Slack webhook messages (e.g. "pt6") to
+  # distinguish snapshot source when running the same job on multiple nodes.
+  sourceLabel: ""
   image: "planetariumhq/ninechronicles-snapshot:git-fc194ebdc47ec4ebe14f97f5ea01ff97b0a276d6"
   uploadResources: {}
 

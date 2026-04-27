@@ -9,6 +9,7 @@ HOME="/app"
 APP_PROTOCOL_VERSION=$1
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
 SLACK_WEBHOOK=$2
+SOURCE_PREFIX="${SNAPSHOT_SOURCE_LABEL:+[$SNAPSHOT_SOURCE_LABEL] }"
 CF_DISTRIBUTION_ID=$3
 SNAPSHOT_PATH=$4
 STORE_PATH="$6"
@@ -53,7 +54,7 @@ EOF
 function senderr() {
   echo "$1"
   curl -X POST -H 'Content-type: application/json' \
-    --data '{"text":"[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' "$SLACK_WEBHOOK"
+    --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' "$SLACK_WEBHOOK"
 }
 
 function retry_until_success() {

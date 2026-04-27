@@ -8,6 +8,7 @@ apt-get -y install curl
 HOME="/app"
 APP_PROTOCOL_VERSION=$1
 SLACK_WEBHOOK=$2
+SOURCE_PREFIX="${SNAPSHOT_SOURCE_LABEL:+[$SNAPSHOT_SOURCE_LABEL] }"
 OUTPUT_DIR="${3:-/data/snapshots}"
 STORE_PATH="${4:-/data/headless}"
 BYPASS_COPYSTATES="${5:-false}"
@@ -22,7 +23,7 @@ SENTINEL="$OUTPUT_DIR/.snapshot-created"
 function senderr() {
   echo "$1"
   curl -X POST -H 'Content-type: application/json' \
-    --data '{"text":"[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at create_snapshot.sh."}' "$SLACK_WEBHOOK"
+    --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at create_snapshot.sh."}' "$SLACK_WEBHOOK"
 }
 
 # Skip if recent snapshot already exists (restart safety for initContainer restarts).

@@ -51,12 +51,7 @@ spec:
               mountPath: /bin/download_snapshot.sh
               readOnly: true
               subPath: download_snapshot.sh
-            - name: snapshot-volume-partition
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-              mountPath: /output
-            {{- else }}
-              mountPath: /data
-            {{- end }}
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
           {{- end }}
           - name: preload-headless
             {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
@@ -85,6 +80,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
             - name: PLUGIN_PATH
               value: "/output"
@@ -101,12 +98,7 @@ spec:
               mountPath: /bin/preload_headless.sh
               readOnly: true
               subPath: preload_headless.sh
-            - name: snapshot-volume-partition
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-              mountPath: /output
-            {{- else }}
-              mountPath: /data
-            {{- end }}
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
           - name: create-snapshot
             image: {{ $.Values.snapshot.image }}
             command:
@@ -132,6 +124,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             {{- with $.Values.snapshot.resources }}
             resources:
               {{- toYaml . | nindent 14 }}
@@ -141,12 +135,7 @@ spec:
               mountPath: /bin/create_snapshot.sh
               readOnly: true
               subPath: create_snapshot.sh
-            - name: snapshot-volume-partition
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-              mountPath: /output
-            {{- else }}
-              mountPath: /data
-            {{- end }}
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
           {{- if $.Values.snapshot.partition.dp.enabled }}
           - name: set-date
             image: debian:latest
@@ -217,12 +206,7 @@ spec:
             volumeMounts:
               - name: date-config
                 mountPath: /etc/config
-              - name: snapshot-volume-partition
-                {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-                mountPath: /output
-                {{- else }}
-                mountPath: /data
-                {{- end }}
+              {{- include "snapshot.partition.volumeMounts" . | nindent 14 }}
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
             imagePullPolicy: Always
@@ -372,12 +356,7 @@ spec:
               {{- toYaml . | nindent 14 }}
             {{- end }}
             volumeMounts:
-            - name: snapshot-volume-partition
-              {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-              mountPath: /output
-              {{- else }}
-              mountPath: /data
-              {{- end }}
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
           {{- end }}
           containers:
           - name: upload-snapshot
@@ -411,6 +390,8 @@ spec:
                 secretKeyRef:
                   name: slack
                   key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
             - name: CF_DISTRIBUTION_ID
               valueFrom:
                 secretKeyRef:
@@ -437,12 +418,7 @@ spec:
             - name: aws-keys
               mountPath: /secret
               readOnly: true
-            - name: snapshot-volume-partition
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-              mountPath: /output
-            {{- else }}
-              mountPath: /data
-            {{- end }}
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
           restartPolicy: OnFailure
           {{- with $.Values.snapshot.nodeSelector }}
           nodeSelector:
@@ -462,13 +438,5 @@ spec:
               secretName: aws-keys
           - name: date-config
             emptyDir: {}
-          - name: snapshot-volume-partition
-            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
-            hostPath:
-              path: /output
-              type: Directory
-            {{- else }}
-            persistentVolumeClaim:
-              claimName: {{ $.Values.snapshot.partition.volume.name }}
-            {{- end }}
+          {{- include "snapshot.partition.volumes" . | nindent 10 }}
 {{- end }}

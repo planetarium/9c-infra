@@ -10,6 +10,7 @@ SLACK_WEBHOOK=$2
 STORE_PATH=$3
 FORCE_CUTOFF_BLOCK=$5
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
+SOURCE_PREFIX="${SNAPSHOT_SOURCE_LABEL:+[$SNAPSHOT_SOURCE_LABEL] }"
 GENESIS_BLOCK_PATH="{{ $.Values.global.genesisBlockPath }}"
 TRUSTED_APP_PROTOCOL_VERSION_SIGNER="{{ $.Values.global.trustedAppProtocolVersionSigner }}"
 
@@ -28,7 +29,7 @@ mkdir -p "$HEADLESS_LOG_DIR"
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"[K8S] '$1'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
 }
 
 function preload_complete() {
