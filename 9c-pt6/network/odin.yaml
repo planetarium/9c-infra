@@ -5,6 +5,11 @@
 gateway:
   enabled: false
 
+# pt6 is a standalone single-node cluster without MetalLB installed. Skip
+# emitting the per-network IPAddressPool.
+metallb:
+  enabled: false
+
 # pt6 does not provision the remote-headless / data-provider PVCs that
 # 9c-main lists under global.storage.
 global:
