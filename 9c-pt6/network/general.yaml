@@ -5,6 +5,11 @@ externalSecret:
   enabled: true
   provider: AWS
   prefix: "9c-main-v2"
+  # pt6 runs no validator/seed/jwt-headless, so the private-keys Secret has
+  # no consumer. Suppress its rendering to avoid a SecretSyncedError on the
+  # IAM role (least-privilege policy excludes 9c-main-v2/private-keys).
+  privateKeys:
+    enabled: false
 
 # pt6 is a standalone single-node cluster; MetalLB-backed load balancers
 # from 9c-main are not reachable. Override to empty.
