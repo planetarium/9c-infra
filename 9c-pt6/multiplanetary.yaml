@@ -2,6 +2,11 @@ targetRevision: main
 path: 9c-pt6
 destinationName: 9c-pt6
 
+# 9c-main 의 bootstrap 이 이미 `odin` 이라는 이름의 Application 을 같은 argocd
+# 네임스페이스에 만들기 때문에 prefix 로 격리. 이 prefix 가 없으면 두 Application
+# 이 같은 이름으로 충돌해 SharedResourceWarning 발생.
+applicationNamePrefix: pt6-
+
 # Inherit 9c-main odin base values (image tags, appProtocolVersion,
 # peerStrings, etc.) so RH image bumps propagate without touching pt6 files.
 # Per-path files (9c-pt6/network/{general,odin}.yaml) override specifics.
