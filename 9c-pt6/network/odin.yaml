@@ -105,9 +105,7 @@ dataProviderDataMigrator:
 snapshot:
   slackChannel: "9c-mainnet"
   sourceLabel: "pt6"
-  # Publish to a test prefix during parallel validation against baremetal-1.
-  # Cut over to "main/partition" in a follow-up PR once outputs are verified.
-  path: "main/partition-pt6"
+  path: "main/partition"
 
   fullSnapshot:
     enabled: false
