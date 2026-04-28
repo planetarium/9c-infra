@@ -22,6 +22,7 @@ spec:
     targetRevision: {{ $.Values.targetRevision | default "main" }}
     path: charts/all-in-one
     helm:
+      releaseName: {{ $name }}
       valueFiles:
       {{- range $f := $.Values.sharedValueFiles }}
       - {{ $f }}
