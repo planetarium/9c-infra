@@ -57,6 +57,11 @@ externalSecret:
   prefix: ""
   separator: /
   provider: ""
+  # Per-secret render toggles (default true). Set false to suppress that
+  # specific Secret/ExternalSecret manifest, useful when a cluster does not
+  # run any consumer of the secret (e.g. snapshot-only deployments).
+  privateKeys:
+    enabled: true
 
 snapshot:
   downloadSnapshot: false
