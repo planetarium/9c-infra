@@ -15,5 +15,5 @@ spec:
     path: charts/multiplanetary
     targetRevision: main
     helm:
-      valuesFiles:
+      valueFiles:
         - /9c-pt6/multiplanetary.yaml

@@ -9,5 +9,11 @@ destinationName: ""
 # existing cluster directory and only override specific keys.
 sharedValueFiles: []
 
+# Optional prefix prepended to the generated child Application name. Required
+# when an overlay cluster reuses a network identifier (e.g. "odin") that is
+# already managed by another bootstrap on the same Argo CD instance, to avoid
+# Application-name collisions in the argocd namespace.
+applicationNamePrefix: ""
+
 network:
   - "sample1"
