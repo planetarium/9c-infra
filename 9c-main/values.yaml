@@ -23,8 +23,6 @@ certManager:
   dnsNames:
     - "nine-chronicles.com"
     - "*.nine-chronicles.com"
-    - "nine-chronicles.dev"
-    - "*.nine-chronicles.dev"
     - "*.planetarium.network"
     - "*.planetarium.team"
     - "*.9c.gg"
