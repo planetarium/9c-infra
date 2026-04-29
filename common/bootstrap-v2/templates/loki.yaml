@@ -87,7 +87,7 @@ spec:
             per_stream_rate_limit_burst: 48MB
 
           ingester:
-            concurrent_flushes: 32
+            concurrent_flushes: 4
             chunk_block_size: 262144
             chunk_target_size: 1572864
             chunk_encoding: "snappy"
