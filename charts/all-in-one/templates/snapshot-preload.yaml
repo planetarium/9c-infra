@@ -1,0 +1,75 @@
+{{- if $.Values.snapshot.preload.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: snapshot-preload
+  namespace: {{ $.Release.Name }}
+spec:
+  concurrencyPolicy: Forbid
+  suspend: {{ $.Values.snapshot.preload.suspend }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  schedule: {{ $.Values.snapshot.preload.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          {{- with $.Values.snapshot.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+          - name: preload-headless
+            {{- if and $.Values.remoteHeadless.image.repository $.Values.remoteHeadless.image.tag }}
+            image: {{ $.Values.remoteHeadless.image.repository }}:{{ $.Values.remoteHeadless.image.tag }}
+            {{- else }}
+            image: {{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag }}
+            {{- end }}
+            command:
+            - /bin/preload_headless.sh
+            args:
+            - $(APP_PROTOCOL_VERSION_KEY)
+            - $(SLACK_WEBHOOK_URL)
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - /output/headless
+            - /output/snapshot_logs
+            {{- else }}
+            - /data/headless
+            - /data/snapshot_logs
+            {{- end }}
+            - '{{ $.Values.snapshot.preload.forceCutoffBlock }}'
+            env:
+            - name: APP_PROTOCOL_VERSION_KEY
+              value: {{ $.Values.global.appProtocolVersion }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slack-webhook-url
+            - name: SNAPSHOT_SOURCE_LABEL
+              value: {{ $.Values.snapshot.sourceLabel | quote }}
+            {{- if and (eq $.Values.provider "RKE2") (eq $.Release.Name "heimdall") }}
+            - name: PLUGIN_PATH
+              value: "/output"
+            {{- else }}
+            - name: PLUGIN_PATH
+              value: "/data"
+            {{- end }}
+            {{- with $.Values.snapshot.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: script-volume
+              mountPath: /bin/preload_headless.sh
+              readOnly: true
+              subPath: preload_headless.sh
+            {{- include "snapshot.partition.volumeMounts" . | nindent 12 }}
+          volumes:
+          - name: script-volume
+            configMap:
+              defaultMode: 0700
+              name: {{ .Release.Name }}-snapshot-script-partition
+          {{- include "snapshot.partition.volumes" . | nindent 10 }}
+{{- end }}

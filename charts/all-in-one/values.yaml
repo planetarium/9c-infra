@@ -96,6 +96,14 @@ snapshot:
       enabled: false
   preload:
     forceCutoffBlock: ""
+    # Standalone preload-only CronJob. When enabled, runs the preload-headless
+    # step on its own schedule (no create-snapshot, no upload). Useful to keep
+    # the chain RocksDB current between full snapshot runs so the next full
+    # job's catchup phase stays fast — e.g. daily preload + weekly full upload
+    # to cut R2/S3 storage cost while preserving chain freshness.
+    enabled: false
+    schedule: "0 0 * * 1-6"
+    suspend: false
   slackChannel: "bot-test"
   # Optional label prepended to Slack webhook messages (e.g. "pt6") to
   # distinguish snapshot source when running the same job on multiple nodes.

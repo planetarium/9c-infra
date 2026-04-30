@@ -115,9 +115,18 @@ snapshot:
     enabled: false
     suspend: false
 
+  # Daily preload-only run (Mon-Sat) keeps RocksDB current without uploading,
+  # so Sunday's full job's catchup phase stays minutes instead of hours.
+  preload:
+    enabled: true
+    schedule: "0 0 * * 1-6"
+    suspend: false
+
   partition:
     enabled: true
-    schedule: "0 0 */1 * *"
+    # Weekly full snapshot (Sunday 00:00 UTC). Cuts R2/S3 storage cost by ~7×
+    # versus daily, while the daily preload above keeps the chain warm.
+    schedule: "0 0 * * 0"
     suspend: false
     zstd: false
     # Hybrid layout: RocksDB chain on SSD (fast random I/O), snapshot zip on HDD
