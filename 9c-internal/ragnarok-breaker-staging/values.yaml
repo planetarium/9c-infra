@@ -6,3 +6,13 @@ image:
 
 imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
+
+yggGateway:
+  enabled: true
+  externalSecretKey: ygg-gateway/staging
+  image:
+    tag: git-015c233d8a48c63292e6e565f5ea9639bec8f721
+  httpRoute:
+    enabled: true
+    hostnames:
+      - ygg-gateway-staging.9c.gg

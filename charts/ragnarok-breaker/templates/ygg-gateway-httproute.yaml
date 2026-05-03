@@ -1,4 +1,4 @@
-{{- if and .Values.httpRoute.enabled .Values.httpRoute.hostnames }}
+{{- if and .Values.yggGateway.enabled .Values.yggGateway.httpRoute.enabled .Values.yggGateway.httpRoute.hostnames }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -10,14 +10,14 @@ metadata:
     app.kubernetes.io/component: ygg-gateway
 spec:
   parentRefs:
-    - name: {{ .Values.httpRoute.gatewayName }}
-      namespace: {{ .Values.httpRoute.gatewayNamespace }}
+    - name: {{ .Values.yggGateway.httpRoute.gatewayName }}
+      namespace: {{ .Values.yggGateway.httpRoute.gatewayNamespace }}
       sectionName: web
-    - name: {{ .Values.httpRoute.gatewayName }}
-      namespace: {{ .Values.httpRoute.gatewayNamespace }}
+    - name: {{ .Values.yggGateway.httpRoute.gatewayName }}
+      namespace: {{ .Values.yggGateway.httpRoute.gatewayNamespace }}
       sectionName: websecure
   hostnames:
-    {{- range .Values.httpRoute.hostnames }}
+    {{- range .Values.yggGateway.httpRoute.hostnames }}
     - {{ . | quote }}
     {{- end }}
   rules:
@@ -27,5 +27,5 @@ spec:
             value: /
       backendRefs:
         - name: ygg-gateway
-          port: {{ .Values.service.port }}
+          port: {{ .Values.yggGateway.service.port }}
 {{- end }}

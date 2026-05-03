@@ -98,4 +98,47 @@ workers:
         cpu: "1"
         memory: 1Gi
 
+# Yggdrasil redemption gateway (Bun/Hono HTTP service from JiwonRB workspace).
+# Stateless, separate Docker image, exposed externally via Gateway API HTTPRoute.
+# Reuses the chart's SecretStore + imagePullSecret; needs its own externalSecretKey
+# because the env vars (YGG_*, V8_*, AGENT8_*) don't overlap with the worker secret.
+yggGateway:
+  enabled: false
+  externalSecretKey: ""
+  image:
+    repository: planetariumhq/ragnarok-breaker-ygg-gateway
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    port: 8787
+  deployment:
+    replicas: 1
+    port: 8787
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8787
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8787
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 3
+  httpRoute:
+    enabled: false
+    hostnames: []
+    gatewayName: traefik-gateway
+    gatewayNamespace: traefik
+
 nodeSelector: {}
