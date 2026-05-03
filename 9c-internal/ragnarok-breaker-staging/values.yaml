@@ -2,7 +2,7 @@ externalSecretKey: ragnarok-breaker/staging
 
 image:
   repository: planetariumhq/ragnarok-breaker-worker
-  tag: git-c670795f809242ce2bccab7447cf41fe801cc192
+  tag: git-015c233d8a48c63292e6e565f5ea9639bec8f721
 
 imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
