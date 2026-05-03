@@ -34,7 +34,7 @@ spec:
               value: {{ .Values.yggGateway.deployment.port | quote }}
           envFrom:
             - secretRef:
-                name: ygg-gateway-env
+                name: ragnarok-breaker-env
           livenessProbe:
             {{- toYaml .Values.yggGateway.deployment.livenessProbe | nindent 12 }}
           readinessProbe:

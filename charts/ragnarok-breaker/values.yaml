@@ -100,11 +100,11 @@ workers:
 
 # Yggdrasil redemption gateway (Bun/Hono HTTP service from JiwonRB workspace).
 # Stateless, separate Docker image, exposed externally via Gateway API HTTPRoute.
-# Reuses the chart's SecretStore + imagePullSecret; needs its own externalSecretKey
-# because the env vars (YGG_*, V8_*, AGENT8_*) don't overlap with the worker secret.
+# Reuses the chart's SecretStore, imagePullSecret, and the shared
+# `ragnarok-breaker-env` Secret — so the YGG_*/V8_*/AGENT8_* env vars must be
+# added to the same SecretsManager key as the worker secret (.externalSecretKey).
 yggGateway:
   enabled: false
-  externalSecretKey: ""
   image:
     repository: planetariumhq/ragnarok-breaker-ygg-gateway
     tag: develop
