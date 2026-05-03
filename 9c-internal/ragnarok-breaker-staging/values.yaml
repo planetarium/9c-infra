@@ -10,7 +10,7 @@ imagePullSecret:
 yggGateway:
   enabled: true
   image:
-    tag: git-899994ea8fc411ffd34d5a81f16d569104bf69b5
+    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
   httpRoute:
     enabled: true
     hostnames:
