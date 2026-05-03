@@ -1,3 +1,4 @@
+{{- if .Values.yggGateway.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: ygg-gateway
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: {{ .Values.yggGateway.deployment.replicas }}
   selector:
     matchLabels:
       app: ygg-gateway
@@ -23,25 +24,26 @@ spec:
       {{- end }}
       containers:
         - name: ygg-gateway
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.yggGateway.image.repository }}:{{ .Values.yggGateway.image.tag }}"
+          imagePullPolicy: {{ .Values.yggGateway.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.deployment.port }}
+              containerPort: {{ .Values.yggGateway.deployment.port }}
           env:
             - name: PORT
-              value: {{ .Values.deployment.port | quote }}
+              value: {{ .Values.yggGateway.deployment.port | quote }}
           envFrom:
             - secretRef:
                 name: ygg-gateway-env
           livenessProbe:
-            {{- toYaml .Values.deployment.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.yggGateway.deployment.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.deployment.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.yggGateway.deployment.readinessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.deployment.resources | nindent 12 }}
+            {{- toYaml .Values.yggGateway.deployment.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
+{{- end }}
