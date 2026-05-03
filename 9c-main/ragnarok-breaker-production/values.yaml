@@ -9,7 +9,6 @@ imagePullSecret:
 
 yggGateway:
   enabled: true
-  externalSecretKey: ygg-gateway/production
   image:
     tag: git-015c233d8a48c63292e6e565f5ea9639bec8f721
   deployment:
