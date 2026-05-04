@@ -1,0 +1,71 @@
+{{- $count := int $.Values.remoteHeadless.count -}}
+{{- if and $.Values.remoteHeadless.scheduledRestart.enabled (gt $count 0) }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: remote-headless-restarter
+  namespace: {{ $.Release.Name }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: remote-headless-restarter
+  namespace: {{ $.Release.Name }}
+rules:
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: remote-headless-restarter
+  namespace: {{ $.Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: remote-headless-restarter
+subjects:
+- kind: ServiceAccount
+  name: remote-headless-restarter
+  namespace: {{ $.Release.Name }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: remote-headless-restart
+  namespace: {{ $.Release.Name }}
+spec:
+  schedule: {{ $.Values.remoteHeadless.scheduledRestart.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: remote-headless-restarter
+          restartPolicy: Never
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:1.31
+            command:
+            - sh
+            - -c
+            - |
+              set -e
+              {{- range $i := until $count }}
+              {{- $idx := add $i 1 }}
+              echo "[$(date -u +%FT%TZ)] rollout restart statefulset/remote-headless-{{ $idx }}"
+              kubectl -n {{ $.Release.Name }} rollout restart statefulset/remote-headless-{{ $idx }}
+              kubectl -n {{ $.Release.Name }} rollout status statefulset/remote-headless-{{ $idx }} --timeout=10m
+              {{- end }}
+              echo "[$(date -u +%FT%TZ)] all remote-headless StatefulSets restarted"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+{{- end }}
