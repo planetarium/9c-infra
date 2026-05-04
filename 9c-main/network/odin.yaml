@@ -201,6 +201,10 @@ remoteHeadless:
   count: 3
   replicas: 1
 
+  scheduledRestart:
+    enabled: true
+    schedule: "0 22 * * *"
+
   useTurnServer: false
 
   hosts:

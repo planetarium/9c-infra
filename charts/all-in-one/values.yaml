@@ -235,6 +235,13 @@ validator:
 
 remoteHeadless:
   count: 1
+  # Periodic rolling restart of all remote-headless StatefulSets to mitigate
+  # NetMQ broadcast timeout accumulation (Libplanet hardcoded 1s timeout +
+  # per-broadcast DealerSocket lifecycle). Disabled by default; enable per
+  # network in 9c-main/network/{heimdall,odin}.yaml.
+  scheduledRestart:
+    enabled: false
+    schedule: "0 22 * * *"
   image:
     # follow global image
     repository: ""
