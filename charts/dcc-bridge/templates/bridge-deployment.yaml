@@ -1,0 +1,40 @@
+{{- if .Values.bridge.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dcc-bridge-worker
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: dcc-bridge-worker
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  # Hard-coded to 1 — running multiple bridge workers would race on
+  # FetchLog updates and double-process Ethereum burn events.
+  replicas: 1
+  strategy:
+    # rolling-update with 2 replicas during transition is unsafe; recreate
+    # ensures only one worker is alive at any time.
+    type: Recreate
+  selector:
+    matchLabels:
+      app: dcc-bridge-worker
+  template:
+    metadata:
+      labels:
+        app: dcc-bridge-worker
+    spec:
+      serviceAccountName: {{ $.Release.Name }}
+      containers:
+        - name: worker
+          image: "{{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}"
+          envFrom:
+            - secretRef:
+                name: dcc-bridge-env
+          resources:
+            {{- toYaml .Values.bridge.resources | nindent 12 }}
+      {{- with .Values.bridge.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

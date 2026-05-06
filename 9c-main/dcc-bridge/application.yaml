@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dcc-bridge
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dcc-bridge
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    targetRevision: main
+    path: charts/dcc-bridge
+    helm:
+      valueFiles:
+        - /9c-main/dcc-bridge/values.yaml
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

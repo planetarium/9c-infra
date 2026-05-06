@@ -1,0 +1,47 @@
+# Override these in 9c-main/dcc-bridge/values.yaml.
+externalSecretKey: ""
+
+serviceAccount:
+  # IAM Role used by both api and bridge for KMS Sign (via IRSA).
+  roleArn: ""
+
+api:
+  enabled: false
+  image:
+    repository: planetariumhq/dcc-bridge
+    tag: ""
+  replicas: 1
+  hostnames: []
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  nodeSelector: {}
+
+  cronStatus:
+    # Replaces the EventBridge rule `dcc-bridge-lambda-event-rule`
+    # (cron(0/1 * * * ? *) on AWS = every minute UTC)
+    enabled: false
+    schedule: "* * * * *"
+  cronReport:
+    # Replaces the EventBridge rule `dcc-bridge-lambda-report-event-rule`
+    # (cron(30 1 * * ? *) on AWS = daily 01:30 UTC)
+    enabled: false
+    schedule: "30 1 * * *"
+
+bridge:
+  enabled: false
+  image:
+    repository: planetariumhq/dcc-bridge
+    tag: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  nodeSelector: {}

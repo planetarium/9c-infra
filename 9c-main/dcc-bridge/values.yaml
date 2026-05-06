@@ -1,0 +1,52 @@
+externalSecretKey: 9c-main-v2/dcc-bridge
+
+serviceAccount:
+  # Existing role from EC2; trust policy was extended to allow RKE2 OIDC,
+  # so the same role is reused for k8s pods until full cutover.
+  roleArn: arn:aws:iam::319679068466:role/dcc-bridge-kms-user
+
+api:
+  # Phase A: bring up api/ first against existing RDS; bridge stays on EC2.
+  enabled: true
+  image:
+    repository: planetariumhq/dcc-bridge
+    # Tag updated automatically by docker.yml workflow on push to main/develop.
+    # Initial value will be filled in once PR #43 lands in develop.
+    tag: api-PLACEHOLDER
+  replicas: 1
+  hostnames: []  # Filled in only after Phase A verification (e.g., bridge-api.dccnft.com)
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  nodeSelector:
+    node.kubernetes.io/type: general
+
+  cronStatus:
+    # Off during Phase A — EC2 + EventBridge cron still running upstream.
+    # Flip on at cutover after the EventBridge rule is disabled.
+    enabled: false
+    schedule: "* * * * *"
+  cronReport:
+    enabled: false
+    schedule: "30 1 * * *"
+
+bridge:
+  # Phase A: keep bridge worker on EC2 to avoid double-processing Ethereum
+  # burn events. Set to true only at cutover (after stopping the EC2 worker).
+  enabled: false
+  image:
+    repository: planetariumhq/dcc-bridge
+    tag: bridge-PLACEHOLDER
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  nodeSelector:
+    node.kubernetes.io/type: general
