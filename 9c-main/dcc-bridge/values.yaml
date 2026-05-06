@@ -26,18 +26,21 @@ api:
     node.kubernetes.io/type: general
 
   cronStatus:
-    # Off during Phase A — EC2 + EventBridge cron still running upstream.
-    # Flip on at cutover after the EventBridge rule is disabled.
-    enabled: false
+    # Cutover: EventBridge `dcc-bridge-lambda-event-rule` was disabled, k8s
+    # CronJob now takes over the per-minute /status check.
+    enabled: true
     schedule: "* * * * *"
   cronReport:
-    enabled: false
+    # Cutover: same — EventBridge `dcc-bridge-lambda-report-event-rule` was
+    # disabled, k8s CronJob takes over the daily report.
+    enabled: true
     schedule: "30 1 * * *"
 
 bridge:
-  # Phase A: keep bridge worker on EC2 to avoid double-processing Ethereum
-  # burn events. Set to true only at cutover (after stopping the EC2 worker).
-  enabled: false
+  # Cutover: EC2 worker stopped, k8s bridge worker takes over Ethereum burn
+  # event polling and 9c transaction signing. Replicas hard-coded to 1 in
+  # the chart with strategy=Recreate to prevent double-processing.
+  enabled: true
   image:
     repository: planetariumhq/dcc-bridge
     tag: bridge-dc8edccaa0013da82169daf6224ad61194d2030c
