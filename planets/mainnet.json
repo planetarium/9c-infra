@@ -27,7 +27,7 @@
         "http://odin6.9capi.com:31238"
       ],
       "market.rest": [
-        "https://api.9capi.com/marketProviderOdin"
+        "https://b.9capi.com/marketProviderOdin"
       ],
       "world-boss.rest": [
         "https://odin-world-boss.9c.gg"
@@ -76,7 +76,7 @@
         "http://heimdall6.9capi.com:31238"
       ],
       "market.rest": [
-        "https://api.9capi.com/marketProviderHeimdall"
+        "https://b.9capi.com/marketProviderHeimdall"
       ],
       "world-boss.rest": [
         "http://heimdall-world-boss.9c.gg"
