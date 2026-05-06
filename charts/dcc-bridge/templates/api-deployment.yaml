@@ -1,0 +1,37 @@
+{{- if .Values.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dcc-bridge-api
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: dcc-bridge-api
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      app: dcc-bridge-api
+  template:
+    metadata:
+      labels:
+        app: dcc-bridge-api
+    spec:
+      serviceAccountName: {{ $.Release.Name }}
+      containers:
+        - name: api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: dcc-bridge-env
+          resources:
+            {{- toYaml .Values.api.resources | nindent 12 }}
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

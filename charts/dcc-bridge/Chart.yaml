@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dcc-bridge
+description: D:CC NFT Ethereum bridge (api + worker) for Nine Chronicles
+type: application
+version: 0.1.0
+appVersion: 0.1.0

@@ -1,0 +1,59 @@
+{{- if and .Values.api.enabled .Values.api.cronStatus.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dcc-bridge-api-status
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  schedule: {{ .Values.api.cronStatus.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: caller
+              image: curlimages/curl:8.10.1
+              command: ["sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  curl -fsS -m 30 -A "dcc-bridge-cron" \
+                    "http://dcc-bridge-api.{{ $.Release.Namespace }}.svc.cluster.local/status"
+{{- end }}
+---
+{{- if and .Values.api.enabled .Values.api.cronReport.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dcc-bridge-api-report
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  schedule: {{ .Values.api.cronReport.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: caller
+              image: curlimages/curl:8.10.1
+              command: ["sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  curl -fsS -m 60 -A "dcc-bridge-cron" \
+                    "http://dcc-bridge-api.{{ $.Release.Namespace }}.svc.cluster.local/report"
+{{- end }}
