@@ -28,6 +28,8 @@ certManager:
     - "*.9c.gg"
     - "petpop.fun"
     - "*.petpop.fun"
+    - "dccnft.com"
+    - "*.dccnft.com"
   issuer:
     email: devops@planetariumhq.com
 traefik:
