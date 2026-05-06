@@ -10,9 +10,9 @@ api:
   enabled: true
   image:
     repository: planetariumhq/dcc-bridge
-    # Tag updated automatically by docker.yml workflow on push to main/develop.
-    # Initial value will be filled in once PR #43 lands in develop.
-    tag: api-PLACEHOLDER
+    # Bumped by hand following the petpop pattern when a new SHA is published
+    # by docker.yml on dcc-bridge develop/main.
+    tag: api-dc8edccaa0013da82169daf6224ad61194d2030c
   replicas: 1
   hostnames: []  # Filled in only after Phase A verification (e.g., bridge-api.dccnft.com)
   resources:
@@ -40,7 +40,7 @@ bridge:
   enabled: false
   image:
     repository: planetariumhq/dcc-bridge
-    tag: bridge-PLACEHOLDER
+    tag: bridge-dc8edccaa0013da82169daf6224ad61194d2030c
   resources:
     requests:
       cpu: 100m
