@@ -14,7 +14,8 @@ api:
     # by docker.yml on dcc-bridge develop/main.
     tag: api-dc8edccaa0013da82169daf6224ad61194d2030c
   replicas: 1
-  hostnames: []  # Filled in only after Phase A verification (e.g., bridge-api.dccnft.com)
+  hostnames:
+    - bridge-api.dccnft.com
   resources:
     requests:
       cpu: 100m
