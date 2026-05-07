@@ -242,6 +242,11 @@ remoteHeadless:
   scheduledRestart:
     enabled: false
     schedule: "0 22 * * *"
+    # kubectl image used by the rollout-restart CronJob. Default
+    # rancher/kubectl is multi-arch and tracks RKE2's kubectl version.
+    # Bitnami images were excluded because Bitnami restricted Docker Hub
+    # access in 2025-08, breaking earlier `bitnami/kubectl:1.31` pulls.
+    image: "rancher/kubectl:v1.31.14"
   image:
     # follow global image
     repository: ""
