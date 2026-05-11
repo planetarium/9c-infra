@@ -1,14 +1,17 @@
 externalSecretKey: ragnarok-breaker/production
 
-image:
-  repository: planetariumhq/ragnarok-breaker-worker
-  tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
-
 imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
-yggGateway:
-  enabled: true
+worker:
+  image:
+    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
+
+v8Gateway:
+  image:
+    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
+
+yggRedeem:
   image:
     tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
   deployment:
@@ -16,4 +19,13 @@ yggGateway:
   httpRoute:
     enabled: true
     hostnames:
-      - ygg-gateway.9c.gg
+      - ygg-redeem.9c.gg
+
+logStream:
+  image:
+    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
+
+yggQuestWorker:
+  image:
+    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
+  replicas: 2

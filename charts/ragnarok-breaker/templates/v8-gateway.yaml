@@ -1,0 +1,72 @@
+{{- if .Values.v8Gateway.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v8-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: v8-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: v8-gateway
+spec:
+  type: ClusterIP
+  selector:
+    app: v8-gateway
+  ports:
+    - name: http
+      port: {{ .Values.v8Gateway.port }}
+      targetPort: {{ .Values.v8Gateway.port }}
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: v8-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: v8-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: v8-gateway
+spec:
+  replicas: {{ .Values.v8Gateway.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: v8-gateway
+  template:
+    metadata:
+      labels:
+        app: v8-gateway
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: v8-gateway
+          image: "{{ .Values.v8Gateway.image.repository }}:{{ .Values.v8Gateway.image.tag }}"
+          imagePullPolicy: {{ .Values.v8Gateway.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.v8Gateway.port }}
+          env:
+            - name: V8_GATEWAY_HOST
+              value: {{ .Values.v8Gateway.host | quote }}
+            - name: V8_GATEWAY_PORT
+              value: {{ .Values.v8Gateway.port | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          livenessProbe:
+            {{- toYaml .Values.v8Gateway.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.v8Gateway.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.v8Gateway.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

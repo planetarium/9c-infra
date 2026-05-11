@@ -1,0 +1,31 @@
+{{- if and .Values.yggRedeem.enabled .Values.yggRedeem.httpRoute.enabled .Values.yggRedeem.httpRoute.hostnames }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ygg-redeem
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ygg-redeem
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ygg-redeem
+spec:
+  parentRefs:
+    - name: {{ .Values.yggRedeem.httpRoute.gatewayName }}
+      namespace: {{ .Values.yggRedeem.httpRoute.gatewayNamespace }}
+      sectionName: web
+    - name: {{ .Values.yggRedeem.httpRoute.gatewayName }}
+      namespace: {{ .Values.yggRedeem.httpRoute.gatewayNamespace }}
+      sectionName: websecure
+  hostnames:
+    {{- range .Values.yggRedeem.httpRoute.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: ygg-redeem
+          port: {{ .Values.yggRedeem.service.port }}
+{{- end }}
