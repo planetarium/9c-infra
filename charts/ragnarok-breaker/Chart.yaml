@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ragnarok-breaker
-description: Ragnarok Breaker BullMQ workers (scheduler + validators + league snapshot)
+description: Ragnarok Breaker workloads (workers + v8-gateway + ygg-redeem + log-stream + ygg-quest-worker)
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.2.0
+appVersion: 0.2.0

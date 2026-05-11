@@ -1,0 +1,64 @@
+{{- if .Values.yggRedeem.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ygg-redeem
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ygg-redeem
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ygg-redeem
+spec:
+  replicas: {{ .Values.yggRedeem.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: ygg-redeem
+  template:
+    metadata:
+      labels:
+        app: ygg-redeem
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      {{- if and .Values.v8Gateway.enabled .Values.v8Gateway.waitForReady }}
+      initContainers:
+        - name: wait-for-v8-gateway
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until wget -q -O /dev/null {{ .Values.v8Gateway.serviceUrl }}/health; do
+                echo "waiting for v8-gateway..."
+                sleep 2
+              done
+      {{- end }}
+      containers:
+        - name: ygg-redeem
+          image: "{{ .Values.yggRedeem.image.repository }}:{{ .Values.yggRedeem.image.tag }}"
+          imagePullPolicy: {{ .Values.yggRedeem.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.yggRedeem.deployment.port }}
+          env:
+            - name: PORT
+              value: {{ .Values.yggRedeem.deployment.port | quote }}
+            - name: V8_GATEWAY_URL
+              value: {{ .Values.v8Gateway.serviceUrl | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          livenessProbe:
+            {{- toYaml .Values.yggRedeem.deployment.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.yggRedeem.deployment.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.yggRedeem.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

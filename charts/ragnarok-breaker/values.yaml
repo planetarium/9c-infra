@@ -1,45 +1,15 @@
 externalSecretKey: ""
 
-image:
-  repository: planetariumhq/ragnarok-breaker-worker
-  tag: develop
-  pullPolicy: IfNotPresent
-
 imagePullSecret:
   name: ragnarok-breaker-regcred
   secretKey: ""
 
-# Single-instance HTTP proxy that owns the V8 GameServer connection.
-# NEVER scale beyond 1 — duplicate connections cause V8 to kick both with 4009.
-gsGateway:
-  enabled: true
-  replicas: 1
-  command: ["bun", "run", "worker/src/entry/gs-gateway.entry.ts"]
-  host: "0.0.0.0"
-  port: 3000
-  serviceUrl: "http://gs-gateway:3000"
-  waitForReady: true
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: 3000
-    initialDelaySeconds: 30
-    periodSeconds: 15
-    failureThreshold: 3
-  readinessProbe:
-    httpGet:
-      path: /health
-      port: 3000
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    failureThreshold: 3
+# === Worker: single image, 5 entry points ===
+worker:
+  image:
+    repository: planetariumhq/ragnarok-breaker-worker
+    tag: develop
+    pullPolicy: IfNotPresent
 
 workers:
   scheduler:
@@ -98,15 +68,48 @@ workers:
         cpu: "1"
         memory: 1Gi
 
-# Yggdrasil redemption gateway (Bun/Hono HTTP service from JiwonRB workspace).
-# Stateless, separate Docker image, exposed externally via Gateway API HTTPRoute.
-# Reuses the chart's SecretStore, imagePullSecret, and the shared
-# `ragnarok-breaker-env` Secret — so the YGG_*/V8_*/AGENT8_* env vars must be
-# added to the same SecretsManager key as the worker secret (.externalSecretKey).
-yggGateway:
-  enabled: false
+# === V8 GameServer HTTP proxy ===
+# Single-instance HTTP proxy that owns the V8 GameServer connection.
+# NEVER scale beyond 1 — duplicate connections cause V8 to kick both with 4009.
+v8Gateway:
+  enabled: true
   image:
-    repository: planetariumhq/ragnarok-breaker-ygg-gateway
+    repository: planetariumhq/ragnarok-breaker-v8-gateway
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  host: "0.0.0.0"
+  port: 3000
+  serviceUrl: "http://v8-gateway:3000"
+  waitForReady: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    failureThreshold: 3
+
+# === Yggdrasil redemption (Bun/Hono HTTP) ===
+# Stateless; can scale horizontally. Exposed externally via Gateway API HTTPRoute.
+yggRedeem:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker-ygg-redeem
     tag: develop
     pullPolicy: IfNotPresent
   service:
@@ -140,5 +143,38 @@ yggGateway:
     hostnames: []
     gatewayName: traefik-gateway
     gatewayNamespace: traefik
+
+# === V8 SSE log subscriber → BullMQ enqueuer ===
+# Single instance: cursor in Redis, multi-instance would dispatch duplicates.
+logStream:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker-log-stream
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# === BullMQ consumer for ygg-quest-trigger queue ===
+yggQuestWorker:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker-ygg-quest-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 nodeSelector: {}

@@ -1,0 +1,41 @@
+{{- if .Values.logStream.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-stream
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: log-stream
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: log-stream
+spec:
+  replicas: {{ .Values.logStream.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: log-stream
+  template:
+    metadata:
+      labels:
+        app: log-stream
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: log-stream
+          image: "{{ .Values.logStream.image.repository }}:{{ .Values.logStream.image.tag }}"
+          imagePullPolicy: {{ .Values.logStream.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            {{- toYaml .Values.logStream.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
