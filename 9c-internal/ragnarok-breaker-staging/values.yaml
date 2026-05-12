@@ -13,7 +13,7 @@ v8Gateway:
 
 yggRedeem:
   image:
-    tag: git-1b36f5493f1c9fdd76c618c7ea381bcd91026c4e
+    tag: git-711d51162b59f6dc7c732a829664697065bbb1c3
   httpRoute:
     enabled: true
     hostnames:
