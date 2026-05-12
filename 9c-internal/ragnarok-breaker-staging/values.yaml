@@ -25,4 +25,4 @@ logStream:
 
 yggQuestWorker:
   image:
-    tag: git-7a923800ef25c942171a2e251a9814cb6d30d841
+    tag: git-711d51162b59f6dc7c732a829664697065bbb1c3
