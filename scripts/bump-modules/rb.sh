@@ -1,5 +1,7 @@
 # ragnarok-breaker chart — 5 independent images, one per workload.
-# Usage: bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker> <hash>
+# Usage:
+#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker> <hash>
+#   bump-image.sh rb <hash>   # bump every workload at once
 
 COMMIT_SCOPE="ragnarok-breaker"
 STAGING_FILE="9c-internal/ragnarok-breaker-staging/values.yaml"
@@ -38,4 +40,16 @@ resolve_sub_service() {
       return 1
       ;;
   esac
+}
+
+resolve_all_sub_services() {
+  TAG_KEYS=(
+    ".worker.image.tag"
+    ".v8Gateway.image.tag"
+    ".yggRedeem.image.tag"
+    ".logStream.image.tag"
+    ".yggQuestWorker.image.tag"
+  )
+  SERVICE_LABEL="all ragnarok-breaker images"
+  BRANCH_PREFIX="ragnarok-breaker-all"
 }
