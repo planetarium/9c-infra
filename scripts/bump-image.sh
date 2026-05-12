@@ -4,19 +4,26 @@ set -euo pipefail
 # Bump a 9c-infra service's image tag in staging and/or production overlays
 # and open a PR against planetarium/9c-infra.
 #
-# Usage: bump-image.sh <service> <hash> [--env staging|production|both] [--separate]
+# Usage: bump-image.sh <service> [<sub-service>] <hash> [--env staging|production|both] [--separate]
 #
 #   <service>      Service id. Discovered from scripts/bump-modules/<service>.sh.
 #                  Use --help to list available services.
+#   <sub-service>  Required only when the module declares SUB_SERVICES (e.g. `rb`).
+#                  Picks which workload's image.tag to bump.
 #   <hash>         Image tag. Bare hash (e.g. abc123...) or git-<hash>; auto normalized.
 #   --env          default: both. Pick staging/production/both.
 #   --separate     when --env both, open two PRs instead of one combined PR.
 #
 # Requires: git, gh (authenticated), yq (v4+).
 #
-# Adding a new service: create scripts/bump-modules/<id>.sh and set:
+# Adding a new flat service: create scripts/bump-modules/<id>.sh and set:
 #   SERVICE_LABEL, COMMIT_SCOPE, BRANCH_PREFIX,
 #   STAGING_FILE, PRODUCTION_FILE, TAG_KEYS=(".foo.image.tag" ...).
+#
+# Adding a service with multiple workloads: also set
+#   SUB_SERVICES=(name1 name2 ...) and define `resolve_sub_service()` to set
+#   TAG_KEYS / SERVICE_LABEL / BRANCH_PREFIX for the chosen sub-service.
+#   When SUB_SERVICES is non-empty, CLI requires the sub-service positional.
 
 SCRIPT_PATH="${BASH_SOURCE[0]}"
 resolve_self() {
@@ -40,19 +47,36 @@ list_services() {
   done | sort
 }
 
+# Source a module in a subshell and echo its SUB_SERVICES (one per line, empty
+# if none). Used by usage() so we don't pollute the outer shell's vars.
+sub_services_for() {
+  (
+    SUB_SERVICES=()
+    # shellcheck disable=SC1090
+    source "$MODULE_DIR/$1.sh" >/dev/null 2>&1 || exit 0
+    if [[ "${#SUB_SERVICES[@]}" -gt 0 ]]; then
+      printf '%s\n' "${SUB_SERVICES[@]}"
+    fi
+  )
+}
+
 usage() {
-  sed -n '4,15p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'
+  sed -n '4,26p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'
   echo "Available services:"
-  local s
+  local s subs
   for s in $(list_services); do
-    echo "  - $s"
+    subs="$(sub_services_for "$s" | paste -sd ' ' -)"
+    if [[ -n "$subs" ]]; then
+      echo "  - $s (sub: $subs)"
+    else
+      echo "  - $s"
+    fi
   done
 }
 
-SERVICE=""
-HASH=""
 ENV="both"
 SEPARATE=0
+POSITIONALS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --env)
@@ -74,20 +98,14 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      if [[ -z "$SERVICE" ]]; then
-        SERVICE="$1"
-      elif [[ -z "$HASH" ]]; then
-        HASH="$1"
-      else
-        echo "error: unexpected positional arg: $1" >&2
-        exit 1
-      fi
+      POSITIONALS+=("$1")
       shift
       ;;
   esac
 done
 
-if [[ -z "$SERVICE" || -z "$HASH" ]]; then
+SERVICE="${POSITIONALS[0]:-}"
+if [[ -z "$SERVICE" ]]; then
   usage >&2
   exit 1
 fi
@@ -99,16 +117,49 @@ if [[ ! -f "$MODULE_FILE" ]]; then
   exit 1
 fi
 
-# Load service module. Expected to set SERVICE_LABEL, COMMIT_SCOPE,
-# BRANCH_PREFIX, STAGING_FILE, PRODUCTION_FILE, TAG_KEYS=(...).
+# Load service module. May set SUB_SERVICES + resolve_sub_service(), or set
+# SERVICE_LABEL / BRANCH_PREFIX / TAG_KEYS directly (flat module).
+# COMMIT_SCOPE / STAGING_FILE / PRODUCTION_FILE are always required.
 SERVICE_LABEL=""
 COMMIT_SCOPE=""
 BRANCH_PREFIX=""
 STAGING_FILE=""
 PRODUCTION_FILE=""
 TAG_KEYS=()
+SUB_SERVICES=()
 # shellcheck disable=SC1090
 source "$MODULE_FILE"
+
+SUB=""
+HASH=""
+if [[ "${#SUB_SERVICES[@]}" -gt 0 ]]; then
+  SUB="${POSITIONALS[1]:-}"
+  HASH="${POSITIONALS[2]:-}"
+  if [[ -z "$SUB" || -z "$HASH" ]]; then
+    echo "error: service '$SERVICE' requires <sub-service> and <hash>" >&2
+    echo "available sub-services: ${SUB_SERVICES[*]}" >&2
+    exit 1
+  fi
+  if [[ "${#POSITIONALS[@]}" -gt 3 ]]; then
+    echo "error: unexpected positional arg: ${POSITIONALS[3]}" >&2
+    exit 1
+  fi
+  if ! declare -F resolve_sub_service >/dev/null; then
+    echo "error: module $MODULE_FILE declared SUB_SERVICES but no resolve_sub_service()" >&2
+    exit 1
+  fi
+  resolve_sub_service "$SUB" || exit 1
+else
+  HASH="${POSITIONALS[1]:-}"
+  if [[ -z "$HASH" ]]; then
+    usage >&2
+    exit 1
+  fi
+  if [[ "${#POSITIONALS[@]}" -gt 2 ]]; then
+    echo "error: unexpected positional arg: ${POSITIONALS[2]}" >&2
+    exit 1
+  fi
+fi
 
 for var in SERVICE_LABEL COMMIT_SCOPE BRANCH_PREFIX STAGING_FILE PRODUCTION_FILE; do
   if [[ -z "${!var}" ]]; then
@@ -200,15 +251,19 @@ trap restore_branch EXIT
 
 bump_and_pr() {
   local envs=("$@")
-  local branch title file body body_envs e
+  local branch title file body body_envs e workload_part
+  workload_part=""
+  if [[ -n "$SUB" ]]; then
+    workload_part=" $SUB"
+  fi
 
   if [[ "${#envs[@]}" -eq 1 ]]; then
     branch="$(branch_for "${envs[0]}")"
-    title="chore(${COMMIT_SCOPE}): pin ${envs[0]} image to git-$SHORT7"
+    title="chore(${COMMIT_SCOPE}): pin ${envs[0]}${workload_part} image to git-$SHORT7"
     body_envs="${envs[0]}"
   else
     branch="$(branch_for combined)"
-    title="chore(${COMMIT_SCOPE}): bump staging + production image to git-$SHORT7"
+    title="chore(${COMMIT_SCOPE}): bump staging + production${workload_part} image to git-$SHORT7"
     body_envs="staging + production"
   fi
 
