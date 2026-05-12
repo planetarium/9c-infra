@@ -9,7 +9,9 @@ set -euo pipefail
 #   <service>      Service id. Discovered from scripts/bump-modules/<service>.sh.
 #                  Use --help to list available services.
 #   <sub-service>  Required only when the module declares SUB_SERVICES (e.g. `rb`).
-#                  Picks which workload's image.tag to bump.
+#                  Picks which workload's image.tag to bump. Omit to bump every
+#                  sub-service at once (requires the module to define
+#                  resolve_all_sub_services).
 #   <hash>         Image tag. Bare hash (e.g. abc123...) or git-<hash>; auto normalized.
 #   --env          default: both. Pick staging/production/both.
 #   --separate     when --env both, open two PRs instead of one combined PR.
@@ -23,7 +25,9 @@ set -euo pipefail
 # Adding a service with multiple workloads: also set
 #   SUB_SERVICES=(name1 name2 ...) and define `resolve_sub_service()` to set
 #   TAG_KEYS / SERVICE_LABEL / BRANCH_PREFIX for the chosen sub-service.
-#   When SUB_SERVICES is non-empty, CLI requires the sub-service positional.
+#   Optionally define `resolve_all_sub_services()` to enable the
+#   `bump-image.sh <service> <hash>` shortcut (no sub-service), which bumps
+#   every workload in one PR.
 
 SCRIPT_PATH="${BASH_SOURCE[0]}"
 resolve_self() {
@@ -60,14 +64,24 @@ sub_services_for() {
   )
 }
 
+supports_all() {
+  (
+    # shellcheck disable=SC1090
+    source "$MODULE_DIR/$1.sh" >/dev/null 2>&1 || exit 1
+    declare -F resolve_all_sub_services >/dev/null
+  )
+}
+
 usage() {
-  sed -n '4,26p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'
+  sed -n '4,30p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'
   echo "Available services:"
-  local s subs
+  local s subs suffix
   for s in $(list_services); do
     subs="$(sub_services_for "$s" | paste -sd ' ' -)"
     if [[ -n "$subs" ]]; then
-      echo "  - $s (sub: $subs)"
+      suffix=""
+      supports_all "$s" && suffix=", or omit for all"
+      echo "  - $s (sub: $subs$suffix)"
     else
       echo "  - $s"
     fi
@@ -132,23 +146,45 @@ source "$MODULE_FILE"
 
 SUB=""
 HASH=""
+# A "hash-like" token: bare 7–40 hex chars or a git-<hash> form. Used to detect
+# whether the user typed `bump-image.sh rb <hash>` (bulk) vs
+# `bump-image.sh rb <sub> <hash>`.
+is_hashlike() {
+  [[ "$1" =~ ^(git-)?[0-9a-f]{7,40}$ ]]
+}
 if [[ "${#SUB_SERVICES[@]}" -gt 0 ]]; then
   SUB="${POSITIONALS[1]:-}"
   HASH="${POSITIONALS[2]:-}"
-  if [[ -z "$SUB" || -z "$HASH" ]]; then
-    echo "error: service '$SERVICE' requires <sub-service> and <hash>" >&2
-    echo "available sub-services: ${SUB_SERVICES[*]}" >&2
-    exit 1
+  # Bulk shortcut: only one trailing positional and it looks like a hash.
+  # Treat as "all sub-services" if the module supports it.
+  if [[ -z "$HASH" && -n "$SUB" ]] && is_hashlike "$SUB"; then
+    if ! declare -F resolve_all_sub_services >/dev/null; then
+      echo "error: service '$SERVICE' requires <sub-service> and <hash>" >&2
+      echo "available sub-services: ${SUB_SERVICES[*]}" >&2
+      exit 1
+    fi
+    HASH="$SUB"
+    SUB=""
+    resolve_all_sub_services || exit 1
+  else
+    if [[ -z "$SUB" || -z "$HASH" ]]; then
+      echo "error: service '$SERVICE' requires <sub-service> and <hash>" >&2
+      echo "available sub-services: ${SUB_SERVICES[*]}" >&2
+      if declare -F resolve_all_sub_services >/dev/null; then
+        echo "(omit <sub-service> to bump every sub-service at once)" >&2
+      fi
+      exit 1
+    fi
+    if [[ "${#POSITIONALS[@]}" -gt 3 ]]; then
+      echo "error: unexpected positional arg: ${POSITIONALS[3]}" >&2
+      exit 1
+    fi
+    if ! declare -F resolve_sub_service >/dev/null; then
+      echo "error: module $MODULE_FILE declared SUB_SERVICES but no resolve_sub_service()" >&2
+      exit 1
+    fi
+    resolve_sub_service "$SUB" || exit 1
   fi
-  if [[ "${#POSITIONALS[@]}" -gt 3 ]]; then
-    echo "error: unexpected positional arg: ${POSITIONALS[3]}" >&2
-    exit 1
-  fi
-  if ! declare -F resolve_sub_service >/dev/null; then
-    echo "error: module $MODULE_FILE declared SUB_SERVICES but no resolve_sub_service()" >&2
-    exit 1
-  fi
-  resolve_sub_service "$SUB" || exit 1
 else
   HASH="${POSITIONALS[1]:-}"
   if [[ -z "$HASH" ]]; then
@@ -292,7 +328,7 @@ bump_and_pr() {
   git push --quiet -u origin "$branch"
 
   body=$(cat <<EOF
-Pin ${SERVICE_LABEL} image to \`$TAG\` for $body_envs.
+Pin ${SERVICE_LABEL} to \`$TAG\` for $body_envs.
 
 ## Test plan
 - [ ] After sync, pods pull the pinned image successfully
