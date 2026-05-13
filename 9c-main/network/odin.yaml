@@ -201,10 +201,6 @@ remoteHeadless:
   count: 3
   replicas: 1
 
-  env:
-    - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
-      value: "30"
-
   scheduledRestart:
     enabled: true
     schedule: "0 22 * * *"
@@ -243,6 +239,8 @@ remoteHeadless:
       secretKeyRef:
         key: jwt
         name: private-keys
+  - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
+    value: "30"
 
   extraArgs:
   - --tx-quota-per-signer=1
