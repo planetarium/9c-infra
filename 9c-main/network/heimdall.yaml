@@ -175,6 +175,10 @@ remoteHeadless:
   count: 2
   replicas: 1
 
+  env:
+    - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
+      value: "30"
+
   scheduledRestart:
     enabled: true
     schedule: "0 22 * * *"
