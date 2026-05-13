@@ -29,3 +29,7 @@ yggQuestWorker:
   image:
     tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
   replicas: 2
+
+bqAnalyticsWorker:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
