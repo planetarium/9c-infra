@@ -126,9 +126,6 @@ seed:
 
 remoteHeadless:
   count: 1
-  image:
-    repository: planetariumhq/ninechronicles-headless
-    pullPolicy: Always
 
   env:
     - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
