@@ -130,6 +130,10 @@ remoteHeadless:
     repository: planetariumhq/ninechronicles-headless
     pullPolicy: Always
 
+  env:
+    - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
+      value: "30"
+
   hosts:
   - >-
     heimdall-internal-node-1.nine-chronicles.com
