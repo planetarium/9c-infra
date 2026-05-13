@@ -177,4 +177,23 @@ yggQuestWorker:
       cpu: 500m
       memory: 512Mi
 
+# === BullMQ consumer for bq-analytics-events queue → BigQuery insertAll ===
+# Consumes bq_event jobs enqueued by log-stream and writes rows to BigQuery.
+# Independent of V8 gateway. GCP auth via BQ_SERVICE_ACCOUNT_JSON_BASE64
+# (set in the ragnarok-breaker-env ExternalSecret).
+bqAnalyticsWorker:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker-bq-analytics-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
 nodeSelector: {}
