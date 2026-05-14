@@ -27,8 +27,6 @@ global:
     data: 650Gi
   - name: remote-headless-data-4-remote-headless-4-0
     data: 650Gi
-  - name: remote-headless-data-5-remote-headless-5-0
-    data: 650Gi
   - name: data-provider-data
     data: 650Gi
 
