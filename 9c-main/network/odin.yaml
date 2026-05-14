@@ -204,20 +204,16 @@ remoteHeadless:
   hosts:
   - "odin-node-1.nine-chronicles.com"
   - "odin-node-2.nine-chronicles.com"
-  - "odin-node-3.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.194.60
   - 115.68.194.98
-  - 115.68.194.103
 
   nodeSelector:
   - node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '1'
   - node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '2'
-  - node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '4'
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
@@ -250,7 +246,6 @@ remoteHeadless:
     volumeNames:
     - remote-headless-data-4-remote-headless-4-0
     - remote-headless-data-2-remote-headless-2-0
-    - remote-headless-data-3-remote-headless-3-0
 
   tolerations:
   - effect: NoSchedule
