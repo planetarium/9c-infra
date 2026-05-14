@@ -198,7 +198,7 @@ validator:
       memory: 30Gi
 
 remoteHeadless:
-  count: 3
+  count: 2
   replicas: 1
 
   scheduledRestart:
