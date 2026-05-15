@@ -57,7 +57,7 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
-        Rule                         $kubernetes['namespace_name'] ^ragnarok-breaker(-staging)?$ loki_rb.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
+        Rule                         $kubernetes['namespace_name'] ^(ragnarok-breaker|ragnarok-breaker-staging|ragnarok-breaker-(dev|staging|prod)-web[23])$ loki_rb.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_loki_rb
     [OUTPUT]
         Name                         loki
