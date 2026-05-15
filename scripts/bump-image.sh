@@ -13,7 +13,9 @@ set -euo pipefail
 #                  sub-service at once (requires the module to define
 #                  resolve_all_sub_services).
 #   <hash>         Image tag. Bare hash (e.g. abc123...) or git-<hash>; auto normalized.
-#   --env          default: both. Pick staging/production/both.
+#   --env          default: both. Pick dev/staging/production/both/all.
+#                  `both` = staging + production (legacy alias).
+#                  `all`  = dev + staging + production.
 #   --separate     when --env both, open two PRs instead of one combined PR.
 #
 # Requires: git, gh (authenticated), yq (v4+).
@@ -236,16 +238,46 @@ fi
 git fetch "$REMOTE" main --quiet
 
 file_for_env() {
+  # Modules may define *_FILES (bash array) when one env covers multiple
+  # values files — e.g. legacy single-ns values plus per-tier overlays during
+  # a cutover. Falls back to the single *_FILE variable for modules that only
+  # touch one path per env.
   case "$1" in
-    staging)    echo "$STAGING_FILE" ;;
-    production) echo "$PRODUCTION_FILE" ;;
-    *)          echo "error: invalid env: $1" >&2; return 1 ;;
+    dev)
+      if [[ "${#DEV_FILES[@]:-0}" -gt 0 ]]; then
+        printf '%s\n' "${DEV_FILES[@]}"
+      elif [[ -n "${DEV_FILE:-}" ]]; then
+        echo "$DEV_FILE"
+      else
+        echo "error: module did not define DEV_FILES or DEV_FILE for --env dev" >&2
+        return 1
+      fi
+      ;;
+    staging)
+      if [[ "${#STAGING_FILES[@]:-0}" -gt 0 ]]; then
+        printf '%s\n' "${STAGING_FILES[@]}"
+      else
+        echo "$STAGING_FILE"
+      fi
+      ;;
+    production)
+      if [[ "${#PRODUCTION_FILES[@]:-0}" -gt 0 ]]; then
+        printf '%s\n' "${PRODUCTION_FILES[@]}"
+      else
+        echo "$PRODUCTION_FILE"
+      fi
+      ;;
+    *)
+      echo "error: invalid env: $1" >&2
+      return 1
+      ;;
   esac
 }
 
 branch_for() {
-  # $1: staging | production | combined
+  # $1: dev | staging | production | combined
   case "$1" in
+    dev)        echo "${BRANCH_PREFIX}-dev-image-$SHORT8" ;;
     staging)    echo "${BRANCH_PREFIX}-staging-image-$SHORT8" ;;
     production) echo "${BRANCH_PREFIX}-main-image-$SHORT8" ;;
     combined)   echo "${BRANCH_PREFIX}-image-$SHORT8" ;;
@@ -299,8 +331,11 @@ bump_and_pr() {
     body_envs="${envs[0]}"
   else
     branch="$(branch_for combined)"
-    title="chore(${COMMIT_SCOPE}): bump staging + production${workload_part} image to git-$SHORT7"
-    body_envs="staging + production"
+    local envs_join
+    printf -v envs_join '%s + ' "${envs[@]}"
+    envs_join="${envs_join% + }"
+    title="chore(${COMMIT_SCOPE}): bump ${envs_join}${workload_part} image to git-$SHORT7"
+    body_envs="$envs_join"
   fi
 
   if git show-ref --verify --quiet "refs/heads/$branch"; then
@@ -310,9 +345,11 @@ bump_and_pr() {
 
   git checkout -b "$branch" "$REMOTE/main" --quiet
   for e in "${envs[@]}"; do
-    file="$(file_for_env "$e")"
-    update_file_tags "$file"
-    git add "$file"
+    while IFS= read -r file; do
+      [[ -z "$file" ]] && continue
+      update_file_tags "$file"
+      git add "$file"
+    done < <(file_for_env "$e")
   done
 
   if git diff --cached --quiet; then
@@ -344,10 +381,12 @@ EOF
 }
 
 case "$ENV" in
-  staging|production)
+  dev|staging|production)
     bump_and_pr "$ENV"
     ;;
   both)
+    # Legacy alias for staging + production (predates the dev env). Kept so
+    # existing automation keeps working; prefer `all` for full coverage.
     if [[ $SEPARATE -eq 1 ]]; then
       bump_and_pr staging
       git checkout "$ORIGINAL_BRANCH" --quiet
@@ -356,8 +395,19 @@ case "$ENV" in
       bump_and_pr staging production
     fi
     ;;
+  all)
+    if [[ $SEPARATE -eq 1 ]]; then
+      bump_and_pr dev
+      git checkout "$ORIGINAL_BRANCH" --quiet
+      bump_and_pr staging
+      git checkout "$ORIGINAL_BRANCH" --quiet
+      bump_and_pr production
+    else
+      bump_and_pr dev staging production
+    fi
+    ;;
   *)
-    echo "error: invalid --env: $ENV (expected staging|production|both)" >&2
+    echo "error: invalid --env: $ENV (expected dev|staging|production|both|all)" >&2
     exit 1
     ;;
 esac
