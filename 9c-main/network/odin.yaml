@@ -23,15 +23,12 @@ global:
   storage:
   - name: remote-headless-data-1-remote-headless-1-0
     data: 650Gi
-  - name: remote-headless-data-2-remote-headless-2-0
-    data: 650Gi
   - name: remote-headless-data-4-remote-headless-4-0
     data: 650Gi
 
 RKE2:
   loadBalancerIPs:
   - 115.68.194.60/32
-  - 115.68.194.98/32
   - 115.68.194.100/32
   - 115.68.194.103/32
   - 115.68.193.217/32
@@ -49,7 +46,6 @@ gateway:
     - odin-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
-    - name: remote-headless-2
     protocols:
     - web
     - grpc
@@ -192,7 +188,7 @@ validator:
       memory: 30Gi
 
 remoteHeadless:
-  count: 2
+  count: 1
   replicas: 1
 
   scheduledRestart:
@@ -203,17 +199,13 @@ remoteHeadless:
 
   hosts:
   - "odin-node-1.nine-chronicles.com"
-  - "odin-node-2.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.194.60
-  - 115.68.194.98
 
   nodeSelector:
   - node.kubernetes.io/network: odin
     node.kubernetes.io/node-index: '1'
-  - node.kubernetes.io/network: odin
-    node.kubernetes.io/node-index: '2'
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
@@ -245,7 +237,6 @@ remoteHeadless:
   storage:
     volumeNames:
     - remote-headless-data-4-remote-headless-4-0
-    - remote-headless-data-2-remote-headless-2-0
 
   tolerations:
   - effect: NoSchedule
