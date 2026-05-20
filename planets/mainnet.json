@@ -14,7 +14,7 @@
       ],
       "headless.gql": [
         "https://odin-rpc-1.nine-chronicles.com/graphql",
-        "https://odin5.9capi.com/graphql"
+        "https://odin5.9capi.com/graphql",
         "https://odin6.9capi.com/graphql"
       ],
       "headless.grpc": [
