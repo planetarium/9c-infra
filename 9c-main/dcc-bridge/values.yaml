@@ -54,3 +54,12 @@ bridge:
       memory: 1Gi
   nodeSelector:
     node.kubernetes.io/type: general
+
+  cronRetry:
+    # Periodically retries nc_transfer rows that EventObserver left behind
+    # with tx_status NULL (stranded burns), then sweeps fetch_log entries
+    # so the /status check returns STABLE without manual intervention.
+    # NOTE: takes effect only once `bridge.image.tag` is bumped to a SHA
+    # that includes the retry-stuck-transfers script (dcc-bridge#44).
+    enabled: true
+    schedule: "*/30 * * * *"

@@ -45,3 +45,12 @@ bridge:
       cpu: 500m
       memory: 1Gi
   nodeSelector: {}
+
+  cronRetry:
+    # Periodic retry of nc_transfer rows where EventObserver started but
+    # failed before staging the 9c TransferAsset (tx_status / tx_hash NULL).
+    # Re-runs the same KMS+stage path the worker uses, then sweeps fetch_log.
+    enabled: false
+    # 30 min cadence keeps incomplete_block_count from staying nonzero for
+    # long enough that the /status check flips to UNSTABLE.
+    schedule: "*/30 * * * *"

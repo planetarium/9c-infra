@@ -1,0 +1,38 @@
+{{- if and .Values.bridge.enabled .Values.bridge.cronRetry.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dcc-bridge-retry-stuck
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  schedule: {{ .Values.bridge.cronRetry.schedule | quote }}
+  # Forbid prevents two retry runs from racing on the same nc_transfer row;
+  # the script picks rows where tx_status is still NULL, so a concurrent run
+  # could double-stage if it raced after the first run finished transferAsset
+  # but before updateTransferAsStaging committed.
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: {{ $.Release.Name }}
+          restartPolicy: Never
+          containers:
+            - name: retry-stuck
+              image: "{{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}"
+              command: ["node", "--trace-deprecation", "dist/src/scripts/retry-stuck-transfers.js"]
+              envFrom:
+                - secretRef:
+                    name: dcc-bridge-env
+              resources:
+                {{- toYaml .Values.bridge.resources | nindent 16 }}
+          {{- with .Values.bridge.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
