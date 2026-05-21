@@ -18,6 +18,12 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 0
+      # Cap any single run at 5 minutes. KMS sign + NC stageTransaction
+      # normally completes in a few seconds; an excess here means the Job
+      # is hung against an upstream and risks blocking subsequent runs
+      # (concurrencyPolicy: Forbid). Killing it lets the next 30-min run
+      # try again from a clean slate.
+      activeDeadlineSeconds: 300
       template:
         spec:
           serviceAccountName: {{ $.Release.Name }}
