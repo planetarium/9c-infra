@@ -1,0 +1,32 @@
+externalSecretKey: ragnarok-breaker/staging-web3
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+worker:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+v8Gateway:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+logStream:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+yggRedeem:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+  httpRoute:
+    enabled: true
+    hostnames:
+      - ygg-redeem-staging.9c.gg
+
+yggQuestWorker:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+bqAnalyticsWorker:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229

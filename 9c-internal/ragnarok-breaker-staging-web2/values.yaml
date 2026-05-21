@@ -1,0 +1,31 @@
+externalSecretKey: ragnarok-breaker/staging-web2
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+worker:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+v8Gateway:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+logStream:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+# web2: ygg / bigquery workloads are disabled, but image.tag is pinned
+# so `bump-image rb <hash>` (bulk) stays uniform across env×tier.
+yggRedeem:
+  enabled: false
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+yggQuestWorker:
+  enabled: false
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+bqAnalyticsWorker:
+  enabled: false
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229

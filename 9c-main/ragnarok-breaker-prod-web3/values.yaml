@@ -1,0 +1,35 @@
+externalSecretKey: ragnarok-breaker/prod-web3
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+worker:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+
+v8Gateway:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+
+logStream:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+
+yggRedeem:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+  deployment:
+    replicas: 2
+  httpRoute:
+    enabled: true
+    hostnames:
+      - ygg-redeem.9c.gg
+
+yggQuestWorker:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+  replicas: 2
+
+bqAnalyticsWorker:
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5

@@ -2,10 +2,32 @@
 # Usage:
 #   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker> <hash>
 #   bump-image.sh rb <hash>   # bump every workload at once
+#
+# Environments after the env×tier split (dev/staging/prod × web2/web3):
+# each env keyword resolves to multiple values files (legacy single-ns values
+# + the two new tier overlays) so a single bump keeps the cutover-period
+# namespaces in sync. The legacy entries should be dropped from this list
+# once those Applications are deleted.
 
 COMMIT_SCOPE="ragnarok-breaker"
-STAGING_FILE="9c-internal/ragnarok-breaker-staging/values.yaml"
-PRODUCTION_FILE="9c-main/ragnarok-breaker-production/values.yaml"
+DEV_FILES=(
+  9c-internal/ragnarok-breaker-dev-web2/values.yaml
+  9c-internal/ragnarok-breaker-dev-web3/values.yaml
+)
+STAGING_FILES=(
+  9c-internal/ragnarok-breaker-staging/values.yaml
+  9c-internal/ragnarok-breaker-staging-web2/values.yaml
+  9c-internal/ragnarok-breaker-staging-web3/values.yaml
+)
+PRODUCTION_FILES=(
+  9c-main/ragnarok-breaker-production/values.yaml
+  9c-main/ragnarok-breaker-prod-web2/values.yaml
+  9c-main/ragnarok-breaker-prod-web3/values.yaml
+)
+# Single-path fallbacks expected by bump-image.sh's mandatory-vars check.
+DEV_FILE="${DEV_FILES[0]}"
+STAGING_FILE="${STAGING_FILES[0]}"
+PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
 SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker)
 
 resolve_sub_service() {
