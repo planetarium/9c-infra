@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 v8Gateway:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 logStream:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 yggRedeem:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
   deployment:
     replicas: 2
   httpRoute:
@@ -27,16 +27,16 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 bqIngestGateway:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
   httpRoute:
     enabled: true
     hostnames:

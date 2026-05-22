@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 v8Gateway:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 yggRedeem:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
   httpRoute:
     enabled: true
     hostnames:
@@ -21,19 +21,19 @@ yggRedeem:
 
 logStream:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 yggQuestWorker:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 bqAnalyticsWorker:
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
 
 # bqIngestGateway is web3-tier-only; legacy single-ns stays off (tag pinned
 # for bulk-bump uniformity).
 bqIngestGateway:
   enabled: false
   image:
-    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+    tag: git-93b19988cd50aafeb03c4a419fe051de33c3063b
