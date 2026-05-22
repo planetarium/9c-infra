@@ -1,7 +1,11 @@
 # ragnarok-breaker chart — 7 independent images, one per workload.
 # Usage:
 #   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway> <hash>
-#   bump-image.sh rb <hash>   # bump every workload at once
+#   bump-image.sh rb <hash>   # bump every workload at once (except bq-ingest-gateway)
+#
+# bq-ingest-gateway is a single shared instance living only in prod-web3, so it
+# is NOT part of the bulk all-bump and its per-service bump targets prod-web3
+# only. Bump it explicitly: bump-image.sh rb bq-ingest-gateway <hash>
 #
 # Environments after the env×tier split (dev/staging/prod × web2/web3):
 # each env keyword resolves to multiple values files (legacy single-ns values
@@ -66,6 +70,15 @@ resolve_sub_service() {
       TAG_KEYS=(".bqIngestGateway.image.tag")
       SERVICE_LABEL="ragnarok-breaker-bq-ingest-gateway"
       BRANCH_PREFIX="ragnarok-breaker-bq-ingest-gateway"
+      # Single shared instance, prod-web3 only — scope every env keyword to that
+      # one file so any --env (including the default `both`) only touches
+      # prod-web3 and never errors on files that lack the key.
+      DEV_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
+      STAGING_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
+      PRODUCTION_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
+      DEV_FILE="${DEV_FILES[0]}"
+      STAGING_FILE="${STAGING_FILES[0]}"
+      PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
       ;;
     *)
       echo "error: unknown rb sub-service '$1' (available: ${SUB_SERVICES[*]})" >&2
@@ -82,8 +95,9 @@ resolve_all_sub_services() {
     ".logStream.image.tag"
     ".yggQuestWorker.image.tag"
     ".bqAnalyticsWorker.image.tag"
-    ".bqIngestGateway.image.tag"
   )
+  # bqIngestGateway is intentionally excluded — it lives only in prod-web3 and
+  # the bulk bump spans every env file, most of which lack the key.
   SERVICE_LABEL="all ragnarok-breaker images"
   BRANCH_PREFIX="ragnarok-breaker-all"
 }
