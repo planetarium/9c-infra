@@ -1,6 +1,6 @@
-# ragnarok-breaker chart — 6 independent images, one per workload.
+# ragnarok-breaker chart — 7 independent images, one per workload.
 # Usage:
-#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker> <hash>
+#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway> <hash>
 #   bump-image.sh rb <hash>   # bump every workload at once
 #
 # Environments after the env×tier split (dev/staging/prod × web2/web3):
@@ -28,7 +28,7 @@ PRODUCTION_FILES=(
 DEV_FILE="${DEV_FILES[0]}"
 STAGING_FILE="${STAGING_FILES[0]}"
 PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
-SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker)
+SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker bq-ingest-gateway)
 
 resolve_sub_service() {
   case "$1" in
@@ -62,6 +62,11 @@ resolve_sub_service() {
       SERVICE_LABEL="ragnarok-breaker-bq-analytics-worker"
       BRANCH_PREFIX="ragnarok-breaker-bq-analytics-worker"
       ;;
+    bq-ingest-gateway)
+      TAG_KEYS=(".bqIngestGateway.image.tag")
+      SERVICE_LABEL="ragnarok-breaker-bq-ingest-gateway"
+      BRANCH_PREFIX="ragnarok-breaker-bq-ingest-gateway"
+      ;;
     *)
       echo "error: unknown rb sub-service '$1' (available: ${SUB_SERVICES[*]})" >&2
       return 1
@@ -77,6 +82,7 @@ resolve_all_sub_services() {
     ".logStream.image.tag"
     ".yggQuestWorker.image.tag"
     ".bqAnalyticsWorker.image.tag"
+    ".bqIngestGateway.image.tag"
   )
   SERVICE_LABEL="all ragnarok-breaker images"
   BRANCH_PREFIX="ragnarok-breaker-all"
