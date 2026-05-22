@@ -33,3 +33,10 @@ yggQuestWorker:
 bqAnalyticsWorker:
   image:
     tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+
+# bqIngestGateway is web3-tier-only; legacy single-ns stays off (tag pinned
+# for bulk-bump uniformity).
+bqIngestGateway:
+  enabled: false
+  image:
+    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5

@@ -196,4 +196,50 @@ bqAnalyticsWorker:
       cpu: 500m
       memory: 512Mi
 
+# === External payment backend → BigQuery analytics ingest gateway ===
+# Thin HTTP gateway (Bun.serve): POST /v1/events (Bearer auth) validates the
+# envelope and enqueues a bq_event job onto the bq-analytics-events BullMQ
+# queue consumed by bqAnalyticsWorker. Stateless; exposed externally via
+# Gateway API HTTPRoute so the V8 payment backend can push events.
+# web3-only (VX top-ups happen on web3) — disabled in web2 / legacy namespaces.
+# Required env (from the ragnarok-breaker-env ExternalSecret): INGEST_ADMIN_TOKEN,
+# BQ_ANALYTICS_REDIS_URL.
+bqIngestGateway:
+  enabled: true
+  image:
+    repository: planetariumhq/ragnarok-breaker-bq-ingest-gateway
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  deployment:
+    replicas: 1
+    port: 8080
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 3
+  httpRoute:
+    enabled: false
+    hostnames: []
+    gatewayName: traefik-gateway
+    gatewayNamespace: traefik
+
 nodeSelector: {}

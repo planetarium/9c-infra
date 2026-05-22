@@ -41,3 +41,11 @@ yggQuestWorker:
 bqAnalyticsWorker:
   image:
     tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+
+bqIngestGateway:
+  image:
+    tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
+  httpRoute:
+    enabled: true
+    hostnames:
+      - bq-ingest-dev.9c.gg
