@@ -3,19 +3,6 @@ externalSecretKey: ragnarok-breaker/dev-web2
 imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
-# dev: only leagueSnapshot runs; scheduler + 3 validation workers OFF
-# (scheduler is the producer for game/gameplay/summon validation queues —
-# leaving it on with the consumers off would pile up jobs in Redis.)
-workers:
-  scheduler:
-    enabled: false
-  gameValidator:
-    enabled: false
-  gameplayValidator:
-    enabled: false
-  summonValidator:
-    enabled: false
-
 worker:
   image:
     tag: git-c30a3ca55eb0d29347c65e5fd90336e37c71d229
