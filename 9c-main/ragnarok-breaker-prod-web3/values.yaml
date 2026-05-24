@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
 
 v8Gateway:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
 
 logStream:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
 
 yggRedeem:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
   deployment:
     replicas: 2
   httpRoute:
@@ -27,12 +27,12 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-955b6e679f7bd31cf95461b8a4fc31ad9bed31b5
 
 # Single shared ingest gateway for all payment envs (no app_env split) —
 # the only namespace that hosts it. Image tag is bumped on its own via
