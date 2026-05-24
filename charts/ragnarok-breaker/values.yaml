@@ -4,29 +4,23 @@ imagePullSecret:
   name: ragnarok-breaker-regcred
   secretKey: ""
 
-# === Worker: single image, 5 entry points ===
+# === Worker: single image, 3 entry points ===
 worker:
   image:
     repository: planetariumhq/ragnarok-breaker-worker
     tag: develop
     pullPolicy: IfNotPresent
 
+# Anti-cheat validation is log-stream-triggered (MR-C refactor): seed and
+# gameplay validation run as BullMQ consumers fed by log-stream trigger jobs.
+# The old polling scheduler and the separate game/gameplay/summon validators
+# were removed upstream; their entry files no longer exist in the image.
+# All three workers reach V8 only through v8-gateway and share Redis (REDIS_URL).
 workers:
-  scheduler:
+  seedTrigger:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "services/worker/src/entry/scheduler.entry.ts"]
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-  gameValidator:
-    enabled: true
-    replicas: 1
-    command: ["bun", "run", "services/worker/src/entry/game-worker.entry.ts"]
+    command: ["bun", "run", "services/worker/src/entry/seed-trigger-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
@@ -34,21 +28,10 @@ workers:
       limits:
         cpu: "1"
         memory: 1Gi
-  gameplayValidator:
+  gameplayTrigger:
     enabled: true
     replicas: 1
-    command: ["bun", "run", "services/worker/src/entry/gameplay-worker.entry.ts"]
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        cpu: "1"
-        memory: 1Gi
-  summonValidator:
-    enabled: true
-    replicas: 1
-    command: ["bun", "run", "services/worker/src/entry/summon-worker.entry.ts"]
+    command: ["bun", "run", "services/worker/src/entry/gameplay-trigger-worker.entry.ts"]
     resources:
       requests:
         cpu: 200m
