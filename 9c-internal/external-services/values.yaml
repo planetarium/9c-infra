@@ -24,7 +24,7 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-a639ff2a107364c8d3df152e6c3b8e5f8e643c3d"
+    tag: "git-3c29100ff62f588ecf14dd50e48527c55bb02fe3"
 
   api:
     enabled: true
@@ -33,6 +33,26 @@ seasonpass:
       limits:
         cpu: 0.5
         memory: 1Gi
+
+    # /ping is a sync FastAPI route that runs in the same threadpool as
+    # request handlers, so it queues when the threadpool is exhausted by
+    # blocked GQL calls — exactly the hang signature we want to detect.
+    livenessProbe:
+      httpGet:
+        path: /ping
+        port: 8000
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /ping
+        port: 8000
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 2
 
   worker:
     enabled: true

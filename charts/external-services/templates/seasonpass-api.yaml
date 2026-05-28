@@ -71,6 +71,14 @@ spec:
           resources:
             {{- toYaml . | nindent 14 }}
           {{- end }}
+          {{- with $.Values.seasonpass.api.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.seasonpass.api.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - containerPort: 8000
           name: seasonpass-api
