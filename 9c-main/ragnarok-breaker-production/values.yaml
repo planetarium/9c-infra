@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
 
 v8Gateway:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
 
 yggRedeem:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
   deployment:
     replicas: 2
   httpRoute:
@@ -23,13 +23,13 @@ yggRedeem:
 
 logStream:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
 
 yggQuestWorker:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-ed410c759359e5a808810f46c3117dd1642f5b8b
+    tag: git-a8daa0f6859e8d4c3f349f0121627a63725bfc6e
