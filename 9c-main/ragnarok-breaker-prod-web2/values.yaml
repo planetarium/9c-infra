@@ -15,7 +15,7 @@ logStream:
   image:
     tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
 
-# web2: ygg / bigquery workloads are disabled, but image.tag is pinned
+# web2: ygg workloads are disabled, but image.tag is pinned
 # so `bump-image rb <hash>` (bulk) stays uniform across env×tier.
 yggRedeem:
   enabled: false
@@ -26,6 +26,6 @@ yggQuestWorker:
   image:
     tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
 bqAnalyticsWorker:
-  enabled: false
+  enabled: true
   image:
     tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
