@@ -372,10 +372,22 @@ Pin ${SERVICE_LABEL} to \`$TAG\` for $body_envs.
 EOF
 )
 
+  # Derive the PR head ref from origin's GitHub owner so this works whether
+  # `origin` is the planetarium repo (same-repo PR) or a personal fork
+  # (cross-fork PR). The branch was pushed to `origin` just above, so the head
+  # owner must match origin's owner. Previously hardcoded to "Atralupus:".
+  local origin_owner head_ref
+  origin_owner="$(git remote get-url origin 2>/dev/null | sed -E 's#^.*github\.com[:/]([^/]+)/.*$#\1#')"
+  if [[ -n "$origin_owner" && "$origin_owner" != "planetarium" ]]; then
+    head_ref="${origin_owner}:${branch}"
+  else
+    head_ref="$branch"
+  fi
+
   gh pr create \
     --repo planetarium/9c-infra \
     --base main \
-    --head "Atralupus:$branch" \
+    --head "$head_ref" \
     --title "$title" \
     --body "$body"
 }
