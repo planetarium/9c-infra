@@ -5,7 +5,7 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-5ed92f4a2154b502c361087c97e3e8c83d4df9ab
+    tag: git-13a9dcd11cb6e65c3f22da05b85cf2deb5288533
 
 v8Gateway:
   image:
