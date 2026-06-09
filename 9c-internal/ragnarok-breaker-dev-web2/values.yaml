@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
 
 v8Gateway:
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
 
 logStream:
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
 
 # web2: ygg workloads are disabled, but their image.tag is still
 # pinned so `bump-image rb <hash>` (bulk) stays uniform across env×tier and
@@ -21,12 +21,12 @@ logStream:
 yggRedeem:
   enabled: false
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
 yggQuestWorker:
   enabled: false
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
 bqAnalyticsWorker:
   enabled: true
   image:
-    tag: git-0a56f2e935f4387bd987f05e67e9fcf6d5e4c181
+    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
