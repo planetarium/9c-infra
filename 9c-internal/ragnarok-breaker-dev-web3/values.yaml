@@ -15,18 +15,18 @@ logStream:
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
+# dev: ygg workloads run in staging only and bq-analytics runs in production
+# only; all disabled here, but image.tag stays pinned so `bump-image rb <hash>`
+# (bulk) stays uniform across env×tier.
 yggRedeem:
+  enabled: false
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
-  httpRoute:
-    enabled: true
-    hostnames:
-      - ygg-redeem-dev.9c.gg
-
 yggQuestWorker:
+  enabled: false
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
-
 bqAnalyticsWorker:
+  enabled: false
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040

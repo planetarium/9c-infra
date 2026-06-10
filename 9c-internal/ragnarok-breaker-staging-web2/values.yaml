@@ -25,7 +25,8 @@ yggQuestWorker:
   enabled: false
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+# bq-analytics runs in production only; disabled here, tag pinned for bulk bump.
 bqAnalyticsWorker:
-  enabled: true
+  enabled: false
   image:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
