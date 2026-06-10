@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
 
 v8Gateway:
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
 
 logStream:
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
 
 # dev: ygg workloads run in staging only and bq-analytics runs in production
 # only; all disabled here, but image.tag stays pinned so `bump-image rb <hash>`
@@ -21,12 +21,12 @@ logStream:
 yggRedeem:
   enabled: false
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
 yggQuestWorker:
   enabled: false
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
 bqAnalyticsWorker:
   enabled: false
   image:
-    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
+    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
