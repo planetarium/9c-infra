@@ -142,6 +142,11 @@ BRANCH_PREFIX=""
 STAGING_FILE=""
 PRODUCTION_FILE=""
 TAG_KEYS=()
+# Optional keys: bumped where present, skipped (not errored) where absent.
+# For workloads that live in only some overlays (e.g. rb's bq-ingest-gateway,
+# prod-web3 only) so a bulk bump can keep them in sync without failing on the
+# files that lack the key.
+OPTIONAL_TAG_KEYS=()
 SUB_SERVICES=()
 # shellcheck disable=SC1090
 source "$MODULE_FILE"
@@ -284,27 +289,41 @@ branch_for() {
   esac
 }
 
+rewrite_tag_line() {
+  # Rewrite only the `tag:` line at $2 in file $1, preserving every other line
+  # (blank lines, comments, other keys) and the original quote style
+  # (`tag: git-x` vs `tag: "git-x"`).
+  local file="$1" line_num="$2" original replacement
+  original="$(sed -n "${line_num}p" "$file")"
+  if [[ "$original" == *'tag: "'* ]]; then
+    replacement="\\1 \"${TAG}\""
+  else
+    replacement="\\1 ${TAG}"
+  fi
+  sed -i.bak -E "${line_num}s|(^[[:space:]]*tag:)[[:space:]]*.*|${replacement}|" "$file"
+  rm -f "${file}.bak"
+}
+
 update_file_tags() {
-  # Rewrite only the `tag:` line of each TAG_KEYS entry in the file,
-  # preserving every other line (blank lines, comments, other keys) and the
-  # original quote style (`tag: git-x` vs `tag: "git-x"`).
   local file="$1"
-  local key line_num original replacement
+  local key line_num
+  # Required keys: must exist in the file, else error.
   for key in "${TAG_KEYS[@]}"; do
     line_num="$(yq "$key | line" "$file")"
     if [[ -z "$line_num" || "$line_num" == "null" || "$line_num" == "0" ]]; then
       echo "error: key '$key' not found in $file" >&2
       return 1
     fi
-    original="$(sed -n "${line_num}p" "$file")"
-    if [[ "$original" == *'tag: "'* ]]; then
-      replacement="\\1 \"${TAG}\""
-    else
-      replacement="\\1 ${TAG}"
-    fi
-    sed -i.bak -E "${line_num}s|(^[[:space:]]*tag:)[[:space:]]*.*|${replacement}|" "$file"
-    rm -f "${file}.bak"
+    rewrite_tag_line "$file" "$line_num"
   done
+  # Optional keys: bump where present, skip silently where absent.
+  if [[ "${#OPTIONAL_TAG_KEYS[@]:-0}" -gt 0 ]]; then
+    for key in "${OPTIONAL_TAG_KEYS[@]}"; do
+      line_num="$(yq "$key | line" "$file")"
+      [[ -z "$line_num" || "$line_num" == "null" || "$line_num" == "0" ]] && continue
+      rewrite_tag_line "$file" "$line_num"
+    done
+  fi
 }
 
 ORIGINAL_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
