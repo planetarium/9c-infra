@@ -35,12 +35,13 @@ bqAnalyticsWorker:
     tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
 # Single shared ingest gateway for all payment envs (no app_env split) —
-# the only namespace that hosts it. Image tag is bumped on its own via
-# `bump-image rb bq-ingest-gateway <hash>` (excluded from the bulk all-bump).
+# the only namespace that hosts it. The bulk `bump-image rb <hash>` keeps this
+# in sync (optional key: bumped here where present, skipped in overlays that
+# lack it); a targeted `bump-image rb bq-ingest-gateway <hash>` also works.
 bqIngestGateway:
   enabled: true
   image:
-    tag: git-088af99e6359ab9062796dd43fca5a43b92335f5
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
   httpRoute:
     enabled: true
     hostnames:

@@ -1,11 +1,13 @@
 # ragnarok-breaker chart — 7 independent images, one per workload.
 # Usage:
 #   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway> <hash>
-#   bump-image.sh rb <hash>   # bump every workload at once (except bq-ingest-gateway)
+#   bump-image.sh rb <hash>   # bump every workload at once
 #
-# bq-ingest-gateway is a single shared instance living only in prod-web3, so it
-# is NOT part of the bulk all-bump and its per-service bump targets prod-web3
-# only. Bump it explicitly: bump-image.sh rb bq-ingest-gateway <hash>
+# bq-ingest-gateway is a single shared instance living only in prod-web3. The
+# bulk all-bump includes it as an OPTIONAL key, so `bump-image.sh rb <hash>`
+# keeps it in sync where it exists (prod-web3) and skips the overlays that lack
+# it. Its per-service bump still targets prod-web3 only:
+#   bump-image.sh rb bq-ingest-gateway <hash>
 #
 # Environments after the env×tier split (dev/staging/prod × web2/web3):
 # each env keyword resolves to multiple values files (legacy single-ns values
@@ -96,8 +98,10 @@ resolve_all_sub_services() {
     ".yggQuestWorker.image.tag"
     ".bqAnalyticsWorker.image.tag"
   )
-  # bqIngestGateway is intentionally excluded — it lives only in prod-web3 and
-  # the bulk bump spans every env file, most of which lack the key.
+  # bqIngestGateway lives only in prod-web3, so it's an OPTIONAL key: the bulk
+  # bump spans every env file but bumps this one only where it exists (prod-web3)
+  # and skips the overlays that lack it, instead of erroring on the missing key.
+  OPTIONAL_TAG_KEYS=(".bqIngestGateway.image.tag")
   SERVICE_LABEL="all ragnarok-breaker images"
   BRANCH_PREFIX="ragnarok-breaker-all"
 }
