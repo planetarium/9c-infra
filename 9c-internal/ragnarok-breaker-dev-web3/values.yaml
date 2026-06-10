@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-848cb83a8669385fd20f599116e7f9e839f4a934
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
 v8Gateway:
   image:
-    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
 logStream:
   image:
-    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
 yggRedeem:
   image:
-    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
   httpRoute:
     enabled: true
     hostnames:
@@ -25,8 +25,8 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
 
 bqAnalyticsWorker:
   image:
-    tag: git-ee184bdd7872759d9bd02acddc1982e849cdf4f2
+    tag: git-88dfcf9dd0b678c240a1385eead7b8fa2f1b6040
