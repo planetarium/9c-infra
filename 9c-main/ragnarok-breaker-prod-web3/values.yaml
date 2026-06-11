@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
 
 v8Gateway:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
 
 logStream:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
 
 yggRedeem:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
   deployment:
     replicas: 2
   httpRoute:
@@ -27,12 +27,12 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
 
 # Single shared ingest gateway for all payment envs (no app_env split) —
 # the only namespace that hosts it. The bulk `bump-image rb <hash>` keeps this
@@ -41,7 +41,7 @@ bqAnalyticsWorker:
 bqIngestGateway:
   enabled: true
   image:
-    tag: git-fe553cdb29aaf4407494627485248980ba6b7db5
+    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
   httpRoute:
     enabled: true
     hostnames:
