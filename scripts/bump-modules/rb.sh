@@ -1,13 +1,16 @@
-# ragnarok-breaker chart — 7 independent images, one per workload.
+# ragnarok-breaker chart — 8 independent images, one per workload.
 # Usage:
-#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway> <hash>
+#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway|anticheat-alert-worker> <hash>
 #   bump-image.sh rb <hash>   # bump every workload at once
 #
-# bq-ingest-gateway is a single shared instance living only in prod-web3. The
-# bulk all-bump includes it as an OPTIONAL key, so `bump-image.sh rb <hash>`
-# keeps it in sync where it exists (prod-web3) and skips the overlays that lack
-# it. Its per-service bump still targets prod-web3 only:
-#   bump-image.sh rb bq-ingest-gateway <hash>
+# Two workloads are prod-only, so they're excluded from the bulk all-bump's
+# REQUIRED keys and included as OPTIONAL keys instead: `bump-image.sh rb <hash>`
+# bumps them where they exist and skips overlays that lack the key (no error).
+# Their per-service bumps target the prod overlays only:
+#   - bq-ingest-gateway      : single shared instance, prod-web3 only.
+#       bump-image.sh rb bq-ingest-gateway <hash>
+#   - anticheat-alert-worker : per-env Slack alert consumer, all three prod overlays.
+#       bump-image.sh rb anticheat-alert-worker <hash>
 #
 # Environments after the env×tier split (dev/staging/prod × web2/web3):
 # each env keyword resolves to multiple values files (legacy single-ns values
@@ -34,7 +37,7 @@ PRODUCTION_FILES=(
 DEV_FILE="${DEV_FILES[0]}"
 STAGING_FILE="${STAGING_FILES[0]}"
 PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
-SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker bq-ingest-gateway)
+SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker bq-ingest-gateway anticheat-alert-worker)
 
 resolve_sub_service() {
   case "$1" in
@@ -82,6 +85,18 @@ resolve_sub_service() {
       STAGING_FILE="${STAGING_FILES[0]}"
       PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
       ;;
+    anticheat-alert-worker)
+      TAG_KEYS=(".anticheatAlertWorker.image.tag")
+      SERVICE_LABEL="ragnarok-breaker-anticheat-alert-worker"
+      BRANCH_PREFIX="ragnarok-breaker-anticheat-alert-worker"
+      # prod-only workload (enabled in the three prod overlays). Scope every env
+      # keyword to the prod files so any --env (including the default `both`)
+      # only touches prod and never errors on dev/staging files that lack the key.
+      DEV_FILES=("${PRODUCTION_FILES[@]}")
+      STAGING_FILES=("${PRODUCTION_FILES[@]}")
+      DEV_FILE="${PRODUCTION_FILES[0]}"
+      STAGING_FILE="${PRODUCTION_FILES[0]}"
+      ;;
     *)
       echo "error: unknown rb sub-service '$1' (available: ${SUB_SERVICES[*]})" >&2
       return 1
@@ -98,10 +113,15 @@ resolve_all_sub_services() {
     ".yggQuestWorker.image.tag"
     ".bqAnalyticsWorker.image.tag"
   )
-  # bqIngestGateway lives only in prod-web3, so it's an OPTIONAL key: the bulk
-  # bump spans every env file but bumps this one only where it exists (prod-web3)
-  # and skips the overlays that lack it, instead of erroring on the missing key.
-  OPTIONAL_TAG_KEYS=(".bqIngestGateway.image.tag")
+  # Prod-only workloads are OPTIONAL keys: the bulk bump spans every env file but
+  # bumps these only where they exist (the prod overlays) and skips the overlays
+  # that lack them, instead of erroring on the missing key.
+  #   - bqIngestGateway      : prod-web3 only.
+  #   - anticheatAlertWorker : all three prod overlays.
+  OPTIONAL_TAG_KEYS=(
+    ".bqIngestGateway.image.tag"
+    ".anticheatAlertWorker.image.tag"
+  )
   SERVICE_LABEL="all ragnarok-breaker images"
   BRANCH_PREFIX="ragnarok-breaker-all"
 }

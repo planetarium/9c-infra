@@ -29,3 +29,10 @@ bqAnalyticsWorker:
   enabled: true
   image:
     tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+
+# Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
+# read from the ragnarok-breaker-env SecretsManager entry for this namespace.
+anticheatAlertWorker:
+  enabled: true
+  image:
+    tag: git-eba7fb42eaed54bed0513debd68f1db2a0ec639d

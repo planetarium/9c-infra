@@ -172,6 +172,28 @@ bqAnalyticsWorker:
       cpu: 500m
       memory: 512Mi
 
+# === Anti-cheat alert worker → Slack ===
+# BullMQ consumer for the anticheat-alert queue (prefix `aca`). The server emits
+# anticheat_alert log events; log-stream routes them onto the queue; this worker
+# consumes them and POSTs to Slack. Per-env consumer (own Redis), so enabled in
+# each prod overlay (default off here). Reads from the ragnarok-breaker-env
+# ExternalSecret: REDIS_URL (required), SLACK_VIOLATION_WEBHOOK_URL (optional —
+# unset → notifications silently skipped), WORKER_CONCURRENCY (optional, dflt 5).
+anticheatAlertWorker:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-anticheat-alert-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
 # === External payment backend → BigQuery analytics ingest gateway ===
 # Thin HTTP gateway (Bun.serve): POST /v1/events (Bearer auth) validates the
 # envelope and enqueues a bq_event job onto the bq-analytics-events BullMQ

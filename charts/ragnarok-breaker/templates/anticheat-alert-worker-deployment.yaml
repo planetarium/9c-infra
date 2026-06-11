@@ -1,0 +1,41 @@
+{{- if .Values.anticheatAlertWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anticheat-alert-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: anticheat-alert-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: anticheat-alert-worker
+spec:
+  replicas: {{ .Values.anticheatAlertWorker.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: anticheat-alert-worker
+  template:
+    metadata:
+      labels:
+        app: anticheat-alert-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: anticheat-alert-worker
+          image: "{{ .Values.anticheatAlertWorker.image.repository }}:{{ .Values.anticheatAlertWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.anticheatAlertWorker.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            {{- toYaml .Values.anticheatAlertWorker.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
