@@ -96,7 +96,6 @@ prometheus:
               group: heimdall-rpc
             targets:
               - remote-headless-1.heimdall.svc.cluster.local:80
-              - remote-headless-2.heimdall.svc.cluster.local:80
           - labels:
               group: heimdall-validator
             targets:

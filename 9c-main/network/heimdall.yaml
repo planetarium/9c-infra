@@ -24,8 +24,6 @@ global:
     data: 500Gi
   - name: remote-headless-data-2-remote-headless-2-0
     data: 500Gi
-  - name: remote-headless-data-3-remote-headless-3-0
-    data: 500Gi
   - name: data-provider-data-1
     data: 200Gi
 
@@ -33,7 +31,6 @@ RKE2:
   loadBalancerIPs:
   - 115.68.194.150/32
   - 115.68.194.151/32
-  - 115.68.194.214/32
   - 115.68.193.219/32
 
 externalSecret:
@@ -49,7 +46,6 @@ gateway:
     - heimdall-rpc.nine-chronicles.com
     backendRefs:
     - name: remote-headless-1
-    - name: remote-headless-2
     protocols:
     - web
     - grpc
@@ -149,7 +145,7 @@ validator:
   - "heimdall-node-validator-1.nine-chronicles.com"
 
   loadBalancerIPs:
-  - "115.68.194.214"
+  - "115.68.194.151"
 
   resources:
     limits:
@@ -157,7 +153,7 @@ validator:
 
   nodeSelector:
     node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '3'
+    node.kubernetes.io/node-index: '2'
 
   storePath: "/data/headless"
 
@@ -172,7 +168,7 @@ validator:
     value: validator-test
 
 remoteHeadless:
-  count: 2
+  count: 1
   replicas: 1
 
   scheduledRestart:
@@ -183,17 +179,13 @@ remoteHeadless:
 
   hosts:
   - "heimdall-node-1.nine-chronicles.com"
-  - "heimdall-node-2.nine-chronicles.com"
 
   loadBalancerIPs:
   - 115.68.194.150
-  - 115.68.194.151
 
   nodeSelector:
   - node.kubernetes.io/network: heimdall
     node.kubernetes.io/node-index: '1'
-  - node.kubernetes.io/network: heimdall
-    node.kubernetes.io/node-index: '2'
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
@@ -225,7 +217,6 @@ remoteHeadless:
   storage:
     volumeNames:
     - remote-headless-data-1-remote-headless-1-0
-    - remote-headless-data-3-remote-headless-3-0
 
   tolerations:
   - effect: NoSchedule
