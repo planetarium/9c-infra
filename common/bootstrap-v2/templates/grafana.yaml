@@ -20,6 +20,11 @@ spec:
     targetRevision: 10.1.2
     helm:
       values: |-
+        envValueFrom:
+          SLACK_WEBHOOK_URL:
+            secretKeyRef:
+              name: slack
+              key: slack-webhook-rb
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -32,6 +37,145 @@ spec:
               url: http://prometheus-server.monitoring.svc.cluster.local
               access: proxy
               isDefault: true
+        alerting:
+          contactpoints.yaml:
+            apiVersion: 1
+            contactPoints:
+              - orgId: 1
+                name: ragnarok-infra-alert-slack
+                receivers:
+                  - uid: ragnarok-infra-alert-slack
+                    type: slack
+                    settings:
+                      url: $SLACK_WEBHOOK_URL
+          policies.yaml:
+            apiVersion: 1
+            policies:
+              - orgId: 1
+                receiver: ragnarok-infra-alert-slack
+          rules.yaml:
+            apiVersion: 1
+            groups:
+              - orgId: 1
+                name: ragnarok-breaker-alerts
+                folder: Ragnarok Breaker
+                interval: 1m
+                rules:
+                  - uid: rb-workload-unavailable
+                    title: RB Workload Unavailable
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 300, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'kube_deployment_status_replicas_unavailable{namespace=~"ragnarok-breaker-prod-web[23]"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [0] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                    annotations:
+                      summary: 'RB workload {{`{{ "{{" }} $labels.deployment {{ "}}" }}`}} has unavailable replicas (ns: {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}})'
+                  - uid: rb-crashloopbackoff
+                    title: RB CrashLoopBackOff
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 300, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]",reason="CrashLoopBackOff"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [0] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                    annotations:
+                      summary: 'RB pod {{`{{ "{{" }} $labels.pod {{ "}}" }}`}} CrashLoopBackOff (container: {{`{{ "{{" }} $labels.container {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}})'
+                  - uid: rb-imagepullbackoff
+                    title: RB ImagePullBackOff
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 300, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]",reason=~"ImagePullBackOff|ErrImagePull"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [0] }
+                    for: 5m
+                    labels:
+                      severity: warning
+                    annotations:
+                      summary: 'RB pod {{`{{ "{{" }} $labels.pod {{ "}}" }}`}} ImagePullBackOff (container: {{`{{ "{{" }} $labels.container {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}})'
+                  - uid: rb-restart-flapping
+                    title: RB Container Restart Flapping
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 900, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'increase(kube_pod_container_status_restarts_total{namespace=~"ragnarok-breaker-prod-web[23]"}[15m])'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [3] }
+                    for: 0m
+                    labels:
+                      severity: warning
+                    annotations:
+                      summary: 'RB pod {{`{{ "{{" }} $labels.pod {{ "}}" }}`}} restarting repeatedly (container: {{`{{ "{{" }} $labels.container {{ "}}" }}`}}, ns: {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}})'
+                  - uid: rb-v8-gateway-replicas
+                    title: RB v8-gateway Replicas Not 1
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 300, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'kube_deployment_spec_replicas{namespace=~"ragnarok-breaker-prod-web[23]",deployment="v8-gateway"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [1] }
+                    for: 1m
+                    labels:
+                      severity: critical
+                    annotations:
+                      summary: 'v8-gateway replicas > 1 in {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}} — V8 4009 kick risk, must stay 1'
         persistence:
           enabled: true
         initChownData:

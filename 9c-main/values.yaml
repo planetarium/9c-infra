@@ -115,6 +115,13 @@ prometheus:
         static_configs:
           - targets:
             - longhorn-backend.longhorn-system.svc.cluster.local:9500
+      - job_name: kube-state-metrics
+        metrics_path: /metrics
+        scrape_interval: 30s
+        scrape_timeout: 10s
+        static_configs:
+          - targets:
+            - prometheus-kube-state-metrics.monitoring.svc.cluster.local:8080
 datadog:
   enabled: false
   clusterAgent:
