@@ -5,7 +5,7 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-46ffaee326dce0fe68dfba7cf19005d04d5f56e2
+    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
 
 v8Gateway:
   image:
@@ -39,7 +39,7 @@ bqAnalyticsWorker:
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-eba7fb42eaed54bed0513debd68f1db2a0ec639d
+    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
 
 # Single shared ingest gateway for all payment envs (no app_env split) —
 # the only namespace that hosts it. The bulk `bump-image rb <hash>` keeps this

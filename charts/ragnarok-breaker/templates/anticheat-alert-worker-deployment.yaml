@@ -28,6 +28,13 @@ spec:
         - name: anticheat-alert-worker
           image: "{{ .Values.anticheatAlertWorker.image.repository }}:{{ .Values.anticheatAlertWorker.image.tag }}"
           imagePullPolicy: {{ .Values.anticheatAlertWorker.image.pullPolicy }}
+          env:
+            # Slack alert 의 *Verse:* 라벨 소스 (예: ragnarok-breaker-prod-web2
+            # -> prod-web2). worker 가 prefix 를 떼고 표시한다.
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           envFrom:
             - secretRef:
                 name: ragnarok-breaker-env
