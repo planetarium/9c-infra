@@ -57,6 +57,14 @@ function senderr() {
     --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot in {{ $.Values.clusterName }} cluster at upload_snapshot.sh."}' "$SLACK_WEBHOOK"
 }
 
+# Success/info notification. Non-fatal (|| true): a failed Slack post must not
+# fail an otherwise-successful snapshot upload.
+function sendinfo() {
+  echo "$1"
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'"}' "$SLACK_WEBHOOK" || true
+}
+
 function retry_until_success() {
   local max_attempts=100
   local delay=60
@@ -252,6 +260,12 @@ function make_and_upload_snapshot() {
     senderr "Failed to upload split part to R2 ($DEST_PATH)."
     exit 1
   fi
+
+  SNAPSHOT_INDEX=""
+  if [ -n "$LATEST_METADATA" ] && [ -f "$LATEST_METADATA" ]; then
+    SNAPSHOT_INDEX=$(grep -oE '"Index":[0-9]+' "$LATEST_METADATA" 2>/dev/null | head -1 | grep -oE '[0-9]+' || true)
+  fi
+  sendinfo "Partition snapshot uploaded OK: $SNAPSHOT_PATH block ${SNAPSHOT_INDEX:-?} ($SNAPSHOT_FILENAME); latest.json updated."
 
   if [ "$PRESERVE_PARTITIONS" = "false" ]; then
     rm "$LATEST_SNAPSHOT" "$LATEST_STATE" "$LATEST_METADATA"

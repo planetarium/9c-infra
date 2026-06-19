@@ -29,6 +29,15 @@ function senderr() {
        "$SLACK_WEBHOOK"
 }
 
+# Success/info notification. Non-fatal (|| true): a failed Slack post must not
+# fail an otherwise-successful snapshot upload.
+function sendinfo() {
+  echo "$1"
+  curl -X POST -H 'Content-type: application/json' \
+       --data '{"text":"[K8S] '"$1"'"}' \
+       "$SLACK_WEBHOOK" || true
+}
+
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
   mkdir -p "$RCLONE_CONFIG_DIR"
@@ -158,6 +167,7 @@ function make_and_upload_snapshot() {
     exit 1
   fi
 
+  sendinfo "Full snapshot uploaded OK: $SNAPSHOT_PATH/full ($BASENAME); latest.json updated."
   echo "[INFO] Snapshot upload complete."
   rm "$LATEST_FULL_SNAPSHOT"
   rm -rf "$METADATA_DIR"
