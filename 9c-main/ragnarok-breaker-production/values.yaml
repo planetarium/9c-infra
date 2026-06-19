@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-3a44eb22b8d75f6db7e6561c759ad7c63fc51267
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 v8Gateway:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 yggRedeem:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   deployment:
     replicas: 2
   httpRoute:
@@ -23,20 +23,20 @@ yggRedeem:
 
 logStream:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 yggQuestWorker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-eba7fb42eaed54bed0513debd68f1db2a0ec639d
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b

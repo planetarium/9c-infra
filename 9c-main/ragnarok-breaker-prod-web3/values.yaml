@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 v8Gateway:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 logStream:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 yggRedeem:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   deployment:
     replicas: 2
   httpRoute:
@@ -27,19 +27,19 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   replicas: 2
 
 bqAnalyticsWorker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # Single shared ingest gateway for all payment envs (no app_env split) —
 # the only namespace that hosts it. The bulk `bump-image rb <hash>` keeps this
@@ -48,7 +48,7 @@ anticheatAlertWorker:
 bqIngestGateway:
   enabled: true
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   httpRoute:
     enabled: true
     hostnames:

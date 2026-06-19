@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 v8Gateway:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 yggRedeem:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
   httpRoute:
     enabled: true
     hostnames:
@@ -21,14 +21,14 @@ yggRedeem:
 
 logStream:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 yggQuestWorker:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # bq-analytics runs in production only; disabled here, tag pinned for bulk bump.
 bqAnalyticsWorker:
   enabled: false
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
