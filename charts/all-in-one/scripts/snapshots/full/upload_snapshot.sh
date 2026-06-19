@@ -67,6 +67,18 @@ function retry_until_success() {
   echo "[INFO] Command succeeded after $count attempt(s)."
 }
 
+# Wait on every background PID passed as args and return non-zero if ANY failed.
+# A bare `wait` (no args) always returns 0, so it silently swallowed background
+# upload failures (e.g. an R2 403): the Job would exit 0 and report success
+# while the public latest.json stayed stale. Collect PIDs and fail loudly.
+function wait_all() {
+  local pid rc=0
+  for pid in "$@"; do
+    if ! wait "$pid"; then rc=1; fi
+  done
+  return "$rc"
+}
+
 function make_and_upload_snapshot() {
   echo "[INFO] Starting make_and_upload_snapshot..."
   SNAPSHOT="$HOME/NineChronicles.Snapshot"
@@ -109,6 +121,7 @@ function make_and_upload_snapshot() {
   FINAL_NAME="9c-main-snapshot.zip"
   FINAL_DEST="$DEST_PATH/$FINAL_NAME"
 
+  upload_pids=()
   split -b 4GB "$LATEST_FULL_SNAPSHOT" "$FINAL_NAME.part" --numeric-suffixes=1 -a $PART_LENGTH
   for part in "$FINAL_NAME.part"*; do
     retry_until_success rclone copyto "$part" "$DEST_PATH/$part" \
@@ -119,6 +132,7 @@ function make_and_upload_snapshot() {
       --retries 5 \
       --low-level-retries 10 \
       --no-traverse && rm "$part" &
+    upload_pids+=($!)
   done
 
   echo "[INFO] Copying archive snapshot to $FINAL_DEST without re-upload..."
@@ -128,16 +142,21 @@ function make_and_upload_snapshot() {
     --retries 5 \
     --s3-copy-cutoff 1G \
     --low-level-retries 10 &
+  upload_pids+=($!)
 
   LATEST_METADATA=$(ls -t "$METADATA_DIR"/*.json 2>/dev/null | head -1 || true)
   if [ -n "$LATEST_METADATA" ]; then
     echo "[INFO] Uploading metadata $LATEST_METADATA..."
     rclone copyto "$LATEST_METADATA" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
+    upload_pids+=($!)
   else
     echo "[INFO] No metadata file found to upload."
   fi
 
-  wait
+  if ! wait_all "${upload_pids[@]}"; then
+    senderr "Failed to upload full snapshot to R2 ($DEST_PATH)."
+    exit 1
+  fi
 
   echo "[INFO] Snapshot upload complete."
   rm "$LATEST_FULL_SNAPSHOT"

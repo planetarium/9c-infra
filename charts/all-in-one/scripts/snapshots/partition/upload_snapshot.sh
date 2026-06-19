@@ -74,6 +74,18 @@ function retry_until_success() {
   echo "[INFO] Command succeeded after $count attempt(s)."
 }
 
+# Wait on every background PID passed as args and return non-zero if ANY failed.
+# A bare `wait` (no args) always returns 0, so it silently swallowed background
+# upload failures (e.g. an R2 403): the Job would exit 0 and report success
+# while the public latest.json stayed weeks stale. Collect PIDs and fail loudly.
+function wait_all() {
+  local pid rc=0
+  for pid in "$@"; do
+    if ! wait "$pid"; then rc=1; fi
+  done
+  return "$rc"
+}
+
 function make_and_upload_snapshot() {
   echo "[DEBUG] Args: $1"
   OUTPUT_DIR="${1:-/data/snapshots}"
@@ -118,32 +130,40 @@ function make_and_upload_snapshot() {
     --low-level-retries 10
 
   echo "[INFO] Copying snapshot to latest path: $DEST_PATH/$SNAPSHOT_FILENAME"
+  snapshot_pids=()
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  snapshot_pids+=($!)
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  snapshot_pids+=($!)
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  snapshot_pids+=($!)
   retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  snapshot_pids+=($!)
 
-  wait
+  if ! wait_all "${snapshot_pids[@]}"; then
+    senderr "Failed to upload partition snapshot to R2 ($DEST_PATH)."
+    exit 1
+  fi
 
   if [ -n "$LATEST_METADATA" ]; then
     ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
@@ -151,13 +171,22 @@ function make_and_upload_snapshot() {
     rclone copyto "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" --no-traverse --retries 5 --low-level-retries 10
 
     echo "[INFO] Copying metadata to latest path: $DEST_PATH/$METADATA_FILENAME"
+    metadata_pids=()
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
+    metadata_pids+=($!)
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
+    metadata_pids+=($!)
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
+    metadata_pids+=($!)
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
+    metadata_pids+=($!)
     rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/mainnet_latest.json" --no-traverse --retries 5 --low-level-retries 10 &
+    metadata_pids+=($!)
 
-    wait
+    if ! wait_all "${metadata_pids[@]}"; then
+      senderr "Failed to upload metadata/latest.json to R2 ($DEST_PATH)."
+      exit 1
+    fi
   fi
 
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
@@ -172,12 +201,14 @@ function make_and_upload_snapshot() {
     --low-level-retries 10
 
   echo "[INFO] Copying state to latest path (with retry): $DEST_PATH/$STATE_FILENAME"
+  state_pids=()
   retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" \
     --no-traverse \
     --s3-disable-checksum \
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  state_pids+=($!)
 
   retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/internal/$STATE_FILENAME" \
     --no-traverse \
@@ -185,9 +216,14 @@ function make_and_upload_snapshot() {
     --s3-copy-cutoff 1G \
     --retries 5 \
     --low-level-retries 10 &
+  state_pids+=($!)
 
-  wait
+  if ! wait_all "${state_pids[@]}"; then
+    senderr "Failed to upload state snapshot to R2 ($DEST_PATH)."
+    exit 1
+  fi
 
+  part_pids=()
   _parallel_count=0
   for file in $( find "$OUTPUT_DIR" -size +4G ); do
     split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
@@ -200,14 +236,22 @@ function make_and_upload_snapshot() {
         --retries 5 \
         --low-level-retries 10 \
         --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
+      part_pids+=($!)
       _parallel_count=$(( _parallel_count + 1 ))
       if [ $(( _parallel_count % 5 )) -eq 0 ]; then
-        wait
+        if ! wait_all "${part_pids[@]}"; then
+          senderr "Failed to upload split part to R2 ($DEST_PATH)."
+          exit 1
+        fi
+        part_pids=()
       fi
     done
   done
 
-  wait
+  if [ "${#part_pids[@]}" -gt 0 ] && ! wait_all "${part_pids[@]}"; then
+    senderr "Failed to upload split part to R2 ($DEST_PATH)."
+    exit 1
+  fi
 
   if [ "$PRESERVE_PARTITIONS" = "false" ]; then
     rm "$LATEST_SNAPSHOT" "$LATEST_STATE" "$LATEST_METADATA"
