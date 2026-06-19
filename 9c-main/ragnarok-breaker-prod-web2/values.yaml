@@ -5,34 +5,34 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 v8Gateway:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 logStream:
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # web2: ygg workloads are disabled, but image.tag is pinned
 # so `bump-image rb <hash>` (bulk) stays uniform across env×tier.
 yggRedeem:
   enabled: false
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 yggQuestWorker:
   enabled: false
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 bqAnalyticsWorker:
   enabled: true
   image:
-    tag: git-017ec5c884d9033fea6985b5b73fa9a5ad0bee48
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
+    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
