@@ -95,13 +95,28 @@ function wait_preloading() {
 
   tail -f "$HEADLESS_LOG" | grep "Block #" &
 
-  if timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP"); then
-    sleep 5
-  else
-    senderr "grep failed. Failed to preload." $1
-    kill "$PID"
+  # Capture WHICH terminal line appeared instead of treating them all as success.
+  # "There are no appropriate peers for preloading" means the node could NOT find
+  # peers to sync from (e.g. APV mismatch or unreachable seed) -> it is NOT caught
+  # up. Previously this matched the same grep as the real success message, so the
+  # job silently "completed" on a stale store (odin snapshot froze ~24 days at the
+  # 2026-05-26 APV bump). Now it alerts and aborts.
+  MATCH=$(timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP") || true)
+
+  if [ -z "$MATCH" ]; then
+    senderr "Preload timed out with no completion log."
+    kill "$PID" || true
     exit 1
   fi
+
+  if echo "$MATCH" | grep -q "There are no appropriate peers for preloading"; then
+    senderr "Preload found NO appropriate peers (likely APV mismatch or unreachable seed); store may be stale. Aborting."
+    kill "$PID" || true
+    exit 1
+  fi
+
+  echo "[INFO] Preload completed: $MATCH"
+  sleep 5
 }
 
 
