@@ -17,6 +17,20 @@ global:
   resetSnapshot: false
   rollbackSnapshot: false
 
+  # Override the inherited single-seed peer list (lists are replaced, not merged).
+  # pt6 sits in the office/colo network and can only reach the colo seed and the
+  # colo MetalLB IPs; the planetarium.dev/EKS seeds don't even resolve from here.
+  # With just seed-1, a transient drop on that single connection halts preload
+  # with "There are no appropriate peers for preloading", which is how the
+  # snapshot store fell ~24 days behind. Add validator-5 (the single odin
+  # validator -> stable swarm key, always at tip) as a second peer for
+  # resilience. It is reachable from pt6 at its colo MetalLB IP on the swarm
+  # port (115.68.194.100:31234); there is no DNS for that swarm endpoint, so the
+  # raw IP is used (MetalLB IP has been stable for 300d+).
+  peerStrings:
+  - "027bd36895d68681290e570692ad3736750ceaab37be402442ffb203967f98f7b6,odin-tcp-seed-1.nine-chronicles.com,31234"
+  - "03a0f95711564d10c60ba1889d068c26cb8e5fcd5211d5aeb8810e133d629aa306,115.68.194.100,31234"
+
 # Disable components that pt6 does not run.
 seed:
   count: 0
