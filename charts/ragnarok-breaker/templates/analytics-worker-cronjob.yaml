@@ -1,0 +1,41 @@
+{{- if .Values.analyticsWorker.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: analytics-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: analytics-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: analytics-worker
+spec:
+  schedule: {{ .Values.analyticsWorker.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: analytics-worker
+        spec:
+          {{- if .Values.imagePullSecret.secretKey }}
+          imagePullSecrets:
+            - name: {{ .Values.imagePullSecret.name }}
+          {{- end }}
+          containers:
+            - name: analytics-worker
+              image: "{{ .Values.analyticsWorker.image.repository }}:{{ .Values.analyticsWorker.image.tag }}"
+              imagePullPolicy: {{ .Values.analyticsWorker.image.pullPolicy }}
+              envFrom:
+                - secretRef:
+                    name: ragnarok-breaker-env
+              resources:
+                {{- toYaml .Values.analyticsWorker.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: OnFailure
+{{- end }}

@@ -242,3 +242,20 @@ bqIngestGateway:
     gatewayNamespace: traefik
 
 nodeSelector: {}
+
+# === Analytics snapshot CronJob (12h) — meme-api/V8/GA → R2 + viewer bake/deploy ===
+# w2/w3 를 한 런에서 모두 수집하는 전역 싱글톤. ragnarok-breaker-prod 오버라이드에서만 enable.
+analyticsWorker:
+  enabled: false
+  schedule: "0 */12 * * *"
+  image:
+    repository: planetariumhq/ragnarok-breaker-analytics-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
