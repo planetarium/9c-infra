@@ -29,4 +29,4 @@ anticheatAlertWorker:
 analyticsWorker:
   enabled: true
   image:
-    tag: REPLACE_WITH_FIRST_BUILD_SHA
+    tag: git-d3c0c312d714c9097896f55ef419e4a509112602
