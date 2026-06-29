@@ -19,6 +19,20 @@ COMPRESSION_LEVEL="${9:-0}"
 PRESERVE_PARTITIONS="${10:-false}"
 PART_LENGTH="${11:-3}"
 
+# --- Publish tuning (Helm values; bash :- defaults keep legacy behavior) ---
+# archiveToS3=false skips the AWS S3 GLACIER archive and uploads to R2 directly
+# from the local files. Needed on pt6 where large multipart PUTs to AWS S3 hang
+# (on-prem -> AWS network path) while Cloudflare R2 uploads work fine.
+ARCHIVE_TO_S3="{{ $.Values.snapshot.archiveToS3 }}"; ARCHIVE_TO_S3="${ARCHIVE_TO_S3:-true}"
+# Parallel chunk streams per rclone upload. pt6's uplink is single-stream
+# window-limited (~0.6MB/s at the default 4); 16 streams reach ~3.4MB/s.
+RCLONE_CONCURRENCY="{{ $.Values.snapshot.rcloneUploadConcurrency }}"; RCLONE_CONCURRENCY="${RCLONE_CONCURRENCY:-4}"
+# uploadSplitParts=false skips re-uploading >4G files as .partNNN chunks.
+# download_snapshot.sh's test_ext_path tries .part001 then falls back to the
+# whole file, so parts are an optimisation, not a requirement; skipping roughly
+# halves the state upload (no second 64G pass) on slow uplinks like pt6.
+UPLOAD_SPLIT_PARTS="{{ $.Values.snapshot.uploadSplitParts }}"; UPLOAD_SPLIT_PARTS="${UPLOAD_SPLIT_PARTS:-true}"
+
 function setup_rclone() {
   RCLONE_CONFIG_DIR="/root/.config/rclone"
   mkdir -p "$RCLONE_CONFIG_DIR"
@@ -94,6 +108,45 @@ function wait_all() {
   return "$rc"
 }
 
+# Publish one artifact (snapshot zip / state / metadata) to its R2 destinations,
+# crossing the WAN with the local file only ONCE regardless of dest count:
+#   ARCHIVE_TO_S3=true : upload local -> S3 GLACIER archive, then server-side
+#                        copy S3 -> each R2 destination.
+#   ARCHIVE_TO_S3=false: upload local -> first R2 destination, then server-side
+#                        copy R2 -> the remaining R2 destinations.
+# Usage: publish_artifact <local_file> <s3_archive_path> <r2_dest> [r2_dest ...]
+function publish_artifact() {
+  local local_file="$1" s3_path="$2"
+  shift 2
+  local up_flags="--no-traverse --s3-disable-checksum --s3-upload-cutoff=64M --s3-chunk-size=64M --s3-upload-concurrency=$RCLONE_CONCURRENCY --retries 5 --low-level-retries 10"
+  local copy_flags="--no-traverse --s3-disable-checksum --s3-copy-cutoff 1G --retries 5 --low-level-retries 10"
+  local source
+  if [ "$ARCHIVE_TO_S3" = "true" ]; then
+    echo "[INFO] Archiving to S3: $s3_path"
+    # Explicit check: set -e is suppressed inside a function called from `if !`,
+    # so a bare failing command would not abort — fail loudly here instead.
+    if ! rclone copyto "$local_file" "$s3_path" $up_flags; then
+      echo "[ERROR] S3 archive failed: $s3_path"
+      return 1
+    fi
+    source="$s3_path"
+  else
+    source="$1"
+    shift
+    echo "[INFO] Uploading to R2 (S3 archive skipped): $source"
+    retry_until_success rclone copyto "$local_file" "$source" $up_flags
+  fi
+  local pids=() dest
+  for dest in "$@"; do
+    echo "[INFO] Copying to $dest"
+    retry_until_success rclone copyto "$source" "$dest" $copy_flags &
+    pids+=($!)
+  done
+  if [ "${#pids[@]}" -gt 0 ] && ! wait_all "${pids[@]}"; then
+    return 1
+  fi
+}
+
 function make_and_upload_snapshot() {
   echo "[DEBUG] Args: $1"
   OUTPUT_DIR="${1:-/data/snapshots}"
@@ -126,139 +179,79 @@ function make_and_upload_snapshot() {
   DEST_PATH="r2:9c-snapshots/$SNAPSHOT_PATH"
   ARCHIVE_PATH="s3:9c-snapshots-archive/$SNAPSHOT_PATH/archive"
 
+  # Upload order: data first (partition zip, then state + split parts), and the
+  # metadata/latest.json pointer LAST (see below) so the public latest.json never
+  # points at a snapshot whose state_latest.zip is not yet fully uploaded — this
+  # window is ~hours on a slow uplink like pt6.
+
+  # 1) partition snapshot zip
   ARCHIVED_SNAPSHOT_PATH="$ARCHIVE_PATH/snapshots/${NOW}_$SNAPSHOT_FILENAME"
-  echo "[INFO] Archiving snapshot: $ARCHIVED_SNAPSHOT_PATH"
-  rclone copyto "$LATEST_SNAPSHOT" "$ARCHIVED_SNAPSHOT_PATH" \
-    --s3-upload-cutoff 512M \
-    --s3-chunk-size 512M \
-    --s3-disable-checksum \
-    --multi-thread-streams 4 \
-    --no-traverse \
-    --retries 5 \
-    --low-level-retries 10
-
-  echo "[INFO] Copying snapshot to latest path: $DEST_PATH/$SNAPSHOT_FILENAME"
-  snapshot_pids=()
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  snapshot_pids+=($!)
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  snapshot_pids+=($!)
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  snapshot_pids+=($!)
-  retry_until_success rclone copyto "$ARCHIVED_SNAPSHOT_PATH" "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  snapshot_pids+=($!)
-
-  if ! wait_all "${snapshot_pids[@]}"; then
+  if ! publish_artifact "$LATEST_SNAPSHOT" "$ARCHIVED_SNAPSHOT_PATH" \
+      "$DEST_PATH/$SNAPSHOT_FILENAME" \
+      "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
+      "$DEST_PATH/internal/$SNAPSHOT_FILENAME" \
+      "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME"; then
     senderr "Failed to upload partition snapshot to R2 ($DEST_PATH)."
     exit 1
   fi
 
-  if [ -n "$LATEST_METADATA" ]; then
-    ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
-    echo "[INFO] Archiving metadata: $ARCHIVED_METADATA_PATH"
-    rclone copyto "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" --no-traverse --retries 5 --low-level-retries 10
-
-    echo "[INFO] Copying metadata to latest path: $DEST_PATH/$METADATA_FILENAME"
-    metadata_pids=()
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
-    metadata_pids+=($!)
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-    metadata_pids+=($!)
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/$METADATA_FILENAME" --no-traverse --retries 5 --low-level-retries 10 &
-    metadata_pids+=($!)
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-    metadata_pids+=($!)
-    rclone copyto "$ARCHIVED_METADATA_PATH" "$DEST_PATH/internal/mainnet_latest.json" --no-traverse --retries 5 --low-level-retries 10 &
-    metadata_pids+=($!)
-
-    if ! wait_all "${metadata_pids[@]}"; then
-      senderr "Failed to upload metadata/latest.json to R2 ($DEST_PATH)."
-      exit 1
-    fi
-  fi
-
+  # 2) state
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
-  echo "[INFO] Archiving state: $ARCHIVED_STATE_PATH"
-  rclone copyto "$LATEST_STATE" "$ARCHIVED_STATE_PATH" \
-    --s3-upload-cutoff 512M \
-    --s3-chunk-size 512M \
-    --s3-disable-checksum \
-    --multi-thread-streams 4 \
-    --no-traverse \
-    --retries 5 \
-    --low-level-retries 10
-
-  echo "[INFO] Copying state to latest path (with retry): $DEST_PATH/$STATE_FILENAME"
-  state_pids=()
-  retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/$STATE_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  state_pids+=($!)
-
-  retry_until_success rclone copyto "$ARCHIVED_STATE_PATH" "$DEST_PATH/internal/$STATE_FILENAME" \
-    --no-traverse \
-    --s3-disable-checksum \
-    --s3-copy-cutoff 1G \
-    --retries 5 \
-    --low-level-retries 10 &
-  state_pids+=($!)
-
-  if ! wait_all "${state_pids[@]}"; then
+  if ! publish_artifact "$LATEST_STATE" "$ARCHIVED_STATE_PATH" \
+      "$DEST_PATH/$STATE_FILENAME" \
+      "$DEST_PATH/internal/$STATE_FILENAME"; then
     senderr "Failed to upload state snapshot to R2 ($DEST_PATH)."
     exit 1
   fi
 
-  part_pids=()
-  _parallel_count=0
-  for file in $( find "$OUTPUT_DIR" -size +4G ); do
-    split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
-    for part in "$file.part"*; do
-      retry_until_success rclone copyto "$part" "$DEST_PATH/${part##*/}" \
-        --s3-upload-cutoff 64M \
-        --s3-chunk-size 64M \
-        --s3-disable-checksum \
-        --multi-thread-streams 2 \
-        --retries 5 \
-        --low-level-retries 10 \
-        --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
-      part_pids+=($!)
-      _parallel_count=$(( _parallel_count + 1 ))
-      if [ $(( _parallel_count % 5 )) -eq 0 ]; then
-        if ! wait_all "${part_pids[@]}"; then
-          senderr "Failed to upload split part to R2 ($DEST_PATH)."
-          exit 1
+  # 3) split parts of any >4G file (state). Optional: download_snapshot.sh falls
+  #    back to the whole file when parts are absent, so this is skippable on slow
+  #    uplinks to avoid a second full-size pass.
+  if [ "$UPLOAD_SPLIT_PARTS" = "true" ]; then
+    part_pids=()
+    _parallel_count=0
+    for file in $( find "$OUTPUT_DIR" -size +4G ); do
+      split -b 4GB "$file" "$file.part" --numeric-suffixes=1 -a $PART_LENGTH
+      for part in "$file.part"*; do
+        retry_until_success rclone copyto "$part" "$DEST_PATH/${part##*/}" \
+          --s3-upload-cutoff 64M \
+          --s3-chunk-size 64M \
+          --s3-disable-checksum \
+          --s3-upload-concurrency=$RCLONE_CONCURRENCY \
+          --retries 5 \
+          --low-level-retries 10 \
+          --no-traverse && echo "[INFO] Copied $DEST_PATH/${part##*/}" && rm "$part" &
+        part_pids+=($!)
+        _parallel_count=$(( _parallel_count + 1 ))
+        if [ $(( _parallel_count % 5 )) -eq 0 ]; then
+          if ! wait_all "${part_pids[@]}"; then
+            senderr "Failed to upload split part to R2 ($DEST_PATH)."
+            exit 1
+          fi
+          part_pids=()
         fi
-        part_pids=()
-      fi
+      done
     done
-  done
 
-  if [ "${#part_pids[@]}" -gt 0 ] && ! wait_all "${part_pids[@]}"; then
-    senderr "Failed to upload split part to R2 ($DEST_PATH)."
-    exit 1
+    if [ "${#part_pids[@]}" -gt 0 ] && ! wait_all "${part_pids[@]}"; then
+      senderr "Failed to upload split part to R2 ($DEST_PATH)."
+      exit 1
+    fi
+  fi
+
+  # 4) metadata + latest.json LAST — the public pointer flips to this snapshot
+  #    only now, after the zip/state/parts above are all in place.
+  if [ -n "$LATEST_METADATA" ]; then
+    ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
+    if ! publish_artifact "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" \
+        "$DEST_PATH/$METADATA_FILENAME" \
+        "$DEST_PATH/latest.json" \
+        "$DEST_PATH/internal/$METADATA_FILENAME" \
+        "$DEST_PATH/internal/latest.json" \
+        "$DEST_PATH/internal/mainnet_latest.json"; then
+      senderr "Failed to upload metadata/latest.json to R2 ($DEST_PATH)."
+      exit 1
+    fi
   fi
 
   SNAPSHOT_INDEX=""

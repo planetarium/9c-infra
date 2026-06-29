@@ -121,6 +121,15 @@ snapshot:
   sourceLabel: "pt6"
   path: "main/partition"
 
+  # pt6 publish tuning (see charts/all-in-one/values.yaml for semantics):
+  # - on-prem -> AWS S3 large multipart PUTs hang here, so skip the GLACIER
+  #   archive and upload to R2 directly from local;
+  # - the uplink is single-stream window-limited (~0.6MB/s @ 4 -> ~3.4MB/s @ 16);
+  # - skip the redundant >4G split-parts pass (clients fall back to whole file).
+  archiveToS3: false
+  rcloneUploadConcurrency: 16
+  uploadSplitParts: false
+
   fullSnapshot:
     enabled: false
     suspend: false
@@ -143,12 +152,16 @@ snapshot:
     schedule: "0 0 * * 0"
     suspend: false
     zstd: false
-    # Hybrid layout: RocksDB chain on SSD (fast random I/O), snapshot zip on HDD
-    # (large sequential writes, preserves SSD life). Both PVCs pre-created
-    # manually on pt6 (see plan file Phase 2e).
+    # Hybrid layout: the full odin store (~430G) does not fit on pt6's 466G SSD,
+    # and create-snapshot's CopyStates is unusably slow on HDD (random I/O). So
+    # the store lives on the SSD host dir (/opt/odin-store) EXCEPT the bulk `tx`
+    # column family (268G), submounted from the HDD at /data/headless/tx. The
+    # snapshot zips go to the HDD-backed output PVC. (Host dirs pre-created on pt6.)
     volumeMode: hybrid
     chainDataVolume:
-      name: snapshot-chain-data-pt6
+      hostPath: /opt/odin-store
+    txVolume:
+      hostPath: /data/snapshot-chain-data/tx
     outputVolume:
       name: snapshot-output-pt6
     volume:
