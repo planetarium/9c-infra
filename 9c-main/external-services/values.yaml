@@ -27,25 +27,26 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    # SeasonPass #310 (status backfill: drop early row lock) — stacked on
-    # #309 -> #308 -> #306, so this bump ships the whole stack on top of live
-    # 52e16aa:
+    # SeasonPass #311 (invalid-claim -> count) — stacked on #310 -> #309 -> #308
+    # -> #306, so this bump ships the whole stack on top of live bfbe0b2:
     #   485b172  raise DB pool 30 -> 60 (absorb connection holds)        [#306]
     #   887fe57  API: call cleared-stage RPC outside the DB transaction  [#308]
     #   52e16aa  tracker: run tx-tracker GQL outside the DB transaction  [#309]
     #   bfbe0b2  API: resolve level before mutating target in backfill   [#310]
-    # #310 is the durable fix for the recurring lock convoy: the WorldClear
-    # on-read backfill set target.exp then called get_level(), whose SELECT
-    # autoflushed an UPDATE user_season_pass and took the row lock across the
-    # whole block. Concurrent polling of the same avatars + claim's FOR UPDATE
-    # convoyed and exhausted the pool -> block-status / invalid-claim alarms.
-    # The reorder (compute level first) keeps the row lock to the commit flush
-    # only; behaviour is unchanged. Complements the live ALTER ROLE timeouts
-    # (lock_timeout=10s / idle_in_transaction_session_timeout=60s /
-    # statement_timeout=30s) applied as the safety net.
+    #   63c5735  API: /invalid-claim returns a count, not 503-if-any      [#311]
+    # #306/#308/#309/#310 removed the lock convoy that exhausted the pool and
+    # tripped the block-status/invalid-claim monitors. #311 stops a SINGLE
+    # transient stuck claim (e.g. one heimdall tx that settled in ~13min) from
+    # paging: /invalid-claim now returns the stuck-claim count (HTTP 200) instead
+    # of 503-if-any, like IAP /purchase/invalid-receipt-count.
+    #
+    # !!! REQUIRED with this deploy: reconfigure the Assertible "Test Invalid
+    # Claim" check to fail when the returned number exceeds a threshold (start
+    # >=3). Until then the check always sees 200 and never alarms.
+    #
     # No migration coupling: the partial index (#307) is already applied live and
     # the code works with or without it.
-    tag: "git-bfbe0b2ccd1905f4d9dee59363b38e2755b79ed5"
+    tag: "git-63c57359136a7da0649ba1634d5ba4c01082f84d"
 
   api:
     enabled: true
