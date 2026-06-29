@@ -27,7 +27,16 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-ba5228ce9985327092b3d0ea874620d3cade5721"
+    # SeasonPass #308 (fix/gql-outside-db-txn) — stacked on #306, so this bump
+    # ships both at once on top of the live ba5228c:
+    #   485b172  raise DB pool 30 -> 60 (absorb connection holds)        [#306]
+    #   887fe57  call cleared-stage RPC outside the DB transaction       [#308]
+    # The #308 refactor stops requests from holding a user_season_pass row
+    # lock idle-in-transaction across the slow GQL call, which was piling up
+    # claim FOR UPDATE waiters and exhausting the pool -> block-status /
+    # invalid-claim alarms. No migration coupling: the partial index (#307)
+    # is already applied live and the code works with or without it.
+    tag: "git-887fe57d97ef1524db91f3873e803c3689e0aeab"
 
   api:
     enabled: true
