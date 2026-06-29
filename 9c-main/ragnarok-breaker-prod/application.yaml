@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ragnarok-breaker-production
+  name: ragnarok-breaker-prod
   namespace: argocd
 spec:
   project: default
@@ -11,10 +11,10 @@ spec:
     path: charts/ragnarok-breaker
     helm:
       valueFiles:
-        - /9c-main/ragnarok-breaker-production/values.yaml
+        - /9c-main/ragnarok-breaker-prod/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: ragnarok-breaker
+    namespace: ragnarok-breaker-prod
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
