@@ -65,6 +65,18 @@ externalSecret:
 
 snapshot:
   downloadSnapshot: false
+  # Publish tuning (consumed by partition/upload_snapshot.sh). Defaults preserve
+  # legacy behavior; pt6 overrides these (see 9c-pt6/network/odin.yaml):
+  #   archiveToS3=false       — skip the AWS S3 GLACIER archive, upload to R2
+  #                             directly from local. pt6's on-prem->AWS path
+  #                             hangs on large multipart PUTs; R2 works fine.
+  #   rcloneUploadConcurrency — parallel chunk streams per rclone upload
+  #                             (pt6's uplink is single-stream window-limited).
+  #   uploadSplitParts=false  — skip re-uploading >4G files as .partNNN chunks
+  #                             (download_snapshot.sh falls back to the whole file).
+  archiveToS3: true
+  rcloneUploadConcurrency: 4
+  uploadSplitParts: true
   fullSnapshot:
     enabled: false
     suspend: false
@@ -80,16 +92,21 @@ snapshot:
     compressionLevel: 0
     # Volume layout for the snapshot CronJob.
     #   "single" (default) — one PVC mounted at /data (existing 9c-main setup)
-    #   "hybrid"           — two PVCs: chainDataVolume (SSD) at /data/headless,
+    #   "hybrid"           — chainDataVolume (SSD) at /data/headless,
     #                        outputVolume (HDD) at /data/snapshots + /data/snapshot_logs
     volumeMode: "single"
     volume:
       create: false
       name: snapshot-volume-partition
-    # Used only when volumeMode=hybrid. PVCs must be pre-created on the
-    # target cluster with appropriate storageClassName.
+    # Used only when volumeMode=hybrid. PVCs must be pre-created on the target
+    # cluster. chainDataVolume accepts EITHER `name` (a PVC) OR `hostPath` (a
+    # host dir). When `txVolume.hostPath` is set, it is submounted at
+    # /data/headless/tx — lets the store live on SSD except the bulk tx CF (pt6).
     chainDataVolume:
       name: snapshot-chain-data
+      # hostPath: /opt/odin-store
+    # txVolume:
+    #   hostPath: /data/snapshot-chain-data/tx
     outputVolume:
       name: snapshot-output
     dp:
