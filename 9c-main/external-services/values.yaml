@@ -27,20 +27,25 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    # SeasonPass #309 (tx-tracker GQL-out-of-txn) — stacked on #308 -> #306, so
-    # this bump ships all three at once on top of the live 887fe57:
+    # SeasonPass #310 (status backfill: drop early row lock) — stacked on
+    # #309 -> #308 -> #306, so this bump ships the whole stack on top of live
+    # 52e16aa:
     #   485b172  raise DB pool 30 -> 60 (absorb connection holds)        [#306]
     #   887fe57  API: call cleared-stage RPC outside the DB transaction  [#308]
     #   52e16aa  tracker: run tx-tracker GQL outside the DB transaction  [#309]
-    # #308 stopped API requests from holding a user_season_pass row lock
-    # idle-in-transaction across the slow GQL call (was piling up claim FOR
-    # UPDATE waiters and exhausting the pool -> block-status / invalid-claim
-    # alarms). #309 fixes the same anti-pattern in the tx-tracker, whose
-    # SELECT-then-GQL held a transaction idle for minutes (observed 448s),
-    # pinning the xmin horizon and blocking autovacuum on claim/user_season_pass.
+    #   bfbe0b2  API: resolve level before mutating target in backfill   [#310]
+    # #310 is the durable fix for the recurring lock convoy: the WorldClear
+    # on-read backfill set target.exp then called get_level(), whose SELECT
+    # autoflushed an UPDATE user_season_pass and took the row lock across the
+    # whole block. Concurrent polling of the same avatars + claim's FOR UPDATE
+    # convoyed and exhausted the pool -> block-status / invalid-claim alarms.
+    # The reorder (compute level first) keeps the row lock to the commit flush
+    # only; behaviour is unchanged. Complements the live ALTER ROLE timeouts
+    # (lock_timeout=10s / idle_in_transaction_session_timeout=60s /
+    # statement_timeout=30s) applied as the safety net.
     # No migration coupling: the partial index (#307) is already applied live and
     # the code works with or without it.
-    tag: "git-52e16aa37a83974234e7fef449453b8654ce658c"
+    tag: "git-bfbe0b2ccd1905f4d9dee59363b38e2755b79ed5"
 
   api:
     enabled: true
