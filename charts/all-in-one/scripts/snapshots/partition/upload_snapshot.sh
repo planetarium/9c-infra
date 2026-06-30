@@ -184,13 +184,16 @@ function make_and_upload_snapshot() {
   # points at a snapshot whose state_latest.zip is not yet fully uploaded — this
   # window is ~hours on a slow uplink like pt6.
 
+  # The legacy "$DEST_PATH/internal/..." mirror copies were dropped: nothing
+  # consumes them (every node's snapshot.path points at the public path, never
+  # <network>/partition/internal), they doubled R2 storage, and R2 has no
+  # lifecycle so they accumulated unbounded. Publish only the public serving set.
+
   # 1) partition snapshot zip
   ARCHIVED_SNAPSHOT_PATH="$ARCHIVE_PATH/snapshots/${NOW}_$SNAPSHOT_FILENAME"
   if ! publish_artifact "$LATEST_SNAPSHOT" "$ARCHIVED_SNAPSHOT_PATH" \
       "$DEST_PATH/$SNAPSHOT_FILENAME" \
-      "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME" \
-      "$DEST_PATH/internal/$SNAPSHOT_FILENAME" \
-      "$DEST_PATH/internal/$SNAPSHOT_LATEST_FILENAME"; then
+      "$DEST_PATH/$SNAPSHOT_LATEST_FILENAME"; then
     senderr "Failed to upload partition snapshot to R2 ($DEST_PATH)."
     exit 1
   fi
@@ -198,8 +201,7 @@ function make_and_upload_snapshot() {
   # 2) state
   ARCHIVED_STATE_PATH="$ARCHIVE_PATH/states/${NOW}_$STATE_FILENAME"
   if ! publish_artifact "$LATEST_STATE" "$ARCHIVED_STATE_PATH" \
-      "$DEST_PATH/$STATE_FILENAME" \
-      "$DEST_PATH/internal/$STATE_FILENAME"; then
+      "$DEST_PATH/$STATE_FILENAME"; then
     senderr "Failed to upload state snapshot to R2 ($DEST_PATH)."
     exit 1
   fi
@@ -245,10 +247,7 @@ function make_and_upload_snapshot() {
     ARCHIVED_METADATA_PATH="$ARCHIVE_PATH/metadata/${NOW}_$METADATA_FILENAME"
     if ! publish_artifact "$LATEST_METADATA" "$ARCHIVED_METADATA_PATH" \
         "$DEST_PATH/$METADATA_FILENAME" \
-        "$DEST_PATH/latest.json" \
-        "$DEST_PATH/internal/$METADATA_FILENAME" \
-        "$DEST_PATH/internal/latest.json" \
-        "$DEST_PATH/internal/mainnet_latest.json"; then
+        "$DEST_PATH/latest.json"; then
       senderr "Failed to upload metadata/latest.json to R2 ($DEST_PATH)."
       exit 1
     fi
