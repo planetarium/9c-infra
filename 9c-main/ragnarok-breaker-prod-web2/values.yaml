@@ -5,7 +5,7 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-55f0ca0126a2d3daebc63d2c616d638127c97cdb
+    tag: git-bbad6ee167f7be3f42b4b3da5b9a7120b0a532ec
 
 v8Gateway:
   image:
@@ -35,4 +35,4 @@ bqAnalyticsWorker:
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+    tag: git-e3545d1e3869858b336d85cdd20695d7a22cd828
