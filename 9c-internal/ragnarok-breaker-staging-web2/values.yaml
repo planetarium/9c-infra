@@ -40,3 +40,7 @@ mailSendWorker:
   enabled: true
   image:
     tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
+  httpRoute:
+    enabled: true
+    hostnames:
+      - rb-mail-send-staging-web2.9c.gg
