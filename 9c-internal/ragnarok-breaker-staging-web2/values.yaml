@@ -31,14 +31,12 @@ bqAnalyticsWorker:
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
-# 메일 지급 워커 — staging 검증용 활성화.
-# ⚠️ tag placeholder: ragnarok-breaker-mail-send-worker 이미지는 petpop MR !1210(build:mail-send-worker
-#    CI 잡 신설) 이 petpop main 에 머지되어 빌드·push 된 뒤에 존재한다. 그 git-<sha> 로 아래 tag 를
-#    bump 해야 ImagePullBackOff 없이 뜬다.
-# ⚠️ AWS SM ragnarok-breaker/staging-web2 에 다음 키 선행 추가 필요: MAIL_SENDER_V8_ACCOUNT,
-#    MAIL_SENDER_V8_VERSE(=staging-w2 verse), MAIL_SENDER_V8_ENV, MAIL_SENDER_V8_AUTH,
-#    MAIL_SEND_SLACK_WEBHOOK, MAIL_SEND_LIMITER_MAX, MAIL_SEND_LIMITER_MS (REDIS_URL 은 기존 공유).
+# 메일 지급 워커 — staging 검증용 활성화. tag = petpop build:mail-send-worker 산출 이미지.
+# 발송 계정: 공유 워커/게이트웨이 계정을 재사용(admin.ts mailSendWorker role 등록됨). 워커가
+#   MAIL_SENDER_V8_* 없으면 기존 V8_ACCOUNT/_VERSE/_AUTH/_ENV 로 폴백하므로 신규 SM 키 불필요.
+# 선택: Slack 알림 원하면 AWS SM ragnarok-breaker/staging-web2 에 MAIL_SEND_SLACK_WEBHOOK 추가
+#   (미설정 시 알림 skip). MAIL_SEND_LIMITER_MAX/_MS 도 선택(기본 1건/1000ms).
 mailSendWorker:
   enabled: true
   image:
-    tag: git-PENDING-CI-BUILD
+    tag: git-00b238563ba03c1d6fad23b5e0eb19ed252b58d6
