@@ -1,0 +1,83 @@
+{{- if .Values.mailSendWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-send-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: mail-send-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: mail-send-worker
+spec:
+  replicas: {{ .Values.mailSendWorker.deployment.replicas }}
+  # 단일 큐 소비자 + 전용 mail-sender 세션 → 롤아웃 중 두 파드 동시 소비 방지.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mail-send-worker
+  template:
+    metadata:
+      labels:
+        app: mail-send-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: mail-send-worker
+          image: "{{ .Values.mailSendWorker.image.repository }}:{{ .Values.mailSendWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.mailSendWorker.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.mailSendWorker.deployment.port }}
+          env:
+            # HTTP /enqueue 서버 포트. 나머지 env(MAIL_SENDER_V8_*, MAIL_SEND_SLACK_WEBHOOK,
+            # MAIL_SEND_LIMITER_*, REDIS_URL) 는 ragnarok-breaker-env(AWS SM) 에서 주입.
+            - name: MAIL_SEND_HTTP_PORT
+              value: {{ .Values.mailSendWorker.deployment.port | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          # mail-send 는 별도 health 엔드포인트가 없으므로 TCP 로 포트 리스닝만 확인.
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.mailSendWorker.deployment.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.mailSendWorker.deployment.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.mailSendWorker.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail-send-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: mail-send-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: mail-send-worker
+spec:
+  # 내부 전용(ClusterIP) — 운영자는 port-forward 로 /enqueue 에 POST. 외부 노출 없음.
+  type: ClusterIP
+  selector:
+    app: mail-send-worker
+  ports:
+    - name: http
+      port: {{ .Values.mailSendWorker.service.port }}
+      targetPort: {{ .Values.mailSendWorker.deployment.port }}
+      protocol: TCP
+{{- end }}
