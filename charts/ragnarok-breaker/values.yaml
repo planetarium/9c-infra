@@ -219,6 +219,11 @@ mailSendWorker:
       limits:
         cpu: 500m
         memory: 512Mi
+  httpRoute:
+    enabled: false
+    hostnames: []
+    gatewayName: traefik-gateway
+    gatewayNamespace: traefik
 
 # === External payment backend → BigQuery analytics ingest gateway ===
 # Thin HTTP gateway (Bun.serve): POST /v1/events (Bearer auth) validates the
