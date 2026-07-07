@@ -39,4 +39,4 @@ bqAnalyticsWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-00b238563ba03c1d6fad23b5e0eb19ed252b58d6
+    tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
