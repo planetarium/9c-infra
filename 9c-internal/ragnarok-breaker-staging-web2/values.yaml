@@ -43,4 +43,4 @@ mailSendWorker:
   httpRoute:
     enabled: true
     hostnames:
-      - rb-mail-send-staging.9c.gg
+      - rb-mail-send-staging-web2.9c.gg
