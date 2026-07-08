@@ -1,0 +1,69 @@
+{{- if .Values.leagueRewardWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: league-reward-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: league-reward-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: league-reward-worker
+spec:
+  replicas: {{ .Values.leagueRewardWorker.deployment.replicas }}
+  # 단일 폴러 + BullMQ delayed confirm 소비자 → 롤아웃 중 두 파드 동시 폴링/confirm 방지.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: league-reward-worker
+  template:
+    metadata:
+      labels:
+        app: league-reward-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: league-reward-worker
+          image: "{{ .Values.leagueRewardWorker.image.repository }}:{{ .Values.leagueRewardWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.leagueRewardWorker.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.leagueRewardWorker.deployment.port }}
+          env:
+            # 헬스 포트 + mail-send-worker 내부 도메인 + verse 라벨(jobId suffix).
+            # 나머지 env(R2_PUBLIC_BASE, CDN_ENV, MAIL_SENDER_V8_*/V8_*, REDIS_URL,
+            # 선택 LEAGUE_REWARD_* 튜닝) 는 ragnarok-breaker-env(AWS SM) 에서 주입.
+            - name: LEAGUE_REWARD_HTTP_PORT
+              value: {{ .Values.leagueRewardWorker.deployment.port | quote }}
+            - name: MAIL_SEND_WORKER_URL
+              value: {{ .Values.leagueRewardWorker.config.mailSendWorkerUrl | quote }}
+            - name: LEAGUE_REWARD_VERSE_LABEL
+              value: {{ .Values.leagueRewardWorker.config.verseLabel | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.leagueRewardWorker.deployment.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.leagueRewardWorker.deployment.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.leagueRewardWorker.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

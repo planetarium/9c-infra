@@ -225,6 +225,40 @@ mailSendWorker:
     gatewayName: traefik-gateway
     gatewayNamespace: traefik
 
+# === League reward mail worker (리그 시즌 종료 → 보상 메일 자동 발송) ===
+# 폴링(기본 1h): R2 리그 시즌 종료 감지 → admin.getSeasonValidationStatus 로 모든 랭킹
+# 로우 validated 확인 → 보상 계산 → mailSendWorker /preview → 10분 뒤 /confirm 자동 확정.
+# mailSendWorker 를 같은 네임스페이스 내부 DNS(http://mail-send-worker:3100)로 호출하므로
+# 이 워커를 켜는 env 에는 mailSendWorker 도 함께 켜져 있어야 한다. 이중지급 방지 권위는
+# 결정론적 jobId(league-s{seasonId}-{verseLabel}) + 서버 receipt — redis 유실에도 안전.
+# 필요 env(ragnarok-breaker-env AWS SM): R2_PUBLIC_BASE, CDN_ENV, MAIL_SENDER_V8_*/V8_*
+#   (계정은 worker.records·user.read·mail.send 권한 필요), REDIS_URL.
+# 선택 튜닝 env: LEAGUE_REWARD_POLL_INTERVAL_MS, LEAGUE_REWARD_GRACE_MS,
+#   LEAGUE_REWARD_LOOKBACK_MS, LEAGUE_REWARD_CONFIRM_DELAY_MS, LEAGUE_REWARD_TTL_DAYS,
+#   LEAGUE_PASS_RUBY_MULT, LEAGUE_REWARD_ENTITLEMENT_INTERVAL_MS.
+# 기본 off — env 별 override 에서 enable + verseLabel 지정 + 이미지 태그 pin.
+leagueRewardWorker:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-league-reward-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  deployment:
+    replicas: 1
+    port: 3200
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  config:
+    # 같은 네임스페이스 mail-send-worker ClusterIP Service.
+    mailSendWorkerUrl: http://mail-send-worker:3100
+    # jobId suffix. env 별 override 에서 반드시 고유값 지정(예 staging-w2 / staging-w3).
+    verseLabel: ""
+
 # === External payment backend → BigQuery analytics ingest gateway ===
 # Thin HTTP gateway (Bun.serve): POST /v1/events (Bearer auth) validates the
 # envelope and enqueues a bq_event job onto the bq-analytics-events BullMQ

@@ -44,3 +44,15 @@ mailSendWorker:
     enabled: true
     hostnames:
       - rb-mail-send-staging-web2.9c.gg
+
+# 리그 보상 메일 워커 — staging 검증용 활성화. 같은 네임스페이스 mailSendWorker(위)를
+# 내부 DNS 로 호출한다. verseLabel 은 jobId suffix 로 web2/web3 간 고유해야 함.
+# ⚠ image.tag: petpop build:league-reward-worker 가 산출하는 git-<sha> 로 pin 필요
+#   (첫 배포 전 필수 — 아래 develop 은 임시). AWS SM ragnarok-breaker/staging-web2 에
+#   R2_PUBLIC_BASE·CDN_ENV 존재 확인, 발송 계정에 worker.records 권한 필요.
+leagueRewardWorker:
+  enabled: true
+  image:
+    tag: develop
+  config:
+    verseLabel: staging-w2
