@@ -36,3 +36,18 @@ anticheatAlertWorker:
   enabled: true
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+
+# 메일 지급 워커 — prod web2 활성화. tag = petpop build:mail-send-worker 산출 이미지
+#   (env-agnostic, SM 으로 env 주입 → staging 검증 이미지 재사용).
+# 호스트명은 /mail-send 스킬의 mailSendWorkerUrlOf('prod','web2') 파생값과 1:1 일치해야 함.
+# 발송 계정: MAIL_SENDER_V8_* 미설정 시 ragnarok-breaker/prod-web2 의 V8_ACCOUNT/_VERSE/_AUTH/_ENV
+#   로 폴백. 해당 계정이 prod verse 에서 mailSendWorker role 로 등록돼 있어야 실제 발송 가능.
+# 선택: Slack 알림은 AWS SM 에 MAIL_SEND_SLACK_WEBHOOK 추가 시 활성(미설정 시 skip).
+mailSendWorker:
+  enabled: true
+  image:
+    tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
+  httpRoute:
+    enabled: true
+    hostnames:
+      - rb-mail-send-prod-web2.9c.gg
