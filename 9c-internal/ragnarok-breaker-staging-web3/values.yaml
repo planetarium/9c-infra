@@ -5,19 +5,19 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
 v8Gateway:
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
 logStream:
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
 yggRedeem:
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   httpRoute:
     enabled: true
     hostnames:
@@ -25,13 +25,13 @@ yggRedeem:
 
 yggQuestWorker:
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
 # bq-analytics runs in production only; disabled here, tag pinned for bulk bump.
 bqAnalyticsWorker:
   enabled: false
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
 # 메일 지급 워커 — staging-web3 도 web2 와 동일하게 활성화(그간 web2 만 있었음).
 # tag = staging 검증 이미지(web2 와 동일). 발송 계정: 공유 워커/게이트웨이 계정 재사용
@@ -40,7 +40,7 @@ bqAnalyticsWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   httpRoute:
     enabled: true
     hostnames:
@@ -53,6 +53,6 @@ mailSendWorker:
 leagueRewardWorker:
   enabled: true
   image:
-    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   config:
     verseLabel: staging-w3
