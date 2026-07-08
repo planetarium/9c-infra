@@ -32,3 +32,27 @@ bqAnalyticsWorker:
   enabled: false
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+
+# 메일 지급 워커 — staging-web3 도 web2 와 동일하게 활성화(그간 web2 만 있었음).
+# tag = staging 검증 이미지(web2 와 동일). 발송 계정: 공유 워커/게이트웨이 계정 재사용
+#   (MAIL_SENDER_V8_* 없으면 V8_ACCOUNT/_VERSE/_AUTH/_ENV 폴백, 신규 SM 키 불필요).
+# ⚠ httproute 호스트 rb-mail-send-staging-web3.9c.gg 는 DNS/firewall 등록 필요.
+mailSendWorker:
+  enabled: true
+  image:
+    tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
+  httpRoute:
+    enabled: true
+    hostnames:
+      - rb-mail-send-staging-web3.9c.gg
+
+# 리그 보상 메일 워커 — staging-web3 검증용 활성화. 위 mailSendWorker(web3)를 내부 DNS 호출.
+# verseLabel 은 web2 와 달라야 함(jobId 충돌 방지).
+# ⚠ image.tag: petpop build:league-reward-worker 산출 git-<sha> 로 pin 필요(develop 은 임시).
+#   AWS SM ragnarok-breaker/staging-web3 에 R2_PUBLIC_BASE·CDN_ENV 확인, 계정 worker.records 권한.
+leagueRewardWorker:
+  enabled: true
+  image:
+    tag: develop
+  config:
+    verseLabel: staging-w3
