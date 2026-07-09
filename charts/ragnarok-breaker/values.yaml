@@ -153,6 +153,27 @@ yggQuestWorker:
       cpu: 500m
       memory: 512Mi
 
+# === BullMQ consumer for playfull-event queue → Playfull Events API ===
+# log-stream 이 LOG_STREAM_ENABLE_PLAYFULL=true 일 때만 playfull-event 큐에 잡을 넣는다.
+# 워커는 V8 의존이 없다 — 잡을 받아 HMAC 서명 후 Playfull 로 POST 할 뿐.
+# 크리덴셜(PLAYFULL_CLIENT_ID/_CLIENT_SECRET/_GAME_ID)과 PLAYFULL_DRY_RUN 은
+# ragnarok-breaker-env ExternalSecret(AWS SM) 에서 주입한다.
+# PLAYFULL_DRY_RUN 미설정 시 기본 true(전송 안 함) — 안전한 기본값.
+playfullWorker:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-playfull-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
 # === BullMQ consumer for bq-analytics-events queue → BigQuery insertAll ===
 # Consumes bq_event jobs enqueued by log-stream and writes rows to BigQuery.
 # Independent of V8 gateway. GCP auth via BQ_SERVICE_ACCOUNT_JSON_BASE64

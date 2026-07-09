@@ -1,0 +1,39 @@
+{{- if .Values.playfullWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playfull-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: playfull-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: playfull-worker
+spec:
+  replicas: {{ .Values.playfullWorker.replicas }}
+  selector:
+    matchLabels:
+      app: playfull-worker
+  template:
+    metadata:
+      labels:
+        app: playfull-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: playfull-worker
+          image: "{{ .Values.playfullWorker.image.repository }}:{{ .Values.playfullWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.playfullWorker.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          resources:
+            {{- toYaml .Values.playfullWorker.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

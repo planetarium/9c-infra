@@ -56,3 +56,20 @@ leagueRewardWorker:
     tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   config:
     verseLabel: staging-w3
+
+# Playfull CPE 아웃바운드 워커 — staging 검증용 활성화.
+# 파이프라인: 게임서버가 검증된 stage_clear 시 playfull_event 로그 emit
+#   → log-stream 이 playfull-event 큐로 라우팅(LOG_STREAM_ENABLE_PLAYFULL=true 일 때만)
+#   → 이 워커가 소비해 HMAC 서명 후 Playfull Events API 로 POST.
+#
+# ⚠ sync 전 AWS SM ragnarok-breaker/staging-web3 에 아래 키 추가 필요:
+#     PLAYFULL_CLIENT_ID / PLAYFULL_CLIENT_SECRET / PLAYFULL_GAME_ID
+#     PLAYFULL_DRY_RUN=true            (실 전송 없이 서명·바디만 로그. 검증 후 false)
+#     LOG_STREAM_ENABLE_PLAYFULL=true  (log-stream 이 큐로 라우팅. 미설정 시 emit drop)
+#
+# ⚠ 순서: 워커가 먼저 뜬 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
+#   반대로 하면 컨슈머 없는 큐에 잡이 적체된다.
+playfullWorker:
+  enabled: true
+  image:
+    tag: PLACEHOLDER-set-after-petpop-main-merge
