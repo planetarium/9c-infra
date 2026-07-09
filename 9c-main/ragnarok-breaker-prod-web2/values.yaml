@@ -46,8 +46,22 @@ anticheatAlertWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   httpRoute:
     enabled: true
     hostnames:
       - rb-mail-send-prod-web2.9c.gg
+
+# 리그 보상 메일 워커 — prod 실지급. 같은 네임스페이스 mailSendWorker(위)를 내부 DNS 호출.
+# ⚠ ArgoCD sync(=워커 기동) 전 필수:
+#   (1) 이 verse Redis 의 SET `league-reward:paid` 에 이미 수동 지급된 리그 시즌 id 를 전부
+#       SADD. 구 manual 도구(sendUserMailBatch)는 서버 receipt 를 안 남겨 결정론 jobId dedup 이
+#       안 걸리므로, 미시딩 시 7일 lookback 안의 수동 지급 시즌을 재지급(이중지급)한다.
+#   (2) AWS SM ragnarok-breaker/prod-web2 에 R2_PUBLIC_BASE·CDN_ENV 존재 확인.
+#   발송계정(0x3c33)은 worker.records·user.read·mail.send 보유(확인됨).
+leagueRewardWorker:
+  enabled: true
+  image:
+    tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
+  config:
+    verseLabel: prod-w2
