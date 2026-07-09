@@ -50,7 +50,7 @@ anticheatAlertWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-2661018f2dc44c9484398f7b14ad27e0e0388f45
+    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
   httpRoute:
     enabled: true
     hostnames:
