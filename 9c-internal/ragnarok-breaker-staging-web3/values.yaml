@@ -72,4 +72,4 @@ leagueRewardWorker:
 playfullWorker:
   enabled: true
   image:
-    tag: PLACEHOLDER-set-after-petpop-main-merge
+    tag: git-b7009db27f03ffb21864dd72b0ca4a6a67fd74e5
