@@ -20,7 +20,7 @@ logStream:
 yggRedeem:
   enabled: false
   image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+    tag: git-2d0a3dc32109e9f11ac57e4a7da1268ec5a44f77
 yggQuestWorker:
   enabled: false
   image:
