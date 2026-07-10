@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ragnarok-breaker
-description: Ragnarok Breaker workloads (workers + v8-gateway + ygg-redeem + log-stream + ygg-quest-worker + bq-analytics-worker + bq-ingest-gateway + anticheat-alert-worker)
+description: Ragnarok Breaker workloads (workers + v8-gateway + ygg-redeem + log-stream + bq-analytics-worker + bq-ingest-gateway + anticheat-alert-worker)
 type: application
 version: 0.3.0
 appVersion: 0.2.0

@@ -17,8 +17,6 @@ yggRedeem:
   enabled: false
 logStream:
   enabled: false
-yggQuestWorker:
-  enabled: false
 bqAnalyticsWorker:
   enabled: false
 anticheatAlertWorker:

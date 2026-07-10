@@ -25,11 +25,6 @@ yggRedeem:
     hostnames:
       - ygg-redeem.9c.gg
 
-yggQuestWorker:
-  image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
-  replicas: 2
-
 bqAnalyticsWorker:
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b

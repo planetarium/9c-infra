@@ -137,22 +137,6 @@ logStream:
       cpu: 500m
       memory: 256Mi
 
-# === BullMQ consumer for ygg-quest-trigger queue ===
-yggQuestWorker:
-  enabled: true
-  image:
-    repository: planetariumhq/ragnarok-breaker-ygg-quest-worker
-    tag: develop
-    pullPolicy: IfNotPresent
-  replicas: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-
 # === BullMQ consumer for playfull-event queue → Playfull Events API ===
 # log-stream 이 LOG_STREAM_ENABLE_PLAYFULL=true 일 때만 playfull-event 큐에 잡을 넣는다.
 # 워커는 V8 의존이 없다 — 잡을 받아 HMAC 서명 후 Playfull 로 POST 할 뿐.
