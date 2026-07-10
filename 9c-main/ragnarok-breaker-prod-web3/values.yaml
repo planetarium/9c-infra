@@ -15,25 +15,6 @@ logStream:
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
 
-yggRedeem:
-  image:
-    tag: git-2d0a3dc32109e9f11ac57e4a7da1268ec5a44f77
-  deployment:
-    replicas: 2
-  httpRoute:
-    enabled: true
-    hostnames:
-      - ygg-redeem.9c.gg
-
-yggQuestWorker:
-  image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
-  replicas: 2
-
-bqAnalyticsWorker:
-  image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
-
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
@@ -69,16 +50,3 @@ leagueRewardWorker:
     tag: git-c3da22f0afb86d512a15769b52ad1c5464b76c1d
   config:
     verseLabel: prod-w3
-
-# Single shared ingest gateway for all payment envs (no app_env split) —
-# the only namespace that hosts it. The bulk `bump-image rb <hash>` keeps this
-# in sync (optional key: bumped here where present, skipped in overlays that
-# lack it); a targeted `bump-image rb bq-ingest-gateway <hash>` also works.
-bqIngestGateway:
-  enabled: true
-  image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
-  httpRoute:
-    enabled: true
-    hostnames:
-      - bq-ingest.9c.gg

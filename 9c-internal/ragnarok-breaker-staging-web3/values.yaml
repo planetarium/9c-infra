@@ -15,24 +15,6 @@ logStream:
   image:
     tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
-yggRedeem:
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-  httpRoute:
-    enabled: true
-    hostnames:
-      - ygg-redeem-staging.9c.gg
-
-yggQuestWorker:
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-
-# bq-analytics runs in production only; disabled here, tag pinned for bulk bump.
-bqAnalyticsWorker:
-  enabled: false
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-
 # 메일 지급 워커 — staging-web3 도 web2 와 동일하게 활성화(그간 web2 만 있었음).
 # tag = staging 검증 이미지(web2 와 동일). 발송 계정: 공유 워커/게이트웨이 계정 재사용
 #   (MAIL_SENDER_V8_* 없으면 V8_ACCOUNT/_VERSE/_AUTH/_ENV 폴백, 신규 SM 키 불필요).
