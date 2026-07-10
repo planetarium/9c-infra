@@ -1,14 +1,12 @@
-# ragnarok-breaker chart — 8 independent images, one per workload.
+# ragnarok-breaker chart — independent images, one per workload.
 # Usage:
-#   bump-image.sh rb <worker|v8-gateway|ygg-redeem|log-stream|ygg-quest-worker|bq-analytics-worker|bq-ingest-gateway|anticheat-alert-worker> <hash>
+#   bump-image.sh rb <worker|v8-gateway|log-stream|anticheat-alert-worker> <hash>
 #   bump-image.sh rb <hash>   # bump every workload at once
 #
-# Two workloads are prod-only, so they're excluded from the bulk all-bump's
-# REQUIRED keys and included as OPTIONAL keys instead: `bump-image.sh rb <hash>`
-# bumps them where they exist and skips overlays that lack the key (no error).
-# Their per-service bumps target the prod overlays only:
-#   - bq-ingest-gateway      : single shared instance, prod-web3 only.
-#       bump-image.sh rb bq-ingest-gateway <hash>
+# anticheat-alert-worker is prod-only, so it's excluded from the bulk all-bump's
+# REQUIRED keys and included as an OPTIONAL key instead: `bump-image.sh rb <hash>`
+# bumps it where it exists and skips overlays that lack the key (no error).
+# Its per-service bump targets the prod overlays only:
 #   - anticheat-alert-worker : per-env Slack alert consumer, all three prod overlays.
 #       bump-image.sh rb anticheat-alert-worker <hash>
 #
@@ -37,7 +35,7 @@ PRODUCTION_FILES=(
 DEV_FILE="${DEV_FILES[0]}"
 STAGING_FILE="${STAGING_FILES[0]}"
 PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
-SUB_SERVICES=(worker v8-gateway ygg-redeem log-stream ygg-quest-worker bq-analytics-worker bq-ingest-gateway anticheat-alert-worker)
+SUB_SERVICES=(worker v8-gateway log-stream anticheat-alert-worker)
 
 resolve_sub_service() {
   case "$1" in
@@ -51,39 +49,10 @@ resolve_sub_service() {
       SERVICE_LABEL="ragnarok-breaker-v8-gateway"
       BRANCH_PREFIX="ragnarok-breaker-v8-gateway"
       ;;
-    ygg-redeem)
-      TAG_KEYS=(".yggRedeem.image.tag")
-      SERVICE_LABEL="ragnarok-breaker-ygg-redeem"
-      BRANCH_PREFIX="ragnarok-breaker-ygg-redeem"
-      ;;
     log-stream)
       TAG_KEYS=(".logStream.image.tag")
       SERVICE_LABEL="ragnarok-breaker-log-stream"
       BRANCH_PREFIX="ragnarok-breaker-log-stream"
-      ;;
-    ygg-quest-worker)
-      TAG_KEYS=(".yggQuestWorker.image.tag")
-      SERVICE_LABEL="ragnarok-breaker-ygg-quest-worker"
-      BRANCH_PREFIX="ragnarok-breaker-ygg-quest-worker"
-      ;;
-    bq-analytics-worker)
-      TAG_KEYS=(".bqAnalyticsWorker.image.tag")
-      SERVICE_LABEL="ragnarok-breaker-bq-analytics-worker"
-      BRANCH_PREFIX="ragnarok-breaker-bq-analytics-worker"
-      ;;
-    bq-ingest-gateway)
-      TAG_KEYS=(".bqIngestGateway.image.tag")
-      SERVICE_LABEL="ragnarok-breaker-bq-ingest-gateway"
-      BRANCH_PREFIX="ragnarok-breaker-bq-ingest-gateway"
-      # Single shared instance, prod-web3 only — scope every env keyword to that
-      # one file so any --env (including the default `both`) only touches
-      # prod-web3 and never errors on files that lack the key.
-      DEV_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
-      STAGING_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
-      PRODUCTION_FILES=(9c-main/ragnarok-breaker-prod-web3/values.yaml)
-      DEV_FILE="${DEV_FILES[0]}"
-      STAGING_FILE="${STAGING_FILES[0]}"
-      PRODUCTION_FILE="${PRODUCTION_FILES[0]}"
       ;;
     anticheat-alert-worker)
       TAG_KEYS=(".anticheatAlertWorker.image.tag")
@@ -108,18 +77,13 @@ resolve_all_sub_services() {
   TAG_KEYS=(
     ".worker.image.tag"
     ".v8Gateway.image.tag"
-    ".yggRedeem.image.tag"
     ".logStream.image.tag"
-    ".yggQuestWorker.image.tag"
-    ".bqAnalyticsWorker.image.tag"
   )
   # Prod-only workloads are OPTIONAL keys: the bulk bump spans every env file but
   # bumps these only where they exist (the prod overlays) and skips the overlays
   # that lack them, instead of erroring on the missing key.
-  #   - bqIngestGateway      : prod-web3 only.
   #   - anticheatAlertWorker : all three prod overlays.
   OPTIONAL_TAG_KEYS=(
-    ".bqIngestGateway.image.tag"
     ".anticheatAlertWorker.image.tag"
   )
   SERVICE_LABEL="all ragnarok-breaker images"

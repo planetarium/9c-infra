@@ -4,7 +4,7 @@ imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
 # 이 오버레이(ragnarok-breaker-prod, ns ragnarok-breaker-prod)는 분석 스냅샷 CronJob 전용.
-# 다른 RB 워크로드(worker·v8-gateway·ygg·log-stream·bq-analytics·anticheat)는
+# 다른 RB 워크로드(worker·v8-gateway·log-stream·anticheat)는
 # ragnarok-breaker-prod-web2 / -prod-web3 오버레이가 담당하므로 여기선 전부 비활성.
 workers:
   stageValidation:
@@ -13,13 +13,7 @@ workers:
     enabled: false
 v8Gateway:
   enabled: false
-yggRedeem:
-  enabled: false
 logStream:
-  enabled: false
-yggQuestWorker:
-  enabled: false
-bqAnalyticsWorker:
   enabled: false
 anticheatAlertWorker:
   enabled: false

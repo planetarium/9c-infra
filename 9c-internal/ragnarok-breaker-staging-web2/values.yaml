@@ -15,22 +15,6 @@ logStream:
   image:
     tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
 
-# web2: ygg workloads are disabled, but image.tag is pinned
-# so `bump-image rb <hash>` (bulk) stays uniform across env×tier.
-yggRedeem:
-  enabled: false
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-yggQuestWorker:
-  enabled: false
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-# bq-analytics runs in production only; disabled here, tag pinned for bulk bump.
-bqAnalyticsWorker:
-  enabled: false
-  image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
-
 # 메일 지급 워커 — staging 검증용 활성화. tag = petpop build:mail-send-worker 산출 이미지.
 # 발송 계정: 공유 워커/게이트웨이 계정을 재사용(admin.ts mailSendWorker role 등록됨). 워커가
 #   MAIL_SENDER_V8_* 없으면 기존 V8_ACCOUNT/_VERSE/_AUTH/_ENV 로 폴백하므로 신규 SM 키 불필요.

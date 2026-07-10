@@ -80,46 +80,6 @@ v8Gateway:
     periodSeconds: 10
     failureThreshold: 3
 
-# === Yggdrasil redemption (Bun/Hono HTTP) ===
-# Stateless; can scale horizontally. Exposed externally via Gateway API HTTPRoute.
-yggRedeem:
-  enabled: true
-  image:
-    repository: planetariumhq/ragnarok-breaker-ygg-redeem
-    tag: develop
-    pullPolicy: IfNotPresent
-  service:
-    port: 8787
-  deployment:
-    replicas: 1
-    port: 8787
-    resources:
-      requests:
-        cpu: 50m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-    livenessProbe:
-      httpGet:
-        path: /healthz
-        port: 8787
-      initialDelaySeconds: 30
-      periodSeconds: 15
-      failureThreshold: 3
-    readinessProbe:
-      httpGet:
-        path: /healthz
-        port: 8787
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      failureThreshold: 3
-  httpRoute:
-    enabled: false
-    hostnames: []
-    gatewayName: traefik-gateway
-    gatewayNamespace: traefik
-
 # === V8 SSE log subscriber → BullMQ enqueuer ===
 # Single instance: cursor in Redis, multi-instance would dispatch duplicates.
 logStream:
@@ -136,22 +96,6 @@ logStream:
     limits:
       cpu: 500m
       memory: 256Mi
-
-# === BullMQ consumer for ygg-quest-trigger queue ===
-yggQuestWorker:
-  enabled: true
-  image:
-    repository: planetariumhq/ragnarok-breaker-ygg-quest-worker
-    tag: develop
-    pullPolicy: IfNotPresent
-  replicas: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
 
 # === BullMQ consumer for playfull-event queue → Playfull Events API ===
 # log-stream 이 LOG_STREAM_ENABLE_PLAYFULL=true 일 때만 playfull-event 큐에 잡을 넣는다.
@@ -173,25 +117,6 @@ playfullWorker:
     limits:
       cpu: 500m
       memory: 256Mi
-
-# === BullMQ consumer for bq-analytics-events queue → BigQuery insertAll ===
-# Consumes bq_event jobs enqueued by log-stream and writes rows to BigQuery.
-# Independent of V8 gateway. GCP auth via BQ_SERVICE_ACCOUNT_JSON_BASE64
-# (set in the ragnarok-breaker-env ExternalSecret).
-bqAnalyticsWorker:
-  enabled: true
-  image:
-    repository: planetariumhq/ragnarok-breaker-bq-analytics-worker
-    tag: develop
-    pullPolicy: IfNotPresent
-  replicas: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
 
 # === Anti-cheat alert worker → Slack ===
 # BullMQ consumer for the anticheat-alert queue (prefix `aca`). The server emits
@@ -279,53 +204,6 @@ leagueRewardWorker:
     mailSendWorkerUrl: http://mail-send-worker:3100
     # jobId suffix. env 별 override 에서 반드시 고유값 지정(예 staging-w2 / staging-w3).
     verseLabel: ""
-
-# === External payment backend → BigQuery analytics ingest gateway ===
-# Thin HTTP gateway (Bun.serve): POST /v1/events (Bearer auth) validates the
-# envelope and enqueues a bq_event job onto the bq-analytics-events BullMQ
-# queue consumed by bqAnalyticsWorker. Stateless; exposed externally via
-# Gateway API HTTPRoute so the V8 payment backend can push events.
-# Single shared instance: every payment env hits one endpoint (no app_env
-# split), so it is deployed ONLY in prod-web3 (default off, enabled there).
-# Required env (from the ragnarok-breaker-env ExternalSecret): INGEST_ADMIN_TOKEN,
-# BQ_ANALYTICS_REDIS_URL.
-bqIngestGateway:
-  enabled: false
-  image:
-    repository: planetariumhq/ragnarok-breaker-bq-ingest-gateway
-    tag: develop
-    pullPolicy: IfNotPresent
-  service:
-    port: 8080
-  deployment:
-    replicas: 1
-    port: 8080
-    resources:
-      requests:
-        cpu: 50m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 256Mi
-    livenessProbe:
-      httpGet:
-        path: /healthz
-        port: 8080
-      initialDelaySeconds: 30
-      periodSeconds: 15
-      failureThreshold: 3
-    readinessProbe:
-      httpGet:
-        path: /healthz
-        port: 8080
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      failureThreshold: 3
-  httpRoute:
-    enabled: false
-    hostnames: []
-    gatewayName: traefik-gateway
-    gatewayNamespace: traefik
 
 nodeSelector: {}
 
