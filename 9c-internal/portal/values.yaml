@@ -52,3 +52,12 @@ backofficeService:
       schedule: "*/15 * * * *"
       endpoint: "https://dev-portal.planetarium.team/api/scheduler/transaction"
       tokenEnvName: "SCHEDULER_API_KEY"
+    # RB-1850 리딤 지급/재확정 (인터널 전용, 내부 Odin 체인). REDEEM_NC_ADDRESS 미설정 시 no-op.
+    - name: redeem
+      schedule: "*/2 * * * *"
+      endpoint: "https://dev-portal.planetarium.team/api/scheduler/redeem"
+      tokenEnvName: "SCHEDULER_API_KEY"
+    - name: redeem-status
+      schedule: "*/15 * * * *"
+      endpoint: "https://dev-portal.planetarium.team/api/scheduler/redeem-status"
+      tokenEnvName: "SCHEDULER_API_KEY"
