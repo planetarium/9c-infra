@@ -14,3 +14,12 @@ v8Gateway:
 logStream:
   image:
     tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+
+# web2→web3 마이그레이션 브리지(크로스-verse 싱글톤) — staging 에서만 enable.
+# ⚠ image.tag 는 petpop main MR 머지 후 CI build:migration-bridge 가 push 하는
+#   ragnarok-breaker-migration-bridge:git-<sha> 로 핀할 것(현재 develop 은 플레이스홀더).
+# ⚠ AWS SM ragnarok-breaker/staging 에 MIGRATION_BRIDGE_WEB2_V8_* / _WEB3_V8_* (ACCOUNT·VERSE·ENV·AUTH·REMOTE_URL) 추가 필요.
+migrationBridge:
+  enabled: true
+  image:
+    tag: develop

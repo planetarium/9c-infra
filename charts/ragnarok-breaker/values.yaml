@@ -223,3 +223,24 @@ analyticsWorker:
     limits:
       cpu: 500m
       memory: 512Mi
+
+# === Migration bridge (web2→web3 계정 이전 폴러) ===
+# web2 migrationRequests 를 폴링해 web3 applyInbound 로 밀어넣고 web2 finalize 를 호출하는
+# 크로스-verse 싱글톤. 한 네임스페이스에서만 enable(analytics-worker 와 동일 원칙).
+# verse 접속/토큰 등 모든 설정은 ragnarok-breaker-env(AWS SM)의 MIGRATION_BRIDGE_* 키.
+migrationBridge:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-migration-bridge
+    tag: develop
+    pullPolicy: IfNotPresent
+  deployment:
+    replicas: 1
+    port: 3300
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
