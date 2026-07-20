@@ -56,3 +56,17 @@ playfullWorker:
   enabled: true
   image:
     tag: git-b7009db27f03ffb21864dd72b0ca4a6a67fd74e5
+
+# web2→web3 마이그레이션 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
+# ⚠ 반드시 이 한 네임스페이스에서만 enable — staging-web3 에는 절대 켜지 말 것
+#   (두 인스턴스가 같은 web2 큐를 폴링. claim CAS + (P,A) 멱등이라 중복 크레딧은 안 나지만 낭비).
+# ⚠ image.tag 는 petpop main MR 머지 후 CI build:migration-bridge 산출
+#   ragnarok-breaker-migration-bridge:git-<sha> 로 핀(현재 develop 은 플레이스홀더).
+# ⚠ AWS SM ragnarok-breaker/staging-web2 에 web2·web3 두 verse 자격증명 모두 추가:
+#   MIGRATION_BRIDGE_WEB2_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#   MIGRATION_BRIDGE_WEB3_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#   (파드 위치와 무관하게 web3 는 게이트웨이 URL+bearer 로 도달하므로 web3 자격증명도 여기 필요)
+migrationBridge:
+  enabled: true
+  image:
+    tag: develop
