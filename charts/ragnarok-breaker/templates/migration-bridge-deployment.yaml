@@ -1,0 +1,70 @@
+{{- if .Values.migrationBridge.enabled }}
+# web2→web3 계정 마이그레이션 브리지.
+# web2(소스)/web3(대상) 두 verse 에 동시에 헤드리스 접속하는 **크로스-verse 싱글톤** —
+# 반드시 한 네임스페이스에서만 enable 한다(web2/web3 양쪽에서 돌리면 이중 처리).
+# 필요 env 는 전부 ragnarok-breaker-env(AWS SM)에서 주입:
+#   MIGRATION_BRIDGE_WEB2_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#   MIGRATION_BRIDGE_WEB3_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#   (선택) MIGRATION_BRIDGE_{POLL_INTERVAL_MS,BATCH_LIMIT,STALE_PROCESSING_MS}
+# HMAC 시크릿은 브리지가 보유하지 않는다(web3 verse 서버가 단독 검증).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: migration-bridge
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: migration-bridge
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: migration-bridge
+spec:
+  replicas: {{ .Values.migrationBridge.deployment.replicas }}
+  # 단일 폴러 + claim CAS 소비자 → 롤아웃 중 두 파드 동시 폴링 방지.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: migration-bridge
+  template:
+    metadata:
+      labels:
+        app: migration-bridge
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: migration-bridge
+          image: "{{ .Values.migrationBridge.image.repository }}:{{ .Values.migrationBridge.image.tag }}"
+          imagePullPolicy: {{ .Values.migrationBridge.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.migrationBridge.deployment.port }}
+          env:
+            - name: MIGRATION_BRIDGE_HTTP_PORT
+              value: {{ .Values.migrationBridge.deployment.port | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.migrationBridge.deployment.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.migrationBridge.deployment.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.migrationBridge.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}
