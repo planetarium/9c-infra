@@ -52,12 +52,5 @@ backofficeService:
       schedule: "*/15 * * * *"
       endpoint: "https://dev-portal.planetarium.team/api/scheduler/transaction"
       tokenEnvName: "SCHEDULER_API_KEY"
-    # RB-1850 리딤 지급/재확정 (인터널 전용, 내부 Odin 체인). REDEEM_NC_ADDRESS 미설정 시 no-op.
-    - name: redeem
-      schedule: "*/2 * * * *"
-      endpoint: "https://dev-portal.planetarium.team/api/scheduler/redeem"
-      tokenEnvName: "SCHEDULER_API_KEY"
-    - name: redeem-status
-      schedule: "*/15 * * * *"
-      endpoint: "https://dev-portal.planetarium.team/api/scheduler/redeem-status"
-      tokenEnvName: "SCHEDULER_API_KEY"
+    # (통합 포인트) 구 리딤 지급/재확정 CronJob(redeem, redeem-status) 제거 — glory 소각분은 reward(GLORY_REDEEM)로
+    #   크레딧돼 통합 withdrawal이 지급하므로 별도 리딤 지급 스케줄러 불요. 살려두면 이중지급 경로가 됨(리뷰 B).
