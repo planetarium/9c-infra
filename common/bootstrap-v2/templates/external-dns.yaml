@@ -19,7 +19,7 @@ spec:
   source:
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     chart: external-dns
-    targetRevision: 1.15.0
+    targetRevision: 1.16.1
     helm:
       values: |-
         policy: sync
@@ -35,6 +35,11 @@ spec:
           - AAAA
           - CNAME
           - TXT
+        extraArgs:
+          - --txt-new-format-only
+        env:
+          - name: AWS_REGION
+            value: aws-global
         serviceAccount:
           annotations:
             {{- with .Values.externalDns.serviceAccount.annotations }}
