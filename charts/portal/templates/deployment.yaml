@@ -17,6 +17,23 @@ spec:
         app: {{ .Release.Name }}
         component: portal
     spec:
+      {{- if .Values.migrate.enabled }}
+      # (PLD-1401) DB 마이그레이션 — 앱 컨테이너 시작 '전에' initContainer로 prisma migrate deploy 1회.
+      #   migrator 이미지(prisma CLI + schema + migrations 포함). DATABASE_URL은 {{ .Release.Name }}-secrets에서 주입.
+      #   실패 시 pod가 Init에서 멈춰 새 pod가 Ready 안 됨 → rollingUpdate가 옛 pod 유지(잘못된 마이그레이션 배포 차단).
+      #   공유 DB라 포탈 하나에만 둠(백오피스까지 커버). 적용할 게 없으면 no-op으로 즉시 통과. advisory lock으로 동시성 안전.
+      initContainers:
+        - name: migrate
+          image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag | default .Values.portalService.image.tag }}"
+          imagePullPolicy: {{ .Values.migrate.image.pullPolicy | default "Always" }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
+          {{- with .Values.migrate.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Values.portalService.name }}
           image: "{{ .Values.portalService.image.repository }}:{{ .Values.portalService.image.tag }}"

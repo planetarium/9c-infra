@@ -66,3 +66,23 @@ backofficeService:
     provider: AWS
     prefix: "9c-internal-v2/backoffice"
   cronjobs:
+
+# (PLD-1401) DB 마이그레이션 자동화 — 포탈 Deployment의 initContainer로 prisma migrate deploy 1회.
+#   기본 off → 오버레이에서 opt-in. 프로드는 돈-인접이라 기본 off 권장(수동 게이트 유지).
+#   인터널은 migrator 이미지가 internal-latest에 존재하게 된 뒤(모노레포+migrator develop 머지 후) enabled:true.
+#   nodeSelector는 pod(portalService)를 따름 — initContainer 별도 지정 불필요.
+#   image.tag는 지정 안 하면 portalService.image.tag를 그대로 따라감(prod=핀 sha, internal=internal-latest).
+#   → 앱↔migrator 태그 드리프트 원천 차단. 굳이 다르게 쓰려면 여기 tag를 명시.
+#   (전제: migrator 이미지가 portal과 같은 sha로 빌드됨 — build-push.yml의 build-migrator가 portal과 동일 조건.)
+migrate:
+  enabled: false
+  image:
+    repository: planetariumhq/9c-portal-migrator
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
