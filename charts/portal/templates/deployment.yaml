@@ -24,7 +24,7 @@ spec:
       #   공유 DB라 포탈 하나에만 둠(백오피스까지 커버). 적용할 게 없으면 no-op으로 즉시 통과. advisory lock으로 동시성 안전.
       initContainers:
         - name: migrate
-          image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag }}"
+          image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag | default .Values.portalService.image.tag }}"
           imagePullPolicy: {{ .Values.migrate.image.pullPolicy | default "Always" }}
           envFrom:
             - secretRef:
