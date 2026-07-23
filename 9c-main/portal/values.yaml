@@ -52,3 +52,9 @@ backofficeService:
       schedule: "*/15 * * * *"
       endpoint: "https://portal.planetarium.team/api/scheduler/transaction"
       tokenEnvName: "SCHEDULER_API_KEY"
+    # 글로리 리딤 날짜별 통계 → Slack #9c-metrics (read-only 집계, 돈 액션 없음). 매일 10:00 KST(01:00 UTC).
+    # ⚠️ 엔드포인트(9c-portal PR #1264)가 prod backoffice에 배포된 뒤 유효. 그 전엔 404(무해).
+    - name: redeem-stats
+      schedule: "0 1 * * *"
+      endpoint: "https://portal.planetarium.team/api/scheduler/redeem-stats"
+      tokenEnvName: "SCHEDULER_API_KEY"
