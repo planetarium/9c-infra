@@ -5,12 +5,12 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
 v8Gateway:
   image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
 logStream:
   image:
-    tag: git-35a74b3660456b21eb29b1342bc3d835070b815b
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
