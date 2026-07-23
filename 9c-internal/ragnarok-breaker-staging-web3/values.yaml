@@ -5,15 +5,15 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
 v8Gateway:
   image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
 logStream:
   image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
 # 메일 지급 워커 — staging-web3 도 web2 와 동일하게 활성화(그간 web2 만 있었음).
 # tag = staging 검증 이미지(web2 와 동일). 발송 계정: 공유 워커/게이트웨이 계정 재사용
@@ -22,7 +22,7 @@ logStream:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
   httpRoute:
     enabled: true
     hostnames:
@@ -35,7 +35,7 @@ mailSendWorker:
 leagueRewardWorker:
   enabled: true
   image:
-    tag: git-a5db7f0fa8877084f6c992b391e9d2a7b037c3c0
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
   config:
     verseLabel: staging-w3
 
@@ -54,4 +54,4 @@ leagueRewardWorker:
 playfullWorker:
   enabled: true
   image:
-    tag: git-b7009db27f03ffb21864dd72b0ca4a6a67fd74e5
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d

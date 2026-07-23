@@ -23,4 +23,4 @@ anticheatAlertWorker:
 analyticsWorker:
   enabled: true
   image:
-    tag: git-6a36a446c18128a2e8fe1b142a87b96ac5467440
+    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
