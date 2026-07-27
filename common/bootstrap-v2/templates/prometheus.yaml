@@ -40,7 +40,10 @@ spec:
         server:
           enabled: true
           persistentVolume:
-            size: 50Gi
+            # Per-cluster override; defaults to 50Gi when unset (e.g. 9c-internal).
+            # 9c-main's PVC was expanded to 60Gi live, so it overrides here to keep
+            # the app in Sync (a PVC cannot be shrunk back to 50Gi).
+            size: {{ dig "server" "persistentVolume" "size" "50Gi" .Values.prometheus }}
           retention: "90d"
           strategy:
             type: Recreate
