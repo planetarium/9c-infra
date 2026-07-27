@@ -112,9 +112,23 @@ prometheus:
         metrics_path: /metrics
         scrape_interval: 30s
         scrape_timeout: 10s
-        static_configs:
-          - targets:
-            - longhorn-backend.longhorn-system.svc.cluster.local:9500
+        # Scrape every longhorn-manager pod via endpoints SD, not the single
+        # load-balanced ClusterIP. Each manager only exports longhorn_volume_*
+        # metrics for volumes attached on its own node, so scraping the Service
+        # only ever hit one manager (~8 of 21 volumes) and the visible set
+        # flapped between scrapes — making per-PVC panels/alerts (e.g. the
+        # "Heimdall Headless PVC usage" rule) intermittently fire DatasourceNoData.
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - longhorn-system
+        relabel_configs:
+          - source_labels:
+              - __meta_kubernetes_service_name
+              - __meta_kubernetes_endpoint_port_name
+            action: keep
+            regex: longhorn-backend;manager
       - job_name: kube-state-metrics
         metrics_path: /metrics
         scrape_interval: 30s
