@@ -74,6 +74,10 @@ grafana:
     - monitoring.planetarium.network
 prometheus:
   server:
+    # PVC was expanded 50Gi -> 60Gi live (PVCs can't shrink); pin desired to 60Gi
+    # so the prometheus ArgoCD app stops sitting OutOfSync on this drift.
+    persistentVolume:
+      size: 60Gi
     extraScrapeConfigs:
       - job_name: scrape-headlesses
         metrics_path: /metrics
