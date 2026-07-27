@@ -29,3 +29,37 @@ spec:
             {{- with .Values.certManager.serviceAccount.annotations }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- with .Values.certManager.serviceAccount.annotations }}
+        {{- with (index . "eks.amazonaws.com/role-arn") }}
+        # Inject IRSA credentials explicitly instead of relying on the
+        # eks-pod-identity-webhook. The webhook has failurePolicy=Ignore, so a webhook
+        # blip at pod-create time silently drops the injection; the controller then
+        # falls back to EC2 IMDS, the route53 dns01 solver fails, and cert renewal
+        # stalls for every SAN on the shared cert (petpop.fun, *.9c.gg, ...). This
+        # mirrors what the webhook would inject; the webhook no-ops when
+        # AWS_WEB_IDENTITY_TOKEN_FILE is already present, so there is no double-mount.
+        # Region matches the route53 region hardcoded in the letsencrypt issuer.
+        extraEnv:
+          - name: AWS_DEFAULT_REGION
+            value: us-east-2
+          - name: AWS_REGION
+            value: us-east-2
+          - name: AWS_ROLE_ARN
+            value: {{ . | quote }}
+          - name: AWS_WEB_IDENTITY_TOKEN_FILE
+            value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+        volumes:
+          - name: aws-iam-token
+            projected:
+              defaultMode: 420
+              sources:
+                - serviceAccountToken:
+                    audience: sts.amazonaws.com
+                    expirationSeconds: 86400
+                    path: token
+        volumeMounts:
+          - name: aws-iam-token
+            mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+            readOnly: true
+        {{- end }}
+        {{- end }}
