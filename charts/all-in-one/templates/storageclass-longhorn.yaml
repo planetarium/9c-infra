@@ -11,6 +11,11 @@ parameters:
   numberOfReplicas: '1'
   staleReplicaTimeout: '2880'
   nodeSelector: {{ .Release.Name }}
+  # Auto-apply periodic filesystem-trim to volumes provisioned by this SC
+  # (headless rpc/validator nodes + heimdall bridge-service). Without trim,
+  # RocksDB compaction churn bloats the sparse Longhorn replica far past the
+  # live fs usage and eventually fills the node disk (ENOSPC → replica faulted).
+  recurringJobSelector: '[{"name":"filesystem-trim","isGroup":false}]'
 provisioner: driver.longhorn.io
 reclaimPolicy: {{ .Values.volumeReclaimPolicy }}
 allowVolumeExpansion: true
