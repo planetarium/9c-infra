@@ -80,6 +80,38 @@ spec:
                 secretKeyRef:
                   key: iap-sales-webhook-url
                   name: iap-env
+            # (PLD-1469/1472) NCG Voucher 발급/회수 트리거. optional=true → 키 없는 env(예: prod)에선
+            #   미주입 → config 기본값(voucher_grant_enabled=False)로 비활성. 인터널 iap-env에 키 세팅 시 활성.
+            - name: WORKER_VOUCHER_GRANT_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  key: voucher-grant-enabled
+                  name: iap-env
+                  optional: true
+            - name: WORKER_PORTAL_GRANT_URL
+              valueFrom:
+                secretKeyRef:
+                  key: portal-grant-url
+                  name: iap-env
+                  optional: true
+            - name: WORKER_PORTAL_REVOKE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: portal-revoke-url
+                  name: iap-env
+                  optional: true
+            - name: WORKER_PORTAL_IAP_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: portal-iap-jwt-secret
+                  name: iap-env
+                  optional: true
+            - name: WORKER_VOUCHER_GRANT_CUTOFF_RECEIPT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: voucher-grant-cutoff-receipt-id
+                  name: iap-env
+                  optional: true
           image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
           {{- with $.Values.iap.worker.resources }}
           resources:

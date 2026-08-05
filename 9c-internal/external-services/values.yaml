@@ -92,7 +92,7 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      tag: "git-f885590fbe473d3d156b510caf6a4327f9688ce9" # (복권 테스트) yang/voucher-lottery-refactor. 검증 후 복구
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -100,6 +100,6 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      tag: "git-f885590fbe473d3d156b510caf6a4327f9688ce9" # (복권 테스트) yang/voucher-lottery-refactor. 검증 후 복구
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"

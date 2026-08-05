@@ -10,7 +10,7 @@ portalService:
     node.kubernetes.io/node-index: "2"
   image:
     repository: planetariumhq/9c-portal
-    tag: "internal-latest"
+    tag: "test-monorepo" # (복권 테스트) ci-test/voucher-lottery 이미지. 검증 후 internal-latest로 복구
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -37,7 +37,7 @@ backofficeService:
     node.kubernetes.io/node-index: "2"
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: "internal-latest"
+    tag: "test-monorepo" # (복권 테스트) ci-test/voucher-lottery 이미지. 검증 후 internal-latest로 복구
     pullPolicy: Always
   externalSecret:
     enabled: true
