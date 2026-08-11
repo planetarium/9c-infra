@@ -3,7 +3,7 @@ externalSecretKey: ragnarok-breaker/prod
 imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
-# 이 오버레이(ragnarok-breaker-prod, ns ragnarok-breaker-prod)는 **크로스-verse 싱글톤 전용**.
+# 이 오버레이(ragnarok-breaker-prod, ns ragnarok-breaker-prod)는 분석 스냅샷 CronJob 전용.
 # 다른 RB 워크로드(worker·v8-gateway·log-stream·anticheat)는
 # ragnarok-breaker-prod-web2 / -prod-web3 오버레이가 담당하므로 여기선 전부 비활성.
 workers:
@@ -24,21 +24,3 @@ analyticsWorker:
   enabled: true
   image:
     tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
-
-# web2→web3 계정 이전 브리지 — web2(소스)/web3(대상) 두 verse 에 동시에 헤드리스
-# 접속하는 **크로스-verse 싱글톤**. analyticsWorker 와 같은 이유로 중립 오버레이인
-# 여기서만 enable 한다.
-# ⚠ ragnarok-breaker-prod-web2 / -prod-web3 에는 절대 켜지 말 것 — 두 인스턴스가 같은
-#   web2 큐를 폴링한다. claim CAS + (P,A) 멱등 레코드가 있어 중복 크레딧은 안 나지만
-#   순수 낭비이고 로그가 오염된다.
-# ⚠ 선행 조건: AWS SM `ragnarok-breaker/prod` 에 web2·web3 **양쪽** 자격증명을 추가해야 한다.
-#   MIGRATION_BRIDGE_WEB2_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
-#   MIGRATION_BRIDGE_WEB3_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
-#   파드가 어느 네임스페이스에 있든 web3 는 게이트웨이 URL+bearer 로 도달하므로 web3
-#   자격증명도 이 키에 필요하다. 미설정이면 컨테이너가 config 로드 단계에서 즉시 죽는다.
-# (선택) MIGRATION_BRIDGE_{POLL_INTERVAL_MS,BATCH_LIMIT,STALE_PROCESSING_MS}
-#   미설정 시 기본값 10s / 20건 / 5분. 실패한 레코드는 STALE_PROCESSING_MS 경과 후 재시도된다.
-migrationBridge:
-  enabled: true
-  image:
-    tag: git-30246f4a0a617b307ac751a542933023130988ed

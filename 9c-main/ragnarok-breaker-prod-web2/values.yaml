@@ -69,3 +69,20 @@ playfullWorker:
   enabled: true
   image:
     tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+
+# web2→web3 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
+# staging(9c-internal/ragnarok-breaker-staging-web2)과 동일한 형태.
+# ⚠ 반드시 이 한 네임스페이스에서만 enable — ragnarok-breaker-prod-web3 / ragnarok-breaker-prod
+#   에는 절대 켜지 말 것 (두 인스턴스가 같은 web2 큐를 폴링. claim CAS + (P,A) 멱등이라
+#   중복 크레딧은 안 나지만 낭비이고 로그가 오염된다).
+# ⚠ sync 전 AWS SM ragnarok-breaker/prod-web2 에 web2·web3 두 verse 자격증명 모두 추가:
+#     MIGRATION_BRIDGE_WEB2_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#     MIGRATION_BRIDGE_WEB3_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
+#   (파드 위치와 무관하게 web3 는 게이트웨이 URL+bearer 로 도달하므로 web3 자격증명도 여기 필요)
+#   ACCOUNT 는 admin.ts migrationBridgeWorker role 계정(0x3c33…48c8), ENV=prod 면 AUTH 필수.
+# (선택) MIGRATION_BRIDGE_{POLL_INTERVAL_MS,BATCH_LIMIT,STALE_PROCESSING_MS}
+#   미설정 시 10s / 20건 / 5분. 실패 레코드는 STALE_PROCESSING_MS 경과 후 재시도.
+migrationBridge:
+  enabled: true
+  image:
+    tag: git-30246f4a0a617b307ac751a542933023130988ed
