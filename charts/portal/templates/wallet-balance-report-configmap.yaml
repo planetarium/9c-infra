@@ -16,6 +16,7 @@ data:
     import json
     import os
     import time
+    import unicodedata
     import urllib.error
     import urllib.request
     from datetime import datetime, timedelta, timezone
@@ -30,6 +31,9 @@ data:
     MEAD_CURRENCY = '{ticker: "Mead", decimalPlaces: 18, minters: []}'
     NCG_QUERY = 'query { goldBalance(address: "%s") }'
     MEAD_QUERY = 'query { stateQuery { balance(address: "%s", currency: %s) { quantity } } }'
+    HEADERS = ["지갑", "NCG", "MEAD", "주소"]
+    EMPTY = "-"
+    FAILED = "조회실패"
 
 
     def retry(fn, attempts=3, delay=5):
@@ -68,37 +72,50 @@ data:
         return float(data["stateQuery"]["balance"]["quantity"])
 
 
-    def short(address):
-        return "%s…%s" % (address[:6], address[-4:])
+    # Slack 코드블록은 고정폭이지만 한글은 두 칸을 차지한다 → 표시폭 기준으로 패딩한다.
+    def width(text):
+        return sum(2 if unicodedata.east_asian_width(c) in ("W", "F") else 1 for c in text)
 
 
-    def amount(value, ticker, warn):
-        text = "%s %s" % (format(value, ",.2f"), ticker)
-        if warn and value < warn:
-            return ":warning: *%s*" % text
-        return text
+    def pad(text, size, align="left"):
+        space = " " * max(0, size - width(text))
+        return space + text if align == "right" else text + space
 
 
-    def build_lines():
-        lines = []
+    def collect():
+        rows = []
+        warnings = []
         failed = False
         for wallet in WALLETS:
             address = wallet["address"]
-            parts = []
-            for asset in wallet.get("assets", ["NCG"]):
+            label = wallet.get("label", address)
+            assets = wallet.get("assets", ["NCG"])
+            cells = {"NCG": EMPTY, "MEAD": EMPTY}
+            for asset in assets:
                 try:
-                    if asset == "NCG":
-                        parts.append(amount(ncg_balance(address), "NCG", wallet.get("warnNcg", 0)))
-                    elif asset == "MEAD":
-                        parts.append(amount(mead_balance(address), "MEAD", wallet.get("warnMead", 0)))
+                    value = ncg_balance(address) if asset == "NCG" else mead_balance(address)
                 except Exception as e:  # 한 지갑 실패가 리포트 전체를 죽이지 않도록
                     failed = True
                     print("balance query failed (%s %s): %s" % (address, asset, e), flush=True)
-                    parts.append("%s 조회 실패" % asset)
-            lines.append(
-                "• *%s* `%s` — %s" % (wallet.get("label", address), short(address), " · ".join(parts))
-            )
-        return lines, failed
+                    cells[asset] = FAILED
+                    continue
+                warn = wallet.get("warnNcg", 0) if asset == "NCG" else wallet.get("warnMead", 0)
+                cells[asset] = format(value, ",.2f")
+                if warn and value < warn:
+                    cells[asset] += " *"
+                    warnings.append("%s %s %s 미만" % (label, asset, format(warn, ",.2f")))
+            rows.append([label, cells["NCG"], cells["MEAD"], address])
+        return rows, warnings, failed
+
+
+    def table(rows):
+        sizes = [max(width(r[i]) for r in [HEADERS] + rows) for i in range(len(HEADERS))]
+        aligns = ["left", "right", "right", "left"]
+        out = ["  ".join(pad(HEADERS[i], sizes[i], aligns[i]) for i in range(len(HEADERS))).rstrip()]
+        out.append("-" * (sum(sizes) + 2 * (len(sizes) - 1)))
+        for row in rows:
+            out.append("  ".join(pad(row[i], sizes[i], aligns[i]) for i in range(len(row))).rstrip())
+        return "\n".join(out)
 
 
     def post(text):
@@ -125,10 +142,16 @@ data:
     def main():
         if not WALLETS:
             raise SystemExit("WALLETS is empty — nothing to report")
-        lines, failed = build_lines()
+        rows, warnings, failed = collect()
         now = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
-        header = ":moneybag: *[%s Portal] 지급 지갑 잔고* — %s" % (ENV_LABEL, now)
-        post("\n".join([header] + lines))
+        parts = [
+            ":moneybag: *[%s Portal] 지급 지갑 잔고* — %s" % (ENV_LABEL, now),
+            "```\n%s\n```" % table(rows),
+        ]
+        # 임계값 경고는 코드블록 밖에 둔다(코드블록 안에서는 이모지가 렌더되지 않음).
+        for warning in warnings:
+            parts.append(":warning: %s" % warning)
+        post("\n".join(parts))
         print("posted to #%s" % SLACK_CHANNEL, flush=True)
         if failed:
             raise SystemExit("one or more balance queries failed")
