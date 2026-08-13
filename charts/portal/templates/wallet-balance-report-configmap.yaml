@@ -1,0 +1,138 @@
+{{- if .Values.walletBalanceReport.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-wallet-balance-report
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: wallet-balance-report
+data:
+  # 주의: 이 스크립트는 Helm 템플릿을 거친다. 파이썬 코드에 이중 중괄호를 쓰지 말 것
+  # (str.format 대신 % 포매팅을 쓰는 이유). GraphQL의 단일 중괄호는 안전하다.
+  report.py: |
+    # 포탈 지급용 핫월렛 잔고 일일 리포트 → Slack.
+    # 온체인 read(GraphQL) + chat.postMessage 뿐. 서명/전송 경로는 호출하지 않는다.
+    import json
+    import os
+    import time
+    import urllib.error
+    import urllib.request
+    from datetime import datetime, timedelta, timezone
+
+    GQL_ENDPOINT = os.environ["GQL_ENDPOINT"]
+    SLACK_TOKEN = os.environ["SLACK_TOKEN"]
+    SLACK_CHANNEL = os.environ["SLACK_CHANNEL"]
+    ENV_LABEL = os.environ.get("ENV_LABEL", "Prod")
+    WALLETS = json.loads(os.environ.get("WALLETS", "[]"))
+
+    KST = timezone(timedelta(hours=9))
+    MEAD_CURRENCY = '{ticker: "Mead", decimalPlaces: 18, minters: []}'
+    NCG_QUERY = 'query { goldBalance(address: "%s") }'
+    MEAD_QUERY = 'query { stateQuery { balance(address: "%s", currency: %s) { quantity } } }'
+
+
+    def retry(fn, attempts=3, delay=5):
+        for i in range(attempts):
+            try:
+                return fn()
+            except (urllib.error.URLError, TimeoutError, RuntimeError) as e:
+                if i == attempts - 1:
+                    raise
+                print("retry %d/%d: %s" % (i + 1, attempts - 1, e), flush=True)
+                time.sleep(delay)
+
+
+    def gql(query):
+        def call():
+            req = urllib.request.Request(
+                GQL_ENDPOINT,
+                data=json.dumps({"query": query}).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = json.load(resp)
+            if body.get("errors"):
+                raise RuntimeError("graphql error: %s" % body["errors"])
+            return body["data"]
+
+        return retry(call)
+
+
+    def ncg_balance(address):
+        return float(gql(NCG_QUERY % address)["goldBalance"])
+
+
+    def mead_balance(address):
+        data = gql(MEAD_QUERY % (address, MEAD_CURRENCY))
+        return float(data["stateQuery"]["balance"]["quantity"])
+
+
+    def short(address):
+        return "%s…%s" % (address[:6], address[-4:])
+
+
+    def amount(value, ticker, warn):
+        text = "%s %s" % (format(value, ",.2f"), ticker)
+        if warn and value < warn:
+            return ":warning: *%s*" % text
+        return text
+
+
+    def build_lines():
+        lines = []
+        failed = False
+        for wallet in WALLETS:
+            address = wallet["address"]
+            parts = []
+            for asset in wallet.get("assets", ["NCG"]):
+                try:
+                    if asset == "NCG":
+                        parts.append(amount(ncg_balance(address), "NCG", wallet.get("warnNcg", 0)))
+                    elif asset == "MEAD":
+                        parts.append(amount(mead_balance(address), "MEAD", wallet.get("warnMead", 0)))
+                except Exception as e:  # 한 지갑 실패가 리포트 전체를 죽이지 않도록
+                    failed = True
+                    print("balance query failed (%s %s): %s" % (address, asset, e), flush=True)
+                    parts.append("%s 조회 실패" % asset)
+            lines.append(
+                "• *%s* `%s` — %s" % (wallet.get("label", address), short(address), " · ".join(parts))
+            )
+        return lines, failed
+
+
+    def post(text):
+        def call():
+            req = urllib.request.Request(
+                "https://slack.com/api/chat.postMessage",
+                data=json.dumps(
+                    {"channel": SLACK_CHANNEL, "text": text, "unfurl_links": False}
+                ).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": "Bearer %s" % SLACK_TOKEN,
+                },
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = json.load(resp)
+            if not body.get("ok"):
+                raise RuntimeError("slack error: %s" % body.get("error"))
+            return body
+
+        return retry(call)
+
+
+    def main():
+        if not WALLETS:
+            raise SystemExit("WALLETS is empty — nothing to report")
+        lines, failed = build_lines()
+        now = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
+        header = ":moneybag: *[%s Portal] 지급 지갑 잔고* — %s" % (ENV_LABEL, now)
+        post("\n".join([header] + lines))
+        print("posted to #%s" % SLACK_CHANNEL, flush=True)
+        if failed:
+            raise SystemExit("one or more balance queries failed")
+
+
+    main()
+{{- end }}

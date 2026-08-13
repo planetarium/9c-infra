@@ -1,0 +1,55 @@
+{{- if .Values.walletBalanceReport.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-wallet-balance-report
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: wallet-balance-report
+spec:
+  # 클러스터 크론은 UTC 기준 — 기존 redeem-stats와 동일하게 01:00 UTC = 10:00 KST.
+  schedule: "{{ .Values.walletBalanceReport.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          containers:
+            - name: report
+              image: {{ .Values.walletBalanceReport.image }}
+              command: ["python3", "/script/report.py"]
+              env:
+                - name: GQL_ENDPOINT
+                  value: {{ .Values.walletBalanceReport.gqlEndpoint | quote }}
+                - name: SLACK_CHANNEL
+                  value: {{ .Values.walletBalanceReport.slackChannel | quote }}
+                - name: ENV_LABEL
+                  value: {{ .Values.walletBalanceReport.envLabel | quote }}
+                - name: WALLETS
+                  value: {{ .Values.walletBalanceReport.wallets | toJson | quote }}
+                # 백오피스가 Slack 포스팅에 쓰는 봇 토큰을 그대로 재사용 (#9c-metrics 포스팅 실적 있음).
+                - name: SLACK_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-backoffice-secrets
+                      key: SLACK_TOKEN
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              resources:
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+          volumes:
+            - name: script
+              configMap:
+                name: {{ .Release.Name }}-wallet-balance-report
+          restartPolicy: Never
+{{- end }}

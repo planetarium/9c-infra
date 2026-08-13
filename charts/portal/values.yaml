@@ -86,3 +86,18 @@ migrate:
     requests:
       cpu: 250m
       memory: 512Mi
+
+# 포탈 지급용 핫월렛(출금/리워드·바우처·MEAD) 잔고 일일 리포트 → Slack.
+#   온체인 GraphQL read + chat.postMessage만 하는 CronJob. 서명/전송 경로는 호출하지 않는다.
+#   Slack 봇 토큰은 백오피스 시크릿의 SLACK_TOKEN 재사용(별도 시크릿 추가 불필요).
+#   기본 off → 오버레이에서 opt-in. 인터널은 prod와 주소·체인이 같아 리포트가 중복이므로 켜지 않는다.
+#   warnNcg/warnMead를 0보다 크게 주면 그 아래일 때 해당 값에 :warning: 가 붙는다(0=표시만).
+walletBalanceReport:
+  enabled: false
+  schedule: "0 1 * * *" # 01:00 UTC = 10:00 KST
+  image: python:3.12-alpine
+  slackChannel: "9c-metrics"
+  envLabel: "Prod"
+  gqlEndpoint: "https://odin-rpc-1.nine-chronicles.com/graphql"
+  # [{label, address, assets: [NCG|MEAD], warnNcg, warnMead}] — 오버레이에서 채운다.
+  wallets: []

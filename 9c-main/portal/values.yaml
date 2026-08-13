@@ -58,3 +58,23 @@ backofficeService:
       schedule: "0 1 * * *"
       endpoint: "https://portal.planetarium.team/api/scheduler/redeem-stats"
       tokenEnvName: "SCHEDULER_API_KEY"
+
+# 지급 지갑 잔고 일일 리포트 → Slack #9c-metrics, 매일 10:00 KST(01:00 UTC).
+# 주소는 portalService.env(NC_ADDRESS_PORTAL / NC_ADDRESS_NCG_VOUCHER)와 백오피스 KMS_MEAD_ADDRESS 기준.
+# 셋 다 Odin 체인 계정이며, 크로스플래닛 출금도 Odin 지갑에서 나가므로 Odin만 조회한다.
+walletBalanceReport:
+  enabled: true
+  schedule: "0 1 * * *"
+  slackChannel: "9c-metrics"
+  envLabel: "Prod"
+  gqlEndpoint: "https://odin-rpc-1.nine-chronicles.com/graphql"
+  wallets:
+    - label: "출금/리워드"
+      address: "0x491d9842ed8f1b5d291272cf9e7b66a7b7c90cda"
+      assets: ["NCG", "MEAD"]
+    - label: "NCG 바우처"
+      address: "0xc1Ea0D238f7b1C9c70Ce6589DAb2F15C1A076455"
+      assets: ["NCG", "MEAD"]
+    - label: "MEAD 지급"
+      address: "0xc64c7cBf29BF062acC26024D5b9D1648E8f8D2e1"
+      assets: ["MEAD"]
