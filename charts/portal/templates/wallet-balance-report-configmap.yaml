@@ -38,7 +38,7 @@ data:
         for i in range(attempts):
             try:
                 return fn()
-            except (urllib.error.URLError, TimeoutError, RuntimeError) as e:
+            except (OSError, RuntimeError) as e:  # URLError·TimeoutError·ConnectionReset 포함
                 if i == attempts - 1:
                     raise
                 print("retry %d/%d: %s" % (i + 1, attempts - 1, e), flush=True)
@@ -79,6 +79,8 @@ data:
             label = wallet.get("label", address)
             values = {}
             for asset in wallet.get("assets", ["NCG"]):
+                if asset not in ASSETS:  # 오타·미지원 티커가 조용히 MEAD로 넘어가지 않도록
+                    raise SystemExit("unknown asset %r for %s" % (asset, address))
                 try:
                     value = ncg_balance(address) if asset == "NCG" else mead_balance(address)
                 except Exception as e:  # 한 지갑 실패가 리포트 전체를 죽이지 않도록
@@ -170,8 +172,10 @@ data:
         stamp = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
         post(summary(wallets, stamp), build_blocks(wallets, warnings, stamp))
         print("posted to #%s" % SLACK_CHANNEL, flush=True)
+        # 부분 실패는 카드에 "조회 실패"로 이미 드러난다. 여기서 비정상 종료하면 잡이
+        # 재시도되며 같은 리포트를 또 올리므로(중복 포스팅) 종료코드는 0으로 둔다.
         if failed:
-            raise SystemExit("one or more balance queries failed")
+            print("warning: one or more balance queries failed (see card)", flush=True)
 
 
     main()
