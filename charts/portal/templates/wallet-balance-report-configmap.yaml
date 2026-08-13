@@ -9,14 +9,13 @@ metadata:
     component: wallet-balance-report
 data:
   # 주의: 이 스크립트는 Helm 템플릿을 거친다. 파이썬 코드에 이중 중괄호를 쓰지 말 것
-  # (str.format 대신 % 포매팅을 쓰는 이유). GraphQL의 단일 중괄호는 안전하다.
+  # (str.format 대신 % 포매팅을 쓰고, 딕셔너리는 헬퍼로 얕게 쌓는 이유).
   report.py: |
     # 포탈 지급용 핫월렛 잔고 일일 리포트 → Slack.
     # 온체인 read(GraphQL) + chat.postMessage 뿐. 서명/전송 경로는 호출하지 않는다.
     import json
     import os
     import time
-    import unicodedata
     import urllib.error
     import urllib.request
     from datetime import datetime, timedelta, timezone
@@ -31,9 +30,8 @@ data:
     MEAD_CURRENCY = '{ticker: "Mead", decimalPlaces: 18, minters: []}'
     NCG_QUERY = 'query { goldBalance(address: "%s") }'
     MEAD_QUERY = 'query { stateQuery { balance(address: "%s", currency: %s) { quantity } } }'
-    HEADERS = ["지갑", "NCG", "MEAD", "주소"]
-    EMPTY = "-"
-    FAILED = "조회실패"
+    ASSETS = ["NCG", "MEAD"]
+    FAILED = "조회 실패"
 
 
     def retry(fn, attempts=3, delay=5):
@@ -72,58 +70,84 @@ data:
         return float(data["stateQuery"]["balance"]["quantity"])
 
 
-    # Slack 코드블록은 고정폭이지만 한글은 두 칸을 차지한다 → 표시폭 기준으로 패딩한다.
-    def width(text):
-        return sum(2 if unicodedata.east_asian_width(c) in ("W", "F") else 1 for c in text)
-
-
-    def pad(text, size, align="left"):
-        space = " " * max(0, size - width(text))
-        return space + text if align == "right" else text + space
-
-
     def collect():
-        rows = []
+        wallets = []
         warnings = []
         failed = False
         for wallet in WALLETS:
             address = wallet["address"]
             label = wallet.get("label", address)
-            assets = wallet.get("assets", ["NCG"])
-            cells = {"NCG": EMPTY, "MEAD": EMPTY}
-            for asset in assets:
+            values = {}
+            for asset in wallet.get("assets", ["NCG"]):
                 try:
                     value = ncg_balance(address) if asset == "NCG" else mead_balance(address)
                 except Exception as e:  # 한 지갑 실패가 리포트 전체를 죽이지 않도록
                     failed = True
                     print("balance query failed (%s %s): %s" % (address, asset, e), flush=True)
-                    cells[asset] = FAILED
+                    values[asset] = FAILED
                     continue
+                values[asset] = format(value, ",.2f")
                 warn = wallet.get("warnNcg", 0) if asset == "NCG" else wallet.get("warnMead", 0)
-                cells[asset] = format(value, ",.2f")
                 if warn and value < warn:
-                    cells[asset] += " *"
-                    warnings.append("%s %s %s 미만" % (label, asset, format(warn, ",.2f")))
-            rows.append([label, cells["NCG"], cells["MEAD"], address])
-        return rows, warnings, failed
+                    warnings.append(
+                        ":warning: *%s* %s 잔고가 임계값 %s 미만입니다."
+                        % (label, asset, format(warn, ",.2f"))
+                    )
+            wallets.append({"label": label, "address": address, "values": values})
+        return wallets, warnings, failed
 
 
-    def table(rows):
-        sizes = [max(width(r[i]) for r in [HEADERS] + rows) for i in range(len(HEADERS))]
-        aligns = ["left", "right", "right", "left"]
-        out = ["  ".join(pad(HEADERS[i], sizes[i], aligns[i]) for i in range(len(HEADERS))).rstrip()]
-        out.append("-" * (sum(sizes) + 2 * (len(sizes) - 1)))
-        for row in rows:
-            out.append("  ".join(pad(row[i], sizes[i], aligns[i]) for i in range(len(row))).rstrip())
-        return "\n".join(out)
+    def mrkdwn(text):
+        return {"type": "mrkdwn", "text": text}
 
 
-    def post(text):
+    def context(text):
+        return {"type": "context", "elements": [mrkdwn(text)]}
+
+
+    def build_blocks(wallets, warnings, stamp):
+        blocks = [
+            {"type": "header", "text": {"type": "plain_text", "text": "포탈 지급 지갑 잔고", "emoji": True}},
+            context("*%s* · %s · Odin" % (ENV_LABEL, stamp)),
+        ]
+        for wallet in wallets:
+            blocks.append({"type": "divider"})
+            section = {"type": "section", "text": mrkdwn("*%s*" % wallet["label"])}
+            fields = []
+            for asset in ASSETS:
+                value = wallet["values"].get(asset)
+                if value is not None:
+                    fields.append(mrkdwn("*%s*\n%s" % (asset, value)))
+            if fields:
+                section["fields"] = fields
+            blocks.append(section)
+            blocks.append(context("`%s`" % wallet["address"]))
+        for warning in warnings:
+            blocks.append({"type": "divider"})
+            blocks.append({"type": "section", "text": mrkdwn(warning)})
+        return blocks
+
+
+    def summary(wallets, stamp):
+        # 알림 미리보기·검색용 폴백 텍스트(블록을 렌더하지 못하는 클라이언트 대비).
+        parts = []
+        for wallet in wallets:
+            amounts = ", ".join("%s %s" % (a, wallet["values"][a]) for a in ASSETS if a in wallet["values"])
+            parts.append("%s: %s" % (wallet["label"], amounts))
+        return "포탈 지급 지갑 잔고 (%s) — %s" % (stamp, " | ".join(parts))
+
+
+    def post(text, blocks):
         def call():
             req = urllib.request.Request(
                 "https://slack.com/api/chat.postMessage",
                 data=json.dumps(
-                    {"channel": SLACK_CHANNEL, "text": text, "unfurl_links": False}
+                    {
+                        "channel": SLACK_CHANNEL,
+                        "text": text,
+                        "blocks": blocks,
+                        "unfurl_links": False,
+                    }
                 ).encode("utf-8"),
                 headers={
                     "Content-Type": "application/json; charset=utf-8",
@@ -142,16 +166,9 @@ data:
     def main():
         if not WALLETS:
             raise SystemExit("WALLETS is empty — nothing to report")
-        rows, warnings, failed = collect()
-        now = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
-        parts = [
-            ":moneybag: *[%s Portal] 지급 지갑 잔고* — %s" % (ENV_LABEL, now),
-            "```\n%s\n```" % table(rows),
-        ]
-        # 임계값 경고는 코드블록 밖에 둔다(코드블록 안에서는 이모지가 렌더되지 않음).
-        for warning in warnings:
-            parts.append(":warning: %s" % warning)
-        post("\n".join(parts))
+        wallets, warnings, failed = collect()
+        stamp = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
+        post(summary(wallets, stamp), build_blocks(wallets, warnings, stamp))
         print("posted to #%s" % SLACK_CHANNEL, flush=True)
         if failed:
             raise SystemExit("one or more balance queries failed")
