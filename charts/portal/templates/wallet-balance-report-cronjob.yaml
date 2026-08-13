@@ -1,0 +1,61 @@
+{{- if .Values.walletBalanceReport.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-wallet-balance-report
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: wallet-balance-report
+spec:
+  # 클러스터 크론은 UTC 기준 — 기존 redeem-stats와 동일하게 01:00 UTC = 10:00 KST.
+  schedule: "{{ .Values.walletBalanceReport.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # 파드가 못 뜨면(ImagePullBackOff·노드 unreachable) Job이 Active로 남고,
+      # concurrencyPolicy: Forbid 때문에 이후 스케줄이 전부 스킵돼 리포트가 조용히 멈춘다.
+      # 같은 네임스페이스의 withdrawal 잡이 실제로 이 상태에 빠진 적이 있다.
+      activeDeadlineSeconds: 900
+      # 부분 실패(지갑 일부 조회 실패)는 스크립트가 exit 0으로 끝내므로 재시도가 없다.
+      # 여기 재시도는 아무것도 발송하지 못한 하드 실패에만 걸린다 → 중복 포스팅 없음.
+      backoffLimit: 2
+      template:
+        spec:
+          containers:
+            - name: report
+              image: {{ .Values.walletBalanceReport.image }}
+              command: ["python3", "/script/report.py"]
+              env:
+                - name: GQL_ENDPOINT
+                  value: {{ .Values.walletBalanceReport.gqlEndpoint | quote }}
+                - name: SLACK_CHANNEL
+                  value: {{ .Values.walletBalanceReport.slackChannel | quote }}
+                - name: ENV_LABEL
+                  value: {{ .Values.walletBalanceReport.envLabel | quote }}
+                - name: WALLETS
+                  value: {{ .Values.walletBalanceReport.wallets | toJson | quote }}
+                # 백오피스가 Slack 포스팅에 쓰는 봇 토큰을 그대로 재사용 (#9c-metrics 포스팅 실적 있음).
+                - name: SLACK_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-backoffice-secrets
+                      key: SLACK_TOKEN
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              resources:
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+          volumes:
+            - name: script
+              configMap:
+                name: {{ .Release.Name }}-wallet-balance-report
+          restartPolicy: Never
+{{- end }}
