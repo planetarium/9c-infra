@@ -138,7 +138,9 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      # PR #477 (/api/purchase/retry 500 수정). worker는 이 핫픽스로 바뀐 파일이
+      # 없어(apps/api 만 변경) 불필요한 재시작을 피하려고 그대로 둔다.
+      tag: "git-b2a6bcb950192f25dbc192a755fe14125617065e"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
