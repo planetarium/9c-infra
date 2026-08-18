@@ -138,9 +138,9 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      # PR #477 (/api/purchase/retry 500 수정). worker는 이 핫픽스로 바뀐 파일이
-      # 없어(apps/api 만 변경) 불필요한 재시작을 피하려고 그대로 둔다.
-      tag: "git-b2a6bcb950192f25dbc192a755fe14125617065e"
+      # PR #480 (월별 구매 조회가 검증 실패 영수증까지 세던 문제 — 시즌패스 재구매 차단).
+      # worker 는 이 수정의 영향 범위(admin 엔드포인트) 밖이라 그대로 둔다.
+      tag: "git-4cca284f7cb8ac35fa0e4f4ac2e7e47d234b1831"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
