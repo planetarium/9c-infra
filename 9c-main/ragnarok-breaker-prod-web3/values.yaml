@@ -5,22 +5,22 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-76ea20ca637231fc00b831850f79401ac5ab90f7
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
 
 v8Gateway:
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
 
 logStream:
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
 
 # 메일 지급 워커 — prod web3 활성화. tag = petpop build:mail-send-worker 산출 이미지
 #   (env-agnostic, SM 으로 env 주입 → staging 검증 이미지 재사용).
@@ -31,7 +31,7 @@ anticheatAlertWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
   httpRoute:
     enabled: true
     hostnames:
@@ -47,7 +47,7 @@ mailSendWorker:
 leagueRewardWorker:
   enabled: true
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
   config:
     verseLabel: prod-w3
 
@@ -68,4 +68,4 @@ leagueRewardWorker:
 playfullWorker:
   enabled: true
   image:
-    tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
