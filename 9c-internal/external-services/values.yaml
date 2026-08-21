@@ -92,7 +92,15 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-b51e4a4abf152a9b7aaff480b7a8e3e0891b240f" # (복권 테스트) yang/voucher-lottery-refactor. 검증 후 복구
+      # NineChronicles.IAP#481 (yang/purchase-prev-receipt-guard) 검증용.
+      #   /purchase/request 의 멱등 조기반환에 "INVALID 영수증은 200으로 돌려주지
+      #   않는" 가드를 넣었다. 200을 주면 클라가 결제를 confirm(= consume +
+      #   acknowledge)해 스토어 자동환불이 사라진다.
+      # PR 머지 전 브랜치 빌드 이미지다 — 검증 후 main 이미지로 교체할 것.
+      # 검증: 인터널 테스트 결제 -> track_tx 한 바퀴(1분+) 대기
+      #   -> 같은 영수증으로 /purchase/request 재전송해서 200 인지 확인.
+      #   400 이면 가드가 지급 완료 건을 거절하는 것이므로 즉시 롤백.
+      tag: "git-476b4bd183a84575b95e4b53841bc329b6519103"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
