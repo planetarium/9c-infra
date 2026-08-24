@@ -11,7 +11,12 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    tag: main-e81d7c11e0fcaa47a0913bc53cc389189d700920
+    # NCU 연동상태 API (9c-portal#1278). 인게임 NCU 팝업이 이 엔드포인트를 부른다.
+    #   POST /api/ncu/link-status — 9c 서명으로 by-address 연동상태 조회.
+    #   지금 프로덕션은 이 경로가 404 라, 470 클라가 "조회 실패"로 표시된다.
+    # 클라 쪽 PortalHost 는 이미 배포돼 있다(런처 config + 모바일 CLO 양쪽).
+    #   따라서 이 배포만으로 클라 재빌드 없이 동작이 시작된다.
+    tag: main-88fd914786574512aabab5f5e9a42d0853ca1f2e
     pullPolicy: Always
   externalSecret:
     enabled: true
