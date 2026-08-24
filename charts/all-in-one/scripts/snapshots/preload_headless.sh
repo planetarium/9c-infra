@@ -26,6 +26,15 @@ HEADLESS_LOG_DIR=${4:-"/data/snapshot_logs"}
 HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
 mkdir -p "$HEADLESS_LOG_DIR"
 
+# Create the log file up front. run_headless() backgrounds headless with the
+# redirect applied in the forked child, so the file's open() races against the
+# `tail -f "$HEADLESS_LOG"` that wait_preloading() starts immediately after. If
+# tail loses, it exits with "cannot open ... No such file or directory", grep
+# sees EOF, MATCH comes back empty and the job falsely reports a preload
+# timeout seconds into the run. (Observed 2026-08-11 on pt6: alerted 6s in,
+# while the timeout is 144000s.)
+: > "$HEADLESS_LOG"
+
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
@@ -67,7 +76,7 @@ function run_headless() {
       {{- range $i, $s := $.Values.global.peerStrings }}
       --peer "$SEED{{ add $i 1 }}" \
       {{- end }}
-      > "$HEADLESS_LOG" 2>&1 &
+      >> "$HEADLESS_LOG" 2>&1 &
 
   PID="$!"
 
