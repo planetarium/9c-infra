@@ -92,15 +92,27 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      # NineChronicles.IAP#481 (yang/purchase-prev-receipt-guard) 검증용.
-      #   /purchase/request 의 멱등 조기반환에 "INVALID 영수증은 200으로 돌려주지
-      #   않는" 가드를 넣었다. 200을 주면 클라가 결제를 confirm(= consume +
-      #   acknowledge)해 스토어 자동환불이 사라진다.
+      # NineChronicles.IAP#482 (yang/hotfix-duplicate-receipt-race) 검증용.
+      #   동시 요청으로 영수증이 두 개 만들어져 이중 지급되던 문제.
+      #   (store, order_id) 에 unique 제약이 없어 중복 검사(SELECT→INSERT)에
+      #   경쟁이 나면 둘 다 통과했다. 메인넷 실측 66그룹 / 이중지급 34건.
+      #   pg_advisory_xact_lock 으로 그 구간을 직렬화한다.
+      #   (누적) #481 배송 가드, #480, #477 포함.
       # PR 머지 전 브랜치 빌드 이미지다 — 검증 후 main 이미지로 교체할 것.
-      # 검증: 인터널 테스트 결제 -> track_tx 한 바퀴(1분+) 대기
+      #
+      # 검증 1 (이번 핫픽스): 같은 상품을 빠르게 반복 구매해도 영수증이 하나만
+      #   생기는지. 중복 그룹 수가 인터널 2건에서 늘지 않아야 한다.
+      #     select store, order_id, count(*) from receipt
+      #      where order_id is not null group by 1,2 having count(*)>1;
+      # 검증 2 (#481, 아직 유효): 테스트 결제 -> track_tx 한 바퀴(1분+) 대기
       #   -> 같은 영수증으로 /purchase/request 재전송해서 200 인지 확인.
       #   400 이면 가드가 지급 완료 건을 거절하는 것이므로 즉시 롤백.
-      tag: "git-476b4bd183a84575b95e4b53841bc329b6519103"
+      #
+      # ⚠️ 인터널 DB 에는 (store, order_id) 인덱스가 아직 없다. 메인넷에는
+      #   2026-08-25 에 CREATE INDEX CONCURRENTLY 로 적용했다(6.9초, 47MB).
+      #   인터널은 7천 행이라 seq scan 이 0.9ms 로 영향이 없지만, 적용 경로는
+      #   PLD-1510(alembic 자동화) 이후 맞출 것.
+      tag: "git-ff5e2051a75a57a67601b3e67e5a19568a143c37"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
