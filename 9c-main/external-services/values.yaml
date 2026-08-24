@@ -138,9 +138,15 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      # PR #480 (월별 구매 조회가 검증 실패 영수증까지 세던 문제 — 시즌패스 재구매 차단).
-      # worker 는 이 수정의 영향 범위(admin 엔드포인트) 밖이라 그대로 둔다.
-      tag: "git-4cca284f7cb8ac35fa0e4f4ac2e7e47d234b1831"
+      # PR #481 (/purchase/request 의 멱등 조기반환에 배송 가드).
+      #   같은 order_id 영수증이 이미 있으면 상태를 보지 않고 200 + 그 영수증을 돌려줬다.
+      #   클라이언트는 non-null 응답이면 결제를 confirm(= consume + Google acknowledge)하고,
+      #   acknowledge 는 스토어 자동환불을 취소시킨다. 지급되지 않은 결제가 스토어
+      #   재전달에서 확정되어 "배송도 환불도 없는" 상태로 굳을 수 있었다.
+      #   이제 tx_status 가 있으면 200, INVALID 면 거절, 그 외는 200 이다.
+      #   (누적) #480 월별 구매 조회 status 필터, #477 retry 500 핫픽스 포함.
+      # worker 는 이 수정의 영향 범위(API 전용) 밖이라 그대로 둔다.
+      tag: "git-f36ebcb0fb0b9e716562b35dba136b5305d9036a"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
