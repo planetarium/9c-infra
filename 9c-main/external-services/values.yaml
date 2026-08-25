@@ -132,21 +132,25 @@ iap:
   backoffice:
     enabled: false
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      # enabled: false 라 렌더되지 않는다. 스테일 핀만 정리(동작 영향 없음).
+      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
 
   api:
     enabled: true
     stage: "mainnet"
     image:
-      # PR #481 (/purchase/request 의 멱등 조기반환에 배송 가드).
-      #   같은 order_id 영수증이 이미 있으면 상태를 보지 않고 200 + 그 영수증을 돌려줬다.
-      #   클라이언트는 non-null 응답이면 결제를 confirm(= consume + Google acknowledge)하고,
-      #   acknowledge 는 스토어 자동환불을 취소시킨다. 지급되지 않은 결제가 스토어
-      #   재전달에서 확정되어 "배송도 환불도 없는" 상태로 굳을 수 있었다.
-      #   이제 tx_status 가 있으면 200, INVALID 면 거절, 그 외는 200 이다.
+      # IAP main 최신(09c4d57). 라이브는 아직 git-4cca284 라 이 배포가 두 핫픽스를 함께 올린다.
+      #   #481 배송 가드 — /purchase/request 의 멱등 조기반환이 상태를 보지 않고 200 + 기존
+      #     영수증을 돌려줬다. 클라는 non-null 응답이면 confirm(= consume + Google acknowledge)
+      #     하고, acknowledge 는 스토어 자동환불을 취소시킨다. 미지급 결제가 "배송도 환불도 없는"
+      #     상태로 굳을 수 있었다. 이제 tx_status 가 있으면 200, INVALID 면 거절, 그 외 200.
+      #   #482 중복 영수증 레이스 — (store, order_id) 에 unique 가 없어 중복검사(SELECT→INSERT)에
+      #     경쟁이 나면 둘 다 통과해 이중 지급됐다. 메인넷 실측 66그룹 / 이중지급 34건(33건이
+      #     1초 이내). pg_advisory_xact_lock 으로 그 구간을 직렬화한다. 인터널 검증 완료.
       #   (누적) #480 월별 구매 조회 status 필터, #477 retry 500 핫픽스 포함.
-      # worker 는 이 수정의 영향 범위(API 전용) 밖이라 그대로 둔다.
-      tag: "git-f36ebcb0fb0b9e716562b35dba136b5305d9036a"
+      # 마이그레이션 커플링 없음 — (store, order_id) 인덱스는 2026-08-25 에 이미 적용했다
+      #   (CREATE INDEX CONCURRENTLY, 6.9초, 47MB). 코드는 인덱스 유무와 무관하게 동작한다.
+      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -159,7 +163,16 @@ iap:
     enabled: true
     stage: "mainnet"
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      # api 와 같은 커밋으로 정렬. 라이브 git-9321af4(2026-07-01)에서 약 2개월치를 올린다.
+      #   추가되는 건 전부 additive 다(worker/shared 경로 +1,334줄, 삭제 0):
+      #     - 바우처(복권) 발급/회수 beat 태스크 2종, purchase_signal 모델.
+      #   ⚠️ 바우처 태스크는 config.voucher_grant_enabled(기본 false)를 첫 줄에서 검사해
+      #     DB 세션도 열지 않고 즉시 반환한다. 메인넷엔 WORKER_VOUCHER_* env 가 없으므로
+      #     스케줄에만 올라가고 실제로는 아무 일도 하지 않는다(휴면). track_google_refund 의
+      #     회수 훅도 같은 플래그로 막힌다.
+      #   마이그레이션 커플링 없음 — 메인넷 alembic head 는 이미 0eb7c95c9f30(purchase_signal +
+      #     voucher 체인 merge)라 DB 가 오히려 코드보다 앞서 있었다. 이 bump 가 둘을 맞춘다.
+      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
