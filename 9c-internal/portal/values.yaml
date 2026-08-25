@@ -7,13 +7,12 @@ portalService:
     port: 3000
   image:
     repository: planetariumhq/9c-portal
-    # 복권 테스트 핀(test-monorepo, 2026-08-13 빌드) 해제 → develop 최신(floating).
-    #   ⚠️ internal-latest 에는 복권 백엔드가 없다(9c-portal#1276 이 develop 에 아직 open).
-    #     인터널 IAP 는 voucher_grant_enabled=true 로 남겨두기로 했으므로, product 111
-    #     결제가 나면 /api/voucher/grant 가 404 → outbox FAILED + Slack 알람이 뜬다.
-    #     404 는 transient 도 retryable 도 아니라 재시도되지 않는다. 의도된 트레이드오프이며,
-    #     조용히 하려면 WORKER_VOUCHER_GRANT_ENABLED=false 또는 매핑 active=false 로.
-    tag: "internal-latest"
+    # (복권 재검증) ci-test/voucher-lottery = 9c-portal#1276 + develop 최신(4b6ef6b6) 머지.
+    #   develop(internal-latest)에는 아직 복권 백엔드가 없다 — #1276 이 여전히 open.
+    #   인터널 IAP 는 voucher_grant_enabled=true / cutoff 2026-08-05 이고 grant URL 이
+    #   portal-service 를 가리키므로, 이 핀이 있어야 /api/voucher/grant 가 404 를 면한다.
+    #   검증 후 internal-latest 로 복구할 것.
+    tag: "test-monorepo"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -37,7 +36,7 @@ backofficeService:
     port: 3001
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: "internal-latest" # 포탈과 동일하게 develop 최신(floating)으로 복구
+    tag: "test-monorepo" # 포탈과 동일한 복권 재검증 핀. 검증 후 internal-latest 로 복구
     pullPolicy: Always
   externalSecret:
     enabled: true
