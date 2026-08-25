@@ -92,27 +92,18 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      # NineChronicles.IAP#482 (yang/hotfix-duplicate-receipt-race) 검증용.
-      #   동시 요청으로 영수증이 두 개 만들어져 이중 지급되던 문제.
-      #   (store, order_id) 에 unique 제약이 없어 중복 검사(SELECT→INSERT)에
-      #   경쟁이 나면 둘 다 통과했다. 메인넷 실측 66그룹 / 이중지급 34건.
-      #   pg_advisory_xact_lock 으로 그 구간을 직렬화한다.
-      #   (누적) #481 배송 가드, #480, #477 포함.
-      # PR 머지 전 브랜치 빌드 이미지다 — 검증 후 main 이미지로 교체할 것.
+      # main HEAD 빌드. 메인넷(9c-main/external-services)과 같은 이미지다.
+      #   #482(영수증 중복 레이스 핫픽스)·#476(복권 admin/worker 체인 PLD-1468~1472)이
+      #   모두 main 에 머지돼 있어, 브랜치 핀을 유지할 이유가 없어졌다.
+      #   apps/api 는 지금 도는 ff5e2051 과 바이트 단위로 동일하다(diff 0) — 즉 이 bump 는
+      #   api 기능 변경이 아니라 태그 정렬이다.
       #
-      # 검증 1 (이번 핫픽스): 같은 상품을 빠르게 반복 구매해도 영수증이 하나만
-      #   생기는지. 중복 그룹 수가 인터널 2건에서 늘지 않아야 한다.
-      #     select store, order_id, count(*) from receipt
-      #      where order_id is not null group by 1,2 having count(*)>1;
-      # 검증 2 (#481, 아직 유효): 테스트 결제 -> track_tx 한 바퀴(1분+) 대기
-      #   -> 같은 영수증으로 /purchase/request 재전송해서 200 인지 확인.
-      #   400 이면 가드가 지급 완료 건을 거절하는 것이므로 즉시 롤백.
-      #
-      # ⚠️ 인터널 DB 에는 (store, order_id) 인덱스가 아직 없다. 메인넷에는
-      #   2026-08-25 에 CREATE INDEX CONCURRENTLY 로 적용했다(6.9초, 47MB).
-      #   인터널은 7천 행이라 seq scan 이 0.9ms 로 영향이 없지만, 적용 경로는
-      #   PLD-1510(alembic 자동화) 이후 맞출 것.
-      tag: "git-ff5e2051a75a57a67601b3e67e5a19568a143c37"
+      # DB: 인터널 alembic head 는 9c1e2f3a4b5c 이고 purchase_signal 테이블이 없다.
+      #   그래도 이 이미지로 올려도 된다 — purchase_signal 은 모델·enum 만 있고 런타임에서
+      #   쿼리하지 않는다(사용처는 #478, 아직 open). 지금 도는 ff5e2051 이 이미 그 모델과
+      #   마이그레이션 파일을 포함한 채 정상 가동 중이다.
+      #   다만 head 정합은 #478 배포 전 / PLD-1510(alembic 자동화) 때 맞출 것.
+      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -120,6 +111,10 @@ iap:
     enabled: true
     stage: "internal"
     image:
-      tag: "git-b51e4a4abf152a9b7aaff480b7a8e3e0891b240f" # (복권 테스트) yang/voucher-lottery-refactor. 검증 후 복구
+      # 복권 브랜치 핀(b51e4a4a) 해제 → main HEAD. 그 브랜치의 복권 커밋은 #476 로 main 에
+      #   머지됐고, 핀 커밋 자체는 리베이스로 사라진 pre-review 판이었다(backup 브랜치에만 존재).
+      #   라이브는 beat/product-worker=b51e4a4a, background-job-worker=89de9a3 으로 갈려 있었다 —
+      #   이 커밋으로 셋 다 main 으로 수렴한다.
+      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
