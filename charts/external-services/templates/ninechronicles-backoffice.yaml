@@ -68,6 +68,32 @@ spec:
                 secretKeyRef:
                   key: NC_JWT_KEY
                   name: ninechronicles-backoffice-env
+            # (PLD-1351 / 복권 설정 허브) 백오피스 → 포탈 admin voucher-policy 서명 키.
+            #   포탈 쪽 JWT_VOUCHER_ADMIN_SECRET 과 같은 값이어야 한다(HS256 공유 시크릿).
+            #   Program.cs 가 부팅 시 required 로 읽어, 없으면 ArgumentNullException 으로 죽는다.
+            - name: NC_MAINNET_PORTAL_ADMIN_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAINNET_PORTAL_ADMIN_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_PORTAL_ADMIN_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_PORTAL_ADMIN_JWT_KEY
+                  name: ninechronicles-backoffice-env
+            # 정책(상금표) admin 호출 대상 포탈. PortalAdminRepository 가 환경별로 고른다.
+            #   mainnet=https://nine-chronicles.com / internal=https://developer-mode.nine-chronicles.com
+            #   없으면 voucher-config 화면·API 첫 호출에서 ArgumentNullException.
+            - name: NC_MAINNET_PORTAL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_MAINNET_PORTAL_URL
+                  name: ninechronicles-backoffice-env
+            - name: NC_INTERNAL_PORTAL_URL
+              valueFrom:
+                secretKeyRef:
+                  key: NC_INTERNAL_PORTAL_URL
+                  name: ninechronicles-backoffice-env
             - name: NC_JWT_ISSUER
               valueFrom:
                 secretKeyRef:

@@ -124,7 +124,21 @@ backoffice:
 
   image:
     pullPolicy: Always
-    tag: "git-d945d346ac524e5f9cdab2334e607472e10ca443"
+    # NineChronicles.Backoffice#80 (PLD-1351) 머지본 — 복권 바우처 설정 허브
+    #   (/voucher-config UI + REST /api/voucher/*) + 공지생성기 S3 업로드.
+    #   인터널 복권 정책·매핑을 이 화면/API 로 설정하려면 이 이미지가 필요하다.
+    #   백오피스는 prod 1벌만 배포하고 대상 환경은 호출마다 IapEnvironment 로 고른다 —
+    #   그래서 "인터널 복권"을 위해 prod 백오피스를 올리는 구조다.
+    #
+    # ⚠️ 배포 전 필수 — SecretsManager(us-east-2)
+    #     9c-main-v2/external-services/ninechronicles-backoffice-env 에 두 키 추가:
+    #       NC_INTERNAL_PORTAL_ADMIN_JWT_KEY = 인터널 포탈(9c-internal-v2/portal/env)의
+    #                                          JWT_VOUCHER_ADMIN_SECRET 과 동일 값
+    #       NC_MAINNET_PORTAL_ADMIN_JWT_KEY  = prod 포탈에는 아직 JWT_VOUCHER_ADMIN_SECRET 이
+    #                                          없다. 부팅 요건이라 값은 채우되, 메인넷 정책 저장은
+    #                                          포탈이 배포되기 전까지 동작하지 않는다.
+    #   두 키 없이 올리면 부팅 실패(ArgumentNullException) — 지금 도는 백오피스가 죽는다.
+    tag: "git-dd3d61e04a60bfa4ad616f19e2d2f6967853229c"
 
 
 iap:
