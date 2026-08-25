@@ -11,12 +11,15 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    # NCU 연동상태 API (9c-portal#1278). 인게임 NCU 팝업이 이 엔드포인트를 부른다.
-    #   POST /api/ncu/link-status — 9c 서명으로 by-address 연동상태 조회.
-    #   지금 프로덕션은 이 경로가 404 라, 470 클라가 "조회 실패"로 표시된다.
-    # 클라 쪽 PortalHost 는 이미 배포돼 있다(런처 config + 모바일 CLO 양쪽).
-    #   따라서 이 배포만으로 클라 재빌드 없이 동작이 시작된다.
-    tag: main-88fd914786574512aabab5f5e9a42d0853ca1f2e
+    # 포탈 main 최신(6fe7ee30). 라이브는 아직 main-e81d7c11 이라 이 배포가 두 묶음을 한 번에 올린다.
+    #   1) NCU 연동상태 (#1278, 이미 git 에 머지됐으나 sync 안 돼 미배포):
+    #      POST /api/ncu/link-status — 9c 서명 by-address 조회. 프로덕션은 아직 404 라
+    #      470 클라의 NCU 팝업이 "조회 실패"로 뜬다. 클라 쪽 PortalHost 는 이미 배포돼 있어
+    #      이 배포만으로 클라 재빌드 없이 동작이 시작된다.
+    #      + NCU 페이지 리디자인, RB web2/web3 셀렉터, PETPOP status API.
+    #   2) 마켓 아이템 아이콘 누락 6종 (#1280) + 누락 이미지 (#1281).
+    # DB 마이그레이션 커플링 없음 — e81d7c11..6fe7ee30 에 packages/database 변경이 없다.
+    tag: main-6fe7ee3025e2af6f9509aedbc63e567aa56053c8
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -42,7 +45,9 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: main-0dd2760b293051c07cedeb32e6f59575e95086c9
+    # 포탈과 같은 커밋으로 정렬. 0dd2760b..6fe7ee30 의 변경은 전부 apps/portal 아래라
+    #   백오피스 이미지는 코드상 동일하다(리빌드일 뿐). 출금 스케줄러 동작 변화 없음.
+    tag: main-6fe7ee3025e2af6f9509aedbc63e567aa56053c8
     pullPolicy: Always
   externalSecret:
     enabled: true
