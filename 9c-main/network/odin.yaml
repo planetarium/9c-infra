@@ -1,5 +1,5 @@
 global:
-  appProtocolVersion: "200460/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEQCIDepv65fxvWT4nmyQLkj5KOMBGenAYdZc0YuI9JNa8lJAiBmQWeeptm6k1nhtkg5NTJgRGwh1tm6V5DAB6bwbAdPmA==/ZHU5OnRpbWVzdGFtcHUxMDoyMDI2LTA3LTIxZQ=="
+  appProtocolVersion: "200470/AB2da648b9154F2cCcAFBD85e0Bc3d51f97330Fc/MEUCIQCzGJaKeTQ4uE4naorTDRD2H0980oDENKt2ff+HqADDUgIgArLkZaFIIJpXdCrAOj0YoNyWXOcvSVnUiZxseR7IjOk=/ZHU5OnRpbWVzdGFtcHUxMDoyMDI2LTA4LTI1ZQ=="
 
   validatorPath: "odin-validator-5.nine-chronicles.com"
   genesisBlockPath: "https://release.nine-chronicles.com/genesis-block-9c-main"
