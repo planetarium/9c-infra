@@ -161,6 +161,24 @@ backoffice:
     #     배포한 뒤에. 이 이미지는 배수를 저장·검증·보존만 하고, 지급에 반영하는 건 포탈이다.
     #     지금 인터널 라이브 정책엔 platformMultiplier 키가 아예 없고(prizeTables/temporary 뿐),
     #     메인넷은 IAP 에 API_PORTAL_PRIZE_TABLES_URL 이 미설정이라 복권 체인 자체가 미배선이다.
+    #     (엄밀히는 IAP env 가 가장 나중 관문이다 — prod 포탈에 /api/voucher/* 코드 자체가 없고
+    #      JWT_VOUCHER_ADMIN_SECRET 도 없다. "IAP env 만 채우면 열린다"가 아니다.)
+    #
+    #   ⚠️ 이 이미지를 올려도 /voucher-config 화면은 **아직 열리지 않는다.** 화면의 Load() 가
+    #     포탈 정책 GET 을 먼저 하고 실패하면 _loaded=false 로 남아 본문 전체(=#82 의 매핑
+    #     신규추가·삭제 UI 까지)가 렌더되지 않는데, 인터널 포탈이 지금 /api/admin/voucher-policy
+    #     404 다(test-monorepo 태그가 mutable 이라 NCU 검증용 재핀이 admin 라우트를 떨어뜨렸다.
+    #     /api/voucher/prize-tables 는 200 이라 IAP 의 C1 검증엔 문제 없다). 메인넷도 404.
+    #     → 화면을 쓰려면 인터널 포탈 test-monorepo 를 admin 라우트 포함 빌드로 재핀해야 한다.
+    #     그때까지 매핑 세팅은 REST(PUT /api/voucher/grants) 또는 IAP admin 직접 경로로.
+    #     이 bump 자체는 그래서 오늘 시점엔 무해하다(사실상 no-op + 아래 로그 유출 제거).
+    #
+    #   보너스: 지금 도는 이미지는 IAPRepository.GetProducts 가 IAP admin bearer(1 시간 유효,
+    #     상품 import·매핑 upsert 권한)를 pod 로그에 찍고 있었다. 이 bump 로 없어진다.
+    #
+    #   후속: 배수 입력줄에 C# 코드가 리터럴로 렌더되는 버그(Backoffice#83, foreach…else)가
+    #     이 태그에 남아 있다. 위 404 때문에 화면이 안 열려 지금은 보이지 않고, #83 머지 후
+    #     새 태그로 한 번 더 bump 한다.
     tag: "git-29011d7665133adc5509534bedaf4453881975fe"
 
 
