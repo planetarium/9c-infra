@@ -7,12 +7,27 @@ portalService:
     port: 3000
   image:
     repository: planetariumhq/9c-portal
-    # (복권 재검증) ci-test/voucher-lottery = 9c-portal#1276 + develop 최신(4b6ef6b6) 머지.
-    #   develop(internal-latest)에는 아직 복권 백엔드가 없다 — #1276 이 여전히 open.
-    #   인터널 IAP 는 voucher_grant_enabled=true / cutoff 2026-08-05 이고 grant URL 이
-    #   portal-service 를 가리키므로, 이 핀이 있어야 /api/voucher/grant 가 404 를 면한다.
-    #   검증 후 internal-latest 로 복구할 것.
-    tag: "test-monorepo"
+    # (2026-08-26) test-monorepo 핀 해제 → develop 최신(floating)으로 복구.
+    #   복권 스택 8 건이 develop 에 머지됐다: #1276(코어)·#1284(상금표 admin+R2 retryable)·
+    #   #1287(C5 TOCTOU 하드닝)·#1282(플랫폼 배수)·#1283(전체 개봉)·#1285(밴 게이트)·
+    #   #1286(일 상한 집계 인덱스)·#1288(웹샵 상품에 티켓 표시).
+    #   그래서 test-monorepo 핀의 존재 이유("develop 엔 복권 백엔드가 없다")가 사라졌다.
+    #
+    #   이 복구가 동시에 푸는 것:
+    #     1. /api/admin/voucher-policy 404 → 백오피스 허브 /voucher-config 화면이 열린다.
+    #        (화면 Load() 가 정책 GET 실패 시 본문 전체를 렌더하지 않아 매핑 UI 까지 안 보였다)
+    #     2. 웹샵 상품 카드·상세에 복권 티켓 표시(#1288). IAP 는 이미 voucher_ticket_list 를
+    #        응답에 싣고 있다(NineChronicles.IAP#487, 인터널 배포 완료) — 그릴 코드가 없었다.
+    #   반면 test-monorepo 가 담고 있던 NCU 연동상태 검증분은 이 태그에서 빠진다(그 브랜치 미머지).
+    #
+    #   ⚠️ 배포 후 마이그레이션 1 건을 수동 적용할 것 — 이미지 CMD 가 `node server.js` 라
+    #     부팅 시 prisma migrate deploy 를 돌리지 않는다. 인터널 DB 의 마지막 적용은
+    #     20260803090100_add_reward_source_shop_draw 이고, 다음이 빠져 있다:
+    #       20260826090000_add_purchase_voucher_status_opened_at_index
+    #     (CREATE INDEX ix_purchase_voucher_status_opened_at ON purchase_voucher(status, opened_at))
+    #     지금은 dailyIssuanceCapNcg=null 이라 그 집계를 부르지 않으니 기능은 안 깨진다 —
+    #     일 상한을 켜기 전에는 반드시 선행돼야 한다.
+    tag: "internal-latest"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -36,7 +51,9 @@ backofficeService:
     port: 3001
   image:
     repository: planetariumhq/9c-portal-backoffice
-    tag: "test-monorepo" # 포탈과 동일한 복권 재검증 핀. 검증 후 internal-latest 로 복구
+    # 포탈과 동일하게 복구. packages/database 가 바뀌어(스키마 + 마이그레이션 3 건) 워크플로
+    #   경로 필터상 backoffice 이미지도 같은 커밋으로 새로 빌드된다.
+    tag: "internal-latest"
     pullPolicy: Always
   externalSecret:
     enabled: true
