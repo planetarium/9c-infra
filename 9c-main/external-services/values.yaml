@@ -138,7 +138,48 @@ backoffice:
     #                                          없다. 부팅 요건이라 값은 채우되, 메인넷 정책 저장은
     #                                          포탈이 배포되기 전까지 동작하지 않는다.
     #   두 키 없이 올리면 부팅 실패(ArgumentNullException) — 지금 도는 백오피스가 죽는다.
-    tag: "git-dd3d61e04a60bfa4ad616f19e2d2f6967853229c"
+    #   → 이 요건은 이미 충족됐다(라이브 pod env 에 두 키 존재). 이번 bump 에 추가 조치 없음.
+    #
+    # (2026-08-26) NineChronicles.Backoffice#81 + #82 머지본으로 bump.
+    #   #82 는 main 이 아니라 #81 브랜치로 머지돼 있었어서, #81 하나가 둘을 함께 실어 온다.
+    #
+    #   #81 정책에 platformMultiplier(PC/MOBILE) 추가 — 개봉 상금에 곱하는 플랫폼 배수.
+    #     핵심은 **미지키 보존**이다. 지금 도는 이미지의 VoucherPolicyDto 엔 이 필드도
+    #     [JsonExtensionData] 도 없어서, 정책 맵이 통째 교체되는 구조상 배수를 넣어둔 뒤
+    #     백오피스로 정책을 한 번만 저장하면 그 키가 조용히 사라진다("PC 우대 ×1.25" 공지를
+    #     띄운 채 실제 지급은 1.0). 값 검증(≤0·비유한·>100, 배수 적용 최대상금의
+    #     Decimal(12,2) 초과·소수 3자리 → 400)도 이 이미지에만 있고, 포탈은 배수를 읽는
+    #     코드가 배포되기 전엔 어떤 값이든 그냥 저장하므로 여기서 안 막으면 막는 곳이 없다.
+    #   #82 매핑 신규 추가·삭제 UI(상품 전량 페이징 + 삭제 2단계 확인 + PROD 게이트).
+    #     이 전 이미지엔 화면에 신규 추가가 없어 REST PUT /api/voucher/grants 로만 가능했다.
+    #
+    #   신규 env 없음 — 배포본(dd3d61e0)→main 사이에 새로 읽는 설정 키가 0 개다(#80 과 달리
+    #     부팅 요건 추가가 없다). 코드가 읽는데 차트에 없는 NC_ 키 7 개(*_ARENA_URL 6, THOR_ENABLED)는
+    #     **기존부터 동일**하고 `??` 기본값·불리언 비교라 부팅에 영향 없다.
+    #
+    #   ⚠️ 순서 제약 — 배수 **값**을 정책에 넣는 건 포탈이 그 키를 읽는 코드(9c-portal#1282)를
+    #     배포한 뒤에. 이 이미지는 배수를 저장·검증·보존만 하고, 지급에 반영하는 건 포탈이다.
+    #     지금 인터널 라이브 정책엔 platformMultiplier 키가 아예 없고(prizeTables/temporary 뿐),
+    #     메인넷은 IAP 에 API_PORTAL_PRIZE_TABLES_URL 이 미설정이라 복권 체인 자체가 미배선이다.
+    #     (엄밀히는 IAP env 가 가장 나중 관문이다 — prod 포탈에 /api/voucher/* 코드 자체가 없고
+    #      JWT_VOUCHER_ADMIN_SECRET 도 없다. "IAP env 만 채우면 열린다"가 아니다.)
+    #
+    #   ⚠️ 이 이미지를 올려도 /voucher-config 화면은 **아직 열리지 않는다.** 화면의 Load() 가
+    #     포탈 정책 GET 을 먼저 하고 실패하면 _loaded=false 로 남아 본문 전체(=#82 의 매핑
+    #     신규추가·삭제 UI 까지)가 렌더되지 않는데, 인터널 포탈이 지금 /api/admin/voucher-policy
+    #     404 다(test-monorepo 태그가 mutable 이라 NCU 검증용 재핀이 admin 라우트를 떨어뜨렸다.
+    #     /api/voucher/prize-tables 는 200 이라 IAP 의 C1 검증엔 문제 없다). 메인넷도 404.
+    #     → 화면을 쓰려면 인터널 포탈 test-monorepo 를 admin 라우트 포함 빌드로 재핀해야 한다.
+    #     그때까지 매핑 세팅은 REST(PUT /api/voucher/grants) 또는 IAP admin 직접 경로로.
+    #     이 bump 자체는 그래서 오늘 시점엔 무해하다(사실상 no-op + 아래 로그 유출 제거).
+    #
+    #   보너스: 지금 도는 이미지는 IAPRepository.GetProducts 가 IAP admin bearer(1 시간 유효,
+    #     상품 import·매핑 upsert 권한)를 pod 로그에 찍고 있었다. 이 bump 로 없어진다.
+    #
+    #   후속: 배수 입력줄에 C# 코드가 리터럴로 렌더되는 버그(Backoffice#83, foreach…else)가
+    #     이 태그에 남아 있다. 위 404 때문에 화면이 안 열려 지금은 보이지 않고, #83 머지 후
+    #     새 태그로 한 번 더 bump 한다.
+    tag: "git-29011d7665133adc5509534bedaf4453881975fe"
 
 
 iap:
