@@ -40,7 +40,14 @@ portalService:
     #     보여줘서 STANDARD/PREMIUM 구분이 안 됐다 — 상금 규모가 종류로 갈리니 "3장" 은
     #     비교에 쓸 수 없는 정보다. 카드도 종류별 한 줄씩 내고, 카드·모달이 표시 순서를
     #     공유하게 했다(전엔 양쪽이 IAP 응답 순서를 그대로 써서 화면마다 순서가 달라질 수 있었다).
-    tag: "internal-95f2a4db673df2d06158f4ce8735428e9a978ada"
+    #
+    #     핀이 95f2a4db 가 아니라 daaab598 인 이유: GitHub Actions 장애로 95f2a4db 의 develop
+    #     push 런이 job 0 개인 채 queued 로 고착돼 **이미지가 만들어지지 않았다**(cancel 은
+    #     "completed 라 취소 불가", rerun 은 "workflow file may be broken" 으로 둘 다 거부).
+    #     on: 에 workflow_dispatch 도 없어 수동 트리거가 불가능했다 → 그 트리거를 추가하는
+    #     9c-portal#1290 을 머지해 그 push 로 빌드를 되살렸다. daaab598 = #1289(카드 뱃지
+    #     종류별) + #1290(dispatch). 95f2a4db 태그는 지금도 레지스트리에 없다.
+    tag: "internal-daaab59838f1e74eeabc0a5d3aeb900e823ffba3"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -68,7 +75,7 @@ backofficeService:
     #   항상 빌드된다(paths-filter 는 pull_request 이벤트용). 그리고 이 스택엔 apps/backoffice
     #   코드 변경이 0 건이다 — packages/database 만 바뀌었으니 prisma 클라이언트 재생성
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
-    tag: "internal-95f2a4db673df2d06158f4ce8735428e9a978ada"
+    tag: "internal-daaab59838f1e74eeabc0a5d3aeb900e823ffba3"
     pullPolicy: Always
   externalSecret:
     enabled: true
