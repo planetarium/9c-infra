@@ -62,7 +62,11 @@ portalService:
     #       늘고 리본으로 커지면서 범위가 겹쳤다(복권 2줄 64~180px, 마일리지 128~184px).
     #       같은 z-10 인데 복권이 DOM 뒤라 위에 그려져 마일리지가 완전히 덮였다.
     #       → 두 뱃지를 flex-col 하나로 합쳐 줄 수와 무관하게 쌓이게 했다.
-    tag: "internal-50ed52dba1e5ba7df528d8c1e2077469220efd82"
+    #
+    #     (2026-08-27) 9c-portal#1294 — 복권 티켓 수량 표기에서 "x" 제거(x2 → 2).
+    #       같은 리본 묶음의 마일리지는 48 처럼 숫자만 내는데 복권만 x2 라 표기가 섞였다.
+    #       종류는 아이콘(금관=PREMIUM / 은관=STANDARD)이 구분하므로 숫자만으로 충분하다.
+    tag: "internal-86358827c528047cfc5179ac1aef7c71617061d0"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -90,7 +94,7 @@ backofficeService:
     #   항상 빌드된다(paths-filter 는 pull_request 이벤트용). 그리고 이 스택엔 apps/backoffice
     #   코드 변경이 0 건이다 — packages/database 만 바뀌었으니 prisma 클라이언트 재생성
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
-    tag: "internal-50ed52dba1e5ba7df528d8c1e2077469220efd82"
+    tag: "internal-86358827c528047cfc5179ac1aef7c71617061d0"
     pullPolicy: Always
   externalSecret:
     enabled: true
