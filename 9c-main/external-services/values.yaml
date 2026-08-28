@@ -179,7 +179,23 @@ backoffice:
     #   후속: 배수 입력줄에 C# 코드가 리터럴로 렌더되는 버그(Backoffice#83, foreach…else)가
     #     이 태그에 남아 있다. 위 404 때문에 화면이 안 열려 지금은 보이지 않고, #83 머지 후
     #     새 태그로 한 번 더 bump 한다.
-    tag: "git-29011d7665133adc5509534bedaf4453881975fe"
+    #
+    # (2026-08-28) NineChronicles.Backoffice#84 머지본으로 bump — Lib9c 패키지만 올린다
+    #   (1.36.0-dev.d0a645ab → 1.37.0-dev.0f3fd4bf6e). 코드 변경 없음.
+    #
+    #   왜: 시트 비교/검증 화면이 CsvValidationService.FindTableType 에서
+    #     typeof(WorldSheet).Assembly 를 리플렉션으로 훑어 시트 타입을 찾는데, 1.36.0-dev 에는
+    #     신규 RestrictionSheet 타입이 없어 "테이블 타입을 찾을 수 없습니다" 로 떨어졌다.
+    #     별도 시트 목록이 있는 게 아니라 패키지 버전이 인식 범위를 그대로 정한다.
+    #
+    #   0f3fd4bf6e 는 lib9c release/1.37.0 의 HEAD 이고, 헤드리스 395(인터널 배포됨)와
+    #     클라 prepare/480.0.x 가 쓰는 것과 같은 커밋이다.
+    #
+    #   1.37.0 의 breaking 변경(RegisterProduct.Register 필수 파라미터 추가,
+    #     SynthesizeWeightSheet.DefaultWeight 10000→0, GetWeight)을 쓰는 코드는 백오피스에
+    #     없다 — 두 프로젝트 빌드 오류 0 으로 확인. 백오피스는 시트를 비교·검증만 하고
+    #     합성 판정을 하지 않으므로 기본 weight 전환의 동작 영향도 없다.
+    tag: "git-5240157779a2c496edcac1c7c3cdaab6a7daf01d"
 
 
 iap:
