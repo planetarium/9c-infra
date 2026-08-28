@@ -81,7 +81,25 @@ portalService:
     #       1535 복권 화면 영문화. 등수 라벨은 코드가 아니라 **정책 데이터**라 라이브
     #            인터널 정책도 같이 갱신했다(1등/꽝 → 1st/No prize, 상금·확률 불변).
     #       1537 지급까지 몇 분 걸린다는 안내(워커 beat 2분 주기).
-    tag: "internal-43cbbd5b1db520e6382c3611a6dd4ce513f1b215"
+    #
+    #     (2026-08-28) 개봉 연출 + 확률공시 정리 — 9c-portal#1297.
+    #       복권을 열면 카드가 뒤집히며 결과가 나온다(단건·전체 공통). 등급은 이름이 아니라
+    #         **그 티켓의 결제 플랫폼 상금표에서의 금액 순위**로 정한다 — 등수 라벨과 단계 수가
+    #         정책 데이터라 고정 키를 코드에 박으면 정책이 바뀔 때 조용히 어긋난다.
+    #       전체 개봉은 상위 N장이 아니라 **최고 1장 + 무작위 표본**으로 10장만 연출한다.
+    #         상위만 남기면 95꽝/5당첨이 승률 50%처럼 보인다(확률공시 아래 있는 기능이다).
+    #       확률공시에서 PC/모바일 표가 값이 같으면 합치고(현재 배수 1/1), 기대값(EV)은 뺐다.
+    #
+    #     (2026-08-28) QA 지적 2건(PLD-1540·1541) — 9c-portal#1298.
+    #       1540 보상 히스토리에 멱등키가 그대로 노출됐다("SHOP_DRAW:123"). reward.reason 은
+    #            설명이 아니라 멱등키라, 표시 라벨은 source 로 만든다(PLD-1443 과 같은 방식).
+    #            종류는 reward 행에 없어 refId(=바우처 PK)로 되짚는다 — 페이지당 PK IN 1회.
+    #            DB 에 텍스트를 안 넣으므로 이미 쌓인 행에도 소급 적용된다(백필 불필요).
+    #       1541 지급된 티켓이 F5 전까지 목록에 안 보였다. useVoucherList 가 useSWRImmutable
+    #            이라 재검증이 전부 꺼져 있었고, 개봉 후 mutate 는 개봉 경로에만 있어 신규
+    #            지급에는 갱신 트리거가 아예 없었다. **이 훅만** useSWR + 60초 폴링으로.
+    #            immutable 은 포탈 전역 관례(20개 이상 훅)라 공용 설정은 건드리지 않았다.
+    tag: "internal-ec872e1c105ec5ba1d3f258de8018a90f1e53e48"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -109,7 +127,7 @@ backofficeService:
     #   항상 빌드된다(paths-filter 는 pull_request 이벤트용). 그리고 이 스택엔 apps/backoffice
     #   코드 변경이 0 건이다 — packages/database 만 바뀌었으니 prisma 클라이언트 재생성
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
-    tag: "internal-43cbbd5b1db520e6382c3611a6dd4ce513f1b215"
+    tag: "internal-ec872e1c105ec5ba1d3f258de8018a90f1e53e48"
     pullPolicy: Always
   externalSecret:
     enabled: true
