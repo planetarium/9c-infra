@@ -204,7 +204,7 @@ iap:
     enabled: false
     image:
       # enabled: false 라 렌더되지 않는다. 스테일 핀만 정리(동작 영향 없음).
-      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
+      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
 
   api:
     enabled: true
@@ -221,7 +221,7 @@ iap:
       #   (누적) #480 월별 구매 조회 status 필터, #477 retry 500 핫픽스 포함.
       # 마이그레이션 커플링 없음 — (store, order_id) 인덱스는 2026-08-25 에 이미 적용했다
       #   (CREATE INDEX CONCURRENTLY, 6.9초, 47MB). 코드는 인덱스 유무와 무관하게 동작한다.
-      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
+      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -243,7 +243,7 @@ iap:
       #     회수 훅도 같은 플래그로 막힌다.
       #   마이그레이션 커플링 없음 — 메인넷 alembic head 는 이미 0eb7c95c9f30(purchase_signal +
       #     voucher 체인 merge)라 DB 가 오히려 코드보다 앞서 있었다. 이 bump 가 둘을 맞춘다.
-      tag: "git-09c4d575a3e9a93f0e1b9b8d5a49e812ef8a863f"
+      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
