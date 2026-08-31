@@ -117,7 +117,7 @@ iap:
       #
       # DB: alembic head 는 여전히 9c1e2f3a4b5c(purchase_signal 없음). 위 4건 중 **필요한
       #   마이그레이션이 없다** — #483 의 인덱스는 성능용이고 나머지는 스키마 무변경이다.
-      tag: "git-26840df40f9287ff3b66457ca7fd1c4f0e77e1c7"
+      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -141,6 +141,20 @@ iap:
       #      샌드박스 경고가 WARNING 이 아니라 INFO 로 찍힌다 — 단, 이 stage 값은 아직
       #      **워커에 주입되지 않는다**(WORKER_STAGE env 미배선, 9c-infra#3566). 배선 전까지
       #      워커는 config.stage 기본값 "development" 로 동작하고 WARNING 이 찍힌다.
-      tag: "git-26840df40f9287ff3b66457ca7fd1c4f0e77e1c7"
+      #
+      # (2026-08-31) → git-769e601c (IAP#490) 시즌패스 구매에 바우처가 발급되지 않던 문제.
+      #   시즌패스는 send_product 큐를 타지 않아(purchase.py 가 season_pass_host 를 직접 호출)
+      #     tx_status 가 영구히 NULL 인데, enroll·dispatch 가 tx_status == SUCCESS 를 요구해
+      #     **매핑이 켜져 있어도 아웃박스가 아예 생기지 않았다**(제보 주소의 3건 실측).
+      #     마일리지는 purchase.py 안에서 동기로 주므로 같은 영수증에서 정상 지급됐다.
+      #   예외는 **"tx 가 없고 실패 기록(msg)도 없는"** 시즌패스 건으로만 좁혔다 — 상품만 보면
+      #     패스 지급이 실패한 영수증까지 발급된다(mainnet 실측 75건). 그 경로에선 마일리지도
+      #     안 나가므로 msg 게이트가 없으면 마일리지 선례보다 관대해진다.
+      #   retryer 의 하드코딩 사본(`NOT LIKE '%pass%'`)도 공용 토큰으로 통일했다 — 토큰이 바뀌면
+      #     시즌패스가 send_product 로 재전송돼 패스와 온체인 아이템이 이중 지급되는 자리다.
+      #
+      #   ⚠️ 배포 직후 인터널에서 시즌패스 3건이 발급된다. voucher-grant-cutoff 를
+      #      2026-08-31T00:00:00Z 로 올려뒀기 때문(원래 2026-08-05 였고 그때 기준이면 12건).
+      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
