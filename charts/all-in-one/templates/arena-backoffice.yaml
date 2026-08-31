@@ -71,6 +71,14 @@ spec:
                   key: GOOGLE_AUTH_CLIENT_SECRET
             - name: GoogleAuth__Enabled
               value: "true"
+            # REST API (X-API-Key) 인증용. 시크릿에 키가 없으면 env 가 비어
+            # API 는 401 만 반환하고 Blazor UI 는 영향받지 않는다.
+            - name: ARENA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: arena
+                  key: ARENA_API_KEY
+                  optional: true
           {{- with $.Values.arenaService.backoffice.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
