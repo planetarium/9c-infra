@@ -99,7 +99,19 @@ portalService:
     #            이라 재검증이 전부 꺼져 있었고, 개봉 후 mutate 는 개봉 경로에만 있어 신규
     #            지급에는 갱신 트리거가 아예 없었다. **이 훅만** useSWR + 60초 폴링으로.
     #            immutable 은 포탈 전역 관례(20개 이상 훅)라 공용 설정은 건드리지 않았다.
-    tag: "internal-ec872e1c105ec5ba1d3f258de8018a90f1e53e48"
+    #
+    #     (2026-08-31) 플랫폼 배수를 상금 → **발급 티켓 수**로 (PLD-1477) — 9c-portal#1301.
+    #       확률공시를 한 벌로 만들려는 변경이다. 상금에 곱하면 PC/모바일 표가 갈리는데,
+    #         티켓 수로 옮기면 상금·확률이 플랫폼 무관해져 공시표가 하나로 끝난다.
+    #       ⚠️ 내림이라 매핑 count 가 작으면 실효가 없다(1장 × 1.25 = 1장). 활성 매핑 6건 중
+    #         5건이 여기 해당 — **배수를 켤 때는 상품 매핑 count 도 같이 키워야 한다.**
+    #       라이브 배수가 현재 PC/MOBILE 모두 1.0 이라 이 배포만으로는 동작이 안 바뀐다.
+    #         (소급 손실 없음도 그래서다 — 배수 1 이면 상금이 곱해진 적이 없다.)
+    #       샵 뱃지도 같은 함수로 실효 장수를 표시한다(웹샵 결제는 언제나 PC).
+    #
+    #     (2026-08-31) 다른 작업 동승 — 9c-portal#1300 "IAP 구매 미션 5종 종료(9/1 00:00 KST)".
+    #       develop head 로 핀을 올리므로 함께 배포된다.
+    tag: "internal-fc4605bb1633764743fa8036c07d8916f5e3c733"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -127,7 +139,7 @@ backofficeService:
     #   항상 빌드된다(paths-filter 는 pull_request 이벤트용). 그리고 이 스택엔 apps/backoffice
     #   코드 변경이 0 건이다 — packages/database 만 바뀌었으니 prisma 클라이언트 재생성
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
-    tag: "internal-ec872e1c105ec5ba1d3f258de8018a90f1e53e48"
+    tag: "internal-fc4605bb1633764743fa8036c07d8916f5e3c733"
     pullPolicy: Always
   externalSecret:
     enabled: true
