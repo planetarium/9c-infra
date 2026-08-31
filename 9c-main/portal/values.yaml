@@ -19,7 +19,7 @@ portalService:
     #      + NCU 페이지 리디자인, RB web2/web3 셀렉터, PETPOP status API.
     #   2) 마켓 아이템 아이콘 누락 6종 (#1280) + 누락 이미지 (#1281).
     # DB 마이그레이션 커플링 없음 — e81d7c11..6fe7ee30 에 packages/database 변경이 없다.
-    tag: main-6fe7ee3025e2af6f9509aedbc63e567aa56053c8
+    tag: main-ad5c1a72fe22dc60ebefe175fd523b089650bf83
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -47,7 +47,7 @@ backofficeService:
     repository: planetariumhq/9c-portal-backoffice
     # 포탈과 같은 커밋으로 정렬. 0dd2760b..6fe7ee30 의 변경은 전부 apps/portal 아래라
     #   백오피스 이미지는 코드상 동일하다(리빌드일 뿐). 출금 스케줄러 동작 변화 없음.
-    tag: main-6fe7ee3025e2af6f9509aedbc63e567aa56053c8
+    tag: main-ad5c1a72fe22dc60ebefe175fd523b089650bf83
     pullPolicy: Always
   externalSecret:
     enabled: true
