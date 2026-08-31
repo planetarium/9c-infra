@@ -111,7 +111,20 @@ portalService:
     #
     #     (2026-08-31) 다른 작업 동승 — 9c-portal#1300 "IAP 구매 미션 5종 종료(9/1 00:00 KST)".
     #       develop head 로 핀을 올리므로 함께 배포된다.
-    tag: "internal-fc4605bb1633764743fa8036c07d8916f5e3c733"
+    #
+    #     (2026-08-31) 시즌패스 상세 불릿을 RemoteCsv 형식 + 실제 지급량으로 — 9c-portal#1302.
+    #       문장이 포탈에 통째로 하드코딩돼 있어 **모바일에서 문구를 고쳐도 웹에 반영되지 않았다**
+    #         (모바일은 CDN RemoteCsv 를 읽고 L10nManager 가 그걸 내장 테이블보다 먼저 본다).
+    #       수량은 {mileage}/{vouchers} 토큰으로 두고 실제 지급량으로 채운다 — product.mileage
+    #         (IAP 가 행성 배수를 이미 적용한 값)와 voucher_ticket_list(플랫폼 배수 반영 실효 장수).
+    #         뱃지와 같은 값을 쓰므로 뱃지 숫자와 문장 숫자가 어긋날 수 없다.
+    #       수량이 0/빈 값이면 그 줄을 숨긴다 — 매핑 없이 "Earn  vouchers." 를 내보내지 않게.
+    #       (Thor x2) 괄호 제거 — IAP 가 응답에서 이미 schema.mileage *= 2 를 적용한다.
+    #
+    #       ⚠️ 인터널 마일리지는 480/240 이라 표기가 그대로다. 메인넷은 1440/720 이므로
+    #          거기 배포하면 웹샵 숫자가 480 → 1,440 으로 올라간다(RemoteCsv·모바일과 일치).
+    #          기존 포탈 하드코딩이 3배 과소표기였던 것 — 메인넷 배포 전 기획 확인 권장.
+    tag: "internal-652f8f927ef13abb74d6640f33774514ffdbad8d"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -139,7 +152,7 @@ backofficeService:
     #   항상 빌드된다(paths-filter 는 pull_request 이벤트용). 그리고 이 스택엔 apps/backoffice
     #   코드 변경이 0 건이다 — packages/database 만 바뀌었으니 prisma 클라이언트 재생성
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
-    tag: "internal-fc4605bb1633764743fa8036c07d8916f5e3c733"
+    tag: "internal-652f8f927ef13abb74d6640f33774514ffdbad8d"
     pullPolicy: Always
   externalSecret:
     enabled: true
