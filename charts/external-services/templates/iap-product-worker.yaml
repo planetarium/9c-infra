@@ -25,6 +25,18 @@ spec:
             - /bin/sh
             - -c
           env:
+            # (2026-08-26) 워커에 stage 를 실제로 주입한다. 이 env 가 없어서 워커의
+            #   config.stage 가 기본값 "development" 로 굳어 있었고, values 의
+            #   iap.worker.stage 는 템플릿이 읽지 않는 **죽은 값**이었다.
+            #   영향: 바우처 발급 대상 스토어 게이트(_grantable_stores)가 non-production 에서
+            #   TEST 스토어까지 포함하므로, 메인넷에서 바우처를 켜면 샌드박스 영수증이 실제
+            #   NCG 바우처를 발급한다. api 는 API_STAGE 를 이미 이렇게 넣고 있다(iap-api.yaml).
+            #   ⚠️ 이 env 만으로는 안 닫힌다 — 코드가 `stage == "production"` 만 보므로
+            #   `in ("production","mainnet")` 로 고치는 IAP 변경(NineChronicles.IAP#486)이 함께 필요하다 —
+            #   이건 main 에 머지됐고 이미지 git-26840df4 에 들어 있다. 즉 메인넷은 이 env 주입 +
+            #   9c-main/external-services 의 워커 태그 bump 가 **둘 다** 돼야 게이트가 닫힌다.
+            - name: WORKER_STAGE
+              value: {{ $.Values.iap.worker.stage }}
             - name: WORKER_KMS_KEY_ID
               valueFrom:
                 secretKeyRef:
