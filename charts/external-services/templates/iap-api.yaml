@@ -213,6 +213,15 @@ spec:
                   key: onestore-host
                   name: iap-env
                   optional: true
+            # 마켓 구분 코드. 코드 기본값이 MKT_GLB(글로벌 배포) 라 평소엔 키가 없어도 된다.
+            #   배포국가가 한국이면 MKT_ONE 으로 덮어야 한다 — 이 헤더가 틀리면 원스토어가
+            #   다른 마켓에서 조회해서 **모든 구매가 NoSuchData(없는 구매)로 보인다**.
+            - name: API_ONESTORE_MARKET_CODE
+              valueFrom:
+                secretKeyRef:
+                  key: onestore-market-code
+                  name: iap-env
+                  optional: true
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
           resources:
