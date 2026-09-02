@@ -87,7 +87,7 @@ iap:
     #   같이 바뀌지만 무의미하다(파드 없음).
     enabled: false
     image:
-      tag: "git-03ad60b1f4e54e469b3b5af9cc53b4db8381b7e7"
+      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
 
 
   api:
@@ -120,7 +120,15 @@ iap:
       # DB: alembic head 는 여전히 9c1e2f3a4b5c(purchase_signal 없음). 위 4건 중 **필요한
       #   마이그레이션이 없다** — #483 의 인덱스는 성능용이고 나머지는 스키마 무변경이다.
       #
-      # (2026-09-02) → git-03ad60b1 원스토어(ONE Store) IAP 연동.
+      # (2026-09-02) → git-8ba4bf92 원스토어 x-market-code 누락 수정.
+      #   git-03ad60b1 을 인터널에 올려 실기기로 쳐 보니 구매 조회가 계속 NoSuchData 였다.
+      #   원인은 `x-market-code` 헤더 누락 — 없으면 원스토어가 **한국 마켓**에서 조회한다.
+      #   우리 앱은 배포국가 미국/테스트계정 싱가포르라 전부 글로벌 마켓이다:
+      #     헤더없음 404 / MKT_ONE 404 / MKT_GLB 200 구매정보 ✅
+      #   즉 이 헤더가 없으면 **모든 구매가 "없는 구매"로 보였다.** 조회·acknowledge 양쪽에
+      #   넣었고 API_ONESTORE_MARKET_CODE(기본 MKT_GLB)로 뺐다(차트 env 는 #3595, 선택).
+      #
+      # (2026-09-02) git-03ad60b1 원스토어(ONE Store) IAP 연동 최초 배포.
       #   IAP 브랜치 yang/onestore-store-enum (main 아님 — 인터널 실기기 검증용 선행 배포).
       #   Store.ONESTORE(4) + 영수증 파싱 + 원스토어 서버 검증(OAuth 토큰 → 구매 조회) +
       #     지급 뒤 acknowledge 가 들어 있다.
@@ -136,7 +144,7 @@ iap:
       #          d2f4a1c6e8b3 → a5f3c8d21b7e. store 라벨에 ONESTORE 확인, purchase_signal
       #          생성(0행, 아직 쓰는 코드 없음 — IAP#478), INVALID 인덱스 잔여 없음.
       #          1·2 도 적용 완료(시크릿 version 7ce103c4, 차트는 #3592).
-      tag: "git-03ad60b1f4e54e469b3b5af9cc53b4db8381b7e7"
+      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -175,12 +183,12 @@ iap:
       #   ⚠️ 배포 직후 인터널에서 시즌패스 3건이 발급된다. voucher-grant-cutoff 를
       #      2026-08-31T00:00:00Z 로 올려뒀기 때문(원래 2026-08-05 였고 그때 기준이면 12건).
       #
-      # (2026-09-02) → git-03ad60b1 api 와 같은 커밋으로 정렬. 워커에서 달라지는 것은
+      # (2026-09-02) → git-8ba4bf92 api 와 같은 커밋으로 정렬(워커 로직 변화 없음). 워커에서 달라지는 것은
       #   바우처 스토어 집합에 ONESTORE 가 들어간 것 하나뿐이다 —
       #   _PROD_STORES / _MOBILE_STORES 에 추가되어 platform_for_store(ONESTORE)="MOBILE".
       #   원스토어 영수증이 아직 없으니 실동작 변화는 없다. 환불 회수(_GOOGLE_STORES)는
       #   일부러 안 건드렸다 — google void 폴링 전용 자리라 넓히면 오매칭이 난다.
       #   원스토어 환불 회수는 별도 폴링이 필요하고 그 전까지 수동이다.
-      tag: "git-03ad60b1f4e54e469b3b5af9cc53b4db8381b7e7"
+      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
