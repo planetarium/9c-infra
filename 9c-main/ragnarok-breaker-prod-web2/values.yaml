@@ -51,11 +51,17 @@ leagueRewardWorker:
   config:
     verseLabel: prod-w2
 
-# Fólkvangr 시즌 보상 자동 지급 워커 — prod web2 활성화.
+# Fólkvangr 시즌 보상 자동 지급 워커 — prod web2.
 # league-reward-worker 와 같은 Redis·시크릿을 쓰되 큐 prefix/상태 키가 갈려 있다.
-# ⚠️ tag 는 build:folkvangr-reward-worker 잡이 push 한 :git-<sha> 로 핀한다.
+#
+# ⚠️ **일부러 enabled:false 로 둔다.** ArgoCD 가 자동 sync 이므로 true 로 머지되면
+# 그 순간 배포되는데, 아직 이미지 태그를 핀하지 않았다(mutable 'develop' 은
+# pullPolicy:IfNotPresent 와 겹쳐 노드에 남은 옛 레이어가 갱신되지도 않는다).
+# 켜는 순서: ① AWS SM ragnarok-breaker/prod-web2 에 env 추가
+#            ② build:folkvangr-reward-worker 가 push 한 :git-<sha> 로 tag 핀
+#            ③ enabled:true 로 바꿔 별도 PR
 folkvangrRewardWorker:
-  enabled: true
+  enabled: false
   image:
     tag: develop
   config:
