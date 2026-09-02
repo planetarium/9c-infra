@@ -1,0 +1,71 @@
+{{- if .Values.folkvangrRewardWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: folkvangr-reward-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: folkvangr-reward-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: folkvangr-reward-worker
+spec:
+  replicas: {{ .Values.folkvangrRewardWorker.deployment.replicas }}
+  # 단일 폴러 + BullMQ delayed confirm 소비자 → 롤아웃 중 두 파드 동시 폴링/confirm 방지.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: folkvangr-reward-worker
+  template:
+    metadata:
+      labels:
+        app: folkvangr-reward-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: folkvangr-reward-worker
+          image: "{{ .Values.folkvangrRewardWorker.image.repository }}:{{ .Values.folkvangrRewardWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.folkvangrRewardWorker.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.folkvangrRewardWorker.deployment.port }}
+          env:
+            # 헬스 포트 + mail-send-worker 내부 도메인 + verse 라벨(jobId suffix).
+            # 나머지 env(R2_PUBLIC_BASE, CDN_ENV, MAIL_SENDER_V8_*/V8_*, REDIS_URL,
+            # 선택 FOLKVANGR_REWARD_* 튜닝) 는 ragnarok-breaker-env(AWS SM) 에서 주입.
+            # league-reward-worker 와 **같은 시크릿·같은 Redis** 를 쓴다 — 큐 prefix 와
+            # 상태 키가 'folkvangr-reward' 로 갈려 있어 키 공간이 겹치지 않는다.
+            - name: FOLKVANGR_REWARD_HTTP_PORT
+              value: {{ .Values.folkvangrRewardWorker.deployment.port | quote }}
+            - name: MAIL_SEND_WORKER_URL
+              value: {{ .Values.folkvangrRewardWorker.config.mailSendWorkerUrl | quote }}
+            - name: FOLKVANGR_REWARD_VERSE_LABEL
+              value: {{ .Values.folkvangrRewardWorker.config.verseLabel | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.folkvangrRewardWorker.deployment.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.folkvangrRewardWorker.deployment.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.folkvangrRewardWorker.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

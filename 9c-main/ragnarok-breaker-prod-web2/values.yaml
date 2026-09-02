@@ -51,6 +51,16 @@ leagueRewardWorker:
   config:
     verseLabel: prod-w2
 
+# Fólkvangr 시즌 보상 자동 지급 워커 — prod web2 활성화.
+# league-reward-worker 와 같은 Redis·시크릿을 쓰되 큐 prefix/상태 키가 갈려 있다.
+# ⚠️ tag 는 build:folkvangr-reward-worker 잡이 push 한 :git-<sha> 로 핀한다.
+folkvangrRewardWorker:
+  enabled: true
+  image:
+    tag: develop
+  config:
+    verseLabel: prod-w2
+
 # Playfull CPE 아웃바운드 워커 — prod web2 활성화 (per-env consumer, own Redis).
 # 파이프라인: 게임서버가 검증된 stage_clear 시 playfull_event 로그 emit
 #   → log-stream 이 playfull-event 큐로 라우팅(LOG_STREAM_ENABLE_PLAYFULL=true 일 때만)
