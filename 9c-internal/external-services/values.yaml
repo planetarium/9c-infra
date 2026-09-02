@@ -83,9 +83,11 @@ seasonpass:
 iap:
   enabled: true
   backoffice:
+    # enabled: false — 인터널 백오피스는 안 뜬다. bump-image.sh 가 세 태그를 함께 올리므로
+    #   같이 바뀌지만 무의미하다(파드 없음).
     enabled: false
     image:
-      tag: "git-9321af4246edb846db69a2c43df63cfbad5cfa16"
+      tag: "git-a3ac2eb7221097a89101d7dbb428e2f146affd93"
 
 
   api:
@@ -117,7 +119,24 @@ iap:
       #
       # DB: alembic head 는 여전히 9c1e2f3a4b5c(purchase_signal 없음). 위 4건 중 **필요한
       #   마이그레이션이 없다** — #483 의 인덱스는 성능용이고 나머지는 스키마 무변경이다.
-      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
+      #
+      # (2026-09-02) → git-a3ac2eb7 원스토어(ONE Store) IAP 연동.
+      #   IAP 브랜치 yang/onestore-store-enum (main 아님 — 인터널 실기기 검증용 선행 배포).
+      #   Store.ONESTORE(4) + 영수증 파싱 + 원스토어 서버 검증(OAuth 토큰 → 구매 조회) +
+      #     지급 뒤 acknowledge 가 들어 있다.
+      #   ⚠️ 이 이미지만 올려도 **기존 결제 경로는 무영향**이다. 원스토어 경로는
+      #     API_ONESTORE_* 가 비어 있으면 검증기가 "not configured" 로 거절한다(fail-closed).
+      #     실제로 켜려면 셋이 다 필요하다:
+      #       1. AWS 시크릿 iap-env 에 onestore-client-id / -client-secret / -host
+      #          (인터널 host = https://sbpp.onestore.net, 검증환경)
+      #       2. 차트에 API_ONESTORE_* env 주입 — PR #3592 (iap-api 는 키마다 secretKeyRef
+      #          를 명시하는 구조라 시크릿만 채워선 주입되지 않는다)
+      #       3. **alembic a5f3c8d21b7e** — PG enum `store` 에 ONESTORE 라벨 추가.
+      #          안 올라가 있으면 첫 원스토어 영수증 INSERT 가
+      #          `invalid input value for enum store: "ONESTORE"` 로 터진다.
+      #          인터널 alembic head 는 9c1e2f3a4b5c 였으므로 d2f4a1c6e8b3 → a5f3c8d21b7e
+      #          순으로 올라간다(d2f4a1c6e8b3 은 인덱스라 인터널엔 불필요하지만 무해).
+      tag: "git-a3ac2eb7221097a89101d7dbb428e2f146affd93"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -155,6 +174,13 @@ iap:
       #
       #   ⚠️ 배포 직후 인터널에서 시즌패스 3건이 발급된다. voucher-grant-cutoff 를
       #      2026-08-31T00:00:00Z 로 올려뒀기 때문(원래 2026-08-05 였고 그때 기준이면 12건).
-      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
+      #
+      # (2026-09-02) → git-a3ac2eb7 api 와 같은 커밋으로 정렬. 워커에서 달라지는 것은
+      #   바우처 스토어 집합에 ONESTORE 가 들어간 것 하나뿐이다 —
+      #   _PROD_STORES / _MOBILE_STORES 에 추가되어 platform_for_store(ONESTORE)="MOBILE".
+      #   원스토어 영수증이 아직 없으니 실동작 변화는 없다. 환불 회수(_GOOGLE_STORES)는
+      #   일부러 안 건드렸다 — google void 폴링 전용 자리라 넓히면 오매칭이 난다.
+      #   원스토어 환불 회수는 별도 폴링이 필요하고 그 전까지 수동이다.
+      tag: "git-a3ac2eb7221097a89101d7dbb428e2f146affd93"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
