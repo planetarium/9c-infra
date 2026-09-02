@@ -189,6 +189,30 @@ spec:
                   key: voucher-grant-max-ncg-per-grant
                   name: iap-env
                   optional: true
+            # 원스토어(ONE Store) 구매 검증. optional=true → 키 없는 환경에선 미주입 →
+            #   config 기본 None → 검증기가 "not configured" 로 **거절**한다(fail-closed).
+            #   즉 메인넷 iap-env 에 키를 넣기 전까지 메인넷 동작은 지금과 동일하다.
+            #   host 는 배포별로 갈린다 — 인터널 https://sbpp.onestore.net (검증환경),
+            #   메인넷 https://iap-apis.onestore.net (상용). client-id/secret 은 앱 단위
+            #   한 벌이라 양쪽이 같은 값이다(개발자센터 > 공통정보 > 라이선스 관리).
+            - name: API_ONESTORE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: onestore-client-id
+                  name: iap-env
+                  optional: true
+            - name: API_ONESTORE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: onestore-client-secret
+                  name: iap-env
+                  optional: true
+            - name: API_ONESTORE_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: onestore-host
+                  name: iap-env
+                  optional: true
           image: {{ $.Values.iap.api.image.repository }}:{{ $.Values.iap.api.image.tag }}
           {{- with $.Values.iap.api.resources }}
           resources:
