@@ -11,15 +11,14 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    # 포탈 main 최신(6fe7ee30). 라이브는 아직 main-e81d7c11 이라 이 배포가 두 묶음을 한 번에 올린다.
-    #   1) NCU 연동상태 (#1278, 이미 git 에 머지됐으나 sync 안 돼 미배포):
-    #      POST /api/ncu/link-status — 9c 서명 by-address 조회. 프로덕션은 아직 404 라
-    #      470 클라의 NCU 팝업이 "조회 실패"로 뜬다. 클라 쪽 PortalHost 는 이미 배포돼 있어
-    #      이 배포만으로 클라 재빌드 없이 동작이 시작된다.
-    #      + NCU 페이지 리디자인, RB web2/web3 셀렉터, PETPOP status API.
-    #   2) 마켓 아이템 아이콘 누락 6종 (#1280) + 누락 이미지 (#1281).
-    # DB 마이그레이션 커플링 없음 — e81d7c11..6fe7ee30 에 packages/database 변경이 없다.
-    tag: main-6a1cdab6d487fe8f0a9e292e0b308e6049e4d92c
+    # 포탈 main 최신(4e6e20b4, #1305). 라이브(main-6a1cdab6)와의 차이는 에셋 png 5개뿐이다.
+    #   1) 마켓 아이콘 40100066 추가 (#1304): IAP 가 Mileage > Transcendent Automata
+    #      (g_pkg_mileage39) 구성품을 40100065 → 40100066 으로 갱신했는데 포탈에 파일이 없어
+    #      Item_T_ 폴백(49900049.png, 티켓)으로 엉뚱한 아이콘이 노출 중. 이 배포로 정상화된다.
+    #   2) 바우처 티켓 아이콘 아트 교체(STANDARD/PREMIUM × 64·256). 파일명·크기(256x256 /
+    #      64x64 sRGBA) 동일해 voucherTicketIcon() 경로 규약 변경 없음.
+    # DB 마이그레이션 커플링 없음 — 6a1cdab6..4e6e20b4 에 packages/database 변경이 없다.
+    tag: main-4e6e20b44d814182c43eb5840cd22940524e50df
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -45,9 +44,9 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    # 포탈과 같은 커밋으로 정렬. 0dd2760b..6fe7ee30 의 변경은 전부 apps/portal 아래라
+    # 포탈과 같은 커밋으로 정렬. 6a1cdab6..4e6e20b4 의 변경은 전부 apps/portal/public 아래라
     #   백오피스 이미지는 코드상 동일하다(리빌드일 뿐). 출금 스케줄러 동작 변화 없음.
-    tag: main-6a1cdab6d487fe8f0a9e292e0b308e6049e4d92c
+    tag: main-4e6e20b44d814182c43eb5840cd22940524e50df
     pullPolicy: Always
   externalSecret:
     enabled: true
