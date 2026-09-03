@@ -11,14 +11,16 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    # 포탈 main 최신(4e6e20b4, #1305). 라이브(main-6a1cdab6)와의 차이는 에셋 png 5개뿐이다.
-    #   1) 마켓 아이콘 40100066 추가 (#1304): IAP 가 Mileage > Transcendent Automata
-    #      (g_pkg_mileage39) 구성품을 40100065 → 40100066 으로 갱신했는데 포탈에 파일이 없어
-    #      Item_T_ 폴백(49900049.png, 티켓)으로 엉뚱한 아이콘이 노출 중. 이 배포로 정상화된다.
-    #   2) 바우처 티켓 아이콘 아트 교체(STANDARD/PREMIUM × 64·256). 파일명·크기(256x256 /
-    #      64x64 sRGBA) 동일해 voucherTicketIcon() 경로 규약 변경 없음.
-    # DB 마이그레이션 커플링 없음 — 6a1cdab6..4e6e20b4 에 packages/database 변경이 없다.
-    tag: main-4e6e20b44d814182c43eb5840cd22940524e50df
+    # 포탈 main 최신(673d1e71, #1307). 4e6e20b4..673d1e71 은 Rune Breaker 리브랜딩(#1306) 하나뿐.
+    #   1) 표시 문자열 "Ragnarok Breaker" → "Rune Breaker" (NCU 카드 / Quests / Redeem /
+    #      LinkedAccount "Rune Breaker Wallet" / V8Link "Rune Breaker(V8)" / 연동 모달 타이틀).
+    #   2) web3 플레이 URL ragnarokbreaker.fun → runebreaker.nine-chronicles.com
+    #      (기존 prod-ragnarokbreaker-fun.pages.dev 로 가는 CNAME, https 200).
+    #   ⚠️ NCU 응답 와이어 키(ragnarok_breaker / ragnarok_wallet)는 그대로다 — 배포된 유니티
+    #      클라(470.0.11 / 480.0.1)가 상수로 못박고 정확 일치로 찾으며, 못 찾으면 에러가 아니라
+    #      조용히 미연동으로 떨어진다. 표기만 바꾼 배포라 클라 영향 없음.
+    # DB 마이그레이션 커플링 없음 — 4e6e20b4..673d1e71 에 packages/database 변경이 없다.
+    tag: main-673d1e71d18b9e3f35257c93798a39c00a5ebdce
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -44,9 +46,9 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    # 포탈과 같은 커밋으로 정렬. 6a1cdab6..4e6e20b4 의 변경은 전부 apps/portal/public 아래라
+    # 포탈과 같은 커밋으로 정렬. 4e6e20b4..673d1e71 의 변경은 전부 apps/portal 아래라
     #   백오피스 이미지는 코드상 동일하다(리빌드일 뿐). 출금 스케줄러 동작 변화 없음.
-    tag: main-4e6e20b44d814182c43eb5840cd22940524e50df
+    tag: main-673d1e71d18b9e3f35257c93798a39c00a5ebdce
     pullPolicy: Always
   externalSecret:
     enabled: true
