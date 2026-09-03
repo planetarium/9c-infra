@@ -1,0 +1,85 @@
+{{- if .Values.pushWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: push-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: push-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: push-worker
+spec:
+  replicas: {{ .Values.pushWorker.deployment.replicas }}
+  # rate limit 이 프로세스 로컬이라 파드를 늘리면 한도가 배수로 늘어난다. 단일 파드 유지.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: push-worker
+  template:
+    metadata:
+      labels:
+        app: push-worker
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: push-worker
+          image: "{{ .Values.pushWorker.image.repository }}:{{ .Values.pushWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.pushWorker.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.pushWorker.deployment.port }}
+          env:
+            # 나머지 env(REDIS_URL, VAPID_*, PUSH_ADMIN_TOKEN, PUSH_ALLOWED_ORIGINS)
+            # 는 ragnarok-breaker-env(AWS SM) 에서 주입.
+            - name: PUSH_HTTP_PORT
+              value: {{ .Values.pushWorker.deployment.port | quote }}
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          # /health = 순수 liveness(항상 무조건 응답, Redis 미접촉).
+          # /ready = Redis 연결 가능 여부 반영(불가 시 503) → 트래픽 라우팅 여부 판단.
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.pushWorker.deployment.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.pushWorker.deployment.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.pushWorker.deployment.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: push-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: push-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: push-worker
+spec:
+  type: ClusterIP
+  selector:
+    app: push-worker
+  ports:
+    - name: http
+      port: {{ .Values.pushWorker.service.port }}
+      targetPort: {{ .Values.pushWorker.deployment.port }}
+      protocol: TCP
+{{- end }}

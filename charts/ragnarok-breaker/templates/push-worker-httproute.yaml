@@ -1,0 +1,31 @@
+{{- if and .Values.pushWorker.enabled .Values.pushWorker.httpRoute.enabled .Values.pushWorker.httpRoute.hostnames }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: push-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: push-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: push-worker
+spec:
+  parentRefs:
+    - name: {{ .Values.pushWorker.httpRoute.gatewayName }}
+      namespace: {{ .Values.pushWorker.httpRoute.gatewayNamespace }}
+      sectionName: web
+    - name: {{ .Values.pushWorker.httpRoute.gatewayName }}
+      namespace: {{ .Values.pushWorker.httpRoute.gatewayNamespace }}
+      sectionName: websecure
+  hostnames:
+    {{- range .Values.pushWorker.httpRoute.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: push-worker
+          port: {{ .Values.pushWorker.service.port }}
+{{- end }}

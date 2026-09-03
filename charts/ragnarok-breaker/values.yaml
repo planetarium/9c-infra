@@ -171,6 +171,36 @@ mailSendWorker:
     gatewayName: traefik-gateway
     gatewayNamespace: traefik
 
+# === PWA 웹푸시 워커 (구독 저장 + 수동 브로드캐스트) ===
+# 래퍼(Cloudflare Pages)가 환경당 하나이므로 이 워커도 한 네임스페이스에서만 켠다(싱글톤).
+# 필요 env(ragnarok-breaker-env AWS SM): REDIS_URL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY,
+# VAPID_SUBJECT, PUSH_ADMIN_TOKEN, PUSH_ALLOWED_ORIGINS
+# 선택 env: PUSH_ENDPOINT_ALLOWED_HOSTS(콤마 구분 푸시 제공자 호스트 allowlist,
+#   미설정 시 안전한 기본값 사용).
+pushWorker:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-push-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    port: 3200
+  deployment:
+    replicas: 1
+    port: 3200
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  httpRoute:
+    enabled: false
+    hostnames: []
+    gatewayName: traefik-gateway
+    gatewayNamespace: traefik
+
 # === League reward mail worker (리그 시즌 종료 → 보상 메일 자동 발송) ===
 # 폴링(기본 1h): R2 리그 시즌 종료 감지 → admin.getSeasonValidationStatus 로 모든 랭킹
 # 로우 validated 확인 → 보상 계산 → mailSendWorker /preview → 10분 뒤 /confirm 자동 확정.

@@ -39,6 +39,20 @@ leagueRewardWorker:
   config:
     verseLabel: staging-w3
 
+# PWA 웹푸시 워커 — staging-web3 검증용 활성화. gatewayName/gatewayNamespace 는 차트
+# 기본값(traefik-gateway/traefik)을 그대로 쓰므로 생략.
+# ⚠ sync 전: AWS SM ragnarok-breaker/staging-web3 에 아래 키 추가 필요:
+#     VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT / PUSH_ADMIN_TOKEN /
+#     PUSH_ALLOWED_ORIGINS (=https://staging-runebreaker.nine-chronicles.com)
+pushWorker:
+  enabled: true
+  image:
+    tag: "git-80505bc0f293c4d80cbda566f29e971e1da8b6ac"
+  httpRoute:
+    enabled: true
+    hostnames:
+      - rb-push-staging.9c.gg
+
 # Playfull CPE 아웃바운드 워커 — staging 검증용 활성화.
 # 파이프라인: 게임서버가 검증된 stage_clear 시 playfull_event 로그 emit
 #   → log-stream 이 playfull-event 큐로 라우팅(LOG_STREAM_ENABLE_PLAYFULL=true 일 때만)
