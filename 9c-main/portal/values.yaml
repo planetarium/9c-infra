@@ -46,9 +46,14 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    # 포탈과 같은 커밋으로 정렬. 4e6e20b4..673d1e71 의 변경은 전부 apps/portal 아래라
-    #   백오피스 이미지는 코드상 동일하다(리빌드일 뿐). 출금 스케줄러 동작 변화 없음.
-    tag: main-673d1e71d18b9e3f35257c93798a39c00a5ebdce
+    # 백오피스 main 최신(fd8b3f10, #1309). 673d1e71..fd8b3f10 은 출금 Approval 테이블
+    #   Action 열 위치 조정(#1308) 하나뿐 — 열 순서만 Amount 뒤로 옮긴 UI 변경이고
+    #   승인 권한 검사(canWithdrawalApprove)·승인 API·출금 스케줄러 동작은 그대로다.
+    # ⚠️ 포탈 태그(L23)는 673d1e71 유지 — 이번 diff 에 apps/portal 변경이 없어
+    #   포탈 이미지는 코드상 동일하다. 굳이 bump 하면 프로브 없는 prod 포탈 pod 만
+    #   불필요하게 재기동되므로 백오피스만 올린다.
+    # DB 마이그레이션 커플링 없음 — packages/database 변경 없음.
+    tag: main-fd8b3f103814fcd1ed981f46d7a6e20203eea255
     pullPolicy: Always
   externalSecret:
     enabled: true
