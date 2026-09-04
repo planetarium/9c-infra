@@ -110,6 +110,10 @@ playfullWorker:
     tag: develop
     pullPolicy: IfNotPresent
   replicas: 1
+  # 워커가 /health 를 여는 포트. 워커 안의 하트비트 워치독이 소비 정지를 감지하면 503 을
+  # 돌려주고, 아래 probe 가 파드를 재시작한다. 앱의 PLAYFULL_HEALTH_PORT 와 같은 값이어야
+  # 하므로 컨테이너 env 로도 같이 주입한다.
+  healthPort: 8080
   resources:
     requests:
       cpu: 50m
