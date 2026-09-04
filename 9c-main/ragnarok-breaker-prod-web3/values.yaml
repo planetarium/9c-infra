@@ -31,7 +31,9 @@ anticheatAlertWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    # SKIN_SHARD 를 메일 보상 키로 받아들이는 핫픽스가 들어간 sha 로 올린다. 이게 없으면
+    # 폴크방 순위 보상이 /preview 에서 400 으로 거부된다 — 보상표가 전 티어에 조각을 준다.
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
   httpRoute:
     enabled: true
     hostnames:
@@ -51,19 +53,18 @@ leagueRewardWorker:
   config:
     verseLabel: prod-w3
 
-# Fólkvangr 시즌 보상 자동 지급 워커 — prod web3.
+# Fólkvangr 시즌 보상 자동 지급 워커 — prod web3 활성화.
 # league-reward-worker 와 같은 Redis·시크릿을 쓰되 큐 prefix/상태 키가 갈려 있다.
 #
-# ⚠️ **일부러 enabled:false 로 둔다.** ArgoCD 가 자동 sync 이므로 true 로 머지되면
-# 그 순간 배포되는데, 아직 이미지 태그를 핀하지 않았다(mutable 'develop' 은
-# pullPolicy:IfNotPresent 와 겹쳐 노드에 남은 옛 레이어가 갱신되지도 않는다).
-# 켜는 순서: ① AWS SM ragnarok-breaker/prod-web3 에 env 추가
-#            ② build:folkvangr-reward-worker 가 push 한 :git-<sha> 로 tag 핀
-#            ③ enabled:true 로 바꿔 별도 PR
+# 추가로 필요한 SM 키는 없다 — 필수 env 중 VERSE_LABEL·MAIL_SEND_WORKER_URL 은 아래
+# values 가 직접 주입하고, R2_PUBLIC_BASE·CDN_ENV·V8_*(또는 MAIL_SENDER_V8_*)·REDIS_URL
+# 은 league-reward-worker 가 이미 쓰고 있어 ragnarok-breaker-env 에 존재한다.
+# FOLKVANGR_REWARD_* 튜닝값은 전부 선택이며 미설정 시 코드 기본값으로 떨어진다
+# (폴 1h / grace 1h / lookback 7d / confirm 지연 10m / preview stale 1h).
 folkvangrRewardWorker:
-  enabled: false
+  enabled: true
   image:
-    tag: develop
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
   config:
     verseLabel: prod-w3
 
