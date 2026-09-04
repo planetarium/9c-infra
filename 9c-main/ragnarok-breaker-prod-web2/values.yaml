@@ -5,22 +5,22 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 v8Gateway:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 logStream:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # 메일 지급 워커 — prod web2 활성화. tag = petpop build:mail-send-worker 산출 이미지
 #   (env-agnostic, SM 으로 env 주입 → staging 검증 이미지 재사용).
@@ -49,7 +49,7 @@ mailSendWorker:
 leagueRewardWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
   config:
     verseLabel: prod-w2
 
@@ -85,7 +85,7 @@ folkvangrRewardWorker:
 playfullWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # web2→web3 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
 # staging(9c-internal/ragnarok-breaker-staging-web2)과 동일한 형태.
@@ -102,4 +102,4 @@ playfullWorker:
 migrationBridge:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
