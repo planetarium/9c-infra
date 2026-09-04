@@ -5,22 +5,22 @@ imagePullSecret:
 
 worker:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 v8Gateway:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 logStream:
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
 anticheatAlertWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # 메일 지급 워커 — prod web2 활성화. tag = petpop build:mail-send-worker 산출 이미지
 #   (env-agnostic, SM 으로 env 주입 → staging 검증 이미지 재사용).
@@ -31,7 +31,9 @@ anticheatAlertWorker:
 mailSendWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    # SKIN_SHARD 를 메일 보상 키로 받아들이는 핫픽스가 들어간 sha 로 올린다. 이게 없으면
+    # 폴크방 순위 보상이 /preview 에서 400 으로 거부된다 — 보상표가 전 티어에 조각을 준다.
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
   httpRoute:
     enabled: true
     hostnames:
@@ -47,7 +49,22 @@ mailSendWorker:
 leagueRewardWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
+  config:
+    verseLabel: prod-w2
+
+# Fólkvangr 시즌 보상 자동 지급 워커 — prod web2 활성화.
+# league-reward-worker 와 같은 Redis·시크릿을 쓰되 큐 prefix/상태 키가 갈려 있다.
+#
+# 추가로 필요한 SM 키는 없다 — 필수 env 중 VERSE_LABEL·MAIL_SEND_WORKER_URL 은 아래
+# values 가 직접 주입하고, R2_PUBLIC_BASE·CDN_ENV·V8_*(또는 MAIL_SENDER_V8_*)·REDIS_URL
+# 은 league-reward-worker 가 이미 쓰고 있어 ragnarok-breaker-env 에 존재한다.
+# FOLKVANGR_REWARD_* 튜닝값은 전부 선택이며 미설정 시 코드 기본값으로 떨어진다
+# (폴 1h / grace 1h / lookback 7d / confirm 지연 10m / preview stale 1h).
+folkvangrRewardWorker:
+  enabled: true
+  image:
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
   config:
     verseLabel: prod-w2
 
@@ -68,7 +85,7 @@ leagueRewardWorker:
 playfullWorker:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
 # web2→web3 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
 # staging(9c-internal/ragnarok-breaker-staging-web2)과 동일한 형태.
@@ -85,4 +102,4 @@ playfullWorker:
 migrationBridge:
   enabled: true
   image:
-    tag: git-8d614bb88a9c18894adce6453748b6f92243163c
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071

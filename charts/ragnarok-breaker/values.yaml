@@ -235,6 +235,35 @@ leagueRewardWorker:
     # jobId suffix. env 별 override 에서 반드시 고유값 지정(예 staging-w2 / staging-w3).
     verseLabel: ""
 
+# === Fólkvangr 시즌 보상 자동 지급 워커 ===
+# league-reward-worker 와 같은 구조(폴링 → preview → 지연 confirm)이고, 같은 시크릿·
+# 같은 Redis 를 공유하되 큐 prefix 와 상태 키가 'folkvangr-reward' 로 갈려 있다.
+# 폴크방은 시즌 하나가 곧 하나의 편성이자 하나의 랭킹이라, 하루짜리 시즌을 이어 붙이면
+# 이 워커가 매일 정산한다.
+folkvangrRewardWorker:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-folkvangr-reward-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  deployment:
+    replicas: 1
+    # league-reward-worker(3200)와 다른 포트 — 같은 파드가 아니라 별개 Deployment 지만
+    # 워커 코드의 기본값(FOLKVANGR_REWARD_HTTP_PORT=3201)과 맞춰 둔다.
+    port: 3201
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  config:
+    # 같은 네임스페이스 mail-send-worker ClusterIP Service.
+    mailSendWorkerUrl: http://mail-send-worker:3100
+    # jobId suffix. env 별 override 에서 반드시 고유값 지정(예 prod-w2 / prod-w3).
+    verseLabel: ""
+
 nodeSelector: {}
 
 # === Analytics snapshot CronJob (12h) — meme-api/V8/GA → R2 + viewer bake/deploy ===
