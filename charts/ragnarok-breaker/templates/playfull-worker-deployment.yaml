@@ -29,6 +29,31 @@ spec:
           envFrom:
             - secretRef:
                 name: ragnarok-breaker-env
+          env:
+            # values 의 healthPort 를 앱에도 그대로 넘겨 probe 와 바인딩 포트를 한 값으로 묶는다.
+            - name: PLAYFULL_HEALTH_PORT
+              value: "{{ .Values.playfullWorker.healthPort }}"
+          ports:
+            - name: health
+              containerPort: {{ .Values.playfullWorker.healthPort }}
+          # 2026-08-23 장애: BullMQ 블로킹 연결이 조용히 멈춰 11일간 잡을 소비하지 못했는데
+          # 프로세스는 살아 있어 k8s 가 아무것도 하지 못했다. /health 는 워커가 하트비트 잡을
+          # 스스로 소비하는지를 보고 stall 이면 503 을 준다 — 그때 파드를 재시작시킨다.
+          # failureThreshold 3 × period 15s 는 앱의 stall 판정(기본 5분) 뒤에 얹히는 여유분이다.
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.playfullWorker.healthPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.playfullWorker.healthPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.playfullWorker.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
