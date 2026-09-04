@@ -4,14 +4,14 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-ae21d0f2cafca307ca85bedf756853701c8f90d2
+    tag: server-20d86f6b32ebb7c3ce81fecef0e3b5ab1f0947fc
   hostname: internal.petpop.fun
 
 backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-ae21d0f2cafca307ca85bedf756853701c8f90d2
+    tag: server-20d86f6b32ebb7c3ce81fecef0e3b5ab1f0947fc
   hostname: petpop-internal-backoffice.9c.gg
 
 workers:
