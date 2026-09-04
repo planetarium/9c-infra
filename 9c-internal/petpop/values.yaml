@@ -4,20 +4,20 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-941c8b8f2460e6177e051e3907fbbaee8b981fd4
+    tag: server-ae21d0f2cafca307ca85bedf756853701c8f90d2
   hostname: internal.petpop.fun
 
 backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-941c8b8f2460e6177e051e3907fbbaee8b981fd4
+    tag: server-ae21d0f2cafca307ca85bedf756853701c8f90d2
   hostname: petpop-internal-backoffice.9c.gg
 
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-941c8b8f2460e6177e051e3907fbbaee8b981fd4
+    tag: worker-ae21d0f2cafca307ca85bedf756853701c8f90d2
   rankingWorker:
     enabled: true
   blockResetWorker:
