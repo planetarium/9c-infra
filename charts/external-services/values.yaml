@@ -121,13 +121,20 @@ backoffice:
   image:
     repository: planetariumhq/nine-chronicles-backoffice
     tag: latest
+  # 패치테이블 화면이 큰 시트를 처리할 때 순간적으로 메모리를 크게 쓴다.
+  #   2026-09-09 인터널 패치 중 RuneOptionSheet(12,750행 / 869KB)에서 512Mi 를 넘겨
+  #   OOMKilled(exit 137) → Blazor 서킷이 끊기고("Attempting to reconnect to the server")
+  #   heimdall 쪽 PatchTableSheet 트랜잭션이 스테이징되지 않은 채 작업이 중단됐다.
+  #   CSV 원본 + 파싱된 Row 12,750 개 + 압축 버퍼를 플래닛 2 개분 동시에 들고 있는 구간이라
+  #   상시 사용량(~250Mi)만 보고 잡은 512Mi 로는 헤드룸이 부족하다.
+  # requests 도 상시 사용량보다 낮아(128Mi < ~250Mi) 스케줄링 기준이 실제와 어긋나 있었다.
   resources:
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 2Gi
     requests:
       cpu: 100m
-      memory: 128Mi
+      memory: 512Mi
   nodeSelector: {}
   env:
     aspnetcoreEnvironment: "Development"
