@@ -1,4 +1,4 @@
-{{ if $.Values.jwtHeadless.enabled }}
+{{- if $.Values.jwtHeadless.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -364,17 +364,16 @@ spec:
     type: RollingUpdate
 ---
 {{- if $.Values.jwtHeadless.ingress.enabled }}
-{{- $hosts := split "," ($.Values.jwtHeadless.ingress.host | default $.Values.jwtHeadless.host) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jwt-headless-ingress
+  name: jwt-headless-ingress-web
   namespace: {{ $.Release.Name }}
   annotations:
-    traefik.ingress.kubernetes.io/affinity: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   rules:
-    {{- range $host := $hosts }}
+    {{- range $host := split "," $.Values.jwtHeadless.ingress.host }}
     - host: {{ $host }}
       http:
         paths:
@@ -384,7 +383,30 @@ spec:
               service:
                 name: jwt-headless
                 port:
-                  number: 80
+                  number: {{ $.Values.jwtHeadless.ports.graphql }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jwt-headless-ingress-grpc
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: grpc
+spec:
+  rules:
+    {{- range $host := split "," $.Values.jwtHeadless.ingress.host }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jwt-headless
+                port:
+                  number: {{ $.Values.jwtHeadless.ports.rpc }}
     {{- end }}
 {{- end }}
+---
 {{- end }}

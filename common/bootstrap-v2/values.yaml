@@ -24,6 +24,8 @@ traefik:
       transport:
         respondingTimeouts:
           readTimeout: 0
+      tls:
+        optional: true
 
 externalSecrets:
   serviceAccount:
