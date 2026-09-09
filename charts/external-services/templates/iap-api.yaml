@@ -189,6 +189,67 @@ spec:
                   key: voucher-grant-max-ncg-per-grant
                   name: iap-env
                   optional: true
+            # (PLD-1575) 포탈 포인트샵 무상 지급(`POST /api/admin/grant`) 머니 가드.
+            #   이 엔드포인트는 GrantItems force-grant(잔액 없어도 지급되는 민터급 권한)를 admin
+            #   JWT 하나로 노출하므로 상품 화이트리스트·발행량 상한·빈도 제한을 요청 시점에 강제한다.
+            #   optional=true → 키 없는 환경(예: 메인넷 초기)에선 미주입 → config 기본 None →
+            #   지급이 **503(limits_unset)로 fail-closed**. 즉 키를 넣기 전까지 무상 지급은 거절된다
+            #   (400 이 아니라 503 인 이유: 설정 미주입은 운영 실수지 호출자 잘못이 아니고, 400 이면
+            #    포탈이 영구 실패로 확정해 포인트를 환급한다).
+            #   ⚠️ grant-allowed-fav-tickers 는 **빈 값 = FAV 지급 전면 금지**다(허용목록이 비어 있으면
+            #      FAV 구성품 상품은 503 fav_tickers_unset). 아이템만 줄 동안은 키를 넣지 않아도 된다.
+            #   ⚠️ per-namespace-per-minute 는 넉넉히 잡을 것(실측 버스트의 3~5배) — 정상 버스트가
+            #      거절되면 주문이 멈춘다.
+            - name: API_GRANT_ALLOWED_NAMESPACES
+              valueFrom:
+                secretKeyRef:
+                  key: grant-allowed-namespaces
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_ALLOWED_FAV_TICKERS
+              valueFrom:
+                secretKeyRef:
+                  key: grant-allowed-fav-tickers
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_MAX_FAV_UNITS_PER_REQUEST
+              valueFrom:
+                secretKeyRef:
+                  key: grant-max-fav-units-per-request
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_MAX_ITEM_UNITS_PER_REQUEST
+              valueFrom:
+                secretKeyRef:
+                  key: grant-max-item-units-per-request
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_MAX_GRANTS_PER_HOUR
+              valueFrom:
+                secretKeyRef:
+                  key: grant-max-grants-per-hour
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_MAX_GRANTS_PER_DAY
+              valueFrom:
+                secretKeyRef:
+                  key: grant-max-grants-per-day
+                  name: iap-env
+                  optional: true
+            - name: API_GRANT_MAX_GRANTS_PER_NAMESPACE_PER_MINUTE
+              valueFrom:
+                secretKeyRef:
+                  key: grant-max-grants-per-namespace-per-minute
+                  name: iap-env
+                  optional: true
+            # 가드 위반·상한 임박 Slack 알림. 워커(iap-background-job-worker.yaml)의
+            #   WORKER_IAP_ALERT_WEBHOOK_URL 과 **같은 시크릿 키를 재사용**한다(같은 채널).
+            - name: API_IAP_ALERT_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: iap-alert-webhook-url
+                  name: iap-env
+                  optional: true
             # 원스토어(ONE Store) 구매 검증. optional=true → 키 없는 환경에선 미주입 →
             #   config 기본 None → 검증기가 "not configured" 로 **거절**한다(fail-closed).
             #   즉 메인넷 iap-env 에 키를 넣기 전까지 메인넷 동작은 지금과 동일하다.
