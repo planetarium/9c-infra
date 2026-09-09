@@ -20,7 +20,7 @@ portalService:
     #      클라(470.0.11 / 480.0.1)가 상수로 못박고 정확 일치로 찾으며, 못 찾으면 에러가 아니라
     #      조용히 미연동으로 떨어진다. 표기만 바꾼 배포라 클라 영향 없음.
     # DB 마이그레이션 커플링 없음 — 4e6e20b4..673d1e71 에 packages/database 변경이 없다.
-    tag: main-673d1e71d18b9e3f35257c93798a39c00a5ebdce
+    tag: main-792dd5bf64a7cf214d26444cf11f6dc59c1698b3
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -53,7 +53,7 @@ backofficeService:
     #   포탈 이미지는 코드상 동일하다. 굳이 bump 하면 프로브 없는 prod 포탈 pod 만
     #   불필요하게 재기동되므로 백오피스만 올린다.
     # DB 마이그레이션 커플링 없음 — packages/database 변경 없음.
-    tag: main-fd8b3f103814fcd1ed981f46d7a6e20203eea255
+    tag: main-792dd5bf64a7cf214d26444cf11f6dc59c1698b3
     pullPolicy: Always
   externalSecret:
     enabled: true
