@@ -47,6 +47,22 @@ spec:
                 name: {{ .Release.Name }}-config
             - secretRef:
                 name: {{ .Release.Name }}-secrets
+          {{- if .Values.portalService.cronjobs }}
+          # (PLD-1563) 스케줄러 CronJob 이 보내는 `x-api-key` 를 포탈이 검증하려면 같은 값이
+          #   앱에도 있어야 한다. 새 시크릿을 만들지 않고 **백오피스 시크릿의 기존 키를
+          #   같은 네임스페이스에서 재사용**한다 — 두 앱의 스케줄러 호출자는 같은 신뢰
+          #   수준(클러스터 내부 CronJob)이라 키를 나눌 이유가 없고, 나누면 AWS 시크릿을
+          #   하나 더 관리해야 한다.
+          #   ⚠️ optional=true 다. 키가 없는 환경에서도 파드는 떠야 하고, 그때 스케줄러
+          #      엔드포인트는 앱에서 503 으로 fail-closed 한다(portal lib/apiHandler.ts).
+          env:
+            - name: SCHEDULER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-backoffice-secrets
+                  key: SCHEDULER_API_KEY
+                  optional: true
+          {{- end }}
           resources:
             {{- toYaml .Values.portalService.resources | nindent 12 }}
       {{- with .Values.portalService.nodeSelector }}

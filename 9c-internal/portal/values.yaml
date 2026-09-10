@@ -139,6 +139,20 @@ portalService:
     QA_ENABLED: true
     NEXT_PUBLIC_MAINNET_ENV: local
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
+  # (PLD-1563) 포탈 ↔ IAP 지급 대조. 이게 없으면 포인트샵 주문이 GRANT_REQUESTED 에서
+  #   영원히 멈춘다 — 온체인 지급이 끝나도 포탈이 모르고, IAP 가 FAILED 를 내도 환급이 안 되고,
+  #   타임아웃 건은 아무도 판정하지 않는다.
+  #   5분 주기: 확정이 5분 늦는 건 유저가 견디지만, 더 늦추면 환급(돈)이 그만큼 밀린다.
+  #   IAP 워커의 grant_track 이 1분 주기라 그보다 촘촘할 이유는 없다.
+  #   ⚠️ 인증은 백오피스 시크릿의 SCHEDULER_API_KEY 를 공유한다(차트 cronjob.yaml 주석 참고).
+  #      그 키가 없으면 포탈이 503 으로 거절하므로, 켜기 전에 시크릿에 값이 있는지 확인할 것.
+  cronjobs:
+    - name: shop-grant-reconcile
+      schedule: "*/5 * * * *"
+      endpoint: "https://developer-mode.nine-chronicles.com/api/scheduler/shop-grant-reconcile"
+      tokenEnvName: "SCHEDULER_API_KEY"
+      timeoutSeconds: 240
+
 backofficeService:
   name: backoffice
   hostname: "dev-portal.planetarium.team"
