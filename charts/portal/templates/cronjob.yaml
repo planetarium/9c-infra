@@ -1,0 +1,58 @@
+{{/*
+  (PLD-1563) 포탈 앱을 호출하는 스케줄러 CronJob.
+
+  백오피스에는 이미 같은 구조가 있었지만(backoffice-cronjob.yaml) 포탈에는 없었다 —
+  포탈의 주기 작업이 처음 생겨서 여기서 만든다. 두 템플릿을 합치지 않은 이유는 대상
+  호스트·시크릿이 다르고, 합치면 한쪽 값 실수가 다른 쪽 CronJob 을 만들기 때문이다.
+
+  인증은 `x-api-key` 공유 시크릿이다(백오피스와 같은 규약). 값은 **백오피스 시크릿의
+  SCHEDULER_API_KEY 를 같은 네임스페이스에서 재사용**한다 — 포탈 Deployment 에도 같은
+  키가 주입돼 있어야 검증이 성립한다(deployment.yaml 의 env 블록 참고).
+
+  ⚠️ concurrencyPolicy: Forbid — 대조 배치는 같은 주문에 확정/환급을 시도한다. 구현체가
+     멱등이라 이중 지출은 안 나지만, 회차가 겹치면 잠금 경합으로 통째로 길어진다.
+  ⚠️ activeDeadlineSeconds 를 둔다. curl 이 응답을 기다리다 매달리면 Forbid 때문에 이후
+     회차가 **영구히** 스킵된다(그러면 대조가 멈춘 걸 아무도 모른다).
+*/}}
+{{- range .Values.portalService.cronjobs }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: {{ $.Release.Name }}
+    component: portal
+    cronjob: {{ .name }}
+spec:
+  schedule: "{{ .schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: {{ .timeoutSeconds | default 300 }}
+      template:
+        spec:
+          containers:
+            - name: curl
+              image: curlimages/curl:latest
+              args:
+                - curl
+                - -sS
+                - --fail-with-body
+                - --max-time
+                - "{{ .timeoutSeconds | default 300 }}"
+                - -H
+                - "x-api-key: $(SCHEDULER_API_KEY)"
+                - {{ .endpoint }}
+              env:
+                - name: SCHEDULER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Release.Name }}-backoffice-secrets
+                      key: {{ .tokenEnvName | default "SCHEDULER_API_KEY" | quote }}
+          restartPolicy: Never
+---
+{{- end }}
