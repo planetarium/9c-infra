@@ -87,7 +87,7 @@ iap:
     #   같이 바뀌지만 무의미하다(파드 없음).
     enabled: false
     image:
-      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
+      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
 
 
   api:
@@ -101,6 +101,9 @@ iap:
       #   api 기능 변경이 아니라 태그 정렬이다.
       #
       # DB: 인터널 alembic head 는 9c1e2f3a4b5c 이고 purchase_signal 테이블이 없다.
+      #     ⚠️ (2026-09-09) 이 문단은 **당시 기록**이다. 현재 head 는 a5f3c8d21b7e 이고
+      #        purchase_signal 도 있다 — 아래 2026-08-26 블록의 '3. alembic a5f3c8d21b7e'
+      #        항목이 최신이다. 위에서부터 읽고 여기서 멈추면 틀린 상태를 가정하게 된다.
       #   그래도 이 이미지로 올려도 된다 — purchase_signal 은 모델·enum 만 있고 런타임에서
       #   쿼리하지 않는다(사용처는 #478, 아직 open). 지금 도는 ff5e2051 이 이미 그 모델과
       #   마이그레이션 파일을 포함한 채 정상 가동 중이다.
@@ -118,6 +121,7 @@ iap:
       #     지금 인터널 응답엔 아무것도 안 실린다(111 이 C6 에 걸림). 포탈 웹샵 표시는 9c-portal#1288.
       #
       # DB: alembic head 는 여전히 9c1e2f3a4b5c(purchase_signal 없음). 위 4건 중 **필요한
+      #     ⚠️ (2026-09-09) 이 줄도 당시 기록 — 현재는 a5f3c8d21b7e. 아래 최신 블록 참고.
       #   마이그레이션이 없다** — #483 의 인덱스는 성능용이고 나머지는 스키마 무변경이다.
       #
       # (2026-09-02) → git-8ba4bf92 원스토어 x-market-code 누락 수정.
@@ -144,7 +148,20 @@ iap:
       #          d2f4a1c6e8b3 → a5f3c8d21b7e. store 라벨에 ONESTORE 확인, purchase_signal
       #          생성(0행, 아직 쓰는 코드 없음 — IAP#478), INVALID 인덱스 잔여 없음.
       #          1·2 도 적용 완료(시크릿 version 7ce103c4, 차트는 #3592).
-      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
+      #
+      # (2026-09-09) → git-32afb4d4 **포인트샵 지급 API(PLD-1575) 인터널 e2e 용 병합 빌드.**
+      #   브랜치 ci-test/point-shop-internal = yang/onestore-store-enum ⊕ yang/pld-1575-grant-guards.
+      #   두 브랜치를 합친 이유는 alembic 이다 — 인터널 DB head 는 a5f3c8d21b7e(원스토어 전용
+      #   리비전)이고, 포인트샵 브랜치 트리에는 그 리비전 파일이 없다. 포인트샵 이미지만 올리면
+      #   alembic 이 "Can't locate revision a5f3c8d21b7e" 로 죽어 마이그레이션을 못 돈다.
+      #   합치면 d2f4a1c6e8b3 에서 갈라진 **2 헤드**(a5f3c8d21b7e / b4d9e1c72f83)가 되고
+      #   `alembic upgrade heads` 가 우리 3개(a7c31f5b9e02 → e3b7d21a4c58 → b4d9e1c72f83)만 올린다.
+      #   병합은 충돌 0 — 겹친 파일은 config.py / enums.py 둘뿐이고 양쪽 추가가 서로 소거다.
+      #   ⚠️ 원스토어 코드가 계속 살아 있어야 해서 main 이 아니라 이 병합 브랜치를 핀한다.
+      #   ⚠️ 상한(API_GRANT_MAX_*)은 인터널 시크릿에 아직 없다 → limits 전부 None. 인터널은
+      #      stage="internal" 이라 fail-closed 게이트(is_production)를 타지 않으므로 지급은
+      #      되고 **상한만 미적용**이다(네임스페이스·화이트리스트·멱등은 그대로 동작).
+      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -189,6 +206,10 @@ iap:
       #   원스토어 영수증이 아직 없으니 실동작 변화는 없다. 환불 회수(_GOOGLE_STORES)는
       #   일부러 안 건드렸다 — google void 폴링 전용 자리라 넓히면 오매칭이 난다.
       #   원스토어 환불 회수는 별도 폴링이 필요하고 그 전까지 수동이다.
-      tag: "git-8ba4bf9259b16e6cdbb1885e26cb8b7f21eedb10"
+      #
+      # (2026-09-09) → git-32afb4d4 api 와 같은 커밋(포인트샵 병합 빌드). 워커에 추가되는 것은
+      #   grant_task(아웃박스 tx 전송·확정 폴링)와 celery beat 엔트리다. grant_outbox 가 비어
+      #   있으면 아무 일도 하지 않으므로 기존 경로에 영향 없다.
+      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
