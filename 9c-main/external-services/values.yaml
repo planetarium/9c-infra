@@ -195,7 +195,16 @@ backoffice:
     #     SynthesizeWeightSheet.DefaultWeight 10000→0, GetWeight)을 쓰는 코드는 백오피스에
     #     없다 — 두 프로젝트 빌드 오류 0 으로 확인. 백오피스는 시트를 비교·검증만 하고
     #     합성 판정을 하지 않으므로 기본 weight 전환의 동작 영향도 없다.
-    tag: "git-5240157779a2c496edcac1c7c3cdaab6a7daf01d"
+    #
+    # 2026-09-11: Lib9c 1.38.0-dev.ecbb3778 (G9 "Ultimate" 등급). 백오피스 PR #86.
+    #   위와 같은 이유다 — G9 시트를 패치하려면 백오피스의 리플렉션 인식 범위가 같은
+    #   lib9c 를 봐야 한다. ecbb3778 은 lib9c release/1.38.0 의 HEAD 이고, 헤드리스 396
+    #   (인터널 배포됨)과 클라 prepare/490.0.x 가 쓰는 것과 같은 커밋이다.
+    #
+    #   1.38.0 변경은 SynthesizeSimulator.GetTargetGrade 의 코드 상한 제거 +
+    #     Grade.Ultimate = 9 뿐이라 백오피스가 쓰는 API 에 영향이 없다 —
+    #     빌드 오류 0, 테스트 418개 전부 통과로 확인.
+    tag: "git-39a1002e1cd98cd42409625bc260f4ef94a4afef"
 
 
 iap:
