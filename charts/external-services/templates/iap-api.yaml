@@ -227,6 +227,18 @@ spec:
                   key: onestore-host
                   name: iap-env
                   optional: true
+            # 샌드박스 전용 호스트. **키를 넣으면 fail-closed 장치가 열린다** —
+            #   purchaseToken 이 `SANDBOX` 로 시작하는 구매만 이 호스트에 물어본다.
+            #   구매 기록이 환경별로 갈려 있어, 메인넷이 상용 호스트만 보면 공짜인 샌드박스
+            #   구매가 지급으로 새지 않는다. **그래서 메인넷 iap-env 에는 넣지 않는다.**
+            #   인터널만 넣는다 — 콘솔의 검증요청 잠금 해제는 샌드박스 결제를 요구하는데
+            #   원스토어 심사자는 상용 결제를 해서, 한 배포가 둘 다 받아야 한다(PLD-1616).
+            - name: API_ONESTORE_SANDBOX_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: onestore-sandbox-host
+                  name: iap-env
+                  optional: true
             # 마켓 구분 코드. 코드 기본값이 MKT_GLB(글로벌 배포) 라 평소엔 키가 없어도 된다.
             #   배포국가가 한국이면 MKT_ONE 으로 덮어야 한다 — 이 헤더가 틀리면 원스토어가
             #   다른 마켓에서 조회해서 **모든 구매가 NoSuchData(없는 구매)로 보인다**.

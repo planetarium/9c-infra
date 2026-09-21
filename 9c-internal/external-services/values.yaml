@@ -88,7 +88,7 @@ iap:
     enabled: false
     image:
       # (2026-09-21) → git-31207d2c api 와 같은 커밋(파드 없음, 태그 정렬용).
-      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
+      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
 
 
   api:
@@ -176,10 +176,17 @@ iap:
       #        IAP `yang/onestore-store-enum` 83556b7.
       #
       #   ⚠️ 이 수정이 필요해진 배경: 인터널 시크릿 `onestore-host` 를 검증(sbpp)에서
-      #     **상용(iap-apis) 으로 바꿔 둔 상태**다(상용 결제 테스트용, 2026-09-21).
-      #     되돌릴 값은 https://sbpp.onestore.net. 상용을 보는 동안 샌드박스(Billing Lab)
-      #     결제는 전부 INVALID 로 떨어지고 그 건들은 복구되지 않는다.
-      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
+      #     **상용(iap-apis) 으로 바꿨다**(원스토어 심사자가 상용 결제를 하는데 sbpp 를 보고
+      #     있어서 지급이 안 됐다 — 심사 Rejected, receipt #9305).
+      #
+      #   되돌릴 필요는 없어졌다. `onestore-sandbox-host` 를 추가해서 **한 배포가 둘 다**
+      #     처리한다(PLD-1616, IAP abf5d7e). purchaseToken 이 `SANDBOX` 로 시작하면
+      #     sbpp, 아니면 onestore-host 로 간다. 콘솔의 검증요청 잠금 해제는 샌드박스
+      #     결제를 요구하고 심사자는 상용 결제를 하므로 둘 다 필요하다.
+      #
+      #     **메인넷에는 onestore-sandbox-host 를 넣지 않는다.** 넣으면 공짜인 샌드박스
+      #     구매가 지급으로 새는 구멍이 된다(그게 단일 호스트 설계의 fail-closed 였다).
+      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -231,6 +238,6 @@ iap:
       #
       # (2026-09-21) → git-31207d2c api 와 같은 커밋. 워커 로직 변화는 없다
       #   (수정은 shared 스키마 한 줄 — 원스토어 검증은 api 경로에서만 돈다).
-      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
+      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
