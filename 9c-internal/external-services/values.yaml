@@ -87,7 +87,8 @@ iap:
     #   같이 바뀌지만 무의미하다(파드 없음).
     enabled: false
     image:
-      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
+      # (2026-09-21) → git-31207d2c api 와 같은 커밋(파드 없음, 태그 정렬용).
+      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
 
 
   api:
@@ -161,7 +162,24 @@ iap:
       #   ⚠️ 상한(API_GRANT_MAX_*)은 인터널 시크릿에 아직 없다 → limits 전부 None. 인터널은
       #      stage="internal" 이라 fail-closed 게이트(is_production)를 타지 않으므로 지급은
       #      되고 **상한만 미적용**이다(네임스페이스·화이트리스트·멱등은 그대로 동작).
-      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
+      #
+      # (2026-09-21) → git-31207d2c **원스토어 상용 검증 수정 + 라이브 드리프트 정리.**
+      #   이 bump 는 세 덩어리를 한꺼번에 올린다:
+      #     1. git-a14d327e — 이미 라이브에 set image 로 올라가 있던 커밋(PLD-1562 가챠
+      #        slot_key). git 이 32afb4d4 에 멈춰 있어 argo 가 계속 OutOfSync 였다.
+      #     2. PLD-1575 머니 가드 revert + 리뷰 반영 2커밋.
+      #     3. 🔴 원스토어 `developerPayload` — **상용(iap-apis)은 이 필드를 null 로 주고**
+      #        검증환경(sbpp)은 `""` 로 준다. 스키마가 str 이라 상용 구매가 전부
+      #        "Malformed ONE Store purchase data" → INVALID 로 굳었다. INVALID 는 dedup
+      #        게이트가 종단 취급하므로 그 구매는 영영 지급되지 않는다.
+      #        샌드박스는 항상 `""` 를 줘서 검증환경 테스트로는 절대 안 잡힌다.
+      #        IAP `yang/onestore-store-enum` 83556b7.
+      #
+      #   ⚠️ 이 수정이 필요해진 배경: 인터널 시크릿 `onestore-host` 를 검증(sbpp)에서
+      #     **상용(iap-apis) 으로 바꿔 둔 상태**다(상용 결제 테스트용, 2026-09-21).
+      #     되돌릴 값은 https://sbpp.onestore.net. 상용을 보는 동안 샌드박스(Billing Lab)
+      #     결제는 전부 INVALID 로 떨어지고 그 건들은 복구되지 않는다.
+      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -210,6 +228,9 @@ iap:
       # (2026-09-09) → git-32afb4d4 api 와 같은 커밋(포인트샵 병합 빌드). 워커에 추가되는 것은
       #   grant_task(아웃박스 tx 전송·확정 폴링)와 celery beat 엔트리다. grant_outbox 가 비어
       #   있으면 아무 일도 하지 않으므로 기존 경로에 영향 없다.
-      tag: "git-32afb4d46dfb5589e8d670ef9b428d38b3f96266"
+      #
+      # (2026-09-21) → git-31207d2c api 와 같은 커밋. 워커 로직 변화는 없다
+      #   (수정은 shared 스키마 한 줄 — 원스토어 검증은 api 경로에서만 돈다).
+      tag: "git-31207d2c4bba76df873b45e978a78f77136b711a"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
