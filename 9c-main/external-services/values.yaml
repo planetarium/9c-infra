@@ -204,7 +204,7 @@ backoffice:
     #   1.38.0 변경은 SynthesizeSimulator.GetTargetGrade 의 코드 상한 제거 +
     #     Grade.Ultimate = 9 뿐이라 백오피스가 쓰는 API 에 영향이 없다 —
     #     빌드 오류 0, 테스트 418개 전부 통과로 확인.
-    tag: "git-39a1002e1cd98cd42409625bc260f4ef94a4afef"
+    tag: "git-e601f12de529542cc1b6388e29fb24f03d0d94d7"
 
 
 iap:
