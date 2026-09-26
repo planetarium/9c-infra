@@ -1,19 +1,34 @@
 name: Update planets config
 
+# 2026-09-26: 자동 배포(pull_request_target) 를 끊었다.
+#
+# 플래닛 레지스트리는 이제 백오피스 /planet-registry 에서 S3 에 직접 반영한다.
+# 두 경로가 모두 살아 있으면, 백오피스로 바꾼 내용을 이 워크플로가 git 기준으로
+# 덮어써 죽은 엔드포인트가 조용히 되살아난다. planets/*.json 은 4개월에 12번
+# 바뀌던 파일이라 그 창이 몇 주밖에 안 된다.
+#
+# 이 워크플로는 비상구로만 남긴다 — 백오피스가 죽었거나 S3 를 직접 못 고칠 때
+# planets/<registry>.json 을 고치고 수동 실행한다.
+#
+# ⚠️ 실행하면 git 내용으로 라이브를 통째로 덮어쓴다. 백오피스로 바꾼 내용이
+#    있으면 사라지므로, 실행 전 라이브와 대조할 것:
+#    curl -s https://planets.nine-chronicles.com/planets/index.json
 on:
   workflow_dispatch:
-  pull_request_target:
-    paths:
-      - planets/*.json
-    branches:
-      - main
-    types:
-      - closed
+    inputs:
+      registry:
+        description: "올릴 레지스트리 (planets/<registry>.json)"
+        required: true
+        type: choice
+        options:
+          - mainnet
+          - internal
+          - preview
 
 jobs:
   validate-planets-config:
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/validate-planets.yaml
+
   update-planets-config:
     needs: [validate-planets-config]
     runs-on: ubuntu-latest
@@ -24,27 +39,28 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-      - uses: dorny/paths-filter@v3
-        id: paths
-        with:
-          list-files: shell
-          filters: |
-            planets: planets/*.json
-      - run: |
-          FILES=(${{ steps.paths.outputs.planets_files }})
-          for FILE in "${FILES[@]}"; do
-            REGISTRY=$(echo "$FILE" | sed -r 's/planets\/(.+)\.json$/\1/')
-            DIR="planets"
-            if [[ $REGISTRY == "mainnet" ]]; then
-              BUCKET="planets.nine-chronicles.com"
-              CF_DISTRIBUTION_ID="EP1JH2OWQMIKM"
-            else
-              BUCKET="planets-internal.nine-chronicles.com"
-              CF_DISTRIBUTION_ID="E2HIZ6JDZX0BEQ"
-              if [[ $REGISTRY == "preview" ]]; then
-                DIR="planets-preview"
-              fi
-            fi
-            aws s3 cp $FILE s3://$BUCKET/$DIR/index.json
-            aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/*"
-          done
+      - name: Upload registry and invalidate CDN
+        env:
+          REGISTRY: ${{ inputs.registry }}
+        run: |
+          set -euo pipefail
+
+          FILE="planets/${REGISTRY}.json"
+          # 예전에는 dorny/paths-filter 로 변경된 파일을 골랐다. 그건 PR 컨텍스트가
+          # 있어야 동작해서, workflow_dispatch 전용이 된 지금은 빈 목록으로 "성공"하고
+          # 아무것도 안 올리는 사고가 난다. 그래서 입력으로 명시받는다.
+          [ -f "$FILE" ] || { echo "::error::$FILE 이 없습니다"; exit 1; }
+
+          DIR="planets"
+          if [ "$REGISTRY" = "mainnet" ]; then
+            BUCKET="planets.nine-chronicles.com"
+            CF_DISTRIBUTION_ID="EP1JH2OWQMIKM"
+          else
+            BUCKET="planets-internal.nine-chronicles.com"
+            CF_DISTRIBUTION_ID="E2HIZ6JDZX0BEQ"
+            [ "$REGISTRY" = "preview" ] && DIR="planets-preview"
+          fi
+
+          echo "::notice::$FILE -> s3://$BUCKET/$DIR/index.json (CF $CF_DISTRIBUTION_ID)"
+          aws s3 cp "$FILE" "s3://$BUCKET/$DIR/index.json"
+          aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
