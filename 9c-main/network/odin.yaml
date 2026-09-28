@@ -17,17 +17,13 @@ global:
   planet: Odin
   consensusType: pbft
 
-  # ⚠️ 일시적 — rh-1 복구용. 작업 끝나면 즉시 false 로 되돌린다.
-  #
-  # 이 값은 **전역**이라 validator.yaml 도 소비한다(charts/all-in-one/templates/validator.yaml).
-  # validator-5 의 updateStrategy 는 RollingUpdate 라, 이 상태로 odin 앱을 **전체 sync 하면
-  # validator 파드가 재시작되며 reset-snapshot 초기화 컨테이너가 스토어를 지운다** → 체인 정지.
-  #
-  # 따라서 rh-1 기동은 반드시 **타겟 sync** 로만 한다:
-  #   PVC remote-headless-data-1-remote-headless-1-0 + StatefulSet remote-headless-1
-  # 그리고 rh-1 파드가 뜬 직후 이 값을 false 로 되돌려 위험 구간을 분 단위로 줄인다.
-  # (이미 생성된 파드의 spec 은 불변이라 되돌려도 다운로드는 계속된다.)
-  resetSnapshot: true
+  # ⚠️ 항상 false 로 둘 것. 이 값은 **전역**이라 validator.yaml 도 소비하는데
+  #    (charts/all-in-one/templates/validator.yaml), validator-5 의 updateStrategy 가
+  #    RollingUpdate 라 true 인 채로 전체 sync 하면 validator 파드가 재시작되면서
+  #    reset-snapshot 초기화 컨테이너가 스토어를 지운다 → 체인 정지.
+  #    켜야 한다면 대상 워크로드만 타겟 sync 하고, 파드가 뜬 직후 바로 되돌릴 것.
+  #    (2026-09-28 rh-1 복구 때 이렇게 썼다.)
+  resetSnapshot: false
   rollbackSnapshot: false
 
   storage:
