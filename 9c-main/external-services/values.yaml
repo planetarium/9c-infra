@@ -261,6 +261,19 @@ iap:
       node.kubernetes.io/provisioner: "cloudv"
       node.kubernetes.io/type: "general"
 
+  # (2026-09-29) celery 밖에서 지급 파이프라인을 보는 감시 잡. 켜는 이유는
+  #   2026-09-28 사고다 — iap-beat 이 Redis PubSub 재진입 데드락으로 4시간 20분
+  #   멈췄고, 알람을 쏘는 status_monitor 가 바로 그 beat 의 스케줄이라 알람까지
+  #   같이 죽었다. 파드는 Running 1/1, 재시작 0회라 k8s 로도 안 보였다.
+  #   웹훅은 워커와 같은 iap-alert-webhook-url 을 쓴다 — 평소 알람과 같은 채널에
+  #   떨어져야 "원래 오던 게 안 온다" 를 같은 자리에서 알아본다.
+  beatWatchdog:
+    enabled: true
+    schedule: "23 * * * *"
+    thresholdMinutes: 30
+    heartbeatHourUtc: "3"   # 12:00 KST — 기존 일일 토큰 리포트와 같은 시각
+    envLabel: "Mainnet"
+
 ncboard:
   enabled: true
   image:

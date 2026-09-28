@@ -21,3 +21,6 @@
 .idea/
 *.tmproj
 .vscode/
+# files/ 의 스크립트를 로컬 검증하면 생긴다. 차트에 실리면 안 된다.
+__pycache__/
+*.pyc

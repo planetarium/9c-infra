@@ -1,3 +1,7 @@
 .terraform
 .DS_Store
 docs/superpowers/
+
+# 차트에 실려 나가는 파이썬 스크립트를 로컬에서 py_compile 하면 생긴다.
+__pycache__/
+*.pyc
