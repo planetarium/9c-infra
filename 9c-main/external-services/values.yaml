@@ -46,7 +46,19 @@ seasonpass:
     #
     # No migration coupling: the partial index (#307) is already applied live and
     # the code works with or without it.
-    tag: "git-63c57359136a7da0649ba1634d5ba4c01082f84d"
+    #
+    # (2026-09-29) beat 데드락 수정 + Heimdall 지급 정지 수정 2건을 올린다.
+    #   - #313 celery 가 발행 때마다 Redis 결과 백엔드에 PubSub SUBSCRIBE 를 걸었고,
+    #     그 와중 GC 가 AsyncResult.__del__ 을 돌려 같은 커넥션에 UNSUBSCRIBE 로 재진입하면
+    #     영구 블록됐다. seasonpass-beat 이 이 상태로 **2일 18시간** 멈춰 있었다
+    #     (파드는 Running 1/1, 재시작 0회라 k8s 로는 안 보였다).
+    #   - #312 tx 타임스탬프를 claim.created_at 으로 박아, 재시도가 늦어진 클레임이
+    #     **태어날 때부터 만료된 tx** 가 됐다. 그게 nonce 를 선점해 2026-09-29 04:19~05:15 KST
+    #     Heimdall 지급 전체가 섰다. now(tz=utc) 로 고친다.
+    # ⚠️ claim-worker 는 복구를 위해 이미 브랜치 이미지(git-d230b200)로 hotfix 돼 있다.
+    #   이 bump 가 그 드리프트를 정리한다.
+    # 마이그레이션 커플링 없음.
+    tag: "git-3cd5b17e09bf87fb1dc9adf5cff3fffff72e4600"
 
   api:
     enabled: true
@@ -230,7 +242,23 @@ iap:
       #   (누적) #480 월별 구매 조회 status 필터, #477 retry 500 핫픽스 포함.
       # 마이그레이션 커플링 없음 — (store, order_id) 인덱스는 2026-08-25 에 이미 적용했다
       #   (CREATE INDEX CONCURRENTLY, 6.9초, 47MB). 코드는 인덱스 유무와 무관하게 동작한다.
-      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
+      #
+      # (2026-09-29) beat 데드락 수정 + 알람 노이즈 정리(#495)를 올린다.
+      #   celery 가 발행 때마다 Redis 결과 백엔드에 PubSub SUBSCRIBE 를 걸었고, 그 와중
+      #   GC 가 AsyncResult.__del__ 을 돌려 같은 커넥션에 UNSUBSCRIBE 로 재진입하면 영구
+      #   블록됐다. iap-beat 이 이 상태로 4시간 20분 멈췄고, 그동안 **알람을 쏘는
+      #   status_monitor 까지 같이 죽어** 아무도 몰랐다(영수증 96건 STAGED 적체).
+      # ⚠️ 이 bump 는 git-769e601 이후 main 에 쌓인 4커밋도 같이 올린다. 전수 확인했고
+      #   전부 additive 다(+2,936/-4, 지급 경로 변경 없음):
+      #   - #478 구매신호 리컨실: beat 태스크가 늘지만 purchase_signal_dry_run 기본값이
+      #     True 라 확인·기록·알림만 하고 결제를 완결시키지 않는다. iap_api_base_url 도
+      #     클러스터 내부 기본값이라 인프라 변경 불필요. 신호 발견 시 알람 채널에 새 메시지.
+      #   - #491 원스토어 일괄등록 추출 API(신규 엔드포인트), #494 문서, #473 gitignore.
+      # ⚠️ alembic: DB head 0eb7c95c9f30 → 저장소 head d2f4a1c6e8b3 로 한 칸 뒤쳐져 있다.
+      #   그 한 칸(ix_receipt_stuck_monitor)은 2026-08-25 에 손으로 만들어 DB 에 실재하고,
+      #   마이그레이션이 CREATE INDEX CONCURRENTLY IF NOT EXISTS 라 재실행이 no-op 이다.
+      #   port-forward + 로컬 alembic 으로 스탬프만 맞출 것.
+      tag: "git-5271556dc724035abf12f2771c44e933a1a489ee"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -252,7 +280,23 @@ iap:
       #     회수 훅도 같은 플래그로 막힌다.
       #   마이그레이션 커플링 없음 — 메인넷 alembic head 는 이미 0eb7c95c9f30(purchase_signal +
       #     voucher 체인 merge)라 DB 가 오히려 코드보다 앞서 있었다. 이 bump 가 둘을 맞춘다.
-      tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
+      #
+      # (2026-09-29) beat 데드락 수정 + 알람 노이즈 정리(#495)를 올린다.
+      #   celery 가 발행 때마다 Redis 결과 백엔드에 PubSub SUBSCRIBE 를 걸었고, 그 와중
+      #   GC 가 AsyncResult.__del__ 을 돌려 같은 커넥션에 UNSUBSCRIBE 로 재진입하면 영구
+      #   블록됐다. iap-beat 이 이 상태로 4시간 20분 멈췄고, 그동안 **알람을 쏘는
+      #   status_monitor 까지 같이 죽어** 아무도 몰랐다(영수증 96건 STAGED 적체).
+      # ⚠️ 이 bump 는 git-769e601 이후 main 에 쌓인 4커밋도 같이 올린다. 전수 확인했고
+      #   전부 additive 다(+2,936/-4, 지급 경로 변경 없음):
+      #   - #478 구매신호 리컨실: beat 태스크가 늘지만 purchase_signal_dry_run 기본값이
+      #     True 라 확인·기록·알림만 하고 결제를 완결시키지 않는다. iap_api_base_url 도
+      #     클러스터 내부 기본값이라 인프라 변경 불필요. 신호 발견 시 알람 채널에 새 메시지.
+      #   - #491 원스토어 일괄등록 추출 API(신규 엔드포인트), #494 문서, #473 gitignore.
+      # ⚠️ alembic: DB head 0eb7c95c9f30 → 저장소 head d2f4a1c6e8b3 로 한 칸 뒤쳐져 있다.
+      #   그 한 칸(ix_receipt_stuck_monitor)은 2026-08-25 에 손으로 만들어 DB 에 실재하고,
+      #   마이그레이션이 CREATE INDEX CONCURRENTLY IF NOT EXISTS 라 재실행이 no-op 이다.
+      #   port-forward + 로컬 alembic 으로 스탬프만 맞출 것.
+      tag: "git-5271556dc724035abf12f2771c44e933a1a489ee"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
