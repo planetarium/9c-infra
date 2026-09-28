@@ -98,6 +98,10 @@ walletBalanceReport:
   image: python:3.12-alpine
   slackChannel: "9c-metrics"
   envLabel: "Prod"
-  gqlEndpoint: "https://odin-rpc-1.nine-chronicles.com/graphql"
+  # odin-rpc-1 을 쓰지 말 것 — nginx 경유 remote-headless-1 단일 매핑(StreamingHub sticky)
+  # 이라 rh-1 이 내려가면 백업 upstream 없이 502 가 된다. 2026-09-26 실제로 이 리포트가
+  # "조회 실패" 로 나갔다. odin-gql 은 upstream 이 [rh-1, validator-5] 라 한쪽이 죽어도
+  # 살아남고, 복구되면 자동으로 다시 분산된다.
+  gqlEndpoint: "https://odin-gql.nine-chronicles.com/graphql"
   # [{label, address, assets: [NCG|MEAD], warnNcg, warnMead}] — 오버레이에서 채운다.
   wallets: []
