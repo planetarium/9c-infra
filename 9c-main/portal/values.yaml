@@ -11,16 +11,24 @@ portalService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal
-    # 포탈 main 최신(673d1e71, #1307). 4e6e20b4..673d1e71 은 Rune Breaker 리브랜딩(#1306) 하나뿐.
-    #   1) 표시 문자열 "Ragnarok Breaker" → "Rune Breaker" (NCU 카드 / Quests / Redeem /
-    #      LinkedAccount "Rune Breaker Wallet" / V8Link "Rune Breaker(V8)" / 연동 모달 타이틀).
-    #   2) web3 플레이 URL ragnarokbreaker.fun → runebreaker.nine-chronicles.com
-    #      (기존 prod-ragnarokbreaker-fun.pages.dev 로 가는 CNAME, https 200).
-    #   ⚠️ NCU 응답 와이어 키(ragnarok_breaker / ragnarok_wallet)는 그대로다 — 배포된 유니티
-    #      클라(470.0.11 / 480.0.1)가 상수로 못박고 정확 일치로 찾으며, 못 찾으면 에러가 아니라
-    #      조용히 미연동으로 떨어진다. 표기만 바꾼 배포라 클라 영향 없음.
-    # DB 마이그레이션 커플링 없음 — 4e6e20b4..673d1e71 에 packages/database 변경이 없다.
-    tag: main-7dff2fe4e85da369c597e8b899df631c8ed4643c
+    # 포탈 main 최신(4f2efd5a). 7dff2fe4..4f2efd5a 에서 apps/portal 변경은
+    #   **NCU 펫팝 계정 연동(#1317) 하나뿐**이다(#1316 은 apps/backoffice 한 파일이라
+    #   포탈 이미지와 무관 — backofficeService 태그는 #3630 에서 이미 같은 sha 로 올라갔다).
+    #   신규 엔드포인트 POST /api/ncu/petpop-link-token + /ncu PETPOP 행의
+    #   "Open PETPOP"(단순 외부링크) → "Connect PETPOP"(원타임 링크토큰 발급 후
+    #   펫팝 /api/user/connect?app=portal 리다이렉트).
+    # 왜 필요했나: 수신부(펫팝)는 2026-09-04 에 이미 prod 에 나갔는데 포탈만 인터널에
+    #   머물러 있었다. 그래서 유저가 NCU 페이지에서 연동을 눌러도 아무 일도 일어나지
+    #   않았고(문의 #15156), 펫팝 퀘스트의 "9c 연동"은 포탈로 되돌려보내 순환이었다.
+    # ⚠️ 크로스레포 계약이라 아래 prod env 가 맞아야만 동작한다(배포 전 실측 확인함):
+    #      포탈 PETPOP_API_ENDPOINT=https://petpop.fun / BASE_URL=https://nine-chronicles.com
+    #      펫팝 NINE_C_JWT_ISS=9C / NINE_C_JWT_AUD=PetPoP / 공유시크릿 지문 양쪽 일치
+    #   토큰 exp 는 iat+300 고정 — 펫팝 validatePortalLinkClaims 의 `exp - iat > 300`
+    #   경계라 포탈 단독으로 못 늘린다(늘리려면 펫팝 PORTAL_LINK_WINDOW_SEC 부터).
+    # 참고: 펫팝 PORTAL_RETURN_ORIGINS 가 빈 값이라 연동 후 포탈 복귀 없이 펫팝 /game
+    #   착지다(연동 자체는 성공 — 9/4 설계에서 택한 동작).
+    # DB 마이그레이션 커플링 없음 — 7dff2fe4..4f2efd5a 에 packages/database 변경이 없다.
+    tag: main-4f2efd5a3293d7d1a80bbf0edf8bdec0e02f354b
     pullPolicy: Always
   externalSecret:
     enabled: true
