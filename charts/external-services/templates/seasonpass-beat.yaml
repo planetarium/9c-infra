@@ -66,6 +66,33 @@ spec:
             {{- toYaml . | nindent 14 }}
           {{- end }}
           name: seasonpass-beat
+          # (2026-09-29) celery beat 은 헬스 엔드포인트가 없어 "살아있는데 멈춘" 상태를
+          #   k8s 가 못 본다. 실제로 iap-beat 이 4시간 20분, seasonpass-beat 이 2일 18시간을
+          #   Running 1/1 · 재시작 0회 상태로 멈춰 있었다(Redis PubSub 재진입 데드락).
+          #   그동안 주기 작업이 전부 섰고, 알람 태스크까지 같이 죽어 아무도 몰랐다.
+          #
+          #   살아있음 신호로 PersistentScheduler 의 스케줄 파일 mtime 을 쓴다. beat 은
+          #   Scheduler.sync_every(180초)를 넘겼을 때 tick 에서 이 파일을 다시 쓴다.
+          #   ⚠️ 갱신 간격은 180초로 고정이 아니다 — beat 은 다음 due 태스크까지 자므로
+          #      스케줄이 성길수록 tick 이 늦다(실측: iap 141초, seasonpass 245초).
+          #      그래서 임계값을 900초로 넉넉히 잡았다. 앱에 beat_max_loop_interval 을
+          #      넣어 tick 주기를 고정하면 그때 420초까지 줄일 수 있다.
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - |
+                  import os, sys, time
+                  sys.exit(
+                      0
+                      if time.time() - os.path.getmtime("/app/apps/worker/celerybeat-schedule") < 900
+                      else 1
+                  )
+            initialDelaySeconds: 120
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 3
       {{- with $.Values.seasonpass.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
