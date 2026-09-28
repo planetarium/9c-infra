@@ -25,6 +25,12 @@ spec:
             secretKeyRef:
               name: slack
               key: slack-webhook-rb
+          # IAP 알람은 #9c-iap-alert 로 간다. 이 시크릿은 us-east-2 의 iap-env 를 그대로
+          #   참조한다(slack-secret.yaml 참고) — 값 복사본이 아니라 원본이다.
+          SLACK_WEBHOOK_IAP:
+            secretKeyRef:
+              name: slack-iap
+              key: slack-webhook-iap
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -48,11 +54,23 @@ spec:
                     type: slack
                     settings:
                       url: $SLACK_WEBHOOK_URL
+              - orgId: 1
+                name: iap-alert-slack
+                receivers:
+                  - uid: iap-alert-slack
+                    type: slack
+                    settings:
+                      url: $SLACK_WEBHOOK_IAP
           policies.yaml:
             apiVersion: 1
             policies:
               - orgId: 1
                 receiver: ragnarok-infra-alert-slack
+                routes:
+                  # 라벨로 가른다. 기본 수신자는 그대로 RB 채널이다.
+                  - receiver: iap-alert-slack
+                    object_matchers:
+                      - ['service', '=', 'iap']
           rules.yaml:
             apiVersion: 1
             groups:
@@ -176,6 +194,96 @@ spec:
                       severity: critical
                     annotations:
                       summary: 'v8-gateway replicas > 1 in {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}} — V8 4009 kick risk, must stay 1'
+              # (2026-09-29) beat 데드락 사고 후속. 사고의 핵심은 "beat 이 죽었다" 가 아니라
+              #   "죽은 걸 4시간 20분 동안 아무도 몰랐다" 였다 — 알람을 쏘는 status_monitor 가
+              #   바로 그 beat 의 스케줄이었기 때문이다. 아래 3개는 그 바깥에서 본다.
+              - orgId: 1
+                name: iap-beat-alerts
+                folder: IAP
+                interval: 1m
+                rules:
+                  # 감시 잡 자체의 dead-man's switch. CronJob 이 아예 안 뜨는 경우
+                  #   (CreateContainerConfigError·노드 소실·suspend)까지 잡으려고
+                  #   "실패했나" 가 아니라 "성공한 지 얼마나 됐나" 를 본다.
+                  #   ⚠️ noDataState 가 Alerting 이어야 한다 — 지표가 사라지는 것이 곧 증상이다.
+                  - uid: iap-watchdog-stalled
+                    title: IAP Watchdog Not Running
+                    noDataState: Alerting
+                    execErrState: Alerting
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'time() - max(kube_cronjob_status_last_successful_time{namespace="9c-external-services",cronjob="iap-beat-watchdog"})'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            # 주기가 1시간이라 3배. 한 번 걸러 뛰는 것으로는 안 울린다.
+                            - evaluator: { type: gt, params: [10800] }
+                    for: 15m
+                    labels:
+                      severity: critical
+                      service: iap
+                    annotations:
+                      summary: 'IAP 지급 파이프라인 감시 잡이 3시간 넘게 성공하지 못했다 — 정체가 생겨도 아무도 못 본다'
+                  # liveness probe 는 "조용한 정지" 를 "조용한 재시작" 으로 바꾼다.
+                  #   데드락이 반복되면 beat 이 18분마다 죽었다 살아나는데, 알람은 다시 오니
+                  #   지표상으로는 정상으로 보인다. 그 상태를 드러낸다.
+                  - uid: iap-beat-restart-flapping
+                    title: Beat Restart Flapping
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 7200, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'increase(kube_pod_container_status_restarts_total{namespace="9c-external-services",pod=~".*-beat-.*"}[2h])'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [2] }
+                    for: 5m
+                    labels:
+                      severity: warning
+                      service: iap
+                    annotations:
+                      summary: 'beat 파드 {{`{{ "{{" }} $labels.pod {{ "}}" }}`}} 가 2시간 내 3회 이상 재시작 — liveness probe 가 데드락을 반복해서 잡고 있다는 뜻'
+                  # probe 가 못 살리고 크래시루프로 굳은 경우.
+                  - uid: iap-beat-unavailable
+                    title: Beat Unavailable
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'kube_deployment_status_replicas_unavailable{namespace="9c-external-services",deployment=~".*-beat"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [0] }
+                    for: 10m
+                    labels:
+                      severity: critical
+                      service: iap
+                    annotations:
+                      summary: '{{`{{ "{{" }} $labels.deployment {{ "}}" }}`}} 가 10분째 기동하지 못했다 — 주기 작업이 전부 멈춘 상태다'
         persistence:
           enabled: true
         initChownData:
