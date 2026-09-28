@@ -169,9 +169,13 @@ validator:
 
   storePath: "/data/headless"
 
+  # 2026-09-26 포크 복구 때 validator 를 data-4 로 스왑했다(data-1 은 포크 스토어라 삭제).
+  # 라이브 STS 만 패치하고 여기를 안 고쳐 git 과 실제가 뒤바뀌어 있었다 — 그 상태로 sync 하면
+  # validator 가 없는 볼륨을 가리켜 체인이 멈춘다. 실제와 맞춘다.
+  # 상세: memory/troubleshooting_odin_chain_fork_recovery.md
   storage:
     volumeNames:
-    - "remote-headless-data-1-remote-headless-1-0"
+    - "remote-headless-data-4-remote-headless-4-0"
 
   tolerations:
   - effect: NoSchedule
@@ -233,9 +237,12 @@ remoteHeadless:
     limits:
       memory: 30Gi
 
+  # data-4 는 validator 가 쓴다(위 validator 블록 주석 참고). rh-1 은 data-1 을 되찾는다 —
+  # global.storage 에 650Gi 로 선언돼 있고 실물이 없어 ArgoCD 가 Missing 으로 잡고 있다.
+  # 복구 시 클론이 아니라 스냅샷 리셋으로 채운다(클론하면 542G 라 odin-1 에 73G 밖에 안 남는다).
   storage:
     volumeNames:
-    - remote-headless-data-4-remote-headless-4-0
+    - "remote-headless-data-1-remote-headless-1-0"
 
   tolerations:
   - effect: NoSchedule
