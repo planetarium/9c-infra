@@ -163,6 +163,13 @@ backoffice:
     #     메인넷은 IAP 에 API_PORTAL_PRIZE_TABLES_URL 이 미설정이라 복권 체인 자체가 미배선이다.
     #     (엄밀히는 IAP env 가 가장 나중 관문이다 — prod 포탈에 /api/voucher/* 코드 자체가 없고
     #      JWT_VOUCHER_ADMIN_SECRET 도 없다. "IAP env 만 채우면 열린다"가 아니다.)
+    #     ⟵ (2026-09-28 정정) 바로 위 세 문장 — "인터널 라이브 정책엔 platformMultiplier 키가
+    #       아예 없고", "메인넷은 API_PORTAL_PRIZE_TABLES_URL 이 미설정이라 복권 체인 자체가
+    #       미배선", "prod 포탈에 /api/voucher/* 코드 자체가 없고" — 은 전부 **stale** 이다.
+    #       실측: 인터널·메인넷 포탈 모두 /api/voucher/prize-tables 가 200·temporary:false 이고
+    #       응답에 platformMultiplier{PC:1.25, MOBILE:1}·byPlatform 이 들어 있다. 메인넷
+    #       iap-env 에도 바우처 env 두 키가 다 들어갔다.
+    #       상세는 아래 iap.api 블록의 (2026-09-28) 주석.
     #
     #   ⚠️ 이 이미지를 올려도 /voucher-config 화면은 **아직 열리지 않는다.** 화면의 Load() 가
     #     포탈 정책 GET 을 먼저 하고 실패하면 _loaded=false 로 남아 본문 전체(=#82 의 매핑
@@ -231,6 +238,34 @@ iap:
       # 마이그레이션 커플링 없음 — (store, order_id) 인덱스는 2026-08-25 에 이미 적용했다
       #   (CREATE INDEX CONCURRENTLY, 6.9초, 47MB). 코드는 인덱스 유무와 무관하게 동작한다.
       tag: "git-769e601cb0475fd1be670fcc05df649483893f75"
+
+    # (2026-09-28) 바우처 상품매핑 env 2 키가 메인넷 iap-env 에 **둘 다** 들어갔다. 차트는
+    #   optional=true 로 참조만 하므로 값은 이 values 가 아니라 SecretsManager(us-east-2)
+    #   9c-main-v2/external-services/iap-env 에 있다.
+    #     portal-prize-tables-url         = prod 포탈 /api/voucher/prize-tables (200, temporary:false)
+    #     voucher-grant-max-ncg-per-grant = 20000
+    #
+    #   왜 cap 이 필요했나 — 백오피스 IAP 상품 CSV 임포트가 voucher 컬럼에 **값이 있는 행**을
+    #     포함하면 메인넷에서만 400 이었다(2026-09-28 10월 시즌패스 상품 등록 시 발견).
+    #     detail 원문: "prod에선 voucher_grant_max_ncg_per_grant(C3-lite cap) 설정 후에만
+    #     voucher CSV import 가능". IAP admin 의 prod 게이트가
+    #     `cap is None and stage in (production, mainnet)` 이면 저장 자체를 거부한다 —
+    #     cap None 은 C3-lite fail-open 이라 prod 에선 금지다. 인터널은 stage=internal 이라
+    #     게이트 비대상 → "인터널에서 됐다"가 메인넷 통과를 보장하지 않는다. 같은 게이트가
+    #     매핑 CRUD(PUT /api/admin/product-voucher-grants)의 **active=true 로 켤 때**에도 있다.
+    #
+    #   20000 의 근거 — C3-lite 는 (product, ticket_type) **행마다** `count × 그 티켓의
+    #     최고상금(NCG)` 을 cap 과 비교한다(상품 단위 합산 아님). 여기서 "최고상금"은 IAP 가
+    #     읽는 **공개 prizeTables** 값 = PREMIUM 2000 / STANDARD 200 인데, 이건 기본표
+    #     (응답의 byPlatform = PREMIUM 1600 / STANDARD 160)에 최대 platformMultiplier 1.25 가
+    #     이미 곱해진 호환용 값이다. ⚠️ 백오피스 정책 화면에 보이는 1600 을 기준으로 cap 을
+    #     재산정하면 낮게 잡혀 다시 400 을 맞는다. 기존 active 매핑 44 행 중 이 식의 최대값이
+    #     600 Golden Dust(id=16) PREMIUM×9 = 18,000 이다. cap 은 기획 한도가 아니라 자릿수
+    #     오타(17 → 1700) 감지기이므로 현존 매핑을 전부 덮는 값으로 잡았다.
+    #
+    #   ⚠️ optional secretKeyRef 는 **pod 생성 시점에만** 해소된다. 키를 새로 넣든 20000 을
+    #     다른 값으로 바꾸든 기존 pod 에는 반영되지 않으므로 rollout restart 가 필수다.
+    #     실제로 portal-prize-tables-url 이 이 상태로 한 달 가까이 미주입이었다.
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 

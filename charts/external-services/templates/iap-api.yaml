@@ -175,8 +175,13 @@ spec:
                   key: jwt-secret-9c
                   name: iap-env
             # (PLD-1472) 바우처 상품매핑 admin — C1(정책 크로스read)/C3-lite(cap). optional=true →
-            #   키 없는 env(예: prod)에선 미주입 → config 기본 None(portal_prize_tables_url None이면
-            #   admin 매핑 저장이 503으로 fail-closed, cap None이면 C3-lite 스킵). 인터널 iap-env에 키 세팅 시 활성.
+            #   키 없는 env 에선 미주입 → config 기본 None. portal_prize_tables_url 이 None 이면
+            #   매핑 저장이 503 으로 fail-closed. cap 이 None 이면 stage=internal 은 C3-lite 를
+            #   스킵하지만 **stage 가 production/mainnet 이면 400 으로 거부**한다(가드 fail-open 금지).
+            #   ⚠️ optional 참조는 **pod 생성 시점에만** 해소된다. 시크릿에 키를 추가하거나 값을
+            #     바꿔도 기존 pod 엔 반영되지 않으므로 반드시 rollout restart 할 것.
+            #   어느 env 에 어떤 값이 들어가 있는지는 각 env 의 values.yaml 에 적는다 — 이 템플릿은
+            #     인터널·메인넷이 공유하고, 시크릿 재고는 코드 변경 없이 바뀌어 여기 적으면 곧 stale 이 된다.
             - name: API_PORTAL_PRIZE_TABLES_URL
               valueFrom:
                 secretKeyRef:
