@@ -1,4 +1,37 @@
+# 백오피스 스케줄러를 호출하는 CronJob.
+#
+# ⚠️ 시간 제한이 왜 있나 — 2026-09-21 16:00 KST, 출금 스케줄러가 응답 없는 헤드리스
+#    (odin-rpc-1)에 매달렸다. 백오피스의 GraphQL 쿼리에 타임아웃이 없어 핸들러가 안 끝났고,
+#    curl 에도 --max-time 이 없어 같이 매달렸고, concurrencyPolicy: Forbid 가 그 뒤 모든
+#    실행을 막았다. 7일간 출금 959건(132,275 NCG)이 밀렸는데 아무도 몰랐다.
+#
+# 핵심 인바리언트: **activeDeadlineSeconds < 스케줄 간격**.
+#   Job 수명을 끊는 건 ADS 다(재시도까지 포함해 Job 전체를 자른다). 이게 주기보다 길면
+#   Forbid 가 다음 tick 을 막아 원래 버그가 그대로 재현된다. 오버레이에서 timeoutSeconds 를
+#   키울 때 반드시 같이 확인할 것.
+#   - curl --max-time       정상 경로. 먼저 끝나 에러 메시지를 남긴다.
+#   - activeDeadlineSeconds curl 이 물리거나 이미지 pull 이 느려도 걷어내는 최후 방어선.
+#     (ADS 시계는 Job 생성 시점부터라 pull 지연을 포함한다. pull 이 아주 느리면
+#      curl 보다 ADS 가 먼저 칠 수 있다 — 그래도 멈추는 것보단 낫다.)
+#
+# --fail-with-body 는 쓰지 않는다. 출금 스케줄러는 선행 회차가 락을 쥐고 있으면
+# 400 "Failed to acquire lock" 을 돌려주는데 이건 정상 동작이라 실패로 세면 헛경보가 된다.
+#
+# ⚠️ 이 템플릿이 고치는 건 "멈춤"뿐이고 "조용함"은 못 고친다:
+#   - -f 계열이 없어 HTTP 400/500 은 전부 exit 0 = Job Succeeded 다. 핸들러가 킬스위치
+#     (withdrawalManage.isAllowWithdrawal=false)를 내려도 CronJob 은 초록색이다.
+#   - 이 저장소엔 kube_job / kube_cronjob 알람 룰이 하나도 없다.
+#   진짜 감시 지표는 "가장 오래된 미지급 withdrawal 의 age" 다. 별도 티켓으로 남긴다.
+#
+# ⚠️ 계약 변경: 전에는 Job 수명 = 서버 핸들러 수명이라 Forbid 가 서버측 동시성까지 막아줬다.
+#   이제 curl 이 먼저 포기하므로 핸들러가 주기보다 오래 돌면 **겹칠 수 있다**.
+#   출금은 pg_try_advisory_lock + STAGING 클레임이 있어 안전하지만,
+#   transaction(=withdrawal-status) 핸들러엔 락이 없다 → 포탈 저장소 후속 대상.
+#
+# (Go 템플릿 주석 {{"{{"}}/* */{{"}}"}} 를 쓰지 말 것 — 본문의 cron 별표-슬래시 표기가
+#  주석을 조기 종료시켜 차트 전체 렌더가 깨진다. 실제로 한 번 깨졌다.)
 {{- range .Values.backofficeService.cronjobs }}
+{{- $timeout := int (.timeoutSeconds | default 100) }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -12,9 +45,14 @@ spec:
   schedule: "{{ .schedule }}"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      # 기본 0 = 재시도 없음. 촘촘한 주기(2분·15분)에선 다음 tick 이 곧 재시도라 그게 낫다.
+      # 재시도 자체는 ADS 가 상한을 보장하므로 위험하지 않다 — 일 1회 잡처럼 "한 번 실패 =
+      # 하루 결손" 인 경우엔 오버레이에서 올릴 것(같은 차트의 wallet-balance-report 는 2).
+      backoffLimit: {{ .backoffLimit | default 0 }}
+      activeDeadlineSeconds: {{ add $timeout 15 }}
       template:
         spec:
           containers:
@@ -22,7 +60,9 @@ spec:
               image: curlimages/curl:latest
               args:
                 - curl
-                - -s
+                - -sS
+                - --max-time
+                - "{{ $timeout }}"
                 - -H
                 - "x-api-key: $(SCHEDULER_API_KEY)"
                 - {{ .endpoint }}
