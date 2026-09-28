@@ -22,10 +22,8 @@ global:
   #    RollingUpdate 라 true 인 채로 전체 sync 하면 validator 파드가 재시작되면서
   #    reset-snapshot 초기화 컨테이너가 스토어를 지운다 → 체인 정지.
   #    켜야 한다면 대상 워크로드만 타겟 sync 하고, 파드가 뜬 직후 바로 되돌릴 것.
-  #
-  # ⚠️ 지금 일시적으로 켜져 있다 — rh-1 복구 재시도(#3625 로 다운로드 경로 버그를 고친 뒤).
-  #    타겟: StatefulSet remote-headless-1 만. 파드가 뜨면 즉시 false 로 되돌린다.
-  resetSnapshot: true
+  #    (2026-09-28 rh-1 복구 때 두 번 이렇게 썼다 — #3623, #3626.)
+  resetSnapshot: false
   rollbackSnapshot: false
 
   storage:
