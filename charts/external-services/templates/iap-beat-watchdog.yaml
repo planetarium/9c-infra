@@ -1,0 +1,93 @@
+{{- if $.Values.iap.beatWatchdog.enabled }}
+{{- $timeout := int ($.Values.iap.beatWatchdog.timeoutSeconds | default 120) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iap-beat-watchdog
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: iap-beat-watchdog
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  # .Files.Get 은 내용을 템플릿하지 않는다. 스크립트에 중괄호가 들어가도 차트 렌더가 안 깨지고
+  #   python -m py_compile / 에디터 지원도 그대로 붙는다(자매 사례: charts/portal 의 출금 적체 감시).
+  watchdog.py: |
+{{ $.Files.Get "files/iap-beat-watchdog.py" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: iap-beat-watchdog
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: iap-beat-watchdog
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  # 정각을 피한다 — beat 의 주기 작업이 정각에 몰려서 그 순간은 STAGED 잔류가
+  #   정상적으로 잠깐 부푼다. 스크립트에 나이 임계가 있어 그것만으로도 막히지만
+  #   굳이 상관관계를 만들 이유가 없다.
+  #
+  # 최악 탐지 지연 = 주기 + 임계값(기본 1시간 + 30분 = 1시간 30분). 이번 사고가
+  #   4시간 20분 무감지였으니 그걸 1/3 로 줄인다. 더 촘촘히 돌리면 정체가 지속되는
+  #   동안 같은 알람이 반복된다 — 이 잡은 발화 이력을 저장하지 않는다.
+  schedule: {{ $.Values.iap.beatWatchdog.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # 감시 잡이 조용히 멈추면 감시가 없는 것과 같다 — 이 사고의 교훈 그대로다.
+      #   activeDeadlineSeconds 는 스케줄 간격보다 짧아야 Forbid 가 다음 tick 을 막지 않는다.
+      activeDeadlineSeconds: {{ add $timeout 15 }}
+      # 하드 실패(DB 접속 불가·Slack 오류)만 재시도. 정상 경로는 exit 0 이라 중복 포스팅이 없다.
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          # 이 파드는 K8s API 도 AWS 도 쓰지 않는다. DB 와 Slack 웹훅이 전부다.
+          automountServiceAccountToken: false
+          {{- with $.Values.iap.worker.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: watchdog
+              # 워커 이미지를 그대로 쓴다 — psycopg2 가 이미 들어 있어 런타임 설치가 필요 없다
+              #   (설치는 그 자체가 실패 모드다). 스크립트는 shared 패키지를 import 하지 않으므로
+              #   이미지 안의 앱 코드 구조가 바뀌어도 이 잡은 안 깨진다.
+              image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
+              command: ["python", "/script/watchdog.py"]
+              env:
+                - name: THRESHOLD_MINUTES
+                  value: {{ $.Values.iap.beatWatchdog.thresholdMinutes | quote }}
+                - name: ENV_LABEL
+                  value: {{ $.Values.iap.beatWatchdog.envLabel | quote }}
+                # 이상이 없어도 이 UTC 시각의 run 은 한 줄 남긴다(dead-man's switch).
+                #   비워 두면 하트비트가 꺼진다 — 그러면 "조용함 = 정상" 으로 되돌아가고,
+                #   이번처럼 감시 자체가 죽은 걸 아무도 모르게 된다.
+                - name: HEARTBEAT_HOUR
+                  value: {{ $.Values.iap.beatWatchdog.heartbeatHourUtc | quote }}
+                - name: WORKER_PG_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      key: db-uri
+                      name: iap-env
+                # status_monitor 와 같은 웹훅을 쓴다 — 평소 알람과 같은 채널에 떨어져야
+                #   "원래 오던 알람이 안 온다" 를 같은 자리에서 알아볼 수 있다.
+                - name: IAP_ALERT_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: iap-alert-webhook-url
+                      name: iap-env
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              {{- with $.Values.iap.beatWatchdog.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+          volumes:
+            - name: script
+              configMap:
+                name: iap-beat-watchdog
+{{- end }}

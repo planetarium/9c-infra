@@ -116,6 +116,23 @@ iap:
     serviceAccount:
       roleArn: ""
 
+  # 지급 파이프라인을 celery 밖에서 보는 감시 잡(dead-man's switch).
+  #   2026-09-28 에 iap-beat 이 데드락으로 4시간 20분 멈췄는데 알람을 쏘는
+  #   status_monitor 자체가 그 beat 스케줄이라 알람까지 같이 죽었다. 이 잡은
+  #   CronJob 으로 떠서 DB 만 보므로 파이프라인이 통째로 죽어도 살아서 말한다.
+  beatWatchdog:
+    enabled: false
+    # 정각을 피한다(주기 작업이 정각에 몰려 STAGED 가 잠깐 부푼다).
+    schedule: "23 * * * *"
+    # 이 나이를 넘겨 STAGED/INVALID 로 남은 영수증이 있으면 경보.
+    #   정상 확정은 30~60초라 30분이면 오탐이 사실상 없다(실측: 평시 5분 초과 하루 0~14건).
+    thresholdMinutes: 30
+    # 이상이 없어도 이 UTC 시각의 run 은 한 줄 남긴다. 비우면 하트비트가 꺼진다.
+    heartbeatHourUtc: "3"
+    envLabel: "Mainnet"
+    timeoutSeconds: 120
+    resources: {}
+
 backoffice:
   enabled: false
   image:
