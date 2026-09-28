@@ -46,14 +46,17 @@ backofficeService:
     node.kubernetes.io/type: baremetal
   image:
     repository: planetariumhq/9c-portal-backoffice
-    # 백오피스 main 최신(fd8b3f10, #1309). 673d1e71..fd8b3f10 은 출금 Approval 테이블
-    #   Action 열 위치 조정(#1308) 하나뿐 — 열 순서만 Amount 뒤로 옮긴 UI 변경이고
-    #   승인 권한 검사(canWithdrawalApprove)·승인 API·출금 스케줄러 동작은 그대로다.
-    # ⚠️ 포탈 태그(L23)는 673d1e71 유지 — 이번 diff 에 apps/portal 변경이 없어
-    #   포탈 이미지는 코드상 동일하다. 굳이 bump 하면 프로브 없는 prod 포탈 pod 만
-    #   불필요하게 재기동되므로 백오피스만 올린다.
+    # 백오피스 main 최신(4f2efd5a, #1318). 7dff2fe4..4f2efd5a 에서 백오피스 코드 변경은
+    #   **출금 스케줄러 advisory 락 수정(#1316) 하나뿐**이다:
+    #     pg_try_advisory_lock → pg_try_advisory_xact_lock
+    #   세션 단위 락이 ROLLBACK 으로 안 풀려 Prisma 풀 커넥션에 남는 누수였다. 2026-09-21
+    #   메인넷 출금 7일 정지(959건 / 132,275 NCG)의 근본 원인이고, 인프라 쪽 응급 수정
+    #   (#3621 curl --max-time)만으로는 "영구 정지"가 "처리량 40%"로 바뀔 뿐이었다.
+    # ⚠️ 포탈 태그(L23)는 7dff2fe4 유지 — 이번 백오피스 변경은 apps/backoffice 한 파일이고
+    #   apps/portal 쪽 변경(#1317 NCU 펫팝)은 별개다. 굳이 같이 bump 하면 프로브 없는
+    #   prod 포탈 pod 만 불필요하게 재기동되므로 백오피스만 올린다.
     # DB 마이그레이션 커플링 없음 — packages/database 변경 없음.
-    tag: main-7dff2fe4e85da369c597e8b899df631c8ed4643c
+    tag: main-4f2efd5a3293d7d1a80bbf0edf8bdec0e02f354b
     pullPolicy: Always
   externalSecret:
     enabled: true
