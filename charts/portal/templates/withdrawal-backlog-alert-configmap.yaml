@@ -1,0 +1,16 @@
+{{- if .Values.withdrawalBacklogAlert.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-withdrawal-backlog-alert
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: withdrawal-backlog-alert
+data:
+  # .Files.Get 은 내용을 **템플릿하지 않는다** — sibling 인 wallet-balance-report 처럼
+  # tpl 을 거치면 스크립트 안의 중괄호 하나가 차트 전체 렌더를 깨뜨린다.
+  # 파일로 두면 그 위험이 통째로 사라지고 node --check / 에디터 지원도 붙는다.
+  alert.js: |
+{{ .Files.Get "files/withdrawal-backlog-alert.js" | indent 4 }}
+{{- end }}
