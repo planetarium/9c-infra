@@ -1,4 +1,4 @@
-{{- if $.Values.iap.beatWatchdog.enabled }}
+{{- if and $.Values.iap.worker.enabled $.Values.iap.beatWatchdog.enabled }}
 {{- $timeout := int ($.Values.iap.beatWatchdog.timeoutSeconds | default 120) }}
 apiVersion: v1
 kind: ConfigMap
@@ -46,6 +46,10 @@ spec:
           restartPolicy: Never
           # 이 파드는 K8s API 도 AWS 도 쓰지 않는다. DB 와 Slack 웹훅이 전부다.
           automountServiceAccountToken: false
+          # ⚠️ 워커와 같은 노드에 붙는다(node-index 2). 이미지가 이미 그 노드에 캐시돼 있어
+          #   기동이 빠르다는 이점이 있지만, **그 노드가 통째로 죽으면 감시도 같이 죽는다.**
+          #   dead-man's switch 가 감시 대상과 운명을 공유하는 건 알고 감수하는 선택이다 —
+          #   노드 단위 장애는 이 잡이 아니라 k8s 노드 알림이 잡아야 하는 층위라서다.
           {{- with $.Values.iap.worker.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}

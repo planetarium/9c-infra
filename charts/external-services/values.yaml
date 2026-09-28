@@ -129,9 +129,19 @@ iap:
     thresholdMinutes: 30
     # 이상이 없어도 이 UTC 시각의 run 은 한 줄 남긴다. 비우면 하트비트가 꺼진다.
     heartbeatHourUtc: "3"
-    envLabel: "Mainnet"
-    timeoutSeconds: 120
-    resources: {}
+    # ⚠️ 공용 차트 기본값에 특정 환경 이름을 두지 않는다. 인터널에서 켜면서 override 를
+    #   빠뜨리면 인터널 정체가 "[Mainnet]" 으로 떠서 받는 사람이 엉뚱한 데를 판다.
+    envLabel: ""
+    # 스케줄링 + 이미지 풀이 activeDeadlineSeconds 에 포함된다. 워커 이미지가 캐시 안 된
+    #   노드에 뜨면 풀만으로 2분을 넘겨 DeadlineExceeded 로 조용히 실패한다.
+    timeoutSeconds: 300
+    # 감시 잡이 노드 압박 때 제일 먼저 쫓겨나면 곤란하다(BestEffort 회피).
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
 
 backoffice:
   enabled: false
