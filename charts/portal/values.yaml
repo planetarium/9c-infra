@@ -105,3 +105,27 @@ walletBalanceReport:
   gqlEndpoint: "https://odin-gql.nine-chronicles.com/graphql"
   # [{label, address, assets: [NCG|MEAD], warnNcg, warnMead}] — 오버레이에서 채운다.
   wallets: []
+
+# 출금 적체 감시 → Slack. 2026-09-21 출금 스케줄러가 7일간 멈췄는데 아무도 모른 사고의
+#   재발 방지다(959건 / 132,275 NCG 정지). 감시 지표는 **가장 오래된 미지급 출금의 나이** —
+#   당시 다른 지표는 전부 속았다:
+#     · CronJob 성공/실패: curl 에 -f 가 없어 HTTP 400/500 이 exit 0 = Succeeded
+#     · Job Active 여부: 물린 Job 이 Running 이라 "돌고 있음" 으로 보인다
+#     · lastSuccessfulTime: 락 경합 400 이 반복되는 변종(크론은 성공, 지급은 0건)에 속는다
+#   백오피스 이미지를 그대로 써서 런타임 의존성 설치 없이 prisma 로 읽는다(읽기 전용).
+#   기본 off → 오버레이에서 opt-in.
+withdrawalBacklogAlert:
+  enabled: false
+  # 정각을 피한다 — 출금 크론(2분 주기)과 겹치면 스테이징 구간에 물려 STAGING 오탐
+  # 확률이 오른다. 주기 + 임계값이 최악의 탐지 지연(기본 3시간).
+  schedule: "17 * * * *"
+  slackChannel: "9c-metrics"
+  envLabel: "Prod"
+  # 평시 처리량이 시간당 200건대라 정상이면 몇 분을 안 넘긴다. 다만 스케줄러가
+  # 유저당 run 1건이라 한 유저가 60건 넘게 쌓으면 정상이어도 2시간을 넘길 수 있다 —
+  # 메시지에 "한 유저 최다 대기" 를 같이 실어 구분하게 해뒀다.
+  thresholdMinutes: 120
+  # 이상이 없어도 이 UTC 시각의 run 은 한 줄 남긴다(dead-man's switch).
+  # 01:00 UTC = 10:00 KST — 잔고 리포트와 같은 시간대.
+  heartbeatHourUtc: 1
+  timeoutSeconds: 300

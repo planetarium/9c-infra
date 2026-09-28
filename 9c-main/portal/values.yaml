@@ -107,3 +107,15 @@ walletBalanceReport:
     - label: "MEAD 지급"
       address: "0xc64c7cBf29BF062acC26024D5b9D1648E8f8D2e1"
       assets: ["MEAD"]
+
+# 출금 적체 감시 (차트 values 의 주석에 배경). 잔고 리포트와 같은 채널·같은 봇 토큰을 쓴다.
+withdrawalBacklogAlert:
+  # ⚠️ 2026-09-21 적체(959건)를 드레인하는 동안은 켜지 않는다 — 이미 알고 있고 이미
+  #    대응 중인 건으로 시간당 1건씩 #9c-metrics 를 때리게 된다. 채널이 뮤트되면
+  #    다음 진짜 사고를 놓친다. 드레인 완료 후 별도 커밋으로 true 로 바꾼다.
+  enabled: false
+  schedule: "17 * * * *"
+  slackChannel: "9c-metrics"
+  envLabel: "Prod"
+  thresholdMinutes: 120
+  heartbeatHourUtc: 1

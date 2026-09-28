@@ -1,0 +1,84 @@
+{{- if .Values.withdrawalBacklogAlert.enabled }}
+{{- $timeout := int (.Values.withdrawalBacklogAlert.timeoutSeconds | default 300) }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-withdrawal-backlog-alert
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: withdrawal-backlog-alert
+spec:
+  # 최악의 탐지 지연 = 주기 + 임계값 (기본 1시간 + 2시간 = 3시간). 7일짜리 사고를
+  # 3시간 안에 잡는 게 목적이라 이걸로 충분하다. 더 촘촘히 돌리면 적체가 지속되는 동안
+  # 같은 알람이 반복된다 — 이 잡은 상태를 저장하지 않는다.
+  #
+  # 정각을 피해 둔 이유: 출금 크론이 2분 주기라 매시 정각에 같이 뜬다. 그 구간이
+  # 스테이징(tx_status='STAGING' 은 찍혔고 tx_id 는 아직 빈) 한가운데라 STAGING 잔류
+  # 오탐 확률이 올라간다. 스크립트에 나이 게이트가 있어 그것만으로도 막히지만,
+  # 상관관계를 굳이 만들 이유가 없다.
+  schedule: "{{ .Values.withdrawalBacklogAlert.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # 감시 잡이 조용히 멈추면 감시가 없는 것과 같다 — 이 사고의 교훈 그대로다.
+      # activeDeadlineSeconds 는 스케줄 간격보다 짧아야 Forbid 가 다음 tick 을 막지 않는다.
+      activeDeadlineSeconds: {{ add $timeout 15 }}
+      # 하드 실패(DB 접속 불가·Slack 오류)만 재시도. 정상 경로는 exit 0 이라 중복 포스팅이 없다.
+      backoffLimit: 2
+      template:
+        spec:
+          # 이 파드는 K8s API 를 전혀 쓰지 않는다.
+          automountServiceAccountToken: false
+          {{- with .Values.backofficeService.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: alert
+              # 백오피스 이미지를 그대로 쓴다 — /app/packages/database 에 prisma 클라이언트가
+              # 이미 있어 런타임 설치가 필요 없다(설치는 그 자체가 실패 모드다).
+              # ⚠️ 그 경로는 Next standalone 트레이싱 산출물이라 안정된 계약이 아니다.
+              #    모노레포 구조가 바뀌면 이 잡만 조용히 실패한다 → 하트비트로 감지한다.
+              image: "{{ .Values.backofficeService.image.repository }}:{{ .Values.backofficeService.image.tag }}"
+              command: ["node", "/script/alert.js"]
+              env:
+                - name: THRESHOLD_MINUTES
+                  value: {{ .Values.withdrawalBacklogAlert.thresholdMinutes | quote }}
+                - name: SLACK_CHANNEL
+                  value: {{ .Values.withdrawalBacklogAlert.slackChannel | quote }}
+                - name: ENV_LABEL
+                  value: {{ .Values.withdrawalBacklogAlert.envLabel | quote }}
+                # 이상이 없어도 이 UTC 시각의 run 은 한 줄 남긴다(dead-man's switch).
+                # 비워 두면 하트비트가 꺼진다 — 그러면 "조용함 = 정상" 으로 되돌아간다.
+                - name: HEARTBEAT_HOUR
+                  value: {{ .Values.withdrawalBacklogAlert.heartbeatHourUtc | quote }}
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-backoffice-secrets
+                      key: DATABASE_URL
+                # wallet-balance-report 와 같은 봇 토큰 (#9c-metrics 포스팅 실적 있음).
+                - name: SLACK_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-backoffice-secrets
+                      key: SLACK_TOKEN
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+          volumes:
+            - name: script
+              configMap:
+                name: {{ .Release.Name }}-withdrawal-backlog-alert
+          restartPolicy: Never
+{{- end }}
