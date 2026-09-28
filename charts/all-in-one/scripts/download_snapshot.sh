@@ -137,7 +137,19 @@ if [ $download_option = "true" ]; then
   }
 
   function download_unzip_snapshot() {
-    snapshot_dir=$(realpath "$save_dir/../snapshots")
+    # realpath 는 대상이 실제로 있어야 한다. **빈 볼륨**에는 ../snapshots 가 없어
+    # 실패하고, 이 스크립트엔 set -e 가 없어 그대로 진행한다 → snapshot_dir 가 빈
+    # 문자열이 되고 받는 곳이 "/partition" (= 컨테이너 루트)이 된다. 결과적으로
+    # 스냅샷이 PVC 가 아니라 노드 OS 디스크로 떨어져 노드를 채운다.
+    # 2026-09-28 odin rh-1 을 새 볼륨으로 복구할 때 실제로 이렇게 터졌다(OS 디스크
+    # 30% → 93%, PVC 는 40K). 기존 스토어가 있는 볼륨에선 디렉터리가 이미 있어
+    # 드러나지 않던 버그다.
+    mkdir -p "$save_dir/../snapshots"
+    snapshot_dir=$(realpath -m "$save_dir/../snapshots")
+    if [ -z "$snapshot_dir" ] || [ "$snapshot_dir" = "/" ]; then
+      echo "[ERROR] snapshot_dir 를 정하지 못했다 (save_dir=$save_dir). 컨테이너 루트에 받는 것을 막기 위해 중단한다."
+      exit 1
+    fi
     snapshot_partition_dir="$snapshot_dir/partition"
     snapshot_state_dir="$snapshot_dir/state"
     snapshot_json_filename="latest.json"
