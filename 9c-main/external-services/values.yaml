@@ -260,7 +260,7 @@ iap:
       #   port-forward + 로컬 alembic 으로 스탬프만 맞출 것.
       #
       # (2026-09-29) → git-60ac034e: #492 원스토어 서버 검증 + #493 포인트샵 지급 API·가챠.
-      #   ⚠️ 마이그레이션 커플링 있음 — Product 에 새 NOT NULL 컬럼 4개가 매핑돼, 스키마보다
+      #   ⚠️ 마이그레이션 커플링 있음 — Product 에 새 컬럼 4개(NOT NULL 3개)가 매핑돼, 스키마보다
       #   코드가 먼저 뜨면 product 조회가 전부 UndefinedColumn 으로 죽는다(= 유상 결제 전면 정지).
       #   메인넷 DB 는 2026-09-29 05:36Z 에 c8f4a2e61b09(head) 까지 적용 완료(Job iap-alembic-493,
       #   product 재작성 ~1s, receipt CIC ~1s, INVALID 인덱스 없음). 되돌릴 땐 이미지 먼저, downgrade 는 나중.
