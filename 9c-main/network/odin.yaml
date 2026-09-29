@@ -245,7 +245,11 @@ remoteHeadless:
     limits:
       memory: 30Gi
 
-  # data-1 은 validator 가 쓴다(위 validator 블록 주석 참고). rh-1 은 validator 가 쓰던 data-4 를 받는다.
+  # data-1 은 validator 가 쓴다(위 validator 블록 주석 참고). 2026-09-29 rh-1 의 data-4 는 지우고
+  # 같은 이름으로 data-1 의 Longhorn clone(PVC dataSource)을 새로 만들었다(clone 후 txexec 삭제).
+  # 그래서 이 PVC 는 차트 렌더와 달라 ArgoCD 에서 cosmetic OutOfSync 로 보인다 — prune 금지.
+  # 예전엔 클론 대신 스냅샷 리셋을 썼다: 543G 짜리 data-4 를 클론하면 odin-1 에 73G 밖에 안 남았다.
+  # data-1 은 214G 라 클론해도 여유가 있다.
   storage:
     volumeNames:
     - "remote-headless-data-4-remote-headless-4-0"
