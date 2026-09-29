@@ -88,7 +88,7 @@ iap:
     enabled: false
     image:
       # (2026-09-21) → git-31207d2c api 와 같은 커밋(파드 없음, 태그 정렬용).
-      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
+      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
 
 
   api:
@@ -186,7 +186,7 @@ iap:
       #
       #     **메인넷에는 onestore-sandbox-host 를 넣지 않는다.** 넣으면 공짜인 샌드박스
       #     구매가 지급으로 새는 구멍이 된다(그게 단일 호스트 설계의 fail-closed 였다).
-      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
+      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -238,6 +238,6 @@ iap:
       #
       # (2026-09-21) → git-31207d2c api 와 같은 커밋. 워커 로직 변화는 없다
       #   (수정은 shared 스키마 한 줄 — 원스토어 검증은 api 경로에서만 돈다).
-      tag: "git-abf5d7ef8d5b726e3bd031992acedf7694e35318"
+      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
