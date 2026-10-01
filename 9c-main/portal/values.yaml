@@ -43,6 +43,17 @@ portalService:
     QA_ENABLED: false
     NEXT_PUBLIC_MAINNET_ENV: production
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets.nine-chronicles.com/planets/"
+  # (PLD-1563) 포인트샵 주문 ↔ IAP 지급 대조. 이게 없으면 GRANT_REQUESTED 주문이 확정되지 않고,
+  #   IAP FAILED 의 포인트 환급·타임아웃 주문 정리가 영영 안 된다. 이 목록이 있어야 차트가 포탈
+  #   파드에 SCHEDULER_API_KEY(백오피스 시크릿 재사용)를 주입한다 — 없으면 엔드포인트가 503.
+  #   ⚠️ IAP 상품을 point_shop_grantable 로 켜기 **전에** 떠 있어야 한다. 그 전엔 대조할 주문이
+  #   없어 매 회차 0건이다(무해). 인터널과 같은 설정.
+  cronjobs:
+    - name: shop-grant-reconcile
+      schedule: "*/5 * * * *"
+      endpoint: "https://nine-chronicles.com/api/scheduler/shop-grant-reconcile"
+      tokenEnvName: "SCHEDULER_API_KEY"
+      timeoutSeconds: 240
 backofficeService:
   name: backoffice
   hostname: "portal.planetarium.team"
