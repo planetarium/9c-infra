@@ -46,26 +46,6 @@ HEARTBEAT_HOUR = os.environ.get("HEARTBEAT_HOUR", "")
 _STUCK_PREDICATE = """
   AND status = 'VALID'
   AND (tx_status IN ('INVALID', 'STAGED', 'FAILURE') OR tx_status IS NULL)
-  -- ⚠️ 시즌패스는 tx_status 가 **영구 NULL 인 게 정상**이다. send_product 큐를 타지 않고
-  --   시즌패스 서비스로 지급되기 때문이다(shared.models.product.is_season_pass_product 의
-  --   docstring 이 그대로 그렇게 적고 있다). retryer 도 같은 이유로 제외한다 — 재전송하면
-  --   패스(claim)와 온체인 아이템이 **이중 지급**된다(retryer.get_null_tx_status_receipts).
-  --   빼지 않으면 시즌패스가 팔릴 때마다 30분 뒤 오탐이 뜬다(2026-10-01 실제 발생).
-  --   판별 토큰 'pass' 는 SEASON_PASS_SKU_TOKEN 과 같은 값이다. SQL 이라 import 할 수
-  --   없으니 바뀌면 여기도 같이 고쳐야 한다.
-  --   NULL 버킷에만 적용한다 — 시즌패스는 tx 자체가 없어 STAGED/INVALID/FAILURE 가 될 수
-  --   없고, 혹시라도 그 상태가 되면 그건 진짜 이상이라 가려선 안 된다.
-  AND (
-        tx_status IS NOT NULL
-     OR NOT EXISTS (
-          SELECT 1 FROM product p
-           -- psycopg2 는 이 문자열 전체에서 파라미터 자리를 찾으므로 리터럴 퍼센트는
-           --   두 번 적어야 한다. 주석도 예외가 아니다 — 주석 안에 파라미터 모양이
-           --   들어가면 KeyError 로, 리터럴 퍼센트 하나면
-           --   "argument formats can't be mixed" 로 터진다. 둘 다 실제로 겪었다.
-           WHERE p.id = receipt.product_id AND p.google_sku LIKE '%%pass%%'
-        )
-  )
 """
 
 # 시즌패스 영수증은 체인 tx 를 안 쓴다 — 지급은 시즌패스 API 동기 호출이고 tx_status 는
@@ -79,6 +59,11 @@ _STUCK_PREDICATE = """
 #     일반 상품처럼 감시에 남는다.
 #   - 시즌패스 지급 실패(receipt.msg 에 응답 코드가 남는다)는 beat 가 되살리는 대상이 아니라
 #     이 감시(beat dead-man's switch)의 범위 밖이다. 따로 감시해야 한다.
+#   - retryer 도 같은 이유로 시즌패스를 제외한다(get_null_tx_status_receipts). 거기선 이유가
+#     더 무겁다 — 재전송하면 패스(claim)와 온체인 아이템이 **이중 지급**된다.
+#   - psycopg2 함정 주의: 이 문자열 전체에서 파라미터 자리를 찾으므로, 주석 안에 파라미터
+#     모양이 들어가면 KeyError 로, 리터럴 퍼센트가 하나면 "argument formats can't be mixed"
+#     로 터진다. 둘 다 실제로 겪었다 — position() 을 쓰는 이유가 이것이다.
 _EXCLUDE_SEASON_PASS = """
   AND NOT EXISTS (
     SELECT 1 FROM product p
