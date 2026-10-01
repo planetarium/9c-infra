@@ -326,6 +326,16 @@ iap:
   #   같이 죽었다. 파드는 Running 1/1, 재시작 0회라 k8s 로도 안 보였다.
   #   웹훅은 워커와 같은 iap-alert-webhook-url 을 쓴다 — 평소 알람과 같은 채널에
   #   떨어져야 "원래 오던 게 안 온다" 를 같은 자리에서 알아본다.
+  # (2026-10-01) DB 정비. receipt 가 한 번도 vacuum 된 적 없어 invalid-receipt-count 가
+  #   15~23초까지 느려졌고 Assertible 이 거의 매일 PagerDuty 를 울리고 있었다(9/28·29·30·10/1).
+  #   수동 VACUUM 후 0.04초. autovacuum 설정은 superuser 영역이라 iwinv 요청이 필요하고,
+  #   그 전까지 우리 권한으로 결과를 보장하는 수단이다. 실측 22개 테이블 20초.
+  dbMaintenance:
+    enabled: true
+    schedule: "30 18 * * *"   # 03:30 KST
+    envLabel: "Mainnet"
+    slowSeconds: 300
+
   beatWatchdog:
     enabled: true
     schedule: "23 * * * *"

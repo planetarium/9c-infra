@@ -120,6 +120,27 @@ iap:
   #   2026-09-28 에 iap-beat 이 데드락으로 4시간 20분 멈췄는데 알람을 쏘는
   #   status_monitor 자체가 그 beat 스케줄이라 알람까지 같이 죽었다. 이 잡은
   #   CronJob 으로 떠서 DB 만 보므로 파이프라인이 통째로 죽어도 살아서 말한다.
+  # DB 정비 — VACUUM (ANALYZE) 를 우리 손으로 돌린다.
+  #   2026-10-01 에 receipt(832k행/2.2GB)가 **한 번도 vacuum 된 적 없어** dead 82,479,
+  #   플래너가 본 행수 15,533(실제의 1.9%)이었고, invalid-receipt-count 가 15~23초로
+  #   느려져 Assertible 외부 감시가 PagerDuty 를 울렸다. VACUUM 후 0.04초.
+  #   autovacuum 은 켜져 있지만 cost_delay 20ms + 84.6GB 인스턴스라 못 따라온다.
+  #   그 설정은 superuser 영역(iwinv)이고, vacuum_cost_delay 는 context=user 라
+  #   **수동 VACUUM 은 세션에서 throttle 을 끌 수 있다** — 그래서 이 잡이 통한다.
+  dbMaintenance:
+    enabled: false
+    schedule: "30 18 * * *"   # 03:30 KST
+    envLabel: ""
+    slowSeconds: 300
+    heartbeatHourUtc: ""      # 평소 조용. 멈춤은 Grafana 규칙이 감시한다
+    timeoutSeconds: 1800
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+
   beatWatchdog:
     enabled: false
     # 정각을 피한다(주기 작업이 정각에 몰려 STAGED 가 잠깐 부푼다).

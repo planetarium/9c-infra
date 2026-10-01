@@ -1,0 +1,85 @@
+{{- if and $.Values.iap.worker.enabled $.Values.iap.dbMaintenance.enabled }}
+{{- $timeout := int ($.Values.iap.dbMaintenance.timeoutSeconds | default 1800) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iap-db-maintenance
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: iap-db-maintenance
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  # .Files.Get 은 내용을 템플릿하지 않는다(차트 렌더가 스크립트의 중괄호에 안 깨진다).
+  maintenance.py: |
+{{ $.Files.Get "files/iap-db-maintenance.py" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: iap-db-maintenance
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: iap-db-maintenance
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  # 한산한 시간. 실측 20초짜리라 부담은 없지만, 이 PG 인스턴스는 84.6GB 를 15개 DB 가
+  #   나눠 쓰고 디스크가 느려서(읽기당 ~6.5ms) 굳이 붐빌 때 돌릴 이유가 없다.
+  schedule: {{ $.Values.iap.dbMaintenance.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # 테이블이 커지면 길어진다. 스케줄 간격(1일)보다 짧게 두어 Forbid 가 다음 tick 을
+      #   영구히 막지 않게 한다. 넘기면 스크립트가 아니라 여기서 끊긴다 → Job 실패로 보인다.
+      activeDeadlineSeconds: {{ add $timeout 60 }}
+      # VACUUM 은 재실행해도 안전하다(멱등). 하드 실패만 재시도.
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          # K8s API 도 AWS 도 쓰지 않는다. DB 와 Slack 웹훅이 전부다.
+          automountServiceAccountToken: false
+          {{- with $.Values.iap.worker.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: maintenance
+              # 워커 이미지를 그대로 쓴다 — psycopg2 가 들어 있어 런타임 설치가 필요 없다.
+              #   스크립트는 shared 패키지를 import 하지 않으므로 앱 코드 구조가 바뀌어도 안 깨진다.
+              image: {{ $.Values.iap.worker.image.repository }}:{{ $.Values.iap.worker.image.tag }}
+              command: ["python", "/script/maintenance.py"]
+              env:
+                - name: ENV_LABEL
+                  value: {{ $.Values.iap.dbMaintenance.envLabel | quote }}
+                # 한 테이블이 이보다 오래 걸리면 보고한다 — 디스크가 느려지거나 테이블이
+                #   커졌다는 신호다(실측 기준선: receipt 62초, 나머지 21개 합계 3초).
+                - name: SLOW_SECONDS
+                  value: {{ $.Values.iap.dbMaintenance.slowSeconds | quote }}
+                # 평소엔 조용하다. 정비 잡이 멈춘 건 Grafana 의
+                #   "IAP DB Maintenance Not Running" 규칙이 따로 감시한다.
+                - name: HEARTBEAT_HOUR
+                  value: {{ $.Values.iap.dbMaintenance.heartbeatHourUtc | quote }}
+                - name: WORKER_PG_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      key: db-uri
+                      name: iap-env
+                - name: IAP_ALERT_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: iap-alert-webhook-url
+                      name: iap-env
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              {{- with $.Values.iap.dbMaintenance.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+          volumes:
+            - name: script
+              configMap:
+                name: iap-db-maintenance
+{{- end }}
