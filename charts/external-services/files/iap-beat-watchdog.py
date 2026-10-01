@@ -34,7 +34,7 @@ THRESHOLD_MIN = int(os.environ.get("THRESHOLD_MINUTES", "30"))
 # 이 나이를 넘긴 건은 재시도로 풀릴 가능성이 사실상 없고 수동 개입 대상이라, 매 회차
 #   다시 쏘는 대신 하루 한 번 하트비트에 실어 보고한다. IAP 의 status_monitor 도 같은
 #   경계를 쓴다 — 여기서 갈라두지 않으면 24시간 내내 같은 메시지를 쏘고 채널이 뮤트된다.
-#   (실데이터: tx_status IS NULL 12,062건 · FAILURE 13건이 전부 6시간 이상 묵은 잔류분이다.
+#   (실데이터, 시즌패스 제외 전: tx_status IS NULL 12,062건 · FAILURE 13건이 전부 6시간 이상 묵은 잔류분이다.
 #    나이로 안 가르면 배포 즉시 12,075건짜리 오탐이 뜬다.)
 STALE_AFTER_HOURS = int(os.environ.get("STALE_AFTER_HOURS", "6"))
 HEARTBEAT_HOUR = os.environ.get("HEARTBEAT_HOUR", "")
@@ -46,6 +46,25 @@ HEARTBEAT_HOUR = os.environ.get("HEARTBEAT_HOUR", "")
 _STUCK_PREDICATE = """
   AND status = 'VALID'
   AND (tx_status IN ('INVALID', 'STAGED', 'FAILURE') OR tx_status IS NULL)
+"""
+
+# 시즌패스 영수증은 체인 tx 를 안 쓴다 — 지급은 시즌패스 API 동기 호출이고 tx_status 는
+#   영원히 NULL 이다. 그래서 위 술어에 정상 건이 전부 걸려 오탐이 된다. 상품 단위로 뺀다.
+#   - 판별은 IAP 와 같은 규칙(google_sku 에 'pass' 포함, shared/models/product.py
+#     is_season_pass_product). LIKE '%%pass%%' 대신 position() — 이 문자열은 pyformat 으로
+#     넘어가 리터럴 % 가 위험하다.
+#   - NOT EXISTS 로 쓴다(NOT IN 은 NULL 하나에 전부 사라진다). _STUCK_PREDICATE 는 손대지
+#     않는다 — 인덱스 조건과 글자 그대로 맞아야 한다. 이 절은 인덱스로 거른 뒤의 필터다.
+#   - tx_status IS NULL 인 것만 뺀다. 수동 재전송 등으로 tx 가 붙은 시즌패스 영수증은
+#     일반 상품처럼 감시에 남는다.
+#   - 시즌패스 지급 실패(receipt.msg 에 응답 코드가 남는다)는 beat 가 되살리는 대상이 아니라
+#     이 감시(beat dead-man's switch)의 범위 밖이다. 따로 감시해야 한다.
+_EXCLUDE_SEASON_PASS = """
+  AND NOT EXISTS (
+    SELECT 1 FROM product p
+    WHERE receipt.tx_status IS NULL
+      AND p.id = receipt.product_id AND position('pass' in p.google_sku) > 0
+  )
 """
 
 # 경보에 필요한 건 **최근분뿐**이다. 잔류분까지 매 회차 세면 12,075행을 훑느라 7.7초가
@@ -60,6 +79,7 @@ WHERE created_at <= now() - make_interval(mins => %(threshold)s)
   AND created_at > now() - make_interval(hours => %(stale)s)
 """
     + _STUCK_PREDICATE
+    + _EXCLUDE_SEASON_PASS
     + "GROUP BY 1"
 )
 
@@ -71,6 +91,7 @@ FROM receipt
 WHERE created_at <= now() - make_interval(hours => %(stale)s)
 """
     + _STUCK_PREDICATE
+    + _EXCLUDE_SEASON_PASS
     + "GROUP BY 1"
 )
 
