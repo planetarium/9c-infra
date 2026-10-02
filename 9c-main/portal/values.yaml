@@ -28,7 +28,12 @@ portalService:
     # 참고: 펫팝 PORTAL_RETURN_ORIGINS 가 빈 값이라 연동 후 포탈 복귀 없이 펫팝 /game
     #   착지다(연동 자체는 성공 — 9/4 설계에서 택한 동작).
     # DB 마이그레이션 커플링 없음 — 7dff2fe4..4f2efd5a 에 packages/database 변경이 없다.
-    tag: main-4f2efd5a3293d7d1a80bbf0edf8bdec0e02f354b
+    # (2026-10-02) → main-11e20597: 포탈 포인트 개편 #1320/#1321 — 포인트 종류(PP-S/PP-X) 잔고·
+    #   포인트샵(IAP 카탈로그 catalog=point)·뽑기·애니버서리 미션 4종(기본 비활성)·DB 부하 개선.
+    #   ⚠️ DB 커플링 있음 — prod 마이그레이션 2026-10-01 적용 완료(README "prod 적용 순서",
+    #   reward.kind·reward_config.kind·shop_order·RewardSource SHOP_SPEND). 되돌릴 땐 이미지만 —
+    #   DB 변경이 additive 라 구 이미지(4f2efd5a)도 그대로 돈다.
+    tag: main-11e20597ba0ccb22503efa9e04d678475c9c871c
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -75,7 +80,10 @@ backofficeService:
     #   apps/portal 쪽 변경(#1317 NCU 펫팝)은 별개다. 굳이 같이 bump 하면 프로브 없는
     #   prod 포탈 pod 만 불필요하게 재기동되므로 백오피스만 올린다.
     # DB 마이그레이션 커플링 없음 — packages/database 변경 없음.
-    tag: main-4f2efd5a3293d7d1a80bbf0edf8bdec0e02f354b
+    # (2026-10-02) → main-11e20597: 포탈과 같은 커밋. 새 Prisma 클라이언트가 reward.kind·
+    #   reward_config.kind 를 읽는다(마이그레이션 선행 완료). rewardConfig 에 지급 종류(NCG/PP_S)
+    #   선택 추가, Reward Candidate Apply 가 밴 계정을 건너뛴다(skippedTargets).
+    tag: main-11e20597ba0ccb22503efa9e04d678475c9c871c
     pullPolicy: Always
   externalSecret:
     enabled: true
