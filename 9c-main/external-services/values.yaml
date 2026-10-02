@@ -264,7 +264,11 @@ iap:
       #   코드가 먼저 뜨면 product 조회가 전부 UndefinedColumn 으로 죽는다(= 유상 결제 전면 정지).
       #   메인넷 DB 는 2026-09-29 05:36Z 에 c8f4a2e61b09(head) 까지 적용 완료(Job iap-alembic-493,
       #   product 재작성 ~1s, receipt CIC ~1s, INVALID 인덱스 없음). 되돌릴 땐 이미지 먼저, downgrade 는 나중.
-      #   원스토어: iap-env 에 onestore-* 키가 없어 fail-closed(원스토어 영수증은 INSERT 전 400).
+      #   원스토어: 2026-10-01 메인넷 오픈. iap-env 에 onestore-client-id / -client-secret(인터널과
+      #     같은 앱 단위 한 벌) / -host=https://iap-apis.onestore.net(상용) 추가 후 iap-api 재시작
+      #     (optional secretKeyRef 는 파드 생성 때만 해소된다). 파드에서 토큰 발급 확인.
+      #     **onestore-sandbox-host 는 넣지 않는다** — 넣으면 공짜 샌드박스 구매가 지급된다.
+      #     키가 없으면 fail-closed(원스토어 영수증은 INSERT 전 400, [ONESTORE_NOT_CONFIGURED]).
       #   포인트샵 지급(POST /admin/grant): product.point_shop_grantable 기본 false 라 전부 400.
       #     켜는 건 별도 결정이고, **모든 worker 가 이 이미지로 바뀐 뒤에만** 켤 것(옛 worker 는
       #     grant_outbox nonce 를 모른다).
