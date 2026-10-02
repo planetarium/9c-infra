@@ -268,7 +268,12 @@ iap:
       #   포인트샵 지급(POST /admin/grant): product.point_shop_grantable 기본 false 라 전부 400.
       #     켜는 건 별도 결정이고, **모든 worker 가 이 이미지로 바뀐 뒤에만** 켤 것(옛 worker 는
       #     grant_outbox nonce 를 모른다).
-      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
+      #
+      # (2026-10-01) → git-29afbc39: #496 결제 미션 지출 판정(VALID·결제 스토어만, avatar_address
+      #   선택 = 계정 합산, 시즌패스 SKU 등록 가드). 포탈 애니버서리 결제 미션(ANV_PAY_*)이
+      #   avatar_address 없이 부르므로 **이게 먼저 나가야** 그 미션을 켤 수 있다(60ac034e 는 422).
+      #   마이그레이션 없음(60ac034e..29afbc39 에 alembic 변경 0).
+      tag: "git-29afbc3964899f0f5618eb1e60c7589724e5d82a"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -311,7 +316,9 @@ iap:
       #   (grant.py / nonce.py)로 옮겨졌다 — 기존 결제에 대해 같은 tx(claim 순서·자릿수·THOR 2배·
       #   nonce 식 동일, 리뷰 확인). nonce 는 이제 receipt·grant_outbox 두 테이블 max 를 advisory
       #   lock 안에서 본다(ix_*_planet_nonce 인덱스 적용 완료). 새 beat: grant-track(매분, 빈 테이블 무해).
-      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
+      #
+      # (2026-10-01) → git-29afbc39: api 와 같은 커밋. worker 경로 변경 없음(#496 은 api·shared 집계).
+      tag: "git-29afbc3964899f0f5618eb1e60c7589724e5d82a"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
