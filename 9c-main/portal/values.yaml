@@ -83,7 +83,9 @@ backofficeService:
     # (2026-10-02) → main-11e20597: 포탈과 같은 커밋. 새 Prisma 클라이언트가 reward.kind·
     #   reward_config.kind 를 읽는다(마이그레이션 선행 완료). rewardConfig 에 지급 종류(NCG/PP_S)
     #   선택 추가, Reward Candidate Apply 가 밴 계정을 건너뛴다(skippedTargets).
-    tag: main-78bf5478ac6fa54f5f3c849f94665b2b0c566b2b
+    # (2026-10-06) → main-3c420113: 포인트샵 일일 통계(shop-stats) 추가 + 글로리 리딤 통계가 UTC 가 아니라
+    #   KST 날짜로 묶이도록 수정(9c-portal #1324). apps/backoffice 두 파일뿐이라 포탈 태그(L36)는 그대로 둔다.
+    tag: main-3c420113396b5d269acab0c10eda18ff0edf1aa2
     pullPolicy: Always
   externalSecret:
     enabled: true
