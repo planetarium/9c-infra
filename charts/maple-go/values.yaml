@@ -1,0 +1,26 @@
+# 기본은 꺼 둔다 — 9c-main/maple-go/values.yaml 에서만 켠다
+externalSecretKey: ""
+
+imagePullSecret:
+  name: maple-go-dockerhub
+  secretKey: ""
+
+nodeSelector: {}
+
+rosterSync:
+  enabled: false
+  schedule: "0 0 * * 1"
+  backoffLimit: 2
+  # 굽기는 한 사람에 렌더 약 120장(maplestory.io 장당 ~4초) ≈ 7분. 첫 실행은 코디가 바뀐 사람까지 수십 명을 굽는다 — 넉넉히 6시간
+  activeDeadlineSeconds: 21600
+  image:
+    repository: planetariumhq/maple-go-roster-sync
+    tag: develop
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi

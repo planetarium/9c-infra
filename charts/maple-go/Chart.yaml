@@ -1,0 +1,6 @@
+apiVersion: v2
+name: maple-go
+description: Maple GO 백엔드 워크로드 — 영주 · 주민 명단 주간 CronJob(roster-sync)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

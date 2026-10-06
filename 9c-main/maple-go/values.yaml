@@ -1,0 +1,11 @@
+externalSecretKey: maple-go/prod
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+# 영주 · 주민 명단 주간 갱신 — 매주 월 UTC 0시. 태그는 maple-go 의 npm run build:roster-image 가 올린 git-<sha> 로 핀
+rosterSync:
+  enabled: true
+  image:
+    # petpop/maple-go develop 36b6ea30 (MR !395 머지)
+    tag: git-36b6ea30d2d0f5836b7bcb7d063852f3c6040a85

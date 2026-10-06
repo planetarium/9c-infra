@@ -1,0 +1,44 @@
+{{- if .Values.rosterSync.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: roster-sync
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: roster-sync
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: roster-sync
+spec:
+  schedule: {{ .Values.rosterSync.schedule | quote }}
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.rosterSync.backoffLimit }}
+      activeDeadlineSeconds: {{ .Values.rosterSync.activeDeadlineSeconds }}
+      template:
+        metadata:
+          labels:
+            app: roster-sync
+        spec:
+          {{- if .Values.imagePullSecret.secretKey }}
+          imagePullSecrets:
+            - name: {{ .Values.imagePullSecret.name }}
+          {{- end }}
+          containers:
+            - name: roster-sync
+              image: "{{ .Values.rosterSync.image.repository }}:{{ .Values.rosterSync.image.tag }}"
+              imagePullPolicy: {{ .Values.rosterSync.image.pullPolicy }}
+              envFrom:
+                - secretRef:
+                    name: maple-go-env
+              resources:
+                {{- toYaml .Values.rosterSync.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: Never
+{{- end }}
