@@ -58,7 +58,11 @@ seasonpass:
     # ⚠️ claim-worker 는 복구를 위해 이미 브랜치 이미지(git-d230b200)로 hotfix 돼 있다.
     #   이 bump 가 그 드리프트를 정리한다.
     # 마이그레이션 커플링 없음.
-    tag: "git-3cd5b17e09bf87fb1dc9adf5cff3fffff72e4600"
+    #
+    # (2026-10-06) → git-28814406: #314 `/season-pass/current?at=` — 결제 시각 기준 시즌 조회(IAP 고정 SKU 용).
+    #   at 을 안 넘기는 기존 호출은 그대로. 미래 at 은 400(공개 전 시즌 노출 방지). 워커·트래커는 get_pass(at=None)
+    #   로 종전과 같다. **IAP(git-35fbd823)보다 먼저** 나가야 한다. 마이그레이션 없음.
+    tag: "git-28814406034581cc5d37dee07ff1844f6e1f3c98"
 
   api:
     enabled: true
@@ -273,7 +277,15 @@ iap:
       #   선택 = 계정 합산, 시즌패스 SKU 등록 가드). 포탈 애니버서리 결제 미션(ANV_PAY_*)이
       #   avatar_address 없이 부르므로 **이게 먼저 나가야** 그 미션을 켤 수 있다(60ac034e 는 422).
       #   마이그레이션 없음(60ac034e..29afbc39 에 alembic 변경 0).
-      tag: "git-29afbc3964899f0f5618eb1e60c7589724e5d82a"
+      #
+      # (2026-10-06) → git-35fbd823: #497 + #498.
+      #   - #497 시즌패스 Google 결제 ack 를 **지급 결과 확인 뒤로**. 시즌패스가 지급 전에 거절하면(중복 구매 등)
+      #     ack 하지 않아 3일 뒤 자동환불 — 지금은 ack 가 먼저 나가 돈만 받고 미지급되던 건이 생겼다(60일 1건).
+      #     불확실(타임아웃 등)은 종전처럼 ack. 로그 태그 [SP_REJECTED_BEFORE_GRANT] 급증 = 설정 오류 신호.
+      #   - #498 고정 SKU 시즌패스. 메인넷에 고정 행이 없으면 **동작 변화 없음**(상점 응답 동일).
+      #     ⚠️ 시즌패스 #314(`/current?at=`)가 **먼저** 배포돼 있어야 한다 — 고정 행을 켤 때 필요.
+      #   마이그레이션 없음.
+      tag: "git-35fbd823a908ebdd5f63fd9f3b60860fd77a0cc3"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -318,7 +330,9 @@ iap:
       #   lock 안에서 본다(ix_*_planet_nonce 인덱스 적용 완료). 새 beat: grant-track(매분, 빈 테이블 무해).
       #
       # (2026-10-01) → git-29afbc39: api 와 같은 커밋. worker 경로 변경 없음(#496 은 api·shared 집계).
-      tag: "git-29afbc3964899f0f5618eb1e60c7589724e5d82a"
+      #
+      # (2026-10-06) → git-35fbd823: api 와 같은 커밋. worker 경로 변경 없음(#497/#498 은 api·shared 상품 헬퍼).
+      tag: "git-35fbd823a908ebdd5f63fd9f3b60860fd77a0cc3"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
