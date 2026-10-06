@@ -1,0 +1,11 @@
+externalSecretKey: maple-go/prod
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+# 영주 · 주민 명단 주간 갱신 — 매주 월 UTC 0시. 태그는 maple-go CI build:roster-sync 의 git-<sha> 로 핀
+rosterSync:
+  enabled: true
+  image:
+    # TODO: 머지 전에 build:roster-sync 가 낸 git-<sha> 로 바꿀 것
+    tag: git-PENDING-FIRST-BUILD

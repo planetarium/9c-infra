@@ -1,0 +1,25 @@
+# 기본은 꺼 둔다 — 9c-main/maple-go/values.yaml 에서만 켠다
+externalSecretKey: ""
+
+imagePullSecret:
+  name: maple-go-dockerhub
+  secretKey: ""
+
+nodeSelector: {}
+
+rosterSync:
+  enabled: false
+  schedule: "0 0 * * 1"
+  backoffLimit: 2
+  activeDeadlineSeconds: 3600
+  image:
+    repository: planetariumhq/maple-go-roster-sync
+    tag: develop
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
