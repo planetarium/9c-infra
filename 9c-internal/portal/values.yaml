@@ -139,6 +139,9 @@ portalService:
     QA_ENABLED: true
     NEXT_PUBLIC_MAINNET_ENV: local
     NEXT_PUBLIC_PLANETARY_ENDPOINT: "https://planets-internal.nine-chronicles.com/planets/"
+    # 출금 휴먼 패스포트 필요점수(score >= 이 값). 미설정이면 포탈 기본값 1(9c-portal#1326).
+    #   서버 런타임 env 라 값 변경은 sync 후 `rollout restart deploy/portal` 이 있어야 반영된다.
+    PASSPORT_THRESHOLD: "0.5"
   # (PLD-1563) 포탈 ↔ IAP 지급 대조. 이게 없으면 포인트샵 주문이 GRANT_REQUESTED 에서
   #   영원히 멈춘다 — 온체인 지급이 끝나도 포탈이 모르고, IAP 가 FAILED 를 내도 환급이 안 되고,
   #   타임아웃 건은 아무도 판정하지 않는다.
