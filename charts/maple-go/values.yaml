@@ -11,8 +11,8 @@ rosterSync:
   enabled: false
   schedule: "0 0 * * 1"
   backoffLimit: 2
-  # 첫 실행은 명단 전원(코디가 바뀐 사람 포함)을 굽느라 한 시간을 넘길 수 있다 — 평소 주간 실행은 새 사람만 굽는다
-  activeDeadlineSeconds: 14400
+  # 굽기는 한 사람에 렌더 약 120장(maplestory.io 장당 ~4초) ≈ 7분. 첫 실행은 코디가 바뀐 사람까지 수십 명을 굽는다 — 넉넉히 6시간
+  activeDeadlineSeconds: 21600
   image:
     repository: planetariumhq/maple-go-roster-sync
     tag: develop
