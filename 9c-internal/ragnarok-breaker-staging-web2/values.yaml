@@ -57,16 +57,18 @@ playfullWorker:
   image:
     tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
 
-# web2→web3 마이그레이션 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
+# 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤). 방향은 마스터데이터
+# game_config.migration 이 정하고(web2→web3 / web3→web2), 브리지는 SOURCE(큐를 가진 쪽)→TARGET 으로 릴레이한다.
 # ⚠ 반드시 이 한 네임스페이스에서만 enable — staging-web3 에는 절대 켜지 말 것
-#   (두 인스턴스가 같은 web2 큐를 폴링. claim CAS + (P,A) 멱등이라 중복 크레딧은 안 나지만 낭비).
-# ⚠ image.tag 는 petpop main MR 머지 후 CI build:migration-bridge 산출
-#   ragnarok-breaker-migration-bridge:git-<sha> 로 핀(현재 develop 은 플레이스홀더).
-# ⚠ AWS SM ragnarok-breaker/staging-web2 에 web2·web3 두 verse 자격증명 모두 추가:
-#   MIGRATION_BRIDGE_WEB2_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
-#   MIGRATION_BRIDGE_WEB3_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}
-#   (파드 위치와 무관하게 web3 는 게이트웨이 URL+bearer 로 도달하므로 web3 자격증명도 여기 필요)
+#   (두 인스턴스가 같은 큐를 폴링. claim CAS + (P,A) 멱등이라 중복 크레딧은 안 나지만 낭비).
+# ⚠ image.tag 는 CI build:migration-bridge 산출 ragnarok-breaker-migration-bridge:git-<sha> 로 핀.
+#   (`develop` 태그는 CI 가 push 하지 않는다 — 과거 이 값으로 ImagePullBackOff 였음)
+# ⚠ AWS SM ragnarok-breaker/staging-web2 에 두 verse 자격증명:
+#   MIGRATION_BRIDGE_SOURCE_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}  (출발 verse)
+#   MIGRATION_BRIDGE_TARGET_V8_{ACCOUNT,VERSE,ENV,AUTH,REMOTE_URL}  (도착 verse)
+#   SOURCE/TARGET 이 없으면 구 이름 WEB2_*=source / WEB3_*=target 로 폴백(prefix 통째 선택).
+#   env 는 파드 시작 시에만 읽히므로 값 변경 후 파드 재시작 필요.
 migrationBridge:
   enabled: true
   image:
-    tag: develop
+    tag: git-1ef095b94c2692ab56990611d5079adfb5eeb5bf
