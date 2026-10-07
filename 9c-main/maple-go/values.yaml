@@ -7,5 +7,5 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # petpop/maple-go develop 36b6ea30 (MR !395 머지)
-    tag: git-36b6ea30d2d0f5836b7bcb7d063852f3c6040a85
+    # petpop/maple-go d7825bfa (.env.staging 복구 · 구운 줄 캐시)
+    tag: git-d7825bfa5ffb87e1f58d31dd4874f685a5bb6af0
