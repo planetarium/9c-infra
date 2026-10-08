@@ -12,7 +12,7 @@ api:
     repository: planetariumhq/dcc-bridge
     # Bumped by hand following the petpop pattern when a new SHA is published
     # by docker.yml on dcc-bridge develop/main.
-    tag: api-66f4679ddb5c103de1cb853a998def1d414e741d
+    tag: api-eed8906021de147a0328605433f73295dca12bac
   replicas: 1
   hostnames:
     - bridge-api.dccnft.com
@@ -44,7 +44,7 @@ bridge:
   enabled: true
   image:
     repository: planetariumhq/dcc-bridge
-    tag: bridge-66f4679ddb5c103de1cb853a998def1d414e741d
+    tag: bridge-eed8906021de147a0328605433f73295dca12bac
   resources:
     requests:
       cpu: 100m
