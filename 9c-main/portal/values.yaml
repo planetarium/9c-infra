@@ -33,7 +33,10 @@ portalService:
     #   ⚠️ DB 커플링 있음 — prod 마이그레이션 2026-10-01 적용 완료(README "prod 적용 순서",
     #   reward.kind·reward_config.kind·shop_order·RewardSource SHOP_SPEND). 되돌릴 땐 이미지만 —
     #   DB 변경이 additive 라 구 이미지(4f2efd5a)도 그대로 돈다.
-    tag: main-78bf5478ac6fa54f5f3c849f94665b2b0c566b2b
+    # (2026-10-08) → main-f3bc9830: 출금 휴먼 패스포트 필요점수 env 화 #1326/#1327 —
+    #   PASSPORT_THRESHOLD(아래 env, 미설정 시 1) + 출금 모달 "score / 1" 하드코딩 → 서버 값 표시.
+    #   78bf5478..f3bc9830 의 apps/portal 변경은 이것뿐(#1324 는 apps/backoffice). DB 커플링 없음.
+    tag: main-f3bc9830bb21b738953b11fd34a4578eafacaa4f
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -44,6 +47,9 @@ portalService:
     BASE_URL: "https://nine-chronicles.com"
     NEXT_PUBLIC_STATUS_SERVER_URL: "https://portal-status.nine-chronicles.com"
     S3_BANNER_BUCKET: "9c-portal-banner"
+    # 출금 휴먼 패스포트 필요점수(score >= 이 값). 미설정이면 포탈 기본값 1(9c-portal#1326).
+    #   서버 런타임 env 라 값 변경은 sync 후 `rollout restart deploy/portal` 이 있어야 반영된다.
+    PASSPORT_THRESHOLD: "0.5"
     BANNER_CLOUD_FRONT_DOMAIN: "https://d20llolvuaz1gj.cloudfront.net/"
     QA_ENABLED: false
     NEXT_PUBLIC_MAINNET_ENV: production
