@@ -220,7 +220,22 @@ backoffice:
     #   1.38.0 변경은 SynthesizeSimulator.GetTargetGrade 의 코드 상한 제거 +
     #     Grade.Ultimate = 9 뿐이라 백오피스가 쓰는 API 에 영향이 없다 —
     #     빌드 오류 0, 테스트 418개 전부 통과로 확인.
-    tag: "git-e601f12de529542cc1b6388e29fb24f03d0d94d7"
+    #
+    # (2026-10-08) NineChronicles.Backoffice#91 머지본으로 bump — 메인넷 PC 런처 config API
+    #   (api/tools/launcher-config). PC 점검 걸기를 S3 수동 편집 대신 백오피스로 한다.
+    #   #89(IAP 임포트 실패 사유 표시)·#90(문서)도 함께 실린다.
+    #
+    #   신규 필수 env 없음 — NC_LAUNCHER_CLOUDFRONT_DISTRIBUTION_ID 는 선택(기본 E3SBBH63NSNYX).
+    #   IAM 은 선행 완료: 백오피스 키(user/9c-github-actions)의 9c-artifacts 정책 v7 에
+    #     E3SBBH63NSNYX CreateInvalidation 추가(10/6). S3 는 기존 AmazonS3FullAccess.
+    #   9c-release 버킷은 ap-northeast-2 다(다른 백오피스 버킷은 us-east-2) — 이미지가
+    #     리전 지정 클라이언트를 쓴다.
+    #
+    #   prod 검증(PR 이미지를 set image 로 올려서): 조회·이력·dryRun·noop·무효화 + 실쓰기
+    #     (TrayOnClose — 런처가 로컬 값으로 덮어써 무해) 저장 186→187, 지난 ETag 412,
+    #     restore 188(원본과 ConfigVersion 한 줄만 다름), CDN 반영까지 확인.
+    #   이 bump 는 그 PR 이미지를 머지 커밋 이미지로 바꿔 git 과 라이브를 다시 맞추는 것이다.
+    tag: "git-3668d6065f83b063a53e9493cb3a2b7596770c24"
 
 
 iap:
