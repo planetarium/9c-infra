@@ -220,7 +220,15 @@ backoffice:
     #   1.38.0 변경은 SynthesizeSimulator.GetTargetGrade 의 코드 상한 제거 +
     #     Grade.Ultimate = 9 뿐이라 백오피스가 쓰는 API 에 영향이 없다 —
     #     빌드 오류 0, 테스트 418개 전부 통과로 확인.
-    tag: "git-e601f12de529542cc1b6388e29fb24f03d0d94d7"
+    #
+    # (2026-10-12) NineChronicles.Backoffice#93 **브랜치(미머지)** 이미지 — 인터널 검증용.
+    #   BoostScheduleSheet 컴파일 API(api/boost-schedule/{targets,compile}) + 체인 검증 sign 게이트.
+    #   Lib9c 를 lib9c feature/boost-schedule(610aeb0c) 빌드로 참조. 신규 env 없음.
+    #   ⚠️ prod 1벌이라 메인넷 백오피스도 이 이미지가 된다. 기존 기능은 그대로(#93 이 라이브
+    #     git-cde2c196 의 launcher-config 포함 main 전체를 담는다). sign 은 RestrictionSheet·
+    #     BoostScheduleSheet 의 체인 검증에 걸리는 CSV 를 400 으로 막는다(체인도 거절할 CSV).
+    #   검증 후 #93 머지본 태그로 다시 bump.
+    tag: "git-459979d383eef34fd774287febb2de43fa62c518"
 
 
 iap:
