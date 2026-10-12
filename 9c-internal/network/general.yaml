@@ -4,9 +4,9 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    # headless release/397 = lib9c feature/boost-schedule(610aeb0c) — BoostScheduleSheet + 레버 13종
-    #   인터널 검증용(체인 리셋 없음). 이전: git-e617872d(lib9c 1.38.0)
-    tag: "git-55fdc8dd17756a386169576a8074a8e629510f41"
+    # headless release/397 = lib9c feature/boost-schedule(4b8f7230) — BoostScheduleSheet + 레버 14종
+    #   (13종 + ENHANCEMENT_HAMMER_EXP). 인터널 검증용(체인 리셋 없음). 이전: git-55fdc8dd(610aeb0c, 13종)
+    tag: "git-0b75972d52f7ae5ec61c10ab4a8e5be9f6644ed0"
 
 seed:
   image:
