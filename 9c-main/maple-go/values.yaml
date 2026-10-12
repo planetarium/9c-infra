@@ -7,5 +7,5 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # petpop/maple-go d7825bfa (.env.staging 복구 · 구운 줄 캐시)
-    tag: git-d7825bfa5ffb87e1f58d31dd4874f685a5bb6af0
+    # petpop/maple-go 100f4aa2 (렌더러가 망가뜨리는 코디를 굽지 않는다 — PLD-1634)
+    tag: git-100f4aa2ff4f1faa9d30461f9e518de38cc33381
