@@ -4,9 +4,10 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    # headless release/397 = lib9c release/1.39.0(62f95e63) — 500.0.x 사이클 인터널 세팅(체인 리셋 없음).
-    #   BoostScheduleSheet + 레버 14종. 이전: git-0b75972d(lib9c feature 4b8f7230, 내용 동일·버전 문자열만 다름)
-    tag: "git-da14bf2ff048e0ae49d1ae266fc82e126f3af014"
+    # headless release/397 = lib9c release/1.39.0(062ca5e4) — 500.0.x 사이클 인터널 세팅(체인 리셋 없음).
+    #   BoostScheduleSheet + 레버 14종 + 월드보스·어드벤처보스 보상 부스트 5배 상한(lib9c#3321).
+    #   인터널 체인에 WB/AB 행이 없어(과거 2배 테스트행뿐) 재실행 결과 불변. 이전: git-da14bf2f(62f95e63)
+    tag: "git-608cc38f527fb1202a1b71368dd471f04eba0c9f"
 
 seed:
   image:
