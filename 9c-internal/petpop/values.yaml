@@ -13,6 +13,10 @@ backoffice:
     repository: planetariumhq/petpop
     tag: server-a0829bede62ff2eaddf57586f74382c6f07a918a
   hostname: petpop-internal-backoffice.9c.gg
+  # 9c-internal-iwinv-1 에서는 common-dbs Redis(10.43.56.68:6379)에 연결되지 않아 기동 중
+  # @fastify/redis 타임아웃으로 죽는다(2026-10-13 실측). Redis 연결이 확인된 노드에 고정한다.
+  nodeSelector:
+    kubernetes.io/hostname: 9c-internal-2
 
 workers:
   image:
