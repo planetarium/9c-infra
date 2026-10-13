@@ -11,7 +11,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-20d86f6b32ebb7c3ce81fecef0e3b5ab1f0947fc
+    tag: server-a0829bede62ff2eaddf57586f74382c6f07a918a
   hostname: petpop-internal-backoffice.9c.gg
 
 workers:
