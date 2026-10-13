@@ -7,5 +7,5 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # petpop/maple-go 100f4aa2 (렌더러가 망가뜨리는 코디를 굽지 않는다 — PLD-1634)
-    tag: git-100f4aa2ff4f1faa9d30461f9e518de38cc33381
+    # petpop/maple-go afb9bcd0 (영주 · 주민 프레임을 렌더러 대신 MSU 파츠 조립으로 굽는다 — 굽기 판 2)
+    tag: git-afb9bcd0c491ef8ed94a3f39061da2c0fd8bfcc4
