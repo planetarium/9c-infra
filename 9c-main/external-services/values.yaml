@@ -225,7 +225,13 @@ backoffice:
     #   BoostScheduleSheet 컴파일 API(api/boost-schedule/{targets,compile}) + 체인 검증 sign 게이트,
     #   Lib9c 는 lib9c feature/boost-schedule(4b8f7230) 빌드 — 레버 14종(망치 exp 포함).
     #   직전 git-459979d3(#93 브랜치)와의 차이는 스킬 문서 + Lib9c 범프뿐. 신규 env 없음.
-    tag: "git-123a4d834e76cd748cbc910215f9934be21e1d7d"
+    #
+    # (2026-10-13) NineChronicles.Backoffice#95 + #97 머지본(main 49f0fda9). Lib9c 1.39.0-dev.062ca5e4.
+    #   #97: planetId↔url 짝 검증(compile·table-patch, 불일치 400 — 서버 설정 NC_*_URL 기준),
+    #   무기한 end_block 500 수정, 레버별 값 범위 게이트(보상 MUL ≤5·망치 ≤3, allowOutOfRange 로 우회),
+    #   GET api/boost-schedule/live, TablePatch UI(TableName 정규화·부스트 단일 플래닛·FAILURE 표시·경고 전부).
+    #   신규 env 없음.
+    tag: "git-49f0fda937f2c671070609e36284fb5c49fde7e9"
 
 
 iap:
