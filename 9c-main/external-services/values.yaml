@@ -231,7 +231,12 @@ backoffice:
     #   무기한 end_block 500 수정, 레버별 값 범위 게이트(보상 MUL ≤5·망치 ≤3, allowOutOfRange 로 우회),
     #   GET api/boost-schedule/live, TablePatch UI(TableName 정규화·부스트 단일 플래닛·FAILURE 표시·경고 전부).
     #   신규 env 없음.
-    tag: "git-49f0fda937f2c671070609e36284fb5c49fde7e9"
+    #
+    # (2026-10-14) NineChronicles.Backoffice#98 브랜치 head(921a1974, base=main 49f0fda9) — 머지 전 검증 배포.
+    #   api/tools/event-reward-popup: 주년 이벤트 보상 팝업 JSON(mainnet/internal)·이미지 조회·검사·저장.
+    #   직전 배포본 대비 이 기능만 추가. 신규 env·권한 없음(기존 NC_AWS 키·9c-assets·CloudFront 그대로).
+    #   #98 머지 후 main 머지커밋 태그로 다시 bump 할 것.
+    tag: "git-921a1974663cb0e69ecce37528c14d246a864290"
 
 
 iap:
