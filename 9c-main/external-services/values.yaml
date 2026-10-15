@@ -236,7 +236,12 @@ backoffice:
     #   api/tools/event-reward-popup: 주년 이벤트 보상 팝업 JSON(mainnet/internal)·이미지 조회·검사·저장.
     #   직전 배포본 대비 이 기능만 추가. 신규 env·권한 없음(기존 NC_AWS 키·9c-assets·CloudFront 그대로).
     #   #98 머지 후 main 머지커밋 태그로 다시 bump 할 것.
-    tag: "git-921a1974663cb0e69ecce37528c14d246a864290"
+    #
+    # (2026-10-15) Backoffice#100 합본(268a8b4e = #98 921a1974 + #99) — #99 TablePatch 머지 전 검증 배포.
+    #   #99: 일반 시트도 업로드 파일명 접미사(_Odin, " (1)")를 떼고 체인 시트 이름으로 패치. Stake 버전 시트 _V<n> 보존,
+    #   애매한 버전은 바꾸지 않음. 파일명 플래닛 표시가 고른 플래닛과 다르면 모든 시트에서 Sign/Stage/R2/Purge 차단.
+    #   신규 env 없음. #98·#99 머지 후 main 머지커밋 태그로 다시 bump 할 것(#100 은 닫음).
+    tag: "git-268a8b4e165f61ac886ad35787632d2b6e3f38d0"
 
 
 iap:
