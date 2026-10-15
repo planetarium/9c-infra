@@ -284,6 +284,13 @@ spec:
                 secretKeyRef:
                   key: NC_API_KEY
                   name: ninechronicles-backoffice-env
+            # RemoteCsv(번역 테이블) 업로드 전용 키 — 번역 시트 Apps Script 용. 없으면 그 스킴만 꺼진다.
+            - name: NC_REMOTE_CSV_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_REMOTE_CSV_API_KEY
+                  name: ninechronicles-backoffice-env
+                  optional: true
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}

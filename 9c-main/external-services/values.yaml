@@ -241,7 +241,13 @@ backoffice:
     #   #99: 일반 시트도 업로드 파일명 접미사(_Odin, " (1)")를 떼고 체인 시트 이름으로 패치. Stake 버전 시트 _V<n> 보존,
     #   애매한 버전은 바꾸지 않음. 파일명 플래닛 표시가 고른 플래닛과 다르면 모든 시트에서 Sign/Stage/R2/Purge 차단.
     #   신규 env 없음. #98·#99 머지 후 main 머지커밋 태그로 다시 bump 할 것(#100 은 닫음).
-    tag: "git-268a8b4e165f61ac886ad35787632d2b6e3f38d0"
+    #
+    # (2026-10-15) Backoffice#102 합본(749d09ee = #100 268a8b4e + #101) — #101 RemoteCsv API 머지 전 검증 배포.
+    #   #101: api/tools/remote-csv(번역 테이블 RemoteCsv.csv 조회·검사·교체 + CloudFront 무효화).
+    #   신규 env NC_REMOTE_CSV_API_KEY(선택) — 이 API 만 받는 전용 키(번역 시트 Apps Script 용).
+    #   SecretsManager 9c-main-v2/external-services/ninechronicles-backoffice-env 에 추가함. 없어도 부팅된다.
+    #   #98·#99·#101 머지 후 main 머지커밋 태그로 다시 bump 할 것(#102 는 닫음).
+    tag: "git-749d09ee375968c597d787b1910f89e1c0a4ddab"
 
 
 iap:
