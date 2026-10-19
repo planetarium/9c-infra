@@ -22,6 +22,8 @@ on:
 jobs:
   update-paev:
     runs-on: ubuntu-latest
+    # 메인넷 S3 appsettings 를 직접 수정하므로 실행 전 필수 승인자 승인을 받는다
+    environment: mainnet-paev
 
     steps:
       - name: Checkout Repository
