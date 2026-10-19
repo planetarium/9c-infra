@@ -35,5 +35,6 @@ workers:
     enabled: true
   blockResetWorker:
     enabled: true
+  # 매일 Slack 으로 보내던 "[mainnet] KAIA Wallet Monitor" 잔고 리포트는 더 받지 않는다(2026-10-19).
   walletMonitorWorker:
-    enabled: true
+    enabled: false
