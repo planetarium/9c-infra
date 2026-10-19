@@ -4,7 +4,7 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-20d86f6b32ebb7c3ce81fecef0e3b5ab1f0947fc
+    tag: server-a1864e6ccdba065dd8f0e6ccad8efd3aa6e07023
   hostname: internal.petpop.fun
 
 backoffice:
