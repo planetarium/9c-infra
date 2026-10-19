@@ -312,7 +312,14 @@ iap:
       #   - #498 고정 SKU 시즌패스. 메인넷에 고정 행이 없으면 **동작 변화 없음**(상점 응답 동일).
       #     ⚠️ 시즌패스 #314(`/current?at=`)가 **먼저** 배포돼 있어야 한다 — 고정 행을 켤 때 필요.
       #   마이그레이션 없음.
-      tag: "git-35fbd823a908ebdd5f63fd9f3b60860fd77a0cc3"
+      #
+      # (2026-10-19) → git-b533b733: #499 + #500.
+      #   - #499 포탈 상점 고정 SKU 시즌패스 아바타별 한도(PLD-1674). `avatar_addr` 를 안 주면 응답이
+      #     그대로고, 메인넷엔 그걸 보내는 포탈(#1329)도 고정 행도 아직 없어 **동작 변화 없음**.
+      #     인덱스 마이그레이션 e5a9c3d71f42(ix_receipt_avatar_valid)는 아직 미적용 — 실제로 켤 때
+      #     저트래픽에 먼저 만들 것(그 조회는 위 조건이 갖춰져야만 돈다).
+      #   - #500 은 worker 전용(일일 토큰 리포트 제거). api 경로 변경 없음.
+      tag: "git-b533b733da2832594122ea6ffe08d6c9a86b16a8"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
@@ -359,7 +366,13 @@ iap:
       # (2026-10-01) → git-29afbc39: api 와 같은 커밋. worker 경로 변경 없음(#496 은 api·shared 집계).
       #
       # (2026-10-06) → git-35fbd823: api 와 같은 커밋. worker 경로 변경 없음(#497/#498 은 api·shared 상품 헬퍼).
-      tag: "git-35fbd823a908ebdd5f63fd9f3b60860fd77a0cc3"
+      #
+      # (2026-10-19) → git-b533b733: api 와 같은 커밋. #500 status_monitor 의 일일 토큰 잔고 리포트
+      #   ("[NineChronicles.IAP] Daily Token Report") 제거. tx 멈춤 알람(check_halt_tx·report_stale_halt_tx)은
+      #   그대로. 차트의 WORKER_IAP_GARAGE_WEBHOOK_URL env 는 새 이미지가 무시하므로 남겨 둔다 —
+      #   인터널 worker(git-60ac034e)는 아직 그 리포트를 보내므로, env 와 iap-env 시크릿 키는
+      #   인터널도 올린 뒤에 지울 것(키를 먼저 지우면 CreateContainerConfigError).
+      tag: "git-b533b733da2832594122ea6ffe08d6c9a86b16a8"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
