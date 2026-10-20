@@ -248,11 +248,11 @@ backoffice:
     #   SecretsManager 9c-main-v2/external-services/ninechronicles-backoffice-env 에 추가함. 없어도 부팅된다.
     #   #98·#99·#101 머지 후 main 머지커밋 태그로 다시 bump 할 것(#102 는 닫음).
     #
-    # (2026-10-20) Backoffice#105 합본(ffc11e30 = #102 749d09ee + #103 + #104) — 인터널 플래닛 실검증용.
+    # (2026-10-20) Backoffice#105 합본(b038899b = #102 749d09ee + #103 + #104, 인터널 검증 후 체인 tip 조회 수정 포함) — 인터널 플래닛 실검증용.
     #   #103: /api 레이트리밋 2단계(유효 NC_API_KEY 300/min 공유, 그 외 IP당 10/min, RemoteIpAddress 기준, Retry-After).
     #   #104: 테이블 패치 배치 API(api/table-patch/batch plan·apply·jobs). 단건 sign·UI·주소 상태 nonce 예약 조정 포함.
     #   신규 env 없음. 각 PR 머지 후 main 머지커밋 태그로 다시 bump 할 것(#105 는 닫음).
-    tag: "git-ffc11e30f0605ef7d999d47e4304cb9ee5bba4ee"
+    tag: "git-b038899bb4b8a0bc0e901af2d4670c9e489bd835"
 
 
 iap:
