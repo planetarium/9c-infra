@@ -252,7 +252,10 @@ backoffice:
     #   #103: /api 레이트리밋 2단계(유효 NC_API_KEY 300/min 공유, 그 외 IP당 10/min, RemoteIpAddress 기준, Retry-After).
     #   #104: 테이블 패치 배치 API(api/table-patch/batch plan·apply·jobs). 단건 sign·UI·주소 상태 nonce 예약 조정 포함.
     #   신규 env 없음. 각 PR 머지 후 main 머지커밋 태그로 다시 bump 할 것(#105 는 닫음).
-    tag: "git-c36c03a9e16a8f3a32f4f1d18f11dbe476a4a9c6"
+    #
+    # (2026-10-20) #98·#99·#101·#103·#104·#106 전부 main 머지 → main a90b9667 로 정리(검증용 합본 #100·#102·#105 닫음).
+    #   위 합본 메모들은 이력이다 — 지금 이미지는 main 그대로.
+    tag: "git-a90b966718d3464acb25e5124d76c26952300f9a"
 
 
 iap:
