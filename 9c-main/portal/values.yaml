@@ -36,7 +36,12 @@ portalService:
     # (2026-10-08) → main-f3bc9830: 출금 휴먼 패스포트 필요점수 env 화 #1326/#1327 —
     #   PASSPORT_THRESHOLD(아래 env, 미설정 시 1) + 출금 모달 "score / 1" 하드코딩 → 서버 값 표시.
     #   78bf5478..f3bc9830 의 apps/portal 변경은 이것뿐(#1324 는 apps/backoffice). DB 커플링 없음.
-    tag: main-f3bc9830bb21b738953b11fd34a4578eafacaa4f
+    # (2026-10-20) → main-33e0332b: 고정 SKU 시즌패스 구매 제한 아바타 기준 표시 #1329/#1330 (PLD-1674) —
+    #   마켓 getProducts·createOrder 가 IAP 에 avatar_addr 를 함께 보내고, 고정 SKU 패스는
+    #   "1 per avatar" 로 표시. f3bc9830..33e0332b 의 변경은 이것뿐(apps/portal). DB 커플링 없음.
+    #   IAP 쪽(IAP#499 + receipt 부분 인덱스 e5a9c3d71f42)은 메인넷에 먼저 올라가 있다. 고정 SKU
+    #   행은 2026-11-01 09:00 KST 에 열리므로 그 전까지 화면 변화 없음.
+    tag: main-33e0332b41a100ce9c4ef28bc82a57fd04a08588
     pullPolicy: Always
   externalSecret:
     enabled: true
