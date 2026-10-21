@@ -6,7 +6,10 @@ metadata:
   labels:
     app.kubernetes.io/instance: batch-jobs
 spec:
-  schedule: "0 0 * * *"
+  # 매시 정각 — 시즌이 끝나고 1시간 안에 정산용 스테이킹 파일(garage staking-for-arena/main/<Planet>/<id>.json)이 생기게.
+  # 하루 한 번(00:00 UTC)이면 09:00 KST 이후 끝난 시즌은 다음 날까지 백오피스 아레나 정산이 "스테이킹 정보 파일 없음"으로 실패한다(2026-10-21).
+  # 이미 올라간 시즌이면 R2 존재 확인 뒤 바로 종료하므로 부담 없음. 스테이킹은 시즌 종료 블록 기준이라 수집 시각과 무관하다.
+  schedule: "0 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
