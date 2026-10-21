@@ -249,7 +249,7 @@ file_for_env() {
   # touch one path per env.
   case "$1" in
     dev)
-      if [[ "${#DEV_FILES[@]:-0}" -gt 0 ]]; then
+      if [[ -n "${DEV_FILES[*]+x}" && "${#DEV_FILES[@]}" -gt 0 ]]; then
         printf '%s\n' "${DEV_FILES[@]}"
       elif [[ -n "${DEV_FILE:-}" ]]; then
         echo "$DEV_FILE"
@@ -259,14 +259,14 @@ file_for_env() {
       fi
       ;;
     staging)
-      if [[ "${#STAGING_FILES[@]:-0}" -gt 0 ]]; then
+      if [[ -n "${STAGING_FILES[*]+x}" && "${#STAGING_FILES[@]}" -gt 0 ]]; then
         printf '%s\n' "${STAGING_FILES[@]}"
       else
         echo "$STAGING_FILE"
       fi
       ;;
     production)
-      if [[ "${#PRODUCTION_FILES[@]:-0}" -gt 0 ]]; then
+      if [[ -n "${PRODUCTION_FILES[*]+x}" && "${#PRODUCTION_FILES[@]}" -gt 0 ]]; then
         printf '%s\n' "${PRODUCTION_FILES[@]}"
       else
         echo "$PRODUCTION_FILE"
@@ -364,11 +364,22 @@ bump_and_pr() {
 
   git checkout -b "$branch" "$REMOTE/main" --quiet
   for e in "${envs[@]}"; do
+    # 프로세스 치환은 서브셸이라 file_for_env 가 죽어도 종료코드가 여기 안 온다.
+    #   그러면 아래 `git diff --cached --quiet` 가 참이 되어 "nothing to do" 로 조용히
+    #   끝난다 — 실제로는 아무것도 안 바꾼 것인데 성공처럼 보인다. 세어서 막는다.
+    seen=0
     while IFS= read -r file; do
       [[ -z "$file" ]] && continue
       update_file_tags "$file"
       git add "$file"
+      seen=$((seen + 1))
     done < <(file_for_env "$e")
+    if [[ "$seen" -eq 0 ]]; then
+      echo "error: no values file resolved for env '$e' (module: $SERVICE)" >&2
+      git checkout "$ORIGINAL_BRANCH" --quiet
+      git branch -D "$branch" --quiet
+      exit 1
+    fi
   done
 
   if git diff --cached --quiet; then
