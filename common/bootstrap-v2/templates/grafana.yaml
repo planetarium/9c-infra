@@ -312,6 +312,64 @@ spec:
                       service: iap
                     annotations:
                       summary: '{{`{{ "{{" }} $labels.deployment {{ "}}" }}`}} 가 10분째 기동하지 못했다 — 주기 작업이 전부 멈춘 상태다'
+              # (2026-10-21) PVC 사용률. Loki 를 R2 대신 PVC(50Gi, 시간 기준 retention 만)에 두면서
+              #   용량이 차도 알려줄 경로가 없었다. 수집되는 PVC 전체(kubelet_volume_stats)를 본다.
+              #   기존 Grafana UI 규칙(Heimdall/Odin Headless PVC usage, 90%/6h)과 같은 #devops 로 보낸다.
+              - orgId: 1
+                name: pvc-usage-alerts
+                folder: PVC Alert
+                interval: 1m
+                rules:
+                  - uid: pvc-usage-warning
+                    title: PVC Usage High
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [85] }
+                    for: 15m
+                    labels:
+                      severity: warning
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'PVC {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}}/{{`{{ "{{" }} $labels.persistentvolumeclaim {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}%'
+                  - uid: pvc-usage-critical
+                    title: PVC Usage Critical
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [95] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'PVC {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}}/{{`{{ "{{" }} $labels.persistentvolumeclaim {{ "}}" }}`}} 거의 가득 참 — {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}%'
         persistence:
           enabled: true
         initChownData:
