@@ -1,0 +1,142 @@
+{{- if (.Values.donggeulOps).enabled }}
+# 동글이 옵스(pt4 동글이 컨테이너의 ops 사용자)용 ServiceAccount.
+# 알림이 오면 조사하고 서비스 재시작까지 선조치한 뒤 #donggeul-ops 에 보고한다. 운영 문서: 9c-ops common/donggeul.md
+#
+# - 읽기: 클러스터 전체. secret·configmap 은 없다 — 지급 서비스의 KMS 서명 자격증명이 secret 에 있다.
+# - 조치: restartNamespaces 에서 파드 삭제(= 같은 설정으로 재시작)·박힌 job 삭제, scaleNamespaces 에서 scale.
+# - 없음: exec·파드 생성·deployment patch(지급 서비스 파드 안에 KMS 서명 권한이 있어 설정을 바꾸면 서명을 시킬 수 있다),
+#         체인 노드(odin·heimdall·thor) 쓰기, PVC·볼륨·네임스페이스 삭제.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: donggeul-ops
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: donggeul-ops
+  namespace: donggeul-ops
+---
+# 만료 없는 SA 토큰. 회수는 이 시크릿 삭제.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: donggeul-ops-token
+  namespace: donggeul-ops
+  annotations:
+    kubernetes.io/service-account.name: donggeul-ops
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: donggeul-ops-read
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - pods/log
+      - events
+      - services
+      - endpoints
+      - nodes
+      - namespaces
+      - persistentvolumeclaims
+      - persistentvolumes
+      - resourcequotas
+      - limitranges
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, statefulsets, replicasets, daemonsets]
+    verbs: [get, list, watch]
+  - apiGroups: [batch]
+    resources: [jobs, cronjobs]
+    verbs: [get, list, watch]
+  - apiGroups: [networking.k8s.io]
+    resources: [ingresses]
+    verbs: [get, list, watch]
+  - apiGroups: [events.k8s.io]
+    resources: [events]
+    verbs: [get, list, watch]
+  - apiGroups: [metrics.k8s.io]
+    resources: [pods, nodes]
+    verbs: [get, list]
+  - apiGroups: [argoproj.io]
+    resources: [applications, appprojects]
+    verbs: [get, list, watch]
+  - apiGroups: [longhorn.io]
+    resources: [volumes, replicas, engines, nodes]
+    verbs: [get, list, watch]
+  # 동기화 상태만 본다. 값은 secret 에 있고 secret 권한은 없다.
+  - apiGroups: [external-secrets.io]
+    resources: [externalsecrets, secretstores, clustersecretstores]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: donggeul-ops-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: donggeul-ops-read
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+{{- range .Values.donggeulOps.restartNamespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-restart
+  namespace: {{ . }}
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [delete]
+  - apiGroups: [batch]
+    resources: [jobs]
+    verbs: [delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-restart
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-restart
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+{{- end }}
+{{- range .Values.donggeulOps.scaleNamespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-scale
+  namespace: {{ . }}
+rules:
+  - apiGroups: [apps]
+    resources: [deployments/scale, statefulsets/scale]
+    verbs: [get, patch, update]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-scale
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-scale
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+{{- end }}
+{{- end }}

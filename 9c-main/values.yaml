@@ -144,3 +144,26 @@ datadog:
             values:
             - odin
             - heimdall
+
+# 동글이 옵스 ServiceAccount(common/bootstrap-v2/templates/donggeul-ops-rbac.yaml).
+# 읽기는 클러스터 전체(secret·configmap 제외). 아래 목록에서만 조치한다.
+donggeulOps:
+  enabled: true
+  # 파드 삭제(= 재시작)·박힌 job 삭제. 지급(KMS 서명) 서비스도 설정은 못 바꾸니 재시작만.
+  restartNamespaces:
+    - portal
+    - 9c-external-services
+    - dcc-bridge
+    - petpop
+    - ragnarok-breaker-prod
+    - ragnarok-breaker-prod-web2
+    - ragnarok-breaker-prod-web3
+    - maple-go-prod
+    - batch-jobs
+  # deployments/statefulsets scale. 지급 서비스는 넣지 않는다.
+  scaleNamespaces:
+    - petpop
+    - ragnarok-breaker-prod-web2
+    - ragnarok-breaker-prod-web3
+    - maple-go-prod
+    - batch-jobs
