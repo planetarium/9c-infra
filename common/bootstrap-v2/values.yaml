@@ -58,25 +58,18 @@ rancher:
 
 loki:
   enabled: false
-  bucketName: ""
   metrics:
     enabled: false
-  write:
-    count: 0
+  retentionPeriod: 336h
+  singleBinary:
+    storageClass: longhorn-default
+    storageSize: 50Gi
     resources:
       requests:
-        cpu: 1500m
-        memory: 6Gi
-    nodeSelector: {}
-  read:
-    count: 0
-    resources:
-      requests:
-        cpu: 1500m
-        memory: 6Gi
+        cpu: 500m
+        memory: 2Gi
       limits:
-        cpu: 1500m
-        memory: 6Gi
+        memory: 4Gi
     nodeSelector: {}
 
 datadog:

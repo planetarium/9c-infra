@@ -44,11 +44,12 @@ traefik:
   - 115.68.0.0/16
 loki:
   enabled: true
-  bucketName: 9c-loki
   metrics:
-    enabled: true
-  write:
-    count: 2
+    enabled: false
+  retentionPeriod: 336h
+  singleBinary:
+    storageClass: longhorn-default
+    storageSize: 50Gi
     nodeSelector:
       node.kubernetes.io/type: general
     resources:
@@ -56,18 +57,6 @@ loki:
         cpu: 500m
         memory: 2Gi
       limits:
-        cpu: 500m
-        memory: 2Gi
-  read:
-    count: 2
-    nodeSelector:
-      node.kubernetes.io/type: general
-    resources:
-      requests:
-        cpu: 500m
-        memory: 4Gi
-      limits:
-        cpu: 500m
         memory: 4Gi
 grafana:
   hosts:
