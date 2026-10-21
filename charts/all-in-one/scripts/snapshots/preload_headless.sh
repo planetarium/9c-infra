@@ -142,11 +142,12 @@ function kill_headless() {
 }
 
 function rotate_log() {
-  cd "$HEADLESS_LOG_DIR"
-  if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
-    zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-    rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-  fi
+  # 보존기간이 지난 preload 로그를 정리한다.
+  # 기존 구현은 파일 존재 확인을 파일 "실행"으로 시도해 조건이 항상 거짓이었고,
+  # 잡이 격일 실행이라 "어제" 기준도 대부분 빗나가 한 번도 동작하지 않았다.
+  # 그 결과 로그가 무한 누적돼 노드 루트 디스크를 고갈시킨 적이 있다.
+  find "$HEADLESS_LOG_DIR" -maxdepth 1 -type f \( -name "*.log" -o -name "*.zip" \) \
+    -mtime "+${HEADLESS_LOG_RETENTION_DAYS:-14}" -delete || true
 }
 
 trap '' HUP
