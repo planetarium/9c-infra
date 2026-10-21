@@ -45,7 +45,7 @@ portalService:
     #   assign 담당자 yang 으로 #1332 (release #1333). 33e0332b..93137136 의 변경은 이것뿐. DB 커플링 없음.
     # (2026-10-21) → main-27704717: 인증된 계정의 번호 변경 7일 쿨다운을 "24시간" 안내와 분리 #1334
     #   (release #1335, CS #15267). apps/portal 만 변경 — 백오피스 태그는 그대로. DB 커플링 없음.
-    tag: main-dacedc97ae151ee6f34a7c0dac69e75f54deb940
+    tag: main-2770471722d902a65c2e99a0583dfd0fae746a7c
     pullPolicy: Always
   externalSecret:
     enabled: true
