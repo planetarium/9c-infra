@@ -16,10 +16,7 @@ global:
   planet: Heimdall
   consensusType: pbft
 
-  # (2026-10-21) rpc-1(remote-headless-1) 디스크 83%(states 317G) → 스냅샷 재다운로드로 초기화.
-  #   ⚠️ 이 값은 validator-5 에도 reset-snapshot init 을 붙인다 — remote-headless-1 StatefulSet 만
-  #   selective sync 할 것. 완료 후 즉시 false 로 되돌리는 PR.
-  resetSnapshot: true
+  resetSnapshot: false
   rollbackSnapshot: false
 
   storage:
