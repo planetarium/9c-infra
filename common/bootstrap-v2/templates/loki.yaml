@@ -135,6 +135,10 @@ spec:
             labelValue: "true"
             resource: both
             searchNamespace: ALL
+        {{- else }}
+        sidecar:
+          rules:
+            enabled: false
         {{- end }}
   destination:
     server: https://kubernetes.default.svc
