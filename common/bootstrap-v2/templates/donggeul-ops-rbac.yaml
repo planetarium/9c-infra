@@ -139,4 +139,36 @@ subjects:
     name: donggeul-ops
     namespace: donggeul-ops
 {{- end }}
+{{- range $ns, $names := .Values.donggeulOps.secretReads }}
+---
+# 이름을 지정한 secret 만 읽는다. 동글이(모델)는 값을 보지 못한다 — 읽는 건 root 래퍼(ops-db-query·ops-svc-config)이고,
+# 모델은 조회 결과·허용된 설정 키만 받는다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-secret-read
+  namespace: {{ $ns }}
+rules:
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames:
+      {{- range $names }}
+      - {{ . }}
+      {{- end }}
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-secret-read
+  namespace: {{ $ns }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-secret-read
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+{{- end }}
 {{- end }}

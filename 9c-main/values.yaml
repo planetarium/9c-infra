@@ -167,3 +167,10 @@ donggeulOps:
     - ragnarok-breaker-prod-web3
     - maple-go-prod
     - batch-jobs
+  # 래퍼(root) 전용 secret 읽기. 모델은 값을 받지 않는다 — DB 는 읽기 전용 조회 결과만, 설정은 허용된 키만.
+  secretReads:
+    9c-external-services:
+      - iap-env
+      - seasonpass-env
+    portal:
+      - portal-secrets
