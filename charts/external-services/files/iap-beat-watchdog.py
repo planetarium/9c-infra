@@ -38,6 +38,26 @@ THRESHOLD_MIN = int(os.environ.get("THRESHOLD_MINUTES", "30"))
 #    나이로 안 가르면 배포 즉시 12,075건짜리 오탐이 뜬다.)
 STALE_AFTER_HOURS = int(os.environ.get("STALE_AFTER_HOURS", "6"))
 HEARTBEAT_HOUR = os.environ.get("HEARTBEAT_HOUR", "")
+# 조사 끝나 처리하지 않기로 한 영수증 id(쉼표 구분). 재시도로 살아나지 않는 확정 실패가
+#   6시간 창을 다 지날 때까지 매시 알람을 다시 울리는 걸 막는다. 잔류 집계에서도 뺀다.
+#   빈 목록이면 -1 하나로 둔다 — `= ANY('{}')` 도 되지만 의도를 분명히 하려고.
+#   손으로 늘려 가는 값이라 오타가 난다. 그게 모듈 import 에서 터지면 아래 "감시 잡 실패"
+#   Slack 경로도 못 타고 감시가 조용히 죽는다 → 못 읽는 토큰은 경고만 하고 건너뛴다.
+#   CREATED_SQL 에는 안 건다 — 무시한 영수증을 누가 재전송해 CREATED 가 되면 다시 보여야 한다.
+#   정리 기준: 6시간 창을 지난 id 는 하트비트 잔류 집계에만 영향을 준다. 잔류분을 정리할 때 같이 뺀다.
+def _parse_ignore_ids(raw: str) -> list:
+    ids = []
+    for tok in raw.replace(" ", "").split(","):
+        if not tok:
+            continue
+        if tok.isdigit():
+            ids.append(int(tok))
+        else:
+            print(f"WARN: IGNORE_RECEIPT_IDS 토큰 무시: {tok!r}", file=sys.stderr)
+    return ids or [-1]
+
+
+IGNORE_RECEIPT_IDS = _parse_ignore_ids(os.environ.get("IGNORE_RECEIPT_IDS", ""))
 
 # 술어를 ix_receipt_stuck_monitor 의 부분 인덱스 조건과 **글자 그대로** 맞춘다.
 #   그래야 인덱스를 탄다(메인넷 실측: 인덱스 스캔이면 0.7ms, seq scan 이면 15.5초).
@@ -72,6 +92,11 @@ _EXCLUDE_SEASON_PASS = """
   )
 """
 
+# 인덱스로 거른 뒤의 필터다(위 시즌패스 절과 같은 자리). psycopg2 는 list 를 ARRAY 로 넘긴다.
+_EXCLUDE_IGNORED = """
+  AND NOT (receipt.id = ANY(%(ignore_ids)s))
+"""
+
 # 경보에 필요한 건 **최근분뿐**이다. 잔류분까지 매 회차 세면 12,075행을 훑느라 7.7초가
 #   걸린다(메인넷 실측). 나이 상한을 걸면 0.5ms 로 떨어진다 — 잔류분은 하트비트 때만 센다.
 RECENT_SQL = (
@@ -85,6 +110,7 @@ WHERE created_at <= now() - make_interval(mins => %(threshold)s)
 """
     + _STUCK_PREDICATE
     + _EXCLUDE_SEASON_PASS
+    + _EXCLUDE_IGNORED
     + "GROUP BY 1"
 )
 
@@ -97,6 +123,7 @@ WHERE created_at <= now() - make_interval(hours => %(stale)s)
 """
     + _STUCK_PREDICATE
     + _EXCLUDE_SEASON_PASS
+    + _EXCLUDE_IGNORED
     + "GROUP BY 1"
 )
 
@@ -153,7 +180,7 @@ def post_slack(text: str) -> None:
 
 def collect(conn, want_stale: bool):
     """(최근 {상태: (건수, 최고령초)}, 잔류 {상태: 건수}, 마지막 영수증 경과초)."""
-    params = {"threshold": THRESHOLD_MIN, "stale": STALE_AFTER_HOURS}
+    params = {"threshold": THRESHOLD_MIN, "stale": STALE_AFTER_HOURS, "ignore_ids": IGNORE_RECEIPT_IDS}
     with conn.cursor() as cur:
         cur.execute(RECENT_SQL, params)
         recent = {st: (cnt, age) for st, cnt, age in cur.fetchall()}
