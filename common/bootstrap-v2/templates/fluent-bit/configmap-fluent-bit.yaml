@@ -52,11 +52,6 @@ data:
     [FILTER]
         Name                         rewrite_tag
         Match                        application.*
-        Rule                         $kubernetes['container_name'] ^.*$ s3.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
-        Emitter_Name                 for_s3
-    [FILTER]
-        Name                         rewrite_tag
-        Match                        application.*
         Rule                         $kubernetes['namespace_name'] ^(ragnarok-breaker|ragnarok-breaker-staging|ragnarok-breaker-(dev|staging|prod)-web[23])$ loki_rb.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
         Emitter_Name                 for_loki_rb
     [OUTPUT]
@@ -68,17 +63,20 @@ data:
         auto_kubernetes_labels       on
         line_format                  json
         workers                      8
-    {{- if eq .Values.provider "AWS" }}
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        application.*
+        Rule                         $kubernetes['namespace_name'] ^portal$ loki_portal.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG true
+        Emitter_Name                 for_loki_portal
     [OUTPUT]
-        Name                         s3
-        Match                        s3.*
-        region                       ${AWS_REGION}
-        Bucket                       fluent-bit.planetariumhq.com
-        compression                  gzip
-        Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters ._
-    {{- end }}
+        Name                         loki
+        Match                        loki_portal.*
+        host                         loki-gateway.monitoring.svc.cluster.local
+        port                         80
+        labels                       job=portal, alias=$kubernetes['namespace_name'].$kubernetes['container_name'], pod=$kubernetes['pod_name'], host=$kubernetes['host'], container=$kubernetes['container_name'], namespace=$kubernetes['namespace_name']
+        auto_kubernetes_labels       on
+        line_format                  json
+        workers                      2
 
     [INPUT]
         Name                         tail
@@ -152,11 +150,17 @@ data:
         Rule                         $kubernetes['container_name'] ^.*$ loki_application.$TAG true
         Emitter_Name                 filter_loki_application
         Emitter_Storage.type         filesystem
+    # Headless JSON logs are large (~60GiB/day); keep only Error/Fatal in Loki.
+    # Serilog CompactJsonFormatter omits @l for Information. fluent-bit 2.0's
+    # record accessor rejects keys starting with '@', so rename before grep.
     [FILTER]
-        Name                         rewrite_tag
-        Match                        loki.*
-        Rule                         $kubernetes['container_name'] ^.*$ s3json.$kubernetes['namespace_name'].$kubernetes['container_name'].$Source.$TAG true
-        Emitter_Name                 for_s3_json
+        Name                         modify
+        Match                        loki_application.*
+        Rename                       @l level
+    [FILTER]
+        Name                         grep
+        Match                        loki_application.*
+        Regex                        level ^(Error|Fatal)$
     [OUTPUT]
         Name                         loki
         Match                        loki_application.*
@@ -166,161 +170,6 @@ data:
         auto_kubernetes_labels       on
         line_format                  json
         workers                      32
-    [OUTPUT]
-        Name                         s3
-        Match                        s3json.*
-        {{- if eq .Values.provider "AWS" }}
-        region                       ${AWS_REGION}
-        Bucket                       fluent-bit.planetariumhq.com
-        {{- else if eq .Values.provider "RKE2" }}
-        region                       auto
-        bucket                       9c-fluentbit
-        endpoint                     ${R2_ENDPOINT}
-        {{- end }}
-        compression                  gzip
-        Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/json/$TAG[1]/$TAG[2]/%Y/%m/%d/%H/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters ._
-
-    [INPUT]
-        Name                         tail
-        Tag                          snapshot.*
-        Path                         /var/log/containers/snapshot-*.log
-        DB                           /var/fluent-bit/state/flb_snapshot.db
-        Skip_Long_Lines              On
-        Refresh_Interval             10
-        Rotate_Wait                  30
-        Read_from_Head               ${READ_FROM_HEAD}
-        multiline.parser             cri, docker
-        storage.type                 filesystem
-    [FILTER]
-        Name                         kubernetes
-        Match                        snapshot.*
-        Kube_Tag_Prefix              snapshot.var.log.containers.
-        K8S-Logging.Parser           On
-        Labels                       Off
-        Annotations                  Off
-    [FILTER]
-        Name                         rewrite_tag
-        Match                        snapshot.*
-        Rule                         $kubernetes['container_name'] ^(upload-snapshot)$ snapshot-s3.$kubernetes['namespace_name'].$kubernetes['pod_name'].$kubernetes['container_name'].$kubernetes['docker_id'] false
-    [OUTPUT]
-        Name                         s3
-        Match                        snapshot-s3.*
-        region                       auto
-        bucket                       9c-fluentbit
-        endpoint                     ${R2_ENDPOINT}
-        compression                  gzip
-        Total_file_size              100M
-        S3_key_format                /${CLUSTER_NAME}/snapshot/$TAG[1]/%Y/%m/%d/%H-%M-%S_$TAG[2]_$TAG[3]_$TAG[4]_$UUID.gz
-
-    [INPUT]
-        Name                tail
-        Tag                 dataplane.tail.*
-        Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
-        Docker_Mode         On
-        Docker_Mode_Flush   5
-        Docker_Mode_Parser  container_firstline
-        Parser              docker
-        DB                  /var/fluent-bit/state/flb_dataplane_tail.db
-        Mem_Buf_Limit       50MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Rotate_Wait         30
-        storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
-    [OUTPUT]
-        Name                         s3
-        Match                        dataplane.*
-        {{- if eq .Values.provider "AWS" }}
-        region                       ${AWS_REGION}
-        Bucket                       fluent-bit.planetariumhq.com
-        {{- else if eq .Values.provider "RKE2" }}
-        region                       auto
-        bucket                       9c-fluentbit
-        endpoint                     ${R2_ENDPOINT}
-        {{- end }}
-        Total_file_size              100M
-        compression                  gzip
-        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters .
-
-    [INPUT]
-        Name                tail
-        Tag                 portal.tail.*
-        Path                /var/log/containers/portal*
-        Docker_Mode         On
-        Docker_Mode_Flush   5
-        Docker_Mode_Parser  container_firstline
-        Parser              docker
-        DB                  /var/fluent-bit/state/flb_portal_tail.db
-        Mem_Buf_Limit       10MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Rotate_Wait         30
-        storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
-    [OUTPUT]
-        Name                         s3
-        Match                        portal.*
-        {{- if eq .Values.provider "AWS" }}
-        region                       ${AWS_REGION}
-        Bucket                       fluent-bit.planetariumhq.com
-        {{- else if eq .Values.provider "RKE2" }}
-        region                       auto
-        bucket                       9c-fluentbit
-        endpoint                     ${R2_ENDPOINT}
-        {{- end }}
-        Total_file_size              10M
-        compression                  gzip
-        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters .
-
-    [INPUT]
-        Name                tail
-        Tag                 host.dmesg
-        Path                /var/log/dmesg
-        Parser              syslog
-        DB                  /var/fluent-bit/state/flb_dmesg.db
-        Mem_Buf_Limit       5MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Read_from_Head      ${READ_FROM_HEAD}
-    [INPUT]
-        Name                tail
-        Tag                 host.messages
-        Path                /var/log/messages
-        Parser              syslog
-        DB                  /var/fluent-bit/state/flb_messages.db
-        Mem_Buf_Limit       5MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Read_from_Head      ${READ_FROM_HEAD}
-    [INPUT]
-        Name                tail
-        Tag                 host.secure
-        Path                /var/log/secure
-        Parser              syslog
-        DB                  /var/fluent-bit/state/flb_secure.db
-        Mem_Buf_Limit       5MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Read_from_Head      ${READ_FROM_HEAD}
-    [OUTPUT]
-        Name                         s3
-        Match                        host.*
-        {{- if eq .Values.provider "AWS" }}
-        region                       ${AWS_REGION}
-        Bucket                       fluent-bit.planetariumhq.com
-        {{- else if eq .Values.provider "RKE2" }}
-        region                       auto
-        bucket                       9c-fluentbit
-        endpoint                     ${R2_ENDPOINT}
-        {{- end }}
-        Total_file_size              100M
-        compression                  gzip
-        S3_key_format                /${CLUSTER_NAME}/$TAG[0]/%Y/%m/%d/$TAG-$UUID.gz
-        S3_key_format_tag_delimiters .
   parsers.conf: |
     [PARSER]
         Name                docker

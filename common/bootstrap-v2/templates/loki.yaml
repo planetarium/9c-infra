@@ -18,11 +18,16 @@ spec:
         global:
           dnsService: "rke2-coredns-rke2-coredns"
 
+        # SingleBinary + filesystem on a Longhorn PVC (2026-10-21). The previous
+        # SimpleScalable setup stored chunks in R2 and broke when the R2 token was
+        # revoked (loki-write was scaled to 0 on 2026-03-25).
+        deploymentMode: SingleBinary
+
         loki:
           auth_enabled: false
           commonConfig:
             path_prefix: /var/loki
-            replication_factor: 3
+            replication_factor: 1
           {{- if $.Values.loki.metrics.enabled }}
           structuredConfig:
             ruler:
@@ -40,122 +45,61 @@ spec:
                     url: "http://prometheus-server.monitoring.svc.cluster.local/api/v1/write"
           {{- end }}
           storage:
-            type: s3
-            bucketNames:
-              admin: {{ $.Values.loki.bucketName }}
-              chunks: {{ $.Values.loki.bucketName }}
-              ruler: {{ $.Values.loki.bucketName }}
-            s3:
-              endpoint: "${R2_ENDPOINT}}"
-              region: "apac"
-              bucketnames: "{{ $.Values.loki.bucketName }}"
-              accessKeyId: "${R2_ACCESS_KEY_ID}"
-              secretAccessKey: "${R2_SECRET_ACCESS_KEY}"
-              s3forcepathstyle: true
-              insecure: false
+            type: filesystem
           schemaConfig:
             configs:
-            - from: "2022-01-11"
+            - from: "2026-10-01"
               index:
                 period: 24h
                 prefix: loki_index_
               store: tsdb
-              object_store: s3
+              object_store: filesystem
               schema: v13
-          querier:
-            max_concurrent: 32
-
-          query_scheduler:
-            max_outstanding_requests_per_tenant: 8192
-            grpc_client_config:
-              grpc_compression: "snappy"
-              max_send_msg_size: 160388078 # 32MiB, default = 16777216]
-              max_recv_msg_size: 160388078
-
+          compactor:
+            working_directory: /var/loki/compactor
+            retention_enabled: true
+            delete_request_store: filesystem
           limits_config:
-            max_query_parallelism: 64
-            max_query_series: 10000000
-            max_entries_limit_per_query: 1000000
             reject_old_samples: true
             reject_old_samples_max_age: 168h
-            retention_period: 360h
-            split_queries_by_interval: 15m
-            query_timeout: 600s
-            ingestion_rate_mb: 192
-            ingestion_burst_size_mb: 200
-            per_stream_rate_limit: 32MB
-            per_stream_rate_limit_burst: 48MB
-
-          ingester:
-            concurrent_flushes: 32
-            chunk_block_size: 262144
-            chunk_target_size: 1572864
-            chunk_encoding: "snappy"
-            index_shards: 32
-
+            retention_period: {{ $.Values.loki.retentionPeriod }}
+            max_query_series: 100000
+            max_entries_limit_per_query: 100000
+            query_timeout: 300s
+            ingestion_rate_mb: 32
+            ingestion_burst_size_mb: 64
+            per_stream_rate_limit: 8MB
+            per_stream_rate_limit_burst: 16MB
           server:
-            grpc_listen_port: 9095
-            grpc_server_max_recv_msg_size: 160388078
-            grpc_server_max_send_msg_size: 160388078
-            grpc_server_max_concurrent_streams: 0
-            http_listen_port: 3100
-            http_server_read_timeout: 600s
-            http_server_write_timeout: 600s
-            http_server_idle_timeout: 600s
-
-          frontend:
-            max_outstanding_per_tenant: 8192
-            scheduler_worker_concurrency: 32
-
-          frontend_worker:
-            grpc_client_config:
-              grpc_compression: "snappy"
-              max_send_msg_size: 160388078 # 32MiB, default = 16777216]
-              max_recv_msg_size: 160388078
-
-          storage_config:
-            boltdb_shipper:
-              active_index_directory: /var/loki/index
+            http_server_read_timeout: 300s
+            http_server_write_timeout: 300s
 
         lokiCanary:
           enabled: false
 
-        backend:
-          extraArgs:
-            - "-config.expand-env=true"
-          extraEnvFrom:
-            - secretRef:
-                name: r2-token
-
-        write:
-          replicas: {{ $.Values.loki.write.count }}
-          {{- with $.Values.loki.write.nodeSelector }}
+        singleBinary:
+          replicas: 1
+          {{- with $.Values.loki.singleBinary.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml $.Values.loki.write.resources | nindent 12 }}
+            {{- toYaml $.Values.loki.singleBinary.resources | nindent 12 }}
           persistence:
-            size: 30Gi
-          extraArgs:
-            - "-config.expand-env=true"
-          extraEnvFrom:
-            - secretRef:
-                name: r2-token
+            enabled: true
+            size: {{ $.Values.loki.singleBinary.storageSize }}
+            storageClass: {{ $.Values.loki.singleBinary.storageClass }}
 
         read:
-          replicas: {{ $.Values.loki.read.count }}
-          {{- with $.Values.loki.read.nodeSelector }}
-          nodeSelector:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          resources:
-            {{- toYaml $.Values.loki.read.resources | nindent 12 }}
-          extraArgs:
-            - "-config.expand-env=true"
-          extraEnvFrom:
-            - secretRef:
-                name: r2-token
+          replicas: 0
+        write:
+          replicas: 0
+        backend:
+          replicas: 0
+        chunksCache:
+          enabled: false
+        resultsCache:
+          enabled: false
 
         test:
           enabled: false

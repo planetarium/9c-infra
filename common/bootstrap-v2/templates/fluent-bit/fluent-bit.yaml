@@ -35,11 +35,6 @@ spec:
           value: "Off"
         - name: READ_FROM_TAIL
           value: "On"
-        {{- if eq .Values.provider "RKE2" }}
-        envFrom:
-        - secretRef:
-            name: r2-token
-        {{- end }}
         flush: 5
         existingConfigMap: "fluent-bit-config"
         volumeMounts:
