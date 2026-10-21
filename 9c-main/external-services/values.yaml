@@ -411,6 +411,10 @@ iap:
     thresholdMinutes: 30
     heartbeatHourUtc: "3"   # 12:00 KST — 기존 일일 토큰 리포트와 같은 시각
     envLabel: "Mainnet"
+    # 조사 끝나 처리하지 않기로 한 영수증 id — 알람·잔류 집계에서 뺀다.
+    ignoreReceiptIds:
+      # 2026-10-21 a7eba117: 클라가 체인에 없는 아바타(0xb30d2984…)로 마일리지 구매 → FailedLoadStateException. 기록만 남김.
+      - "2953065"   # 따옴표 필수 — 숫자면 helm 이 2.953065e+06 으로 렌더한다
 
 ncboard:
   enabled: true

@@ -71,6 +71,8 @@ spec:
                 #   이번처럼 감시 자체가 죽은 걸 아무도 모르게 된다.
                 - name: HEARTBEAT_HOUR
                   value: {{ $.Values.iap.beatWatchdog.heartbeatHourUtc | quote }}
+                - name: IGNORE_RECEIPT_IDS
+                  value: {{ join "," ($.Values.iap.beatWatchdog.ignoreReceiptIds | default list) | quote }}
                 - name: WORKER_PG_DSN
                   valueFrom:
                     secretKeyRef:
