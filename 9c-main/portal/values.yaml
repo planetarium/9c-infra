@@ -102,7 +102,10 @@ backofficeService:
     #   KST 날짜로 묶이도록 수정(9c-portal #1324). apps/backoffice 두 파일뿐이라 포탈 태그(L36)는 그대로 둔다.
     # (2026-10-21) → main-93137136: 에러 로그 assign 담당자 yang 으로(9c-portal #1332). 3c420113..93137136 의
     #   apps/backoffice 변경은 이것뿐. 포탈과 같은 태그로 맞춘다.
-    tag: main-93137136f1b809dfd55f353b204c0214b994a034
+    # (2026-10-21) → main-d620acc3: Reward Candidate 목록에서 밴으로 제외된 건을 완료로 표시(9c-portal #1336).
+    #   Heimdall S25 가 499/500 + Apply 버튼으로 남아 중복 클릭을 부른 건. 93137136..d620acc3 의
+    #   apps/backoffice 변경은 이것뿐, packages/database 변경 없음. 포탈 태그는 그대로.
+    tag: main-d620acc3144897c5f865483475d4bf0e840bcc3c
     pullPolicy: Always
   externalSecret:
     enabled: true
