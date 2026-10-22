@@ -410,6 +410,7 @@ spec:
   validationActions: [Deny]
 ---
 # PV 는 대상 네임스페이스 PVC 가 쓰던 Released 볼륨만, Longhorn 볼륨은 그 네임스페이스의 detached 볼륨만 지운다.
+# (타입별로 정책을 나눈다 — 한 식에 섞으면 PV 타입 검사에서 Longhorn 필드가 컴파일 오류가 된다)
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
@@ -422,6 +423,31 @@ spec:
         apiVersions: [v1]
         operations: [DELETE]
         resources: [persistentvolumes]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  validations:
+    - expression: >-
+        oldObject.spec.?claimRef.?namespace.orValue('') in {{ $nsList | toJson }} &&
+        oldObject.status.?phase.orValue('') == 'Released'
+      message: donggeul-rotate 는 대상 네임스페이스의 Released PV 만 지울 수 있습니다
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-volumes
+spec:
+  policyName: donggeul-rotate-volumes
+  validationActions: [Deny]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-longhorn-volumes
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
       - apiGroups: [longhorn.io]
         apiVersions: ["*"]
         operations: [DELETE]
@@ -431,19 +457,16 @@ spec:
       expression: request.userInfo.username == {{ $sa | quote }}
   validations:
     - expression: >-
-        request.resource.resource == 'persistentvolumes' ?
-        (oldObject.spec.?claimRef.?namespace.orValue('') in {{ $nsList | toJson }} &&
-         oldObject.status.?phase.orValue('') == 'Released') :
-        (oldObject.status.?kubernetesStatus.?namespace.orValue('') in {{ $nsList | toJson }} &&
-         oldObject.status.?state.orValue('') == 'detached')
-      message: donggeul-rotate 는 대상 네임스페이스의 Released PV·detached Longhorn 볼륨만 지울 수 있습니다
+        oldObject.status.?kubernetesStatus.?namespace.orValue('') in {{ $nsList | toJson }} &&
+        oldObject.status.?state.orValue('') == 'detached'
+      message: donggeul-rotate 는 대상 네임스페이스의 detached Longhorn 볼륨만 지울 수 있습니다
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: donggeul-rotate-volumes
+  name: donggeul-rotate-longhorn-volumes
 spec:
-  policyName: donggeul-rotate-volumes
+  policyName: donggeul-rotate-longhorn-volumes
   validationActions: [Deny]
 {{- end }}
 {{- end }}
