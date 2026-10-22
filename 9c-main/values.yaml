@@ -174,3 +174,11 @@ donggeulOps:
       - seasonpass-env
     portal:
       - portal-secrets
+  # 볼륨 로테이션 전용 SA(donggeul-rotate). 토큰은 동글이 컨테이너의 root 래퍼(ops-rotate)만 읽는다.
+  # 모델은 preflight·request 만 부르고, execute 는 운영자의 Slack 승인 버튼을 거친 호스트 실행기만 부른다.
+  # 런북: 9c-ops products/9c/skills/headless/volume-rotation.md
+  rotate:
+    enabled: true
+    namespaces:
+      odin: { app: odin, statefulsets: [validator-5, remote-headless-1] }
+      heimdall: { app: heimdall, statefulsets: [validator-5, remote-headless-1] }
