@@ -172,6 +172,7 @@ donggeulOps:
     9c-external-services:
       - iap-env
       - seasonpass-env
+      - ninechronicles-backoffice-env   # ops-backoffice 래퍼(NC_API_KEY). 쓰기는 운영자 승인 버튼 뒤에만
     portal:
       - portal-secrets
   # 볼륨 로테이션 전용 SA(donggeul-rotate). 토큰은 동글이 컨테이너의 root 래퍼(ops-rotate)만 읽는다.
