@@ -7,5 +7,5 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # maple-go 2078f5a7 — 영주 · 주민 PNG만 V8 CDN에 업로드하고 JSON 원장은 R2에 유지
-    tag: git-2078f5a7240e7a75ffda0001f39b1ac7942b06c6
+    # maple-go 3de85018 — 데이터 모양 s4 · 명단 제외(밴) 거르기(게시판의 banned 로 후보 거르기 · 대장 정리)
+    tag: git-3de850184264887ccb4c017a6908b57dd90c1688
