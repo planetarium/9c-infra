@@ -171,4 +171,280 @@ subjects:
     name: donggeul-ops
     namespace: donggeul-ops
 {{- end }}
+{{- with .Values.donggeulOps.rotate }}
+{{- if .enabled }}
+---
+# 볼륨 로테이션(validator↔rpc 볼륨 스왑, 옛 볼륨 → clone) 전용 SA. donggeul-ops 와 분리해 토큰을 따로 둔다.
+# 동글이 컨테이너의 root 래퍼 ops-rotate 만 이 토큰을 읽는다. 실행(execute)은 운영자의 Slack 승인 뒤에만.
+# - StatefulSet scale 은 이름을 지정한 것만(resourceNames).
+# - PVC 생성·삭제, 임시 파드(tip 조회·txexec 삭제) 생성·삭제는 이 네임스페이스들에서만. 무엇을 지울지는 래퍼가
+#   "어떤 워크로드도 참조하지 않고 detached" 인지 확인한 뒤 고른다(Kubernetes 는 create 를 이름으로 제한하지 못한다).
+# - ArgoCD 는 해당 앱의 operation(selective sync) 만, Longhorn 은 볼륨·snapshot 삭제만.
+# - RBAC 로 못 좁히는 부분은 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청만 골라 막는다
+#   (Application spec 변경, 임의 파드, 남의 PV·Longhorn 볼륨 삭제).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: donggeul-rotate
+  namespace: donggeul-ops
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: donggeul-rotate-token
+  namespace: donggeul-ops
+  annotations:
+    kubernetes.io/service-account.name: donggeul-rotate
+type: kubernetes.io/service-account-token
+---
+# 조회는 donggeul-ops 와 같은 읽기 역할(secret·configmap 없음)을 쓴다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: donggeul-rotate-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: donggeul-ops-read
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rotate
+    namespace: donggeul-ops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: donggeul-rotate-pv
+rules:
+  - apiGroups: [""]
+    resources: [persistentvolumes]
+    verbs: [delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: donggeul-rotate-pv
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: donggeul-rotate-pv
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rotate
+    namespace: donggeul-ops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-rotate-longhorn
+  namespace: longhorn-system
+rules:
+  - apiGroups: [longhorn.io]
+    resources: [volumes, snapshots]
+    verbs: [get, list, delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-rotate-longhorn
+  namespace: longhorn-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-rotate-longhorn
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rotate
+    namespace: donggeul-ops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-rotate-argocd
+  namespace: argocd
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [applications]
+    resourceNames:
+      {{- range $ns, $c := .namespaces }}
+      - {{ $c.app }}
+      {{- end }}
+    verbs: [get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-rotate-argocd
+  namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-rotate-argocd
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rotate
+    namespace: donggeul-ops
+{{- range $ns, $c := .namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-rotate
+  namespace: {{ $ns }}
+rules:
+  - apiGroups: [apps]
+    resources: [statefulsets/scale]
+    resourceNames:
+      {{- range $c.statefulsets }}
+      - {{ . }}
+      {{- end }}
+    verbs: [get, patch, update]
+  - apiGroups: [""]
+    resources: [persistentvolumeclaims]
+    verbs: [create, delete]
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [create, delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-rotate
+  namespace: {{ $ns }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-rotate
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rotate
+    namespace: donggeul-ops
+{{- end }}
+{{- $nsList := keys .namespaces | sortAlpha }}
+{{- $apps := list }}{{- $stsList := list }}
+{{- range $ns, $c := .namespaces }}{{- $apps = append $apps $c.app }}{{- $stsList = concat $stsList $c.statefulsets }}{{- end }}
+{{- $sa := "system:serviceaccount:donggeul-ops:donggeul-rotate" }}
+---
+# 이 SA 의 Application 수정은 operation(selective sync) 만 — spec 은 그대로, 대상은 지정한 StatefulSet, prune 없음.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-argocd
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: argocd
+    resourceRules:
+      - apiGroups: [argoproj.io]
+        apiVersions: ["*"]
+        operations: [UPDATE]
+        resources: [applications]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  validations:
+    - expression: object.spec == oldObject.spec
+      message: donggeul-rotate 는 Application spec 을 바꿀 수 없습니다
+    - expression: >-
+        !has(object.operation) ||
+        (has(object.operation.sync) && has(object.operation.sync.resources) &&
+         size(object.operation.sync.resources) > 0 &&
+         object.operation.sync.resources.all(r, r.kind == 'StatefulSet' && r.name in {{ $stsList | uniq | toJson }}) &&
+         (!has(object.operation.sync.prune) || object.operation.sync.prune == false) &&
+         !has(object.operation.sync.manifests) && !has(object.operation.sync.source) &&
+         !has(object.operation.sync.sources) && !has(object.operation.sync.syncOptions) &&
+         !has(object.operation.sync.syncStrategy) && !has(object.operation.retry))
+      message: donggeul-rotate 의 sync 는 git 의 지정 StatefulSet selective sync(prune·매니페스트·소스 재지정·옵션 없음)만
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-argocd
+spec:
+  policyName: donggeul-rotate-argocd
+  validationActions: [Deny]
+---
+# 임시 파드: 라벨 app=donggeul-rotate, PVC 볼륨만, SA 토큰·시크릿·호스트 접근 없음, 이미지 허용 목록. 지우는 것도 그 라벨만.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-pods
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, DELETE]
+        resources: [pods]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  validations:
+    - expression: >-
+        request.operation == 'DELETE' ?
+        (has(oldObject.metadata.labels) && oldObject.metadata.labels[?'app'].orValue('') == 'donggeul-rotate') :
+        (has(object.metadata.labels) && object.metadata.labels[?'app'].orValue('') == 'donggeul-rotate')
+      message: donggeul-rotate 는 app=donggeul-rotate 파드만 만들고 지울 수 있습니다
+    - expression: >-
+        request.operation == 'DELETE' || (
+        object.spec.automountServiceAccountToken == false &&
+        !object.spec.?hostNetwork.orValue(false) && !object.spec.?hostPID.orValue(false) && !object.spec.?hostIPC.orValue(false) &&
+        !has(object.spec.initContainers) && !has(object.spec.ephemeralContainers) &&
+        object.spec.volumes.all(v, has(v.persistentVolumeClaim)) &&
+        object.spec.containers.all(c,
+          (c.image == 'alpine:3.20' || c.image.startsWith('planetariumhq/ninechronicles-headless:')) &&
+          !has(c.envFrom) && (!has(c.env) || c.env.all(e, !has(e.valueFrom))) &&
+          !c.?securityContext.?privileged.orValue(false) &&
+          size(c.?securityContext.?capabilities.?add.orValue([])) == 0))
+      message: donggeul-rotate 임시 파드 제약(PVC 볼륨만·토큰 없음·시크릿 env 없음·허용 이미지) 위반
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-pods
+spec:
+  policyName: donggeul-rotate-pods
+  validationActions: [Deny]
+---
+# PV 는 대상 네임스페이스 PVC 가 쓰던 Released 볼륨만, Longhorn 볼륨은 그 네임스페이스의 detached 볼륨만 지운다.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-volumes
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [DELETE]
+        resources: [persistentvolumes]
+      - apiGroups: [longhorn.io]
+        apiVersions: ["*"]
+        operations: [DELETE]
+        resources: [volumes]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  validations:
+    - expression: >-
+        request.resource.resource == 'persistentvolumes' ?
+        (oldObject.spec.?claimRef.?namespace.orValue('') in {{ $nsList | toJson }} &&
+         oldObject.status.?phase.orValue('') == 'Released') :
+        (oldObject.status.?kubernetesStatus.?namespace.orValue('') in {{ $nsList | toJson }} &&
+         oldObject.status.?state.orValue('') == 'detached')
+      message: donggeul-rotate 는 대상 네임스페이스의 Released PV·detached Longhorn 볼륨만 지울 수 있습니다
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-volumes
+spec:
+  policyName: donggeul-rotate-volumes
+  validationActions: [Deny]
+{{- end }}
+{{- end }}
 {{- end }}
