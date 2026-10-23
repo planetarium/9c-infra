@@ -20,7 +20,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-d741897b09bfc9843d7e0179908f14d5a71346f6
+    tag: server-c0d54a5643c74b7bdfd7e667110ec30bb0610631
   hostname: petpop-backoffice.9c.gg
   nodeSelector:
     node.kubernetes.io/type: general
