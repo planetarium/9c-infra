@@ -30,6 +30,10 @@ workers:
     enabled: false
   seasonAutomation:
     enabled: true
+    # 인터널은 실제로 지급(리허설). 유저가 적어 sanity 하한을 1 로.
+    env:
+      SEASON_AUTOMATION_END_ENABLED: "true"
+      SEASON_AUTOMATION_ROUND0_MIN: "1"
     # iwinv-1 은 Redis 접속 불가
     nodeSelector:
       kubernetes.io/hostname: 9c-internal-2

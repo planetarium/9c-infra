@@ -107,8 +107,9 @@ spec:
   schedule: {{ .Values.workers.seasonAutomation.schedule | quote }}
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 300
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 3
+  # 결과는 동글이 옵스가 Job 로그에서 읽어 중계한다 — 동글이가 잠시 멈춰도 따라잡게 5시간치(10분 주기) 남긴다.
+  successfulJobsHistoryLimit: 30
+  failedJobsHistoryLimit: 30
   jobTemplate:
     spec:
       backoffLimit: 0
@@ -124,6 +125,14 @@ spec:
               envFrom:
                 - secretRef:
                     name: petpop-env
+              # 비밀이 아닌 스위치(SEASON_AUTOMATION_END_ENABLED 등)는 values 로 — env 가 envFrom 보다 우선한다.
+              {{- with .Values.workers.seasonAutomation.env }}
+              env:
+                {{- range $k, $v := . }}
+                - name: {{ $k }}
+                  value: {{ $v | quote }}
+                {{- end }}
+              {{- end }}
           {{- with (.Values.workers.seasonAutomation.nodeSelector | default .Values.workers.nodeSelector) }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
