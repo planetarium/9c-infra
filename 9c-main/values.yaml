@@ -175,6 +175,10 @@ donggeulOps:
       - ninechronicles-backoffice-env   # ops-backoffice 래퍼(NC_API_KEY). 쓰기는 운영자 승인 버튼 뒤에만
     portal:
       - portal-secrets
+    # 앱 secret 을 쓰지 않는 서비스용. 읽기 전용 DB 계정 URL 만 담는다(수동 생성 — 9c-ops common/donggeul.md).
+    #   펫팝 petpop-env 에는 지급 지갑 개인키가 같이 있어 그 secret 은 열지 않는다.
+    donggeul-ops:
+      - donggeul-ops-db
   # 볼륨 로테이션 전용 SA(donggeul-rotate). 토큰은 동글이 컨테이너의 root 래퍼(ops-rotate)만 읽는다.
   # 모델은 preflight·request 만 부르고, execute 는 운영자의 Slack 승인 버튼을 거친 호스트 실행기만 부른다.
   # 런북: 9c-ops products/9c/skills/headless/volume-rotation.md
