@@ -349,6 +349,35 @@ spec:
                       receiver: Slack (devops-alert)
                     annotations:
                       summary: '동글이 옵스(pt4) heartbeat 가 15분 넘게 없다 — 알림 대응·펫팝 시즌 자동화 결과 중계가 멈췄다'
+                  # heartbeat 는 실행기 루프가 돈다는 것만 증명한다. 시즌 자동화 결과 중계(Job 조회)가 실제로
+                  #   성공한 시각은 따로 올린다 — 이게 멈추면 지급 보고가 사람에게 안 간다.
+                  - uid: donggeul-ops-relay-stale
+                    title: Donggeul Ops Relay Stale
+                    noDataState: Alerting
+                    execErrState: Alerting
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'time() - max(donggeul_ops_relay_last_success_timestamp_seconds)'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [900] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                      service: donggeul
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '동글이 옵스의 펫팝 시즌 자동화 결과 중계가 15분 넘게 성공하지 못했다 — 지급 보고가 사람에게 안 간다'
                   {{- if ((.Values.grafanaAlerts).petpopSeasonAutomation) }}
                   # 시즌 자동화 CronJob(10분 주기)이 30분 넘게 성공하지 못함. 메인넷에서 CronJob 을 켜는 커밋에서 같이 켠다
                   #   (꺼진 CronJob 엔 지표가 없어 noData 로 울린다).
