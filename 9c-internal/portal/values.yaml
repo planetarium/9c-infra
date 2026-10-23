@@ -175,6 +175,13 @@ backofficeService:
     enabled: true
     provider: AWS
     prefix: "9c-internal-v2/backoffice"
+  # 동글이 옵스 ops JWT(9c-portal #1347). STAGE 는 토큰의 env 클레임과 대조된다 — 없으면 ops 경로가 닫힌다(fail-closed).
+  # 서명 키 OPS_AGENT_JWT_SECRET 은 SM 9c-internal-v2/backoffice/env 에 있고(2026-10-23 추가), 래퍼용으로 그 키 하나만 담은
+  # secret(portal-backoffice-ops-jwt)을 따로 만든다.
+  env:
+    STAGE: "internal"
+  opsAgentJwt:
+    enabled: true
   cronjobs:
     - name: withdrawal
       schedule: "*/2 * * * *"

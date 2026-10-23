@@ -44,6 +44,9 @@ portalService:
     MAINNET_HEIMDALL: "https://heimdall-jwt.nine-chronicles.com/graphql"
 backofficeService:
   name: backoffice
+  # 동글이 옵스 ops JWT 전용 secret(backoffice-ops-jwt-external-secret.yaml). 환경 values 에서 켠다.
+  opsAgentJwt:
+    enabled: false
   hostname: "localhost"
   replicaCount: 1
   service:
