@@ -380,7 +380,11 @@ iap:
       #   그대로. 차트의 WORKER_IAP_GARAGE_WEBHOOK_URL env 는 새 이미지가 무시하므로 남겨 둔다 —
       #   인터널 worker(git-60ac034e)는 아직 그 리포트를 보내므로, env 와 iap-env 시크릿 키는
       #   인터널도 올린 뒤에 지울 것(키를 먼저 지우면 CreateContainerConfigError).
-      tag: "git-b533b733da2832594122ea6ffe08d6c9a86b16a8"
+      #
+      # (2026-10-23) → git-30cdbd07: #501 바우처 enroll 이 receipt 전체(1.4GB)를 2분마다 훑던 것 수정
+      #   (created_at 정렬 + 대상 상품 리터럴 IN). 인덱스 f3b8d2a7c591(ix_receipt_valid_created_product)
+      #   **먼저** 적용 완료 후 교체. api 는 그대로(worker 전용 변경).
+      tag: "git-30cdbd071a647235b70543f0c8fe17376a441fbe"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
