@@ -77,6 +77,7 @@ seasonpass:
     pruneEnabled: "false"
     batch: 5000
     maxRows: 300000
+    scanWindow: 50000  # DELETE 한 문장이 훑는 id 범위
 
 iap:
   backoffice:

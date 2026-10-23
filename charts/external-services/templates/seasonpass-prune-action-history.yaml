@@ -41,6 +41,8 @@ spec:
             app: seasonpass-prune-action-history
         spec:
           restartPolicy: Never
+          # SIGTERM 후 진행 중 문장(statement_timeout 30s)이 끝나고 요약 줄이 찍힐 시간.
+          terminationGracePeriodSeconds: 60
           # K8s API 도 AWS 도 쓰지 않는다. DB 가 전부다.
           automountServiceAccountToken: false
           {{- with $.Values.seasonpass.worker.nodeSelector }}
@@ -62,6 +64,9 @@ spec:
                   value: {{ $cfg.batch | quote }}
                 - name: PRUNE_MAX_ROWS
                   value: {{ $cfg.maxRows | quote }}
+                # DELETE 한 문장이 훑는 id 범위 — 플랜과 무관하게 문장 비용을 묶는다.
+                - name: PRUNE_SCAN_WINDOW
+                  value: {{ $cfg.scanWindow | default 50000 | quote }}
                 - name: WORKER_PG_DSN
                   valueFrom:
                     secretKeyRef:

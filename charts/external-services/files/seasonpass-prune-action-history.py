@@ -10,16 +10,20 @@ Job 으로 돌린다.
 ## 무엇을 남기는가 (pass_type 별)
 
 - 진행 중 시즌: start <= now 이고 (end 가 NULL 이거나 now <= end). end 는 모델상 inclusive.
-- 가장 이른 진행 중 시즌의 바로 앞 시즌(start_timestamp 기준) — 막 끝난 시즌의 클레임·문의 대응용.
+- 가장 이른 진행 중 시즌의 바로 앞 시즌(start_timestamp 기준, 같은 start 가 여럿이면 전부).
+- 끝난 시즌(end < now) 중 end 가 가장 늦은 시즌 — 진행 중 시즌이 겹쳐도 막 끝난 시즌을 지키기 위해.
+- 클레임 창 안의 시즌: end + 7일 >= now.
 - 미래 시즌(start > now)과 start 가 NULL 인 시즌.
 - 진행 중 시즌이 하나도 없는 pass_type 은 통째로 건너뛴다(판단 근거가 없으니 안 지운다).
 - 어느 pass_type 에도 진행 중 시즌이 없으면 아무것도 안 하고 실패로 끝난다(시계·데이터 이상).
 
 ## 부하
 
-공유 PG10 인스턴스라 조심한다. id 커서로 배치 삭제(죽은 튜플 재스캔 방지), 문장마다
-statement_timeout 30s, 배치마다 autocommit + 쉬기, 1회 실행당 PRUNE_MAX_ROWS 상한
-(유입 ~45k행/일 — 며칠에 걸쳐 따라잡는다).
+공유 PG10 인스턴스라 조심한다. 모든 DELETE 는 id 창(PRUNE_SCAN_WINDOW, 기본 50000)으로
+범위를 묶어 플래너가 무엇을 고르든 한 문장이 훑는 양이 제한된다. 창에서 batch 보다 적게
+맞으면 창을 통째로 넘기고, 꽉 차면 마지막 삭제 id 부터 이어간다. max(id) 는 시작 때
+한 번만 읽는다(pkey). 문장마다 statement_timeout 30s, 배치마다 autocommit, 삭제가 있었던
+배치 뒤에만 쉰다. 1회 실행당 PRUNE_MAX_ROWS 상한(유입 ~45k행/일 — 며칠에 걸쳐 따라잡는다).
 
 PRUNE_ENABLED=true 가 아니면 지울 시즌 목록과 추정 행수만 찍는다(dry run).
 """
@@ -27,9 +31,11 @@ PRUNE_ENABLED=true 가 아니면 지울 시즌 목록과 추정 행수만 찍는
 import datetime
 import json
 import os
+import signal
 import sys
 import time
 
+CLAIM_WINDOW = datetime.timedelta(days=7)
 LOCK_KEY = "seasonpass-prune-action-history"
 REPORT_PREFIX = "SEASON_AUTOMATION_REPORT "
 
@@ -63,8 +69,14 @@ def compute_keep_set(seasons, now):
         before = [r for r in rows if r[2] is not None and r[2] < earliest]
         if before:
             prev_start = max(r[2] for r in before)
-            # 같은 start 가 여럿이면 id 가 큰 것 하나(가장 나중에 만든 것).
-            type_keep.add(max(r[0] for r in before if r[2] == prev_start))
+            type_keep.update(r[0] for r in before if r[2] == prev_start)
+        ended = [r for r in rows if r[3] is not None and r[3] < now]
+        if ended:
+            last_end = max(r[3] for r in ended)
+            type_keep.update(r[0] for r in ended if r[3] == last_end)
+        type_keep.update(
+            r[0] for r in rows if r[3] is not None and r[3] + CLAIM_WINDOW >= now
+        )
         keep.update(type_keep)
         delete.update(r[0] for r in rows if r[0] not in type_keep)
 
@@ -136,7 +148,51 @@ def _self_test():
     else:
         raise AssertionError("expected RuntimeError on empty season list")
 
+    # 6) 겹치는 진행 중: 오래된 긴 S0(NULL end) + 진행 중 S2 + 막 끝난 S1 → S1 유지
+    #    (가장 이른 진행 중 = S0 라 "직전" 규칙만으론 S1 이 지워진다)
+    s = [
+        (1, "C", D(3, 1), D(3, 31)),
+        (10, "C", D(4, 1), None),          # S0
+        (11, "C", D(9, 1), D(10, 10)),     # S1: 끝난 것 중 end 최댓값(창 밖)
+        (12, "C", D(10, 11), D(11, 10)),   # S2
+    ]
+    k, d, sk = compute_keep_set(s, now)
+    assert k == [1, 10, 11, 12] and d == [], (k, d)  # 1 은 S0 의 직전
+    s.insert(0, (0, "C", D(2, 1), D(2, 28)))
+    k, d, sk = compute_keep_set(s, now)
+    assert k == [1, 10, 11, 12] and d == [0], (k, d)
+
+    # 7) 클레임 창: 직전도 마지막 종료도 아니지만 end + 7일 >= now 면 유지
+    s = [
+        (1, "A", D(7, 1), D(7, 31)),
+        (2, "A", D(8, 1), D(10, 17)),      # 창 안(6일 전 종료)
+        (3, "A", D(9, 1), D(10, 19)),      # 직전 + 마지막 종료
+        (4, "A", D(10, 20), D(11, 20)),
+        (5, "A", D(6, 1), D(10, 15)),      # 창 밖(8일 전)
+    ]
+    k, d, sk = compute_keep_set(s, now)
+    assert k == [2, 3, 4] and d == [1, 5], (k, d)
+
+    # 8) "직전" start 가 같은 시즌이 여럿이면 전부 유지
+    s = [
+        (1, "T", D(7, 1), D(7, 31)),
+        (2, "T", D(8, 1), D(8, 31)),
+        (3, "T", D(8, 1), D(9, 5)),
+        (4, "T", D(10, 1), D(10, 31)),
+    ]
+    k, d, sk = compute_keep_set(s, now)
+    assert k == [2, 3, 4] and d == [1], (k, d)
+
     print("self-test OK")
+
+
+class Terminated(Exception):
+    pass
+
+
+def _on_sigterm(signum, _frame):
+    # activeDeadlineSeconds·파드 삭제 시에도 finally 의 요약 한 줄이 나가게 예외로 바꾼다.
+    raise Terminated(f"received signal {signum}")
 
 
 def main(state):
@@ -146,6 +202,7 @@ def main(state):
     dsn = os.environ["WORKER_PG_DSN"]
     batch = int(os.environ.get("PRUNE_BATCH", "") or 5000)
     max_rows = int(os.environ.get("PRUNE_MAX_ROWS", "") or 300000)
+    window = int(os.environ.get("PRUNE_SCAN_WINDOW", "") or 50000)
 
     conn = psycopg2.connect(dsn, connect_timeout=15)
     conn.autocommit = True
@@ -175,7 +232,24 @@ def main(state):
                 state["text"] = f"nothing to prune (keep={len(keep)} seasons){skip_note}"
                 return
 
+            cur.execute("SELECT min(id), max(id) FROM action_history")
+            min_id, max_id = cur.fetchone()
+            if max_id is None:
+                state["text"] = f"action_history is empty{skip_note}"
+                return
+            print(f"id range {min_id}..{max_id} window={window} batch={batch} cap={max_rows}")
+            subq = (
+                "SELECT id FROM action_history"
+                " WHERE id > %(lo)s AND id <= %(lo)s + %(w)s AND season_id = ANY(%(del)s)"
+                " ORDER BY id LIMIT %(n)s"
+            )
+
             if state["dryRun"]:
+                params = {"lo": min_id - 1, "w": window, "del": delete, "n": batch}
+                cur.execute("EXPLAIN DELETE FROM action_history WHERE id IN (" + subq + ")", params)
+                print("EXPLAIN (first window):")
+                for (line,) in cur.fetchall():
+                    print("  " + line)
                 try:
                     cur.execute(
                         "SELECT count(*) FROM (SELECT 1 FROM action_history"
@@ -191,32 +265,33 @@ def main(state):
                 )
                 return
 
-            last, total, batches = 0, 0, 0
+            lo, total, batches, windows = min_id - 1, 0, 0, 0
             started = time.time()
-            while total < max_rows:
+            while lo < max_id and total < max_rows:
                 n = min(batch, max_rows - total)
                 t0 = time.time()
                 cur.execute(
-                    "DELETE FROM action_history WHERE id IN ("
-                    " SELECT id FROM action_history"
-                    " WHERE id > %(last)s AND season_id = ANY(%(del)s)"
-                    " ORDER BY id LIMIT %(n)s) RETURNING id",
-                    {"last": last, "del": delete, "n": n},
+                    "DELETE FROM action_history WHERE id IN (" + subq + ") RETURNING id",
+                    {"lo": lo, "w": window, "del": delete, "n": n},
                 )
                 ids = [r[0] for r in cur.fetchall()]
                 took = time.time() - t0
-                if not ids:
-                    break
-                last = max(ids)
-                total += len(ids)
-                batches += 1
-                state["deleted"] = total
-                time.sleep(5 if took > 5 else 0.2)
+                windows += 1
+                if len(ids) < n:
+                    lo += window  # 창을 다 봤다
+                else:
+                    lo = max(ids)  # 창이 꽉 찼다 — 마지막 삭제 id 부터 이어간다
+                if ids:
+                    total += len(ids)
+                    batches += 1
+                    state["deleted"] = total
+                    time.sleep(5 if took > 5 else 0.2)
             elapsed = time.time() - started
             capped = " (hit PRUNE_MAX_ROWS, continues next run)" if total >= max_rows else ""
             state["text"] = (
-                f"deleted {total} rows from seasons {delete} in {batches} batches,"
-                f" {elapsed:.0f}s{capped}{skip_note}"
+                f"deleted {total} rows from seasons {delete} in {batches} batches"
+                f" / {windows} statements, {elapsed:.0f}s, reached id {min(lo, max_id)}/{max_id}"
+                f"{capped}{skip_note}"
             )
     finally:
         conn.close()  # 세션 종료가 advisory lock 도 푼다
@@ -231,6 +306,7 @@ def run():
     }
     error = None
     try:
+        signal.signal(signal.SIGTERM, _on_sigterm)
         main(state)
     except Exception as exc:  # noqa: BLE001
         error = exc
