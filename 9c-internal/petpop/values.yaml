@@ -21,7 +21,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-2ce4611292b3a884d70a2077b202e34d8da85de2
+    tag: worker-ef813ee78239584be611b2e44a9fbd21ee07303b
   rankingWorker:
     enabled: true
   blockResetWorker:
