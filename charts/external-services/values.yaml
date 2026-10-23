@@ -67,6 +67,18 @@ seasonpass:
     serviceAccount:
       roleArn: ""
 
+  # action_history 일일 정리 CronJob(files/seasonpass-prune-action-history.py).
+  #   진행 중·직전·미래 시즌만 남기고 나머지 시즌 행을 배치 삭제한다.
+  #   pruneEnabled 가 "true" 가 아니면 dry run(지울 시즌·추정 행수만 로그).
+  actionHistoryPrune:
+    enabled: false
+    schedule: "0 19 * * *"  # UTC = 04:00 KST
+    envLabel: ""
+    pruneEnabled: "false"
+    batch: 5000
+    maxRows: 300000
+    scanWindow: 50000  # DELETE 한 문장이 훑는 id 범위
+
 iap:
   backoffice:
     enabled: false

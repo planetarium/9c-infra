@@ -135,6 +135,12 @@ seasonpass:
         cpu: 0.25
         memory: 1Gi
 
+  # action_history 일일 정리. dry run 로그 확인 후 pruneEnabled 를 "true" 로 바꾼다.
+  actionHistoryPrune:
+    enabled: true
+    envLabel: "Mainnet"
+    pruneEnabled: "false"
+
 backoffice:
   enabled: true
 
