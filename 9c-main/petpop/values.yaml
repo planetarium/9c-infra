@@ -42,6 +42,7 @@ workers:
   # 워커 이미지가 season-automation 을 아는 태그로 올라갈 때 같은 커밋에서 true 로(옛 이미지는 인자를 모르고 조용히 종료).
   seasonAutomation:
     enabled: true
-    # 지급 스위치. 없으면 dry-run(판정·보고만). 10/26 08:00 UTC(시즌 17 종료) 전에 "true" 로.
+    # 지급 스위치(시즌 종료 보상 자동 지급). 끄려면 "false" — 즉시 멈추려면 CronJob suspend.
+    #   (2026-10-23) prod 모의 실행·동글이 중계 확인 후 켬. 시즌 17 종료(10/26 08:00 UTC) 뒤 첫 스냅샷에서 지급.
     env:
-      SEASON_AUTOMATION_END_ENABLED: "false"
+      SEASON_AUTOMATION_END_ENABLED: "true"
