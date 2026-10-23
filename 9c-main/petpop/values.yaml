@@ -4,7 +4,7 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-1c3562cad91714b2a1910be3e8e12cb0ca395075
+    tag: server-1993811b06f1df1f3ffbc69097f7fdbdf226834f
   hostnames:
     - petpop.fun
     - www.petpop.fun
@@ -20,7 +20,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-c0d54a5643c74b7bdfd7e667110ec30bb0610631
+    tag: server-1993811b06f1df1f3ffbc69097f7fdbdf226834f
   hostname: petpop-backoffice.9c.gg
   nodeSelector:
     node.kubernetes.io/type: general
@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-13f847c11c6803d3fcc3c596a44682928124af13
+    tag: worker-1993811b06f1df1f3ffbc69097f7fdbdf226834f
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
