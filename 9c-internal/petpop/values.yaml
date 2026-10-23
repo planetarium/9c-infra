@@ -21,10 +21,15 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-ae21d0f2cafca307ca85bedf756853701c8f90d2
+    tag: worker-2ce4611292b3a884d70a2077b202e34d8da85de2
   rankingWorker:
     enabled: true
   blockResetWorker:
     enabled: true
   walletMonitorWorker:
     enabled: false
+  seasonAutomation:
+    enabled: true
+    # iwinv-1 은 Redis 접속 불가
+    nodeSelector:
+      kubernetes.io/hostname: 9c-internal-2

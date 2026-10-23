@@ -27,3 +27,9 @@ workers:
     enabled: false
     schedule: "0 0 * * *"
     command: "wallet"
+  # 무인 시즌 전환(A: 종료 지급). nodeSelector 가 비면 workers.nodeSelector 를 쓴다.
+  seasonAutomation:
+    enabled: false
+    schedule: "*/10 * * * *"
+    command: "season-automation"
+    nodeSelector: {}
