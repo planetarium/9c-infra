@@ -38,3 +38,6 @@ workers:
   # 매일 Slack 으로 보내던 "[mainnet] KAIA Wallet Monitor" 잔고 리포트는 더 받지 않는다(2026-10-19).
   walletMonitorWorker:
     enabled: false
+  # 쓰기는 petpop-env SEASON_AUTOMATION_END_ENABLED=true 전까지 꺼져 있다(dry-run 보고만).
+  seasonAutomation:
+    enabled: true

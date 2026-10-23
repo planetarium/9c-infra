@@ -28,3 +28,8 @@ workers:
     enabled: true
   walletMonitorWorker:
     enabled: false
+  seasonAutomation:
+    enabled: true
+    # iwinv-1 은 Redis 접속 불가
+    nodeSelector:
+      kubernetes.io/hostname: 9c-internal-2

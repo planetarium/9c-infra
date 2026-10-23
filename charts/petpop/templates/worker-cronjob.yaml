@@ -93,3 +93,40 @@ spec:
           {{- end }}
           restartPolicy: OnFailure
 {{- end }}
+---
+{{- if .Values.workers.seasonAutomation.enabled }}
+# 무인 시즌 전환. 쓰기 여부는 petpop-env 의 SEASON_AUTOMATION_END_ENABLED/DRY_RUN 스위치가 정한다.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: petpop-season-automation
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.workers.seasonAutomation.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 3600
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          containers:
+            - name: season-automation
+              image: "{{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}"
+              args:
+                - {{ .Values.workers.seasonAutomation.command }}
+              envFrom:
+                - secretRef:
+                    name: petpop-env
+          {{- with (.Values.workers.seasonAutomation.nodeSelector | default .Values.workers.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: Never
+{{- end }}
