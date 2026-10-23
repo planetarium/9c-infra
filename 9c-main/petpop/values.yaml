@@ -4,7 +4,7 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-1993811b06f1df1f3ffbc69097f7fdbdf226834f
+    tag: server-ee2a4ad0b291be260039bbc8dbf62532366c9a8a
   hostnames:
     - petpop.fun
     - www.petpop.fun
@@ -20,7 +20,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-1993811b06f1df1f3ffbc69097f7fdbdf226834f
+    tag: server-ee2a4ad0b291be260039bbc8dbf62532366c9a8a
   hostname: petpop-backoffice.9c.gg
   nodeSelector:
     node.kubernetes.io/type: general
@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-1993811b06f1df1f3ffbc69097f7fdbdf226834f
+    tag: worker-ee2a4ad0b291be260039bbc8dbf62532366c9a8a
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
@@ -46,3 +46,10 @@ workers:
     #   (2026-10-23) prod 모의 실행·동글이 중계 확인 후 켬. 시즌 17 종료(10/26 08:00 UTC) 뒤 첫 스냅샷에서 지급.
     env:
       SEASON_AUTOMATION_END_ENABLED: "true"
+  # 보존 정리(History 30일·UpdateNoti 90일·만료 DAILY/WEEKLY UserQuest 30일), 매일 04:00 KST.
+  #   RETENTION_ENABLED 가 "true" 가 아니면 건수만 센다 — dry-run 확인 후 켠다.
+  retention:
+    enabled: true
+    schedule: "0 19 * * *"
+    env:
+      RETENTION_ENABLED: "false"

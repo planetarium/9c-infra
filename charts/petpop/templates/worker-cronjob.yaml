@@ -139,3 +139,48 @@ spec:
           {{- end }}
           restartPolicy: Never
 {{- end }}
+---
+{{- if (.Values.workers.retention).enabled }}
+# 보존 정리(History 30일·UpdateNoti 90일·만료 DAILY/WEEKLY UserQuest 30일). 작은 배치, 1회 상한.
+#   RETENTION_ENABLED 가 "true" 가 아니면 건수만 센다(dry-run). 결과는 로그 한 줄 → 동글이 옵스가 중계.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: petpop-retention
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.workers.retention.schedule | default "0 19 * * *" | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 7
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 7200
+      ttlSecondsAfterFinished: 172800
+      template:
+        spec:
+          containers:
+            - name: retention
+              image: "{{ .Values.workers.image.repository }}:{{ .Values.workers.image.tag }}"
+              args:
+                - retention
+              envFrom:
+                - secretRef:
+                    name: petpop-env
+              {{- with .Values.workers.retention.env }}
+              env:
+                {{- range $k, $v := . }}
+                - name: {{ $k }}
+                  value: {{ $v | quote }}
+                {{- end }}
+              {{- end }}
+          {{- with (.Values.workers.retention.nodeSelector | default .Values.workers.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: Never
+{{- end }}
