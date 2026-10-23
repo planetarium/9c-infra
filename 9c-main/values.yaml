@@ -201,4 +201,4 @@ pushgatewayIngress:
 
 # 조건부 Grafana 규칙. petpopSeasonAutomation 은 메인넷 season-automation CronJob 을 켤 때 같이 true.
 grafanaAlerts:
-  petpopSeasonAutomation: false
+  petpopSeasonAutomation: true

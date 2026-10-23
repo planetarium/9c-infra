@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-ab0a21caafe710a7b3f2fa320b0f2c3767e1d988
+    tag: worker-13f847c11c6803d3fcc3c596a44682928124af13
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
@@ -41,4 +41,7 @@ workers:
   # 쓰기는 petpop-env SEASON_AUTOMATION_END_ENABLED=true 전까지 꺼져 있다(dry-run 보고만).
   # 워커 이미지가 season-automation 을 아는 태그로 올라갈 때 같은 커밋에서 true 로(옛 이미지는 인자를 모르고 조용히 종료).
   seasonAutomation:
-    enabled: false
+    enabled: true
+    # 지급 스위치. 없으면 dry-run(판정·보고만). 10/26 08:00 UTC(시즌 17 종료) 전에 "true" 로.
+    env:
+      SEASON_AUTOMATION_END_ENABLED: "false"
