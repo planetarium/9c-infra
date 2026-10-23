@@ -1,0 +1,81 @@
+{{- if $.Values.seasonpass.actionHistoryPrune.enabled }}
+{{- $cfg := $.Values.seasonpass.actionHistoryPrune }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: seasonpass-prune-action-history
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: seasonpass-prune-action-history
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  # .Files.Get 은 내용을 템플릿하지 않는다(차트 렌더가 스크립트의 중괄호에 안 깨진다).
+  prune.py: |
+{{ $.Files.Get "files/seasonpass-prune-action-history.py" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: seasonpass-prune-action-history
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: seasonpass-prune-action-history
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  # claim 워커(-Q claim_queue --concurrency=1, 실제 지급)에 긴 태스크를 얹지 않으려고
+  #   celery 가 아니라 별도 Job 으로 돈다.
+  schedule: {{ $cfg.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 7
+  jobTemplate:
+    spec:
+      # 삭제는 배치마다 커밋되고 다음 run 이 이어받는다 — 재시도 대신 다음 날을 기다린다.
+      backoffLimit: 0
+      activeDeadlineSeconds: 3600
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app: seasonpass-prune-action-history
+        spec:
+          restartPolicy: Never
+          # K8s API 도 AWS 도 쓰지 않는다. DB 가 전부다.
+          automountServiceAccountToken: false
+          {{- with $.Values.seasonpass.worker.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: prune
+              # 워커 이미지를 그대로 쓴다 — psycopg2 가 들어 있다. 스크립트는 앱 코드를 import 하지 않는다.
+              image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+              command: ["python", "/script/prune.py"]
+              env:
+                - name: ENV_LABEL
+                  value: {{ $cfg.envLabel | quote }}
+                # "true" 여야 실제로 지운다. 그 외엔 지울 시즌·추정 행수만 찍는다.
+                - name: PRUNE_ENABLED
+                  value: {{ $cfg.pruneEnabled | quote }}
+                - name: PRUNE_BATCH
+                  value: {{ $cfg.batch | quote }}
+                - name: PRUNE_MAX_ROWS
+                  value: {{ $cfg.maxRows | quote }}
+                - name: WORKER_PG_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      key: db-uri
+                      name: seasonpass-env
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              {{- with $cfg.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+          volumes:
+            - name: script
+              configMap:
+                name: seasonpass-prune-action-history
+{{- end }}
