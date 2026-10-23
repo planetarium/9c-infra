@@ -122,6 +122,13 @@ prometheus:
               - __meta_kubernetes_endpoint_port_name
             action: keep
             regex: longhorn-backend;manager
+      # (2026-10-23) 동글이 옵스 heartbeat 등 클러스터 밖에서 올린 지표. honor_labels 로 job/instance 를 보존한다.
+      - job_name: pushgateway
+        honor_labels: true
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+            - prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091
       - job_name: kube-state-metrics
         metrics_path: /metrics
         scrape_interval: 30s
@@ -187,3 +194,11 @@ donggeulOps:
     namespaces:
       odin: { app: odin, statefulsets: [validator-5, remote-headless-1] }
       heimdall: { app: heimdall, statefulsets: [validator-5, remote-headless-1] }
+
+# Pushgateway 외부 입구(templates/pushgateway-ingress.yaml). 동글이 옵스 heartbeat 용.
+pushgatewayIngress:
+  host: pushgateway.9c.gg
+
+# 조건부 Grafana 규칙. petpopSeasonAutomation 은 메인넷 season-automation CronJob 을 켤 때 같이 true.
+grafanaAlerts:
+  petpopSeasonAutomation: false
