@@ -183,7 +183,15 @@ def _self_test():
     k, d, sk = compute_keep_set(s, now)
     assert k == [2, 3, 4] and d == [1], (k, d)
 
+    assert _seasons([1, 2, 3, 5]) == "시즌 4개(id 1~5)"
+    assert _seasons([7]) == "시즌 [7]"
+
     print("self-test OK")
+
+
+def _seasons(ids):
+    """Slack 한 줄용 — 시즌 id 목록을 개수와 범위로 줄인다."""
+    return f"시즌 {len(ids)}개(id {ids[0]}~{ids[-1]})" if len(ids) > 3 else f"시즌 {ids}"
 
 
 class Terminated(Exception):
@@ -211,7 +219,7 @@ def main(state):
             cur.execute("SET statement_timeout = '30s'")
             cur.execute("SELECT pg_try_advisory_lock(hashtext(%s))", (LOCK_KEY,))
             if not cur.fetchone()[0]:
-                state["text"] = "another run holds the advisory lock — skipped"
+                state["text"] = "다른 실행이 advisory lock 을 잡고 있어 건너뜀"
                 print(state["text"])
                 return
 
@@ -226,16 +234,16 @@ def main(state):
             print(f"now={now.isoformat()} keep={keep} delete={delete} skipped_pass_types={skipped}")
             for pt in skipped:
                 print(f"pass_type {pt}: no current season — not pruning it")
-            skip_note = f" skipped(no current)={skipped}" if skipped else ""
+            skip_note = f" · 현재 시즌 없어 건너뛴 유형 {skipped}" if skipped else ""
 
             if not delete:
-                state["text"] = f"nothing to prune (keep={len(keep)} seasons){skip_note}"
+                state["text"] = f"지울 시즌 없음(보존 {len(keep)}개){skip_note}"
                 return
 
             cur.execute("SELECT min(id), max(id) FROM action_history")
             min_id, max_id = cur.fetchone()
             if max_id is None:
-                state["text"] = f"action_history is empty{skip_note}"
+                state["text"] = f"action_history 비어 있음{skip_note}"
                 return
             print(f"id range {min_id}..{max_id} window={window} batch={batch} cap={max_rows}")
             subq = (
@@ -259,9 +267,9 @@ def main(state):
                     n = cur.fetchone()[0]
                     est = f">={n}" if n >= 1000000 else str(n)
                 except pg_errors.QueryCanceled:
-                    est = "count timeout"
+                    est = "집계 시간 초과"
                 state["text"] = (
-                    f"dry run — would delete seasons {delete}, est rows {est}{skip_note}"
+                    f"(dry-run) 대상 {_seasons(delete)} · 예상 {est}행 · 보존 {keep}{skip_note}"
                 )
                 return
 
@@ -287,10 +295,10 @@ def main(state):
                     state["deleted"] = total
                     time.sleep(5 if took > 5 else 0.2)
             elapsed = time.time() - started
-            capped = " (hit PRUNE_MAX_ROWS, continues next run)" if total >= max_rows else ""
+            capped = " · 1회 상한 도달, 다음 실행에서 이어감" if total >= max_rows else ""
             state["text"] = (
-                f"deleted {total} rows from seasons {delete} in {batches} batches"
-                f" / {windows} statements, {elapsed:.0f}s, reached id {min(lo, max_id)}/{max_id}"
+                f"{total}행 삭제 · 대상 {_seasons(delete)} · 배치 {batches}/{windows}문 · {elapsed:.0f}초"
+                f" · id {min(lo, max_id)}/{max_id}"
                 f"{capped}{skip_note}"
             )
     finally:
@@ -313,10 +321,10 @@ def run():
         print(f"prune failed: {exc!r}", file=sys.stderr)
     finally:
         if error is not None:
-            done = f" (deleted {state['deleted']} rows before failing)" if state["deleted"] else ""
-            body = f"FAILED: {type(error).__name__}: {error}{done}"
+            done = f" (실패 전 {state['deleted']}행 삭제)" if state["deleted"] else ""
+            body = f"실패: {type(error).__name__}: {error}{done}"
         else:
-            body = state["text"] or "finished"
+            body = state["text"] or "완료"
         report = {
             "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "stage": env_label,
