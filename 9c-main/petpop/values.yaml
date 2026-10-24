@@ -4,7 +4,7 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-4affa58cddf4cae3575cc9dd66d0686a517b62f5
+    tag: server-e9cc33bbcae2ae7accbc315bdfe5e091e5e8053f
   hostnames:
     - petpop.fun
     - www.petpop.fun
@@ -20,7 +20,7 @@ backoffice:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-4affa58cddf4cae3575cc9dd66d0686a517b62f5
+    tag: server-e9cc33bbcae2ae7accbc315bdfe5e091e5e8053f
   hostname: petpop-backoffice.9c.gg
   nodeSelector:
     node.kubernetes.io/type: general
@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-4affa58cddf4cae3575cc9dd66d0686a517b62f5
+    tag: worker-e9cc33bbcae2ae7accbc315bdfe5e091e5e8053f
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
@@ -46,10 +46,13 @@ workers:
     #   (2026-10-23) prod 모의 실행·동글이 중계 확인 후 켬. 시즌 17 종료(10/26 08:00 UTC) 뒤 첫 스냅샷에서 지급.
     env:
       SEASON_AUTOMATION_END_ENABLED: "true"
-  # 보존 정리(History 30일·UpdateNoti 90일·만료 DAILY/WEEKLY UserQuest 30일), 매일 04:00 KST.
-  #   RETENTION_ENABLED 가 "true" 가 아니면 건수만 센다 — dry-run 확인 후 켠다.
+  # 보존 정리(History 30일·UpdateNoti 90일·만료 DAILY/WEEKLY UserQuest 30일), 매월 2일 04:00 KST.
+  #   유입이 하루 수천 행이라 월 1회로 충분(2026-10-24). 옛 적체는 일회성 정리로 비웠다.
+  #   UserQuest 는 전 범위를 훑는다 — 5만 id 윈도가 밀집 구간에서 19.5s 라 2만으로(문장 제한 30s).
+  #   RETENTION_ENABLED 가 "true" 가 아니면 건수만 센다.
   retention:
     enabled: true
-    schedule: "0 19 * * *"
+    schedule: "0 19 1 * *"
     env:
-      RETENTION_ENABLED: "false"
+      RETENTION_ENABLED: "true"
+      RETENTION_SCAN_WINDOW: "20000"
