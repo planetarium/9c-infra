@@ -135,11 +135,13 @@ seasonpass:
         cpu: 0.25
         memory: 1Gi
 
-  # action_history 일일 정리. dry run 로그 확인 후 pruneEnabled 를 "true" 로 바꾼다.
+  # action_history 정리 — 지난 시즌 이전 삭제.
+  #   (2026-10-24) dry-run: 보존 [14,134..139]·예상 0행 → 켜고 월 1회(매월 2일 04:00 KST)로.
   actionHistoryPrune:
     enabled: true
     envLabel: "Mainnet"
-    pruneEnabled: "false"
+    schedule: "0 19 1 * *"
+    pruneEnabled: "true"
 
 backoffice:
   enabled: true
