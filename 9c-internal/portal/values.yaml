@@ -124,7 +124,8 @@ portalService:
     #       ⚠️ 인터널 마일리지는 480/240 이라 표기가 그대로다. 메인넷은 1440/720 이므로
     #          거기 배포하면 웹샵 숫자가 480 → 1,440 으로 올라간다(RemoteCsv·모바일과 일치).
     #          기존 포탈 하드코딩이 3배 과소표기였던 것 — 메인넷 배포 전 기획 확인 권장.
-    tag: "internal-b116641d3242214c7aa778212acc1086ec962e67"
+    # (2026-10-26) → internal-718a3a2f: 9c-portal #1351 — 출금 트랜잭션 구간별 소요시간 진단 로그(동작 변경 없음).
+    tag: "internal-718a3a2ff9fd4f846f0ed49c2ec13400b08261a1"
     pullPolicy: Always
   externalSecret:
     enabled: true
