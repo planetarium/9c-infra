@@ -195,8 +195,7 @@ donggeulOps:
     namespaces:
       odin: { app: odin, statefulsets: [validator-5, remote-headless-1] }
       heimdall: { app: heimdall, statefulsets: [validator-5, remote-headless-1] }
-  # ArgoCD 리소스 지정 동기화 전용 SA(donggeul-sync). 토큰은 root 래퍼(ops-argocd)만 읽는다.
-  # 자동/승인 구분은 래퍼(9c-ops ops-argocd)가 한다 — 체인 노드·공유 MQ 는 운영자 승인 버튼 뒤에만.
+  # ArgoCD 리소스 지정 동기화 전용 SA(donggeul-sync). 이 앱들만 patch 할 수 있다.
   # bootstrap·인프라 앱은 넣지 않는다(이 RBAC 자체가 bootstrap 에 있다).
   sync:
     enabled: true

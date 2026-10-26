@@ -348,6 +348,16 @@ spec:
     - expression: object.spec == oldObject.spec
       message: donggeul-rotate 는 Application spec 을 바꿀 수 없습니다
     - expression: >-
+        object.?status == oldObject.?status &&
+        object.metadata.?ownerReferences == oldObject.metadata.?ownerReferences &&
+        object.metadata.?finalizers == oldObject.metadata.?finalizers &&
+        object.metadata.?labels == oldObject.metadata.?labels
+      message: donggeul-rotate 는 Application status·ownerReferences·finalizers·labels 를 바꿀 수 없습니다
+    - expression: "!has(oldObject.operation) || (has(object.operation) && object.operation == oldObject.operation)"
+      message: donggeul-rotate 는 진행 중인(대기 중인) operation 을 바꾸거나 지울 수 없습니다
+    - expression: object.metadata.?annotations == oldObject.metadata.?annotations
+      message: donggeul-rotate 는 Application annotations 를 바꿀 수 없습니다
+    - expression: >-
         !has(object.operation) ||
         (has(object.operation.sync) && has(object.operation.sync.resources) &&
          size(object.operation.sync.resources) > 0 &&
@@ -355,7 +365,10 @@ spec:
          (!has(object.operation.sync.prune) || object.operation.sync.prune == false) &&
          !has(object.operation.sync.manifests) && !has(object.operation.sync.source) &&
          !has(object.operation.sync.sources) && !has(object.operation.sync.syncOptions) &&
-         !has(object.operation.sync.syncStrategy) && !has(object.operation.retry))
+         !has(object.operation.sync.syncStrategy) && !has(object.operation.retry) &&
+         !has(object.operation.sync.revisions) && has(object.operation.sync.revision) &&
+         oldObject.?status.?sync.?revision.orValue('') != '' &&
+         object.operation.sync.revision == oldObject.status.sync.revision)
       message: donggeul-rotate 의 sync 는 git 의 지정 StatefulSet selective sync(prune·매니페스트·소스 재지정·옵션 없음)만
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -473,12 +486,11 @@ spec:
 {{- with .Values.donggeulOps.sync }}
 {{- if .enabled }}
 ---
-# ArgoCD 리소스 지정 동기화 전용 SA(donggeul-sync). 토큰은 동글이 컨테이너의 root 래퍼(ops-argocd)만 읽는다.
-# 모델은 status·sync 만 부르고, 자동 대상이 아닌 앱(체인 노드 등)은 운영자의 Slack 승인 버튼 뒤에만 실행된다.
+# ArgoCD 리소스 지정 동기화 전용 SA(donggeul-sync).
 # - Application 은 apps 에 적은 이름만 get·patch.
-# - 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청을 한 번 더 막는다: spec 변경 불가, sync 는 리소스를 지정한 것만,
-#   prune·매니페스트·소스 재지정·옵션·재시도 없음, 리비전은 ArgoCD 가 이미 비교한 리비전(status.sync.revision)만
-#   — 머지 안 된 브랜치·옛 커밋으로 동기화하지 못한다.
+# - 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청을 막는다: spec·status·소유·finalizer·label 변경 불가, annotations 는
+#   새로고침 요청만, 기존 operation 변경 불가, sync 는 리소스를 지정한 것만(prune·매니페스트·소스 재지정·옵션·재시도 없음),
+#   리비전은 ArgoCD 가 이미 비교한 리비전(status.sync.revision)만 — status 를 못 바꾸니 머지 안 된 커밋으로 동기화하지 못한다.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -553,9 +565,29 @@ spec:
   matchConditions:
     - name: sync-sa
       expression: request.userInfo.username == "system:serviceaccount:donggeul-ops:donggeul-sync"
+  variables:
+    - name: newAnn
+      expression: "object.metadata.?annotations.orValue({})"
+    - name: oldAnn
+      expression: "oldObject.metadata.?annotations.orValue({})"
   validations:
     - expression: object.spec == oldObject.spec
       message: donggeul-sync 는 Application spec 을 바꿀 수 없습니다
+    - expression: >-
+        object.?status == oldObject.?status &&
+        object.metadata.?ownerReferences == oldObject.metadata.?ownerReferences &&
+        object.metadata.?finalizers == oldObject.metadata.?finalizers &&
+        object.metadata.?labels == oldObject.metadata.?labels
+      message: donggeul-sync 는 Application status·ownerReferences·finalizers·labels 를 바꿀 수 없습니다
+    - expression: "!has(oldObject.operation) || (has(object.operation) && object.operation == oldObject.operation)"
+      message: donggeul-sync 는 진행 중인(대기 중인) operation 을 바꾸거나 지울 수 없습니다
+    # annotations 는 새로고침 요청(argocd.argoproj.io/refresh: normal|hard) 하나만 더하거나 바꿀 수 있다
+    - expression: >-
+        variables.newAnn.all(k, k == 'argocd.argoproj.io/refresh' ?
+          (variables.newAnn[k] in ['normal', 'hard']) :
+          (k in variables.oldAnn && variables.oldAnn[k] == variables.newAnn[k])) &&
+        variables.oldAnn.all(k, k == 'argocd.argoproj.io/refresh' || k in variables.newAnn)
+      message: donggeul-sync 는 새로고침 주석 말고 annotations 를 바꿀 수 없습니다
     - expression: >-
         !has(object.operation) || (
         has(object.operation.sync) && has(object.operation.sync.resources) &&

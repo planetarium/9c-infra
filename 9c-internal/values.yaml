@@ -71,7 +71,7 @@ prometheus:
         static_configs:
 
 # 동글이 옵스 ServiceAccount(common/bootstrap-v2/templates/donggeul-ops-rbac.yaml). 인터널은 읽기 + ArgoCD 리소스 지정 동기화만.
-# 재시작·scale·secret 읽기는 아직 없다. 자동/승인 구분은 래퍼(9c-ops ops-argocd)가 한다 — 체인 노드·DB 는 승인 버튼 뒤에만.
+# 재시작·scale·secret 읽기는 아직 없다.
 donggeulOps:
   enabled: true
   sync:
