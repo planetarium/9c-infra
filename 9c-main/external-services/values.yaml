@@ -262,8 +262,14 @@ backoffice:
     #   신규 env 없음. 각 PR 머지 후 main 머지커밋 태그로 다시 bump 할 것(#105 는 닫음).
     #
     # (2026-10-20) #98·#99·#101·#103·#104·#106 전부 main 머지 → main a90b9667 로 정리(검증용 합본 #100·#102·#105 닫음).
-    #   위 합본 메모들은 이력이다 — 지금 이미지는 main 그대로.
-    tag: "git-a90b966718d3464acb25e5124d76c26952300f9a"
+    #   위 합본 메모들은 이력이다.
+    #
+    # (2026-10-28) Backoffice#108(9c39d7ac = main 95c56cd + 하드월드 world-open) — 인터널 하드월드 1단계 검증용.
+    #   api/world-open/{live,compile} 신규, table-patch sign 이 GlobalCounterSheet·WorldOpenSheet·WorldOpenConditionSheet
+    #   일 때만 노드 worldOpen 비교 게이트(그 외 시트·기능 동작 불변), 배치 plan 은 이 세 시트 거절.
+    #   Lib9c 패키지가 feature 빌드(1.39.0-dev.b281f394, lib9c#3326 미머지) — 백오피스는 서명·검증에만 쓴다.
+    #   신규 env 없음. #108 머지 후 main 머지커밋 태그로 다시 bump 할 것. 이전: git-a90b9667(main)
+    tag: "git-9c39d7ac25abb840124c3e0454988bfee48fee03"
 
 
 iap:
