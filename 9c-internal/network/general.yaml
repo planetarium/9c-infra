@@ -4,10 +4,11 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    # headless release/397 = lib9c release/1.39.0(062ca5e4) — 500.0.x 사이클 인터널 세팅(체인 리셋 없음).
-    #   BoostScheduleSheet + 레버 14종 + 월드보스·어드벤처보스 보상 부스트 5배 상한(lib9c#3321).
-    #   인터널 체인에 WB/AB 행이 없어(과거 2배 테스트행뿐) 재실행 결과 불변. 이전: git-da14bf2f(62f95e63)
-    tag: "git-608cc38f527fb1202a1b71368dd471f04eba0c9f"
+    # headless feature/hardworld-progress-open(#2774) = development(release/397) + lib9c feature/hardworld-progress-open(b281f394, lib9c#3326)
+    #   하드월드 진행 개방 인터널 1단계 검증(9c-ops products/9c/hardworld/internal-phase1-runbook.md). 체인 리셋 없음.
+    #   개방 시트 3종이 체인에 없으면 기존 액션 결과 바이트 동일(521+ 스테이지는 원래 없음) → 재실행 결과 불변.
+    #   lib9c MessagePack 2.5.303 포함 → remote-headless-1 /data/plugins/ 정리 필요. 이전: git-608cc38f(062ca5e4)
+    tag: "git-ad143917d2e720b4db29e34cbfeb35d858f307a9"
 
 seed:
   image:
