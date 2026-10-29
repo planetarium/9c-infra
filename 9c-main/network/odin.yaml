@@ -139,11 +139,11 @@ seed:
 validator:
   count: 1
 
-  # 2026-10-29 블록 정지(states RocksDB L0 write stop) 대응 시험 이미지 = 397 + RocksDB 컴팩션 튜닝
-  # (headless yang/rocksdb-compaction-tuning). 이 변경이 들어간 정식 릴리즈 이미지가 나오면 지운다.
+  # 2026-10-29 블록 정지(states RocksDB L0 write stop) 대응 시험 이미지 = headless #2775
+  # (397 + RocksDB 컴팩션 튜닝 + lib9c MessagePack 2.5.303). rh-1 에서 먼저 확인. 정식 릴리즈가 나오면 지운다.
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-0f6958a3d68b6dd3940f3a2d0b3edd099ca04b2d"
+    tag: "git-00a2647c5638475bb206c98797baf5bf0ae42b76"
 
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
