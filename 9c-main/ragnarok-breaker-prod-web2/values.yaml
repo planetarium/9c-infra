@@ -102,4 +102,4 @@ playfullWorker:
 migrationBridge:
   enabled: true
   image:
-    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
+    tag: git-5ee38e5230f133ad15deeec0143403bf8a0e8d36
