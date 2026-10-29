@@ -214,6 +214,11 @@ remoteHeadless:
   count: 1
   replicas: 1
 
+  # validator 와 같은 RocksDB 컴팩션 튜닝 시험 이미지(397 + headless #2775). 정식 릴리즈에 들어가면 지운다.
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-0f6958a3d68b6dd3940f3a2d0b3edd099ca04b2d"
+
   scheduledRestart:
     enabled: true
     schedule: "0 22 * * *"
@@ -246,6 +251,10 @@ remoteHeadless:
         name: private-keys
   - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
     value: "30"
+  - name: ROCKSDB_PARALLELISM
+    value: "8"
+  - name: ROCKSDB_COMPACTION_READAHEAD_SIZE
+    value: "2097152"
 
   extraArgs:
   - --tx-quota-per-signer=1
