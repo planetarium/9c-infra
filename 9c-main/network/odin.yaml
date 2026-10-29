@@ -139,6 +139,12 @@ seed:
 validator:
   count: 1
 
+  # 2026-10-29 블록 정지(states RocksDB L0 write stop) 대응 시험 이미지 = 397 + RocksDB 컴팩션 튜닝
+  # (headless yang/rocksdb-compaction-tuning). 이 변경이 들어간 정식 릴리즈 이미지가 나오면 지운다.
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-0f6958a3d68b6dd3940f3a2d0b3edd099ca04b2d"
+
   env:
   - name: Headless__AccessControlService__AccessControlServiceType
     value: "local"
@@ -148,6 +154,12 @@ validator:
     value: "/data"
   - name: DOTNET_gcServer
     value: "1"
+  # 프로세스 안 RocksDB 11개가 공유하는 컴팩션 스레드 풀(기본 1개)을 늘려 txbindex 같은 긴 컴팩션이
+  # states 정리를 막지 않게 한다. readahead 는 states 컴팩션 읽기를 2MB 단위로 묶는다.
+  - name: ROCKSDB_PARALLELISM
+    value: "8"
+  - name: ROCKSDB_COMPACTION_READAHEAD_SIZE
+    value: "2097152"
 
   loggingEnabled: true
   datadog:
