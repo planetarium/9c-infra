@@ -214,10 +214,11 @@ remoteHeadless:
   count: 1
   replicas: 1
 
-  # validator 와 같은 RocksDB 컴팩션 튜닝 시험 이미지(397 + headless #2775). 정식 릴리즈에 들어가면 지운다.
+  # headless #2775 시험 이미지(397 + RocksDB 컴팩션 튜닝 + lib9c MessagePack 2.5.303). 메인넷 validator 전에
+  # rpc 경로(MagicOnion render 구독·클라 접속)를 여기서 먼저 확인한다. 정식 릴리즈에 들어가면 지운다.
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "git-0f6958a3d68b6dd3940f3a2d0b3edd099ca04b2d"
+    tag: "git-00a2647c5638475bb206c98797baf5bf0ae42b76"
 
   scheduledRestart:
     enabled: true
