@@ -125,7 +125,8 @@ portalService:
     #          거기 배포하면 웹샵 숫자가 480 → 1,440 으로 올라간다(RemoteCsv·모바일과 일치).
     #          기존 포탈 하드코딩이 3배 과소표기였던 것 — 메인넷 배포 전 기획 확인 권장.
     # (2026-10-26) → internal-718a3a2f: 9c-portal #1351 — 출금 트랜잭션 구간별 소요시간 진단 로그(동작 변경 없음).
-    tag: "internal-718a3a2ff9fd4f846f0ed49c2ec13400b08261a1"
+    # (2026-10-31) → internal-3b356b99: 9c-portal #1354 — earnTable/grinding 경로값 검증(숫자 아니면 400).
+    tag: "internal-3b356b9907b2e6b9a28b1a1ba1097ae8573bbcb4"
     pullPolicy: Always
   externalSecret:
     enabled: true
