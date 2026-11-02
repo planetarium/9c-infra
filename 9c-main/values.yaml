@@ -222,3 +222,15 @@ pushgatewayIngress:
 # 조건부 Grafana 규칙. petpopSeasonAutomation 은 메인넷 season-automation CronJob 을 켤 때 같이 true.
 grafanaAlerts:
   petpopSeasonAutomation: true
+
+# mimir(9cscan) 색인 지연 감시(templates/mimir-index-lag.yaml + grafana.yaml 의 mimir-index-alerts).
+#   색인 워커는 pt2 docker 라 클러스터 밖이다. 여기서는 mimir-gql 의 색인 블록과 rpc tip 만 잰다.
+mimirIndexLag:
+  enabled: true
+  networks:
+    odin:
+      mimir: http://mimir-gql.odin.svc.cluster.local/graphql
+      headless: http://remote-headless-1.odin.svc.cluster.local/graphql
+    heimdall:
+      mimir: http://mimir-gql.heimdall.svc.cluster.local/graphql
+      headless: http://remote-headless-1.heimdall.svc.cluster.local/graphql
