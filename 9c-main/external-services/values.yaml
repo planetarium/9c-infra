@@ -70,7 +70,10 @@ seasonpass:
     #   - #317 요청별 Session — scoped_session 이 스레드별이라 커넥션이 풀에 안 돌아가던 누수(QueuePool 고갈,
     #     "server closed the connection") 수정. 11/1 머지됐지만 배포 전이었다.
     #   마이그레이션 없음. 반영은 seasonpass-api 만 지정 sync.
-    tag: "git-b96625dcfafd6fdc45635bbb465aae2537e92f2a"
+    #
+    # (2026-11-02) → git-27323faa: claim-worker 구간별 소요 시간 로그(SeasonPass #322, 동작 변경 없음).
+    #   반영은 seasonpass-claim-worker 만 지정 sync.
+    tag: "git-27323faa1401c0fd89e421b96b3a2b3715ac9688"
 
   api:
     enabled: true
