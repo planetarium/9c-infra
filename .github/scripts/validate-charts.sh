@@ -29,3 +29,18 @@ for cluster in "${CLUSTERS[@]}"; do
     helm template --values "$cluster/portal/values.yaml" \
         "charts/portal" | ./kubeconform -strict -summary -skip "TCPRoute" -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
 done
+
+# 기간 유지 워커는 기본값에서 비활성이므로 실제 RB 오버레이도 검증한다.
+RB_OVERLAYS=(
+    "9c-main/ragnarok-breaker-prod-web2/values.yaml"
+    "9c-main/ragnarok-breaker-prod-web3/values.yaml"
+    "9c-main/ragnarok-breaker-prod/values.yaml"
+    "9c-internal/ragnarok-breaker-staging-web2/values.yaml"
+    "9c-internal/ragnarok-breaker-staging-web3/values.yaml"
+)
+for overlay in "${RB_OVERLAYS[@]}"; do
+    echo "Validating charts/ragnarok-breaker with $overlay..."
+    # 별도 할당으로 Helm 실패를 파이프 뒤의 kubeconform 성공이 가리지 않게 한다.
+    RB_RENDERED=$(helm template --values "$overlay" "charts/ragnarok-breaker")
+    printf '%s\n' "$RB_RENDERED" | ./kubeconform -strict -summary -skip "TCPRoute" -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+done
