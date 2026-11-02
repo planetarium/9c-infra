@@ -171,6 +171,12 @@ remoteHeadless:
   count: 1
   replicas: 1
 
+  # 원격 리플레이용 읽기 전용 상태 조회(--remote-key-value-service-read-only, JWT__Key 토큰 필수) 시험 이미지
+  # = odin rpc-1 과 같은 이미지(397 + RocksDB 튜닝 + MessagePack 2.5.303 + headless #2778). 정식 릴리즈에 들어가면 지운다.
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-b61b8391f01bcb50e0938df9d6870442aac0e173"
+
   scheduledRestart:
     enabled: true
     schedule: "0 22 * * *"
@@ -206,6 +212,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
+  - --remote-key-value-service-read-only
 
   resources:
     requests:

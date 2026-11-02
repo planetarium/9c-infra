@@ -127,9 +127,20 @@ seed:
 remoteHeadless:
   count: 1
 
+  # 원격 리플레이용 읽기 전용 상태 조회 시험 이미지 = 인터널 기본 이미지 git-ad143917(feature/hardworld-progress-open)
+  # + headless #2778. JWT__Key 는 메인넷 헤임달 jwt 를 9c-internal-v2/heimdall/private-keys 에 복사해 둔 것(2026-11-02).
+  image:
+    repository: planetariumhq/ninechronicles-headless
+    tag: "git-2748583e1591c2d4aea47c209385d14d27c1c797"
+
   env:
     - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
       value: "30"
+    - name: JWT__Key
+      valueFrom:
+        secretKeyRef:
+          key: jwt
+          name: private-keys
 
   hosts:
   - >-
@@ -156,7 +167,7 @@ remoteHeadless:
 
   extraArgs:
   - --tx-quota-per-signer=1
-  - --remote-key-value-service
+  - --remote-key-value-service-read-only
 
   nodeSelector:
   - node.kubernetes.io/network: heimdall
