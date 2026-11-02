@@ -214,8 +214,8 @@ remoteHeadless:
   count: 1
   replicas: 1
 
-  # 시험 이미지 = validator 의 git-00a2647c(397 + RocksDB 컴팩션 튜닝 + lib9c MessagePack 2.5.303)
-  # + headless #2778(원격 리플레이용 읽기 전용 상태 조회, JWT__Key 토큰 필수). 정식 릴리즈에 들어가면 지운다.
+  # headless release/398 이미지 = validator 의 git-00a2647c(397 + RocksDB 컴팩션 튜닝 + lib9c MessagePack 2.5.303)
+  # + #2778(원격 리플레이용 읽기 전용 상태 조회, JWT__Key 토큰 필수). 398 태그가 전체에 나가면 지운다.
   image:
     repository: planetariumhq/ninechronicles-headless
     tag: "git-b61b8391f01bcb50e0938df9d6870442aac0e173"
