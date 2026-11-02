@@ -173,7 +173,7 @@ backofficeService:
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
     # (2026-10-23) → internal-7de20715: develop ← main(#1348). 백오피스 서버측 권한 보강·동글이 옵스 ops JWT(9c-portal #1347).
     #   포탈 태그(L127)는 그대로 — 백오피스만.
-    tag: "internal-7de20715a487cd12e2d4bf88671292a5f40706f4"
+    tag: "internal-9e635a3e0adea12c0667cdace4ccf3a73c954c8d"
     pullPolicy: Always
   externalSecret:
     enabled: true
