@@ -307,3 +307,21 @@ migrationBridge:
       limits:
         cpu: 500m
         memory: 512Mi
+
+# 마스터 기간 유지: 기본 비활성, 첫 활성화는 dry-run으로 검증한다.
+masterDataWindowWorker:
+  enabled: false
+  dryRun: true
+  schedule: "0 3 * * *"
+  targets: []
+  image:
+    repository: planetariumhq/ragnarok-breaker-master-data-window-worker
+    tag: develop
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

@@ -103,3 +103,8 @@ migrationBridge:
   enabled: true
   image:
     tag: git-5ee38e5230f133ad15deeec0143403bf8a0e8d36
+
+# 서버·원본 버전 준비와 staging 검증 전 자동 시딩을 활성화하지 않는다.
+masterDataWindowWorker:
+  enabled: false
+  dryRun: true
