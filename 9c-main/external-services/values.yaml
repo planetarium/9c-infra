@@ -127,8 +127,6 @@ seasonpass:
       planetId: "0x000000000000"
     heimdall:
       planetId: "0x000000000001"
-    thor:
-      planetId: "0x000000000003"
 
     resources:
       limits:
