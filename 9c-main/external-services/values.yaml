@@ -269,7 +269,11 @@ backoffice:
     #   일 때만 노드 worldOpen 비교 게이트(그 외 시트·기능 동작 불변), 배치 plan 은 이 세 시트 거절.
     #   Lib9c 패키지가 feature 빌드(1.39.0-dev.b281f394, lib9c#3326 미머지) — 백오피스는 서명·검증에만 쓴다.
     #   신규 env 없음. #108 머지 후 main 머지커밋 태그로 다시 bump 할 것. 이전: git-a90b9667(main)
-    tag: "git-9c39d7ac25abb840124c3e0454988bfee48fee03"
+    #
+    # (2026-11-02) Backoffice#110(dd47ab27 = 위 9c39d7ac + #109 cherry-pick) — 월별 아레나 NCG 정산 자동화(동글이 옵스).
+    #   api/arena/settlement/status(잔고·다음 nonce·tx 결과)·settle(잔고 이하·expectedNonce 확인→서명→stage, 수취인 서버 고정) 신규.
+    #   기존 화면·sign·stage 동작 불변. 신규 env 없음. #108·#109 main 머지 후 main 태그로 다시 bump. 이전: git-9c39d7ac
+    tag: "git-dd47ab276f12527dedcd1ecbb4dd4fa53b1516ec"
 
 
 iap:
