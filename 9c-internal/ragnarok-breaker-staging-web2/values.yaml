@@ -72,3 +72,24 @@ migrationBridge:
   enabled: true
   image:
     tag: git-1ef095b94c2692ab56990611d5079adfb5eeb5bf
+
+# 마스터 기간 유지 워커는 staging에서 먼저 dry-run으로 검증한다.
+# petpop CI 이미지 빌드 후 image.tag를 git-<sha>로 고정하고 enabled를 켠다.
+# 계정·토큰은 ragnarok-breaker/staging-web2 시크릿의 WINDOW_V8_*로 등록한다.
+# seed.read/seed.write 전용 권한이 필요하며 기존 일반 워커 계정으로 폴백하지 않는다.
+# private R2 설정은 실제 apply 전 준비한다(dry-run은 쓰기 자격 정보 불필요).
+# staging-web2에만 단일 CronJob을 두고 web2/web3 verse를 순차 처리한다.
+masterDataWindowWorker:
+  enabled: false
+  dryRun: true
+  image:
+    tag: ""
+  targets:
+    - appEnv: staging-w2
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1778600000003
+      flavor: web2
+      gateway: https://gs-gateway.staging.verse8.io
+    - appEnv: staging-w3
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1776312881367
+      flavor: web3
+      gateway: https://gs-gateway.staging.verse8.io
