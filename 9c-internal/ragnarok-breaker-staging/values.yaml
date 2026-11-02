@@ -14,3 +14,22 @@ v8Gateway:
 logStream:
   image:
     tag: git-4d8d9da39b0515d55f0a61136175d59a8f44224d
+
+# 마스터 기간 유지 워커는 staging에서 먼저 dry-run으로 검증한다.
+# petpop CI 이미지 빌드 후 image.tag를 git-<sha>로 고정하고 enabled를 켠다.
+# 계정·토큰·private R2 설정은 ragnarok-breaker/staging 시크릿에 등록한다.
+# web2/web3는 이 네임스페이스의 단일 CronJob에서 순차 처리한다.
+masterDataWindowWorker:
+  enabled: false
+  dryRun: true
+  image:
+    tag: ""
+  targets:
+    - appEnv: staging-w2
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1778600000003
+      flavor: web2
+      gateway: https://gs-gateway.staging.verse8.io
+    - appEnv: staging-w3
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1776312881367
+      flavor: web3
+      gateway: https://gs-gateway.staging.verse8.io
