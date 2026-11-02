@@ -73,7 +73,9 @@ seasonpass:
     #
     # (2026-11-02) → git-27323faa: claim-worker 구간별 소요 시간 로그(SeasonPass #322, 동작 변경 없음).
     #   반영은 seasonpass-claim-worker 만 지정 sync.
-    tag: "git-27323faa1401c0fd89e421b96b3a2b3715ac9688"
+    # (2026-11-02) → git-507af4f8: tx 있는 claim 조기 종료 + claim_timing 계측 확대(SeasonPass #323).
+    #   반영은 seasonpass-claim-worker 만 지정 sync.
+    tag: "git-507af4f831067aac2d58fb048bad67f336c7983f"
 
   api:
     enabled: true
