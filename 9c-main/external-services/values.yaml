@@ -75,7 +75,9 @@ seasonpass:
     #   반영은 seasonpass-claim-worker 만 지정 sync.
     # (2026-11-02) → git-507af4f8: tx 있는 claim 조기 종료 + claim_timing 계측 확대(SeasonPass #323).
     #   반영은 seasonpass-claim-worker 만 지정 sync.
-    tag: "git-507af4f831067aac2d58fb048bad67f336c7983f"
+    # (2026-11-02) → git-b3dd25c1: claim-worker KMS Account 를 프로세스당 한 번만 생성(SeasonPass #324).
+    #   반영은 seasonpass-claim-worker 만 지정 sync.
+    tag: "git-b3dd25c1222ac4a7d6d671b2a7bcad3a1d433ce2"
 
   api:
     enabled: true
