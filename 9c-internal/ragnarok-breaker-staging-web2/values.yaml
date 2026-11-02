@@ -83,7 +83,7 @@ masterDataWindowWorker:
   enabled: false
   dryRun: true
   image:
-    tag: ""
+    tag: git-a38b9f691dd70dc046fdcaa04425ad764cc2e761
   targets:
     - appEnv: staging-w2
       verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1778600000003
