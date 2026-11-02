@@ -47,7 +47,8 @@ portalService:
     #   (release #1335, CS #15267). apps/portal 만 변경 — 백오피스 태그는 그대로. DB 커플링 없음.
     # (2026-10-29) → main-ccf1a01a: 출금 요청 경로 구간별 타이밍 로그 [withdraw-tx-timing] (9c-portal #1351).
     #   28a6ab7b..ccf1a01a 의 apps/portal 런타임 변경은 withdrawPortalBalance.ts 로그뿐. DB 커플링 없음.
-    tag: main-ccf1a01a0f0021259da28b84f52c7f9f4559ccfa
+    # (2026-11-02) → main-dad22f4d: earnReward body 파싱 수정(객체 body 허용, 파싱 실패는 400). DB 커플링 없음.
+    tag: main-dad22f4d8f7141049f132bb410009ea7c8b9df02
     pullPolicy: Always
   externalSecret:
     enabled: true
