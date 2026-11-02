@@ -1,0 +1,94 @@
+{{- with .Values.mimirIndexLag }}
+{{- if .enabled }}
+# (2026-11-02) mimir(9cscan) 색인 지연 감시. 색인 워커는 사내 pt2 docker 라 k8s 지표가 없고,
+#   2026-10-29~11-01 heimdall 워커가 Up 인 채 같은 블록만 3일 재시도했는데 아무 알림도 없었다.
+#   그래서 "색인된 블록 vs 체인 tip" 을 직접 재서 Pushgateway 에 올린다. 판정은 grafana.yaml 규칙이 한다.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mimir-index-lag
+  namespace: monitoring
+data:
+  check.py: |
+    import json, os, sys, time, urllib.request
+
+    PUSHGATEWAY = os.environ["PUSHGATEWAY_URL"]
+    NETWORKS = json.loads(os.environ["NETWORKS"])
+
+    def gql(url, query):
+        req = urllib.request.Request(
+            url,
+            data=json.dumps({"query": query}).encode(),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=20) as res:
+            return json.load(res)["data"]
+
+    failed = False
+    for name, ep in NETWORKS.items():
+        try:
+            indexed = gql(ep["mimir"], '{ metadata(collectionName: "block") { latestBlockIndex } }')["metadata"]["latestBlockIndex"]
+            tip = gql(ep["headless"], "{ nodeStatus { tip { index } } }")["nodeStatus"]["tip"]["index"]
+            print(f"{name}: indexed={indexed} tip={tip} lag={tip - indexed}")
+            # 네트워크마다 그룹을 따로 PUT 한다. 실패한 네트워크는 건드리지 않아 이전 값이 남고,
+            #   last_success 가 낡아서 stale 규칙에 걸린다(한 그룹으로 PUT 하면 시리즈가 사라져 안 울린다).
+            # f-string 의 이중 중괄호는 Helm 이 템플릿으로 읽는다 — % 포맷을 쓴다.
+            body = "".join(
+                "%s %d\n" % (metric, value)
+                for metric, value in (
+                    ("mimir_index_latest_block", indexed),
+                    ("mimir_index_chain_tip_block", tip),
+                    ("mimir_index_last_success_timestamp_seconds", time.time()),
+                )
+            )
+            req = urllib.request.Request(
+                f"{PUSHGATEWAY}/metrics/job/mimir-index-lag/network/{name}",
+                data=body.encode(),
+                method="PUT",
+            )
+            urllib.request.urlopen(req, timeout=20).close()
+        except Exception as e:
+            print(f"{name}: {e!r}", file=sys.stderr)
+            failed = True
+    sys.exit(1 if failed else 0)
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mimir-index-lag
+  namespace: monitoring
+spec:
+  schedule: {{ .schedule | default "*/5 * * * *" | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 120
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          containers:
+            - name: check
+              # 표준 라이브러리만 쓴다(urllib·json) — 추가 설치 없음.
+              image: python:3.12.7-alpine3.20
+              command: ["python", "/script/check.py"]
+              env:
+                - name: PUSHGATEWAY_URL
+                  value: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091
+                - name: NETWORKS
+                  value: {{ .networks | toJson | quote }}
+              resources:
+                requests: { cpu: 10m, memory: 32Mi }
+                limits: { memory: 64Mi }
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+          volumes:
+            - name: script
+              configMap:
+                name: mimir-index-lag
+{{- end }}
+{{- end }}

@@ -410,6 +410,71 @@ spec:
                       summary: '펫팝 시즌 자동화 CronJob 이 30분 넘게 성공하지 못했다 — 시즌 종료 보상 지급이 멈췄을 수 있다'
                   {{- end }}
               {{- end }}
+              {{- if (.Values.mimirIndexLag).enabled }}
+              # (2026-11-02) mimir(9cscan) 색인 지연. 값은 monitoring/mimir-index-lag CronJob(5분)이 Pushgateway 에 올린다.
+              #   heimdall 워커가 Up 인 채 한 블록에서 3일 멈췄는데(10/29~11/1) 컨테이너 상태로는 안 보였다.
+              - orgId: 1
+                name: mimir-index-alerts
+                folder: Mimir
+                interval: 1m
+                rules:
+                  # 평소 지연은 0~2블록. 300블록 ≈ 40~50분이라 워커 재기동·Mongo 순단 정도로는 안 울린다.
+                  - uid: mimir-index-lag
+                    title: Mimir Index Lagging
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          # Pushgateway 값은 만료되지 않는다 — 30분 안에 측정된 값만 본다(낡은 값은 stale 규칙 몫).
+                          expr: 'max by (network) (mimir_index_chain_tip_block - mimir_index_latest_block) and on (network) (time() - max by (network) (mimir_index_last_success_timestamp_seconds) < 1800)'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [300] }
+                    for: 15m
+                    labels:
+                      severity: critical
+                      service: mimir
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '{{`{{ "{{" }} $labels.network {{ "}}" }}`}} 9cscan(mimir) 색인이 tip 보다 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}} 블록 뒤처졌다 — pt2 mimir-{{`{{ "{{" }} $labels.network {{ "}}" }}`}}-block-worker 로그부터 본다(같은 블록 반복이면 처리 예외)'
+                  # 감시 잡 자체의 dead-man's switch. 지표가 사라지거나 낡는 것이 곧 증상이라 noData 도 울린다.
+                  - uid: mimir-index-check-stale
+                    title: Mimir Index Check Not Running
+                    noDataState: Alerting
+                    execErrState: Alerting
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'time() - max by (network) (mimir_index_last_success_timestamp_seconds)'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [1800] }
+                    for: 5m
+                    labels:
+                      severity: warning
+                      service: mimir
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '{{`{{ "{{" }} $labels.network {{ "}}" }}`}} mimir 색인 지연 측정이 30분 넘게 성공하지 못했다 — mimir-gql 또는 rpc 응답 불가, 혹은 monitoring/mimir-index-lag CronJob 정지'
+              {{- end }}
               # (2026-10-21) PVC 사용률. Loki 를 R2 대신 PVC(50Gi, 시간 기준 retention 만)에 두면서
               #   용량이 차도 알려줄 경로가 없었다. 수집되는 PVC 전체(kubelet_volume_stats)를 본다.
               #   기존 Grafana UI 규칙(Heimdall/Odin Headless PVC usage, 90%/6h)과 같은 #devops 로 보낸다.
