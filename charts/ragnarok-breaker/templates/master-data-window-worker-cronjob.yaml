@@ -1,0 +1,51 @@
+{{- if .Values.masterDataWindowWorker.enabled }}
+{{- $imageTag := required "masterDataWindowWorker.image.tag 이미지 고정이 필요합니다" .Values.masterDataWindowWorker.image.tag }}
+{{- $targets := required "masterDataWindowWorker.targets 설정이 필요합니다" .Values.masterDataWindowWorker.targets }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: master-data-window-worker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: master-data-window-worker
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.masterDataWindowWorker.schedule | quote }}
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1200
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: master-data-window-worker
+        spec:
+          restartPolicy: Never
+          {{- if .Values.imagePullSecret.secretKey }}
+          imagePullSecrets:
+            - name: {{ .Values.imagePullSecret.name }}
+          {{- end }}
+          containers:
+            - name: master-data-window-worker
+              image: "{{ .Values.masterDataWindowWorker.image.repository }}:{{ $imageTag }}"
+              imagePullPolicy: {{ .Values.masterDataWindowWorker.image.pullPolicy }}
+              envFrom:
+                - secretRef:
+                    name: ragnarok-breaker-env
+              env:
+                - name: WINDOW_APPLY
+                  value: {{ ternary "false" "true" .Values.masterDataWindowWorker.dryRun | quote }}
+                - name: WINDOW_TARGETS_JSON
+                  value: {{ $targets | toJson | quote }}
+              resources:
+                {{- toYaml .Values.masterDataWindowWorker.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
