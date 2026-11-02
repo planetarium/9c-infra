@@ -56,6 +56,11 @@ seasonpass:
       repository: planetariumhq/season-pass-tracker
       pullPolicy: Always
 
+    # 토르 트래커는 따로 켠다 — 시즌패스가 토르를 쓰지 않는다(enabled-planets 는 odin·heimdall 만, 2026-11-02 끔).
+    thor:
+      enabled: false
+      planetId: ""
+
     nodeSelector: {}
     env:
       region: ""

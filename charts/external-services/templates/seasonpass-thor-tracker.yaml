@@ -1,4 +1,4 @@
-{{- if $.Values.seasonpass.tracker.enabled }}
+{{- if and $.Values.seasonpass.tracker.enabled $.Values.seasonpass.tracker.thor.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
