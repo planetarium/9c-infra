@@ -63,7 +63,9 @@ rules:
       - podtemplates
       - componentstatuses
     verbs: [get, list, watch]
-  # 나머지 그룹은 전체 조회. 새 CRD 를 설치하면 그룹을 여기에 더한다(Rancher *.cattle.io·generators.external-secrets.io 는 넣지 않는다).
+  # 나머지 그룹은 전체 조회(Rancher *.cattle.io·generators.external-secrets.io·hub.traefik.io 는 넣지 않는다).
+  # 와일드카드라 이미 연 그룹에 새 종류가 생기면 같이 열린다 — 새 CRD 그룹을 더하거나 기존 그룹에 컨트롤러를 더 설치할 때
+  # (예: argoproj.io 에 Argo Workflows·Events) 평문 자격증명 필드가 있는지 보고 이 목록을 다시 정한다.
   - apiGroups:
       - acme.cert-manager.io
       - admissionregistration.k8s.io
@@ -85,7 +87,6 @@ rules:
       - flowcontrol.apiserver.k8s.io
       - gateway.networking.k8s.io
       - groupsnapshot.storage.k8s.io
-      - hub.traefik.io
       - longhorn.io
       - metrics.k8s.io
       - networking.k8s.io
@@ -229,7 +230,7 @@ metadata:
     kubernetes.io/service-account.name: donggeul-rotate
 type: kubernetes.io/service-account-token
 ---
-# 조회는 donggeul-ops 와 같은 읽기 역할(secret·configmap 없음)을 쓴다.
+# 조회는 donggeul-ops 와 같은 읽기 역할(secret 없음)을 쓴다.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
