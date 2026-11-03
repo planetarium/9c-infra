@@ -1,0 +1,112 @@
+# 동글이 옵스(pt4 동글이 컨테이너) 읽기 전용 SA — bootstrap-v2 차트를 쓰지 않는 클러스터(pt6)용.
+# 쓰기 권한은 없다. ClusterRole 규칙은 common/bootstrap-v2/templates/donggeul-ops-rbac.yaml 의 donggeul-ops-read 와 같게 유지한다
+# (resource.k8s.io 는 pt6 에만 있는 그룹). 9c-ops ops-kubectl --pt6 가 이 SA 토큰 kubeconfig 로 조회한다.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: donggeul-ops
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: donggeul-ops
+  namespace: donggeul-ops
+---
+# 만료 없는 SA 토큰. 회수는 이 시크릿 삭제.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: donggeul-ops-token
+  namespace: donggeul-ops
+  annotations:
+    kubernetes.io/service-account.name: donggeul-ops
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: donggeul-ops-read
+rules:
+  # 기본 그룹: secret 과 proxy·exec·attach·portforward·eviction 을 뺀 목록. RBAC 에는 "제외"가 없어 하나씩 적는다.
+  - apiGroups: [""]
+    resources:
+      - pods
+      - pods/log
+      - pods/status
+      - events
+      - services
+      - services/status
+      - endpoints
+      - nodes
+      - nodes/status
+      - namespaces
+      - namespaces/status
+      - persistentvolumeclaims
+      - persistentvolumeclaims/status
+      - persistentvolumes
+      - persistentvolumes/status
+      - resourcequotas
+      - resourcequotas/status
+      - limitranges
+      - configmaps
+      - serviceaccounts
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - podtemplates
+      - componentstatuses
+    verbs: [get, list, watch]
+  # 나머지 그룹은 전체 조회(Rancher *.cattle.io·generators.external-secrets.io·hub.traefik.io 는 넣지 않는다).
+  # 와일드카드라 이미 연 그룹에 새 종류가 생기면 같이 열린다 — 새 CRD 그룹을 더하거나 기존 그룹에 컨트롤러를 더 설치할 때
+  # (예: argoproj.io 에 Argo Workflows·Events) 평문 자격증명 필드가 있는지 보고 이 목록을 다시 정한다.
+  - apiGroups:
+      - acme.cert-manager.io
+      - admissionregistration.k8s.io
+      - apiextensions.k8s.io
+      - apiregistration.k8s.io
+      - apps
+      - argoproj.io
+      - autoscaling
+      - batch
+      - cert-manager.io
+      - certificates.k8s.io
+      - cluster.x-k8s.io
+      - coordination.k8s.io
+      - crd.projectcalico.org
+      - discovery.k8s.io
+      - events.k8s.io
+      - external-secrets.io
+      - externaldns.k8s.io
+      - flowcontrol.apiserver.k8s.io
+      - gateway.networking.k8s.io
+      - groupsnapshot.storage.k8s.io
+      - longhorn.io
+      - metrics.k8s.io
+      - networking.k8s.io
+      - node.k8s.io
+      - policy
+      - policy.networking.k8s.io
+      - rbac.authorization.k8s.io
+      - resource.k8s.io
+      - scheduling.k8s.io
+      - snapshot.storage.k8s.io
+      - storage.k8s.io
+      - tailscale.com
+      - traefik.io
+    resources: ["*"]
+    verbs: [get, list, watch]
+  - apiGroups: [metallb.io]
+    resources: [bfdprofiles, bgpadvertisements, communities, ipaddresspools, l2advertisements, servicel2statuses]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: donggeul-ops-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: donggeul-ops-read
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops

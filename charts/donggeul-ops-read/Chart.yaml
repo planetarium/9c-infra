@@ -1,0 +1,5 @@
+apiVersion: v2
+name: donggeul-ops-read
+description: 동글이 옵스 읽기 전용 ServiceAccount (bootstrap-v2 를 쓰지 않는 클러스터용 — pt6)
+type: application
+version: 0.1.0
