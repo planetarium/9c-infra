@@ -6,7 +6,11 @@ apt-get -y install curl zip
 HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
+# The webhook URL is a secret: keep it out of the `set -x` trace (it used to land
+# in plain text in every job log).
+{ set +x; } 2>/dev/null
 SLACK_WEBHOOK=$2
+set -x
 STORE_PATH=$3
 FORCE_CUTOFF_BLOCK=$5
 VERSION_NUMBER="${APP_PROTOCOL_VERSION:0:6}"
@@ -38,7 +42,9 @@ mkdir -p "$HEADLESS_LOG_DIR"
 PID_FILE="$HOME/headless_pid"
 function senderr() {
   echo "$1"
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' $SLACK_WEBHOOK
+  { set +x; } 2>/dev/null
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"'"$SOURCE_PREFIX"'[K8S] '"$1"'. Check snapshot-partition-v'$VERSION_NUMBER' in {{ $.Values.clusterName }} cluster at preload_headless.sh."}' "$SLACK_WEBHOOK" || true
+  set -x
 }
 
 function preload_complete() {
@@ -110,7 +116,29 @@ function wait_preloading() {
   # up. Previously this matched the same grep as the real success message, so the
   # job silently "completed" on a stale store (odin snapshot froze ~24 days at the
   # 2026-05-26 APV bump). Now it alerts and aborts.
-  MATCH=$(timeout 144000 tail -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP") || true)
+  #
+  # The watcher runs in the background so this loop can also check that headless is
+  # still alive. Without that, a headless that dies right after start (2026-11-01 on
+  # pt6: plugin download hit "Connection reset by peer" 58s in) left tail/grep
+  # waiting for the full 40h timeout before the job failed and retried.
+  MATCH_FILE="$(mktemp)"
+  (timeout 144000 tail -n +1 -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP") > "$MATCH_FILE" || true) &
+  WATCHER="$!"
+  set +x  # the loop below would flood the log with trace lines
+  while kill -0 "$WATCHER" 2>/dev/null; do
+    if ! kill -0 "$PID" 2>/dev/null; then
+      sleep 5  # let the watcher read the last lines headless wrote before exiting
+      if [ ! -s "$MATCH_FILE" ]; then
+        set -x
+        senderr "Headless exited before preload completed (see $HEADLESS_LOG)"
+        exit 1
+      fi
+      break
+    fi
+    sleep 30
+  done
+  set -x
+  MATCH="$(cat "$MATCH_FILE")"
 
   if [ -z "$MATCH" ]; then
     senderr "Preload timed out with no completion log."
