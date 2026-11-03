@@ -35,6 +35,7 @@ kind: ClusterRole
 metadata:
   name: donggeul-ops-read
 rules:
+  # pt6 는 같은 규칙을 charts/donggeul-ops-read 에 따로 둔다 — 여기를 바꾸면 거기도 바꾼다.
   # 기본 그룹: secret 과 proxy·exec·attach·portforward·eviction 을 뺀 목록. RBAC 에는 "제외"가 없어 하나씩 적는다.
   - apiGroups: [""]
     resources:

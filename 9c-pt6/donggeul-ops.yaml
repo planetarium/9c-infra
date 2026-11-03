@@ -1,0 +1,14 @@
+# 동글이 옵스 읽기 전용 SA 를 pt6 에 둔다(charts/donggeul-ops-read). 자동 sync 없음 — 메인 ArgoCD 에 kubectl apply 후 수동 sync.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pt6-donggeul-ops
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    name: 9c-pt6
+  source:
+    repoURL: https://github.com/planetarium/9c-infra.git
+    path: charts/donggeul-ops-read
+    targetRevision: main
