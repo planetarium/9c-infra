@@ -2,7 +2,10 @@
 # 동글이 옵스(pt4 동글이 컨테이너의 ops 사용자)용 ServiceAccount.
 # 알림이 오면 조사하고 서비스 재시작까지 선조치한 뒤 #donggeul-ops 에 보고한다. 운영 문서: 9c-ops common/donggeul.md
 #
-# - 읽기: 클러스터 전체. secret·configmap 은 없다 — 지급 서비스의 KMS 서명 자격증명이 secret 에 있다.
+# - 읽기: 클러스터 전체 조회(get·list·watch). 빼는 것은 secret(지급 서비스의 KMS 서명 자격증명이 있다),
+#         proxy·exec·attach·portforward 하위 리소스(GET 으로 kubelet·파드에 들어가는 우회로), Rancher(*.cattle.io — 토큰·
+#         클라우드 자격증명·Helm 값), external-secrets 생성기, metallb bgppeers(비밀번호 필드).
+#         configmap 은 연다(2026-11-03 두 클러스터 전수 확인 — 비밀값 없음. 비밀값은 ExternalSecret → secret 이 관례).
 # - 조치: restartNamespaces 에서 파드 삭제(= 같은 설정으로 재시작)·박힌 job 삭제, scaleNamespaces 에서 scale.
 # - 없음: exec·파드 생성·deployment patch(지급 서비스 파드 안에 KMS 서명 권한이 있어 설정을 바꾸면 서명을 시킬 수 있다),
 #         체인 노드(odin·heimdall·thor) 쓰기, PVC·볼륨·네임스페이스 삭제.
@@ -32,44 +35,73 @@ kind: ClusterRole
 metadata:
   name: donggeul-ops-read
 rules:
+  # 기본 그룹: secret 과 proxy·exec·attach·portforward·eviction 을 뺀 목록. RBAC 에는 "제외"가 없어 하나씩 적는다.
   - apiGroups: [""]
     resources:
       - pods
       - pods/log
+      - pods/status
       - events
       - services
+      - services/status
       - endpoints
       - nodes
+      - nodes/status
       - namespaces
+      - namespaces/status
       - persistentvolumeclaims
+      - persistentvolumeclaims/status
       - persistentvolumes
+      - persistentvolumes/status
       - resourcequotas
+      - resourcequotas/status
       - limitranges
+      - configmaps
+      - serviceaccounts
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - podtemplates
+      - componentstatuses
     verbs: [get, list, watch]
-  - apiGroups: [apps]
-    resources: [deployments, statefulsets, replicasets, daemonsets]
+  # 나머지 그룹은 전체 조회. 새 CRD 를 설치하면 그룹을 여기에 더한다(Rancher *.cattle.io·generators.external-secrets.io 는 넣지 않는다).
+  - apiGroups:
+      - acme.cert-manager.io
+      - admissionregistration.k8s.io
+      - apiextensions.k8s.io
+      - apiregistration.k8s.io
+      - apps
+      - argoproj.io
+      - autoscaling
+      - batch
+      - cert-manager.io
+      - certificates.k8s.io
+      - cluster.x-k8s.io
+      - coordination.k8s.io
+      - crd.projectcalico.org
+      - discovery.k8s.io
+      - events.k8s.io
+      - external-secrets.io
+      - externaldns.k8s.io
+      - flowcontrol.apiserver.k8s.io
+      - gateway.networking.k8s.io
+      - groupsnapshot.storage.k8s.io
+      - hub.traefik.io
+      - longhorn.io
+      - metrics.k8s.io
+      - networking.k8s.io
+      - node.k8s.io
+      - policy
+      - policy.networking.k8s.io
+      - rbac.authorization.k8s.io
+      - scheduling.k8s.io
+      - snapshot.storage.k8s.io
+      - storage.k8s.io
+      - tailscale.com
+      - traefik.io
+    resources: ["*"]
     verbs: [get, list, watch]
-  - apiGroups: [batch]
-    resources: [jobs, cronjobs]
-    verbs: [get, list, watch]
-  - apiGroups: [networking.k8s.io]
-    resources: [ingresses]
-    verbs: [get, list, watch]
-  - apiGroups: [events.k8s.io]
-    resources: [events]
-    verbs: [get, list, watch]
-  - apiGroups: [metrics.k8s.io]
-    resources: [pods, nodes]
-    verbs: [get, list]
-  - apiGroups: [argoproj.io]
-    resources: [applications, appprojects]
-    verbs: [get, list, watch]
-  - apiGroups: [longhorn.io]
-    resources: [volumes, replicas, engines, nodes]
-    verbs: [get, list, watch]
-  # 동기화 상태만 본다. 값은 secret 에 있고 secret 권한은 없다.
-  - apiGroups: [external-secrets.io]
-    resources: [externalsecrets, secretstores, clustersecretstores]
+  - apiGroups: [metallb.io]
+    resources: [bfdprofiles, bgpadvertisements, communities, ipaddresspools, l2advertisements, servicel2statuses]
     verbs: [get, list, watch]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
