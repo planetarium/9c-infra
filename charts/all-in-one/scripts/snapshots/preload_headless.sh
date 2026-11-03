@@ -130,7 +130,8 @@ function wait_preloading() {
       sleep 5  # let the watcher read the last lines headless wrote before exiting
       if [ ! -s "$MATCH_FILE" ]; then
         set -x
-        senderr "Headless exited before preload completed (see $HEADLESS_LOG)"
+        rc=0; wait "$PID" || rc=$?  # headless is our child: its exit code tells OOM (137) from an exception
+        senderr "Headless exited (code $rc) before preload completed (see $HEADLESS_LOG)"
         exit 1
       fi
       break
