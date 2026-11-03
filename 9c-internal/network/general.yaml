@@ -4,11 +4,10 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    # headless feature/hardworld-progress-open(#2774) = development(release/397) + lib9c feature/hardworld-progress-open(b281f394, lib9c#3326)
-    #   하드월드 진행 개방 인터널 1단계 검증(9c-ops products/9c/hardworld/internal-phase1-runbook.md). 체인 리셋 없음.
-    #   개방 시트 3종이 체인에 없으면 기존 액션 결과 바이트 동일(521+ 스테이지는 원래 없음) → 재실행 결과 불변.
-    #   lib9c MessagePack 2.5.303 포함 → remote-headless-1 /data/plugins/ 정리 필요. 이전: git-608cc38f(062ca5e4)
-    tag: "git-ad143917d2e720b4db29e34cbfeb35d858f307a9"
+    # headless release/399 = development(release/398 읽기 전용 원격 상태 조회 포함) + 하드월드 조회(#2781)
+    #   + lib9c release/1.40.0(460fb52d: 하드월드 개방 #3326, 무한의탑 층 대역 #3334, IL2CPP 예외 역직렬화 #3337).
+    #   510.0.x 인터널 세팅. 체인 리셋 없음. 이전: git-ad143917(feature/hardworld-progress-open)
+    tag: "git-503c8f5c1e5639953dff174b3b80c772c879d4b5"
 
 seed:
   image:
