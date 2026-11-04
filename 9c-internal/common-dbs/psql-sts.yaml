@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: psql
-          image: postgres:15
+          image: postgres:15.19@sha256:40e8c839f86c404f9bd1c456bb83f11b205f2cd95d753b34c2d074e89ecee786  # 2026-11-04 실행 중 이미지 고정(태그만 쓰면 재시작 때 glibc 가 바뀌어 collation 재색인 필요)
           ports:
             - containerPort: 5432
           env:
