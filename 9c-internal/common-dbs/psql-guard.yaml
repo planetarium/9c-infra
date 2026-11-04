@@ -1,0 +1,89 @@
+# 2026-11-04 침해 대응: 인터널 Postgres 에 공격 흔적(ALTER SYSTEM·가짜 복제 슬롯·대용량 객체·새 슈퍼유저·낯선 파일)이
+# 생기면 10분마다 슬랙(인터널 알림 웹훅)으로 알린다. 이상이 없으면 아무것도 보내지 않는다.
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: psql-guard-slack
+  namespace: common-dbs
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: common-dbs-secretsmanager
+    kind: SecretStore
+  target:
+    name: psql-guard-slack
+  data:
+    - secretKey: webhook
+      remoteRef:
+        key: 9c-internal-v2/heimdall/slack
+        property: slack-webhook-url
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: psql-guard
+  namespace: common-dbs
+data:
+  guard.sh: |
+    #!/bin/sh
+    set -u
+    apk add -q --no-cache postgresql16-client curl jq >/dev/null 2>&1 || { echo "apk 실패"; exit 1; }
+    q() { psql -XAtq -d "${1:-postgres}" -c "$2" 2>&1; }
+    issues=""
+    add() { issues="${issues}\n• $1"; }
+    if ! q postgres "select 1" >/dev/null; then add "접속 실패: $(q postgres 'select 1' | head -1)"; fi
+    n=$(q postgres "select count(*) from pg_file_settings where sourcefile like '%auto.conf'"); [ "$n" != "0" ] && add "postgresql.auto.conf 에 설정 ${n}줄(ALTER SYSTEM)"
+    o=$(q postgres "select string_agg(name||'='||setting||'('||source||')', ', ') from pg_settings where name in ('ssl','ssl_passphrase_command','archive_mode') and source <> 'command line'"); [ -n "$o" ] && add "명령줄 고정이 풀린 설정: $o"
+    s=$(q postgres "select (select count(*) from pg_replication_slots) + (select count(*) from pg_ls_dir('pg_replslot'))"); [ "$s" != "0" ] && add "복제 슬롯/pg_replslot 항목 ${s}개"
+    su=$(q postgres "select string_agg(rolname, ',') from pg_roles where rolsuper and rolname not in ('root','donggeul')"); [ -n "$su" ] && add "새 슈퍼유저: $su"
+    nr=$(q postgres "select string_agg(rolname, ',') from pg_roles where rolname !~ '^pg_' and rolname not in ('root','donggeul','ext_readonly','heimdall_arena_service','iap','odin_arena_service','petpop','rb','rb_dev','season_pass','thor_arena_service')"); [ -n "$nr" ] && add "모르는 계정: $nr"
+    f=$(q postgres "select string_agg(f, ',') from pg_ls_dir('.') f where f not in ('base','global','pg_commit_ts','pg_dynshmem','pg_logical','pg_multixact','pg_notify','pg_replslot','pg_serial','pg_snapshots','pg_stat','pg_stat_tmp','pg_subtrans','pg_tblspc','pg_twophase','PG_VERSION','pg_wal','pg_xact','postgresql.auto.conf','postgresql.conf','pg_hba.conf','pg_ident.conf','postmaster.opts','postmaster.pid')"); [ -n "$f" ] && add "데이터 디렉터리의 낯선 파일: $f"
+    for db in $(q postgres "select datname from pg_database where datallowconn and not datistemplate"); do
+      lo=$(q "$db" "select count(*) from pg_largeobject_metadata"); [ "$lo" != "0" ] && add "$db: 대용량 객체 ${lo}개"
+      ev=$(q "$db" "select count(*) from pg_event_trigger"); [ "$ev" != "0" ] && add "$db: 이벤트 트리거 ${ev}개"
+    done
+    if [ -n "$issues" ]; then
+      msg=$(printf ':rotating_light: *[9c-internal common-dbs psql-guard]* 인터널 Postgres 이상 징후 (2026-11-04 침해와 같은 수법일 수 있음)%b\n점검: 9c-ops products/9c/skills/infra-ops/cluster-access.md 인터널 DB 절' "$issues")
+      echo "$msg"
+      jq -n --arg t "$msg" '{text: $t}' | curl -sS -m 10 -X POST -H 'Content-Type: application/json' --data @- "$SLACK_WEBHOOK" >/dev/null
+      exit 2
+    fi
+    echo "이상 없음"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: psql-guard
+  namespace: common-dbs
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 300
+      template:
+        metadata:
+          labels:
+            app: psql-guard
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          containers:
+            - name: guard
+              image: alpine:3.20
+              command: ["sh", "/guard/guard.sh"]
+              env:
+                - {name: PGHOST, value: psql-service.common-dbs.svc.cluster.local}
+                - {name: PGUSER, value: root}
+                - name: PGPASSWORD
+                  valueFrom: {secretKeyRef: {name: db-secrets, key: POSTGRES_PASSWORD}}
+                - name: SLACK_WEBHOOK
+                  valueFrom: {secretKeyRef: {name: psql-guard-slack, key: webhook}}
+              volumeMounts:
+                - {name: guard, mountPath: /guard}
+          volumes:
+            - name: guard
+              configMap: {name: psql-guard}

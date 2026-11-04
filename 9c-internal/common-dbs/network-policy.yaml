@@ -17,6 +17,9 @@ spec:
               - key: kubernetes.io/metadata.name
                 operator: In
                 values: [petpop, 9c-external-services, heimdall, odin, traefik]
+        - podSelector:
+            matchLabels:
+              app: psql-guard
       ports:
         - port: 5432
           protocol: TCP
