@@ -1,0 +1,43 @@
+# 인터널 Postgres·MongoDB 외부 접속 — traefik 에서 TLS 종료(기본 TLS store 의 *.9c.gg 인증서) + IP 허용 목록.
+# 허용 목록 MiddlewareTCP common-dbs/internal-db-allowlist 는 이 저장소(공개)에 두지 않는다 — 비공개 운영 저장소의
+# 스크립트가 적용한다. 미들웨어가 없으면 traefik 이 라우트를 띄우지 않는다(아무도 못 붙음).
+# 엔트리포인트 postgresql·mongodb 는 PROXY·X-Forwarded 를 신뢰하지 않는다(9c-internal/values.yaml traefik.ports.*.trustProxy).
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: psql-external
+  namespace: common-dbs
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "psql-internal.9c.gg"
+    external-dns.alpha.kubernetes.io/ttl: '60'
+spec:
+  entryPoints:
+    - postgresql
+  routes:
+    - match: HostSNI(`psql-internal.9c.gg`)
+      middlewares:
+        - name: internal-db-allowlist
+      services:
+        - name: psql-service
+          port: 5432
+  tls: {}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: mongodb-external
+  namespace: common-dbs
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "mongodb-internal.9c.gg"
+    external-dns.alpha.kubernetes.io/ttl: '60'
+spec:
+  entryPoints:
+    - mongodb
+  routes:
+    - match: HostSNI(`mongodb-internal.9c.gg`)
+      middlewares:
+        - name: internal-db-allowlist
+      services:
+        - name: mongodb-service
+          port: 27017
+  tls: {}
