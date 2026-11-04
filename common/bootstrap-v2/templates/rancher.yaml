@@ -27,4 +27,9 @@ spec:
       values: |-
         tls: external
         hostname: {{ .Values.RKE2.domain }}
+        {{- with .Values.rancher.ingressMiddlewares }}
+        ingress:
+          extraAnnotations:
+            traefik.ingress.kubernetes.io/router.middlewares: {{ . | quote }}
+        {{- end }}
 {{- end }}

@@ -44,3 +44,16 @@ spec:
       ports:
         - port: 27017
           protocol: TCP
+---
+# DB pod 는 바깥으로 나갈 일이 없다 — 공격자 C2(외부)·ArgoCD·Redis 로의 이동을 끊는다(응답 트래픽은 영향 없음).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-deny-egress
+  namespace: common-dbs
+spec:
+  podSelector:
+    matchExpressions:
+      - {key: app, operator: In, values: [psql, mongodb]}
+  policyTypes: [Egress]
+  egress: []

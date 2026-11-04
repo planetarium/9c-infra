@@ -1,0 +1,29 @@
+# 2026-11-04 침해 대응: argocd-repo-server(8081)·argocd-redis(6379)는 인증 없이 쓰일 수 있는 내부 포트다.
+# 공격자가 DB pod 에서 이 둘을 노렸다 — argocd 네임스페이스 안에서만 닿게 한다(ArgoCD 공식 NetworkPolicy 와 같은 범위).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: argocd-repo-server-internal-only
+  namespace: argocd
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: argocd-redis-internal-only
+  namespace: argocd
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-redis
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: {}

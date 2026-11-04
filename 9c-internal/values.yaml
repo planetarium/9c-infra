@@ -79,3 +79,8 @@ donggeulOps:
       - common-dbs
       - odin
       - heimdall
+
+# 2026-11-04 침해 대응: Rancher(API 프록시 포함)를 허용 IP 로만 — 공격자가 Tor 로 /k8s/clusters 를 두드림.
+# 미들웨어는 cattle-system/rancher-allowlist(9c-internal/cattle-system/rancher-allowlist.yaml).
+rancher:
+  ingressMiddlewares: cattle-system-rancher-allowlist@kubernetescrd

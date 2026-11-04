@@ -31,14 +31,16 @@ data:
     q() { psql -XAtq -d "${1:-postgres}" -c "$2" 2>&1; }
     issues=""
     add() { issues="${issues}\n• $1"; }
-    if ! q postgres "select 1" >/dev/null; then add "접속 실패: $(q postgres 'select 1' | head -1)"; fi
+    if ! psql -XAtq -d postgres -c "select 1" >/dev/null 2>&1; then add "접속 실패: $(psql -XAtq -d postgres -c 'select 1' 2>&1 | head -1 | cut -c1-200)"; fi
     n=$(q postgres "select count(*) from pg_file_settings where sourcefile like '%auto.conf'"); [ "$n" != "0" ] && add "postgresql.auto.conf 에 설정 ${n}줄(ALTER SYSTEM)"
     o=$(q postgres "select string_agg(name||'='||setting||'('||source||')', ', ') from pg_settings where name in ('ssl','ssl_passphrase_command','archive_mode') and source <> 'command line'"); [ -n "$o" ] && add "명령줄 고정이 풀린 설정: $o"
     s=$(q postgres "select (select count(*) from pg_replication_slots) + (select count(*) from pg_ls_dir('pg_replslot'))"); [ "$s" != "0" ] && add "복제 슬롯/pg_replslot 항목 ${s}개"
     su=$(q postgres "select string_agg(rolname, ',') from pg_roles where rolsuper and rolname not in ('root','donggeul')"); [ -n "$su" ] && add "새 슈퍼유저: $su"
-    nr=$(q postgres "select string_agg(rolname, ',') from pg_roles where rolname !~ '^pg_' and rolname not in ('root','donggeul','ext_readonly','heimdall_arena_service','iap','odin_arena_service','petpop','rb','rb_dev','season_pass','thor_arena_service')"); [ -n "$nr" ] && add "모르는 계정: $nr"
+    nr=$(q postgres "select string_agg(rolname, ',') from pg_roles where rolname !~ '^pg_' and rolname not in ('root','donggeul','ext_readonly','market','dbguard','heimdall_arena_service','iap','odin_arena_service','petpop','rb','rb_dev','season_pass','thor_arena_service')"); [ -n "$nr" ] && add "모르는 계정: $nr"
     f=$(q postgres "select string_agg(f, ',') from pg_ls_dir('.') f where f not in ('base','global','pg_commit_ts','pg_dynshmem','pg_logical','pg_multixact','pg_notify','pg_replslot','pg_serial','pg_snapshots','pg_stat','pg_stat_tmp','pg_subtrans','pg_tblspc','pg_twophase','PG_VERSION','pg_wal','pg_xact','postgresql.auto.conf','postgresql.conf','pg_hba.conf','pg_ident.conf','postmaster.opts','postmaster.pid')"); [ -n "$f" ] && add "데이터 디렉터리의 낯선 파일: $f"
-    for db in $(q postgres "select datname from pg_database where datallowconn and not datistemplate"); do
+    dbs=$(psql -XAtq -d postgres -c "select datname from pg_database where datallowconn and not datistemplate" 2>/dev/null) || dbs=""
+    [ -z "$dbs" ] && add "DB 목록 조회 실패(접속 불가 — 공격자 라이브러리·설정 변경일 수 있음)"
+    for db in $dbs; do
       lo=$(q "$db" "select count(*) from pg_largeobject_metadata"); [ "$lo" != "0" ] && add "$db: 대용량 객체 ${lo}개"
       ev=$(q "$db" "select count(*) from pg_event_trigger"); [ "$ev" != "0" ] && add "$db: 이벤트 트리거 ${ev}개"
     done
@@ -77,9 +79,10 @@ spec:
               command: ["sh", "/guard/guard.sh"]
               env:
                 - {name: PGHOST, value: psql-service.common-dbs.svc.cluster.local}
-                - {name: PGUSER, value: root}
+                # 슈퍼유저는 네트워크 로그인 금지(pg_hba reject) — 감시는 읽기 권한만 있는 전용 계정
+                - {name: PGUSER, value: dbguard}
                 - name: PGPASSWORD
-                  valueFrom: {secretKeyRef: {name: db-secrets, key: POSTGRES_PASSWORD}}
+                  valueFrom: {secretKeyRef: {name: db-secrets, key: GUARD_PASSWORD}}
                 - name: SLACK_WEBHOOK
                   valueFrom: {secretKeyRef: {name: psql-guard-slack, key: webhook}}
               volumeMounts:
