@@ -21,7 +21,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-ef813ee78239584be611b2e44a9fbd21ee07303b
+    tag: worker-93b38139ce75ae21db71039ffd8a86a37b95c06e
   rankingWorker:
     enabled: true
   blockResetWorker:
@@ -33,6 +33,8 @@ workers:
     # 인터널은 실제로 지급(리허설). 유저가 적어 sanity 하한을 1 로.
     env:
       SEASON_AUTOMATION_END_ENABLED: "true"
+      # 시즌 시작 준비(B: 점검·초기화·판정·해제) 리허설 (petpop feat/season-automation-start)
+      SEASON_AUTOMATION_START_ENABLED: "true"
       SEASON_AUTOMATION_ROUND0_MIN: "1"
     # iwinv-1 은 Redis 접속 불가
     nodeSelector:
