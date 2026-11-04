@@ -69,7 +69,9 @@ spec:
           {{- range $name, $config := $.Values.traefik.ports }}
           {{ $name }}:
             port: {{ $config.port }}
+            {{- if ne $config.trustProxy false }}
             <<: *trustedIPs
+            {{- end }}
             expose:
               default: true
             {{- with $config.transport }}
