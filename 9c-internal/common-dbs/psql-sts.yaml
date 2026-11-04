@@ -17,9 +17,26 @@ spec:
       labels:
         app: psql
     spec:
+      # 2026-11-04 침해 대응: DB 컨테이너가 장악돼도 k8s 토큰을 못 쓰게
+      automountServiceAccountToken: false
       containers:
         - name: psql
           image: postgres:15.19@sha256:40e8c839f86c404f9bd1c456bb83f11b205f2cd95d753b34c2d074e89ecee786  # 2026-11-04 실행 중 이미지 고정(태그만 쓰면 재시작 때 glibc 가 바뀌어 collation 재색인 필요)
+          # 명령줄 -c 는 postgresql.auto.conf(ALTER SYSTEM)보다 우선 — 2026-11-02·04 공격(ssl_passphrase_command 셸 실행)을
+          # ALTER SYSTEM 으로 다시 심어도 효과가 없게 고정. 접속·DDL 은 로그로 남긴다(출처 추적).
+          args:
+            - -c
+            - ssl=off
+            - -c
+            - ssl_passphrase_command=
+            - -c
+            - archive_mode=off
+            - -c
+            - log_connections=on
+            - -c
+            - log_disconnections=on
+            - -c
+            - log_statement=ddl
           ports:
             - containerPort: 5432
           env:

@@ -1,0 +1,43 @@
+# 2026-11-04 침해 대응: DB 에 붙을 수 있는 네임스페이스를 실제 사용처로 제한(그 밖의 pod 가 장악돼도 DB 로 못 감).
+# 새 서비스가 이 DB 를 쓰려면 여기에 네임스페이스를 추가할 것. kubectl exec/port-forward 는 영향 없음.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: psql-ingress
+  namespace: common-dbs
+spec:
+  podSelector:
+    matchLabels:
+      app: psql
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [petpop, 9c-external-services, heimdall, odin, traefik]
+      ports:
+        - port: 5432
+          protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mongodb-ingress
+  namespace: common-dbs
+spec:
+  podSelector:
+    matchLabels:
+      app: mongodb
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [heimdall, odin, traefik]
+      ports:
+        - port: 27017
+          protocol: TCP
