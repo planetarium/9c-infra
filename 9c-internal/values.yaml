@@ -37,24 +37,18 @@ traefik:
   - 172.16.0.0/12
   - 49.247.0.0/16
   - 115.68.0.0/16
+  # DB 포트는 허용 목록(9c-ops products/9c/internal-db)으로만 연다 — PROXY·X-Forwarded 신뢰를 끄지 않으면
+  # trustedIPs 대역 서버가 출발지를 위조해 허용 목록을 통과한다. redis·rmq 는 외부에 열지 않는다(2026-11-04).
   ports:
     postgresql:
       port: 5432
-      transport:
-        respondingTimeouts:
-          readTimeout: 0
-    redis:
-      port: 6379 
-      transport:
-        respondingTimeouts:
-          readTimeout: 0
-    rmq:
-      port: 5672
+      trustProxy: false
       transport:
         respondingTimeouts:
           readTimeout: 0
     mongodb:
       port: 27017
+      trustProxy: false
       transport:
         respondingTimeouts:
           readTimeout: 0
