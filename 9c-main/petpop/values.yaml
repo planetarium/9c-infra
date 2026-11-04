@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-ba15f95a64462748ba9533421fb842736d4587fb
+    tag: worker-660a68a22195e42d87d7b452e95a2158f659ec4c
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
@@ -44,8 +44,11 @@ workers:
     enabled: true
     # 지급 스위치(시즌 종료 보상 자동 지급). 끄려면 "false" — 즉시 멈추려면 CronJob suspend.
     #   (2026-10-23) prod 모의 실행·동글이 중계 확인 후 켬. 시즌 17 종료(10/26 08:00 UTC) 뒤 첫 스냅샷에서 지급.
+    #   시작 준비 스위치(다음 시즌 open 30분 전 점검 등록 → 월드·펫 초기화 → 판정 → open 시각에 해제). 끄려면 "false".
+    #   (2026-11-04) 인터널 리허설 통과 후 켬, 시즌 18 open(08:00 UTC) 부터. petpop #952
     env:
       SEASON_AUTOMATION_END_ENABLED: "true"
+      SEASON_AUTOMATION_START_ENABLED: "true"
   # 보존 정리(History 30일·UpdateNoti 90일·만료 DAILY/WEEKLY UserQuest 30일), 매월 2일 04:00 KST.
   #   유입이 하루 수천 행이라 월 1회로 충분(2026-10-24). 옛 적체는 일회성 정리로 비웠다.
   #   UserQuest 는 전 범위를 훑는다 — 5만 id 윈도가 밀집 구간에서 19.5s 라 2만으로(문장 제한 30s).
