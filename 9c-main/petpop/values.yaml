@@ -4,7 +4,7 @@ server:
   enabled: true
   image:
     repository: planetariumhq/petpop
-    tag: server-ba15f95a64462748ba9533421fb842736d4587fb
+    tag: server-e9c6631d770dc6a5b155542226a13492df1ddc94
   hostnames:
     - petpop.fun
     - www.petpop.fun
