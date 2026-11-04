@@ -37,6 +37,15 @@ spec:
             - log_disconnections=on
             - -c
             - log_statement=ddl
+            # 2026-11-04 2차: 접속 때 공격자 .so 를 불러오게 한 수법(session_preload_libraries) 차단
+            - -c
+            - session_preload_libraries=
+            - -c
+            - local_preload_libraries=
+            - -c
+            - shared_preload_libraries=
+            - -c
+            - dynamic_library_path=$libdir
           ports:
             - containerPort: 5432
           env:
@@ -52,6 +61,15 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: psql-data
+            # ALTER SYSTEM 자체를 막는다: postgresql.auto.conf 를 읽기 전용 빈 파일로 덮어씀(쓰기·rename 실패)
+            - mountPath: /var/lib/postgresql/data/pgdata/postgresql.auto.conf
+              name: autoconf-ro
+              subPath: postgresql.auto.conf
+              readOnly: true
+      volumes:
+        - name: autoconf-ro
+          configMap:
+            name: psql-autoconf-ro
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
