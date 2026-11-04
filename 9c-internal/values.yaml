@@ -9,7 +9,7 @@ argocd:
 externalSecrets:
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/gke-9c-internal-external-secrets
+      eks.amazonaws.com/role-arn: arn:aws:iam::319679068466:role/9c-internal-rke2-external-secrets
 externalDns:
   serviceAccount:
     annotations:
