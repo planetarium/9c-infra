@@ -20,7 +20,19 @@ spec:
       services:
         - name: psql-service
           port: 5432
-  tls: {}
+  tls:
+    options:
+      name: psql-alpn
+---
+# libpq 17+ 는 TLS 협상에 ALPN "postgresql" 을 보낸다. traefik 기본 옵션은 이를 모른다며 거절한다(no application protocol).
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: psql-alpn
+  namespace: common-dbs
+spec:
+  alpnProtocols:
+    - postgresql
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
