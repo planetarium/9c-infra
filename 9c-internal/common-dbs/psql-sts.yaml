@@ -19,6 +19,12 @@ spec:
     spec:
       # 2026-11-04 침해 대응: DB 컨테이너가 장악돼도 k8s 토큰을 못 쓰게
       automountServiceAccountToken: false
+      # postgres(999)로 바로 실행 — 이미지 시작 스크립트가 root 일 때만 PGDATA 소유권을 바꾸는데,
+      # 읽기 전용 postgresql.auto.conf 에서 실패해 기동이 안 된다(2026-11-04).
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
         - name: psql
           image: postgres:15.19@sha256:40e8c839f86c404f9bd1c456bb83f11b205f2cd95d753b34c2d074e89ecee786  # 2026-11-04 실행 중 이미지 고정(태그만 쓰면 재시작 때 glibc 가 바뀌어 collation 재색인 필요)
