@@ -28,7 +28,7 @@ backoffice:
 workers:
   image:
     repository: planetariumhq/petpop
-    tag: worker-660a68a22195e42d87d7b452e95a2158f659ec4c
+    tag: worker-2e50db54199af5251dffb36a9c5d464f98ca03ff
   nodeSelector:
     node.kubernetes.io/type: general
   rankingWorker:
