@@ -126,7 +126,8 @@ portalService:
     #          기존 포탈 하드코딩이 3배 과소표기였던 것 — 메인넷 배포 전 기획 확인 권장.
     # (2026-10-26) → internal-718a3a2f: 9c-portal #1351 — 출금 트랜잭션 구간별 소요시간 진단 로그(동작 변경 없음).
     # (2026-11-02) → internal-3b356b99: 9c-portal develop — earnReward body 파싱 방어(문자열/객체 모두, 실패 시 400).
-    tag: "internal-3b356b9907b2e6b9a28b1a1ba1097ae8573bbcb4"
+    # (2026-11-06) → internal-c52d3b76: 선호 플래닛이 레지스트리에 없을 때(Thor 등) Change Primary Planet 모달이 열리도록 (9c-portal #1361).
+    tag: "internal-c52d3b76289f828494370435615ec3a99dc0f94c"
     pullPolicy: Always
   externalSecret:
     enabled: true
