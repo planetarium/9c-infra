@@ -165,7 +165,6 @@ donggeulOps:
     - ragnarok-breaker-prod
     - ragnarok-breaker-prod-web2
     - ragnarok-breaker-prod-web3
-    - ragnarok-breaker-prod-crazygames
     - maple-go-prod
     - batch-jobs
   # deployments/statefulsets scale. 지급 서비스는 넣지 않는다.
@@ -175,7 +174,6 @@ donggeulOps:
     - ragnarok-breaker-prod-web3
     - maple-go-prod
     - batch-jobs
-    # ragnarok-breaker-prod-crazygames 는 넣지 않는다 — 단일 인스턴스 메모리 상태라 replicas 1 고정.
   # 래퍼(root) 전용 secret 읽기. 모델은 값을 받지 않는다 — DB 는 읽기 전용 조회 결과만, 설정은 허용된 키만.
   secretReads:
     9c-external-services:
@@ -209,7 +207,6 @@ donggeulOps:
       - ragnarok-breaker-prod
       - ragnarok-breaker-prod-web2
       - ragnarok-breaker-prod-web3
-      - ragnarok-breaker-prod-crazygames
       - maple-go-prod
       - batch-jobs
       - shared-services

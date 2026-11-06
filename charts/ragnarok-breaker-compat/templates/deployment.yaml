@@ -21,7 +21,9 @@ spec:
       labels:
         {{- include "compat.labels" . | nindent 8 }}
       annotations:
-        checksum/env: {{ toYaml .Values.env | sha256sum }}
+        # 평문 env 변경만 재시작을 일으킨다. 비밀값(compat-server-env) 변경엔 의도적으로 반응하지 않는다
+        # (GUEST_TOKEN_SECRET 은 바뀌면 안 되는 값이고, 재시작은 상태 복구 비용이 크다).
+        checksum/env:{{ toYaml .Values.env | sha256sum }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.name }}
@@ -47,13 +49,13 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.containerPort }}
-          {{- with .Values.env }}
           env:
-            {{- range $k, $v := . }}
+            - name: PORT
+              value: {{ .Values.service.containerPort | quote }}
+            {{- range $k, $v := .Values.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
             {{- end }}
-          {{- end }}
           {{- if .Values.externalSecretKey }}
           envFrom:
             - secretRef:

@@ -1,0 +1,17 @@
+# Ragnarok Breaker CrazyGames 호환 게임서버(ragnarok-breaker-prod-crazygames) 상태 볼륨 전용.
+# longhorn-default 는 복제본 1개라 노드 하나가 죽으면 상태를 잃는다 — 복제본 3개 + Retain.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rb-compat-longhorn
+  labels:
+    app.kubernetes.io/instance: shared-services
+parameters:
+  fsType: ext4
+  fromBackup: ''
+  numberOfReplicas: '3'
+  staleReplicaTimeout: '2880'
+provisioner: driver.longhorn.io
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowVolumeExpansion: true

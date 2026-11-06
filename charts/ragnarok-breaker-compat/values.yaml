@@ -31,9 +31,10 @@ httpRoute:
   hostnames: []
 
 persistence:
-  # Retain 정책 SC — 앱/PVC 를 지워도 Longhorn 볼륨이 남는다.
-  storageClassName: longhorn-default
-  size: 5Gi
+  # 전용 SC(9c-main/shared-services/storageclass-rb-compat.yaml) — Longhorn 복제본 3개, Retain.
+  # PVC 를 만들기 전에 SC 가 클러스터에 있어야 바인딩된다.
+  storageClassName: rb-compat-longhorn
+  size: 10Gi
   mountPath: /data
 
 terminationGracePeriodSeconds: 30
@@ -45,6 +46,8 @@ resources:
   limits:
     memory: 3Gi
 
-nodeSelector: {}
+# 검증자(odin/heimdall) 노드를 피해 general 노드(9c-main-general-2/4)에만 띄운다.
+nodeSelector:
+  node.kubernetes.io/type: general
 tolerations: []
 affinity: {}
