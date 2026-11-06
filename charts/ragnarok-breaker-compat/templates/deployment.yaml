@@ -23,7 +23,7 @@ spec:
       annotations:
         # 평문 env 변경만 재시작을 일으킨다. 비밀값(compat-server-env) 변경엔 의도적으로 반응하지 않는다
         # (GUEST_TOKEN_SECRET 은 바뀌면 안 되는 값이고, 재시작은 상태 복구 비용이 크다).
-        checksum/env:{{ toYaml .Values.env | sha256sum }}
+        checksum/env: {{ toYaml .Values.env | sha256sum | quote }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.name }}
