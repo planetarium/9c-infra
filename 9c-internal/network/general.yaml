@@ -5,9 +5,9 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     # headless release/399 = development(release/398 읽기 전용 원격 상태 조회 포함) + 하드월드 조회(#2781)
-    #   + lib9c release/1.40.0(460fb52d: 하드월드 개방 #3326, 무한의탑 층 대역 #3334, IL2CPP 예외 역직렬화 #3337).
-    #   510.0.x 인터널 세팅. 체인 리셋 없음. 이전: git-ad143917(feature/hardworld-progress-open)
-    tag: "git-503c8f5c1e5639953dff174b3b80c772c879d4b5"
+    #   + lib9c release/1.40.0(cd829b85: 하드월드 개방 #3326, 무한의탑 층 대역 #3334, IL2CPP 예외 역직렬화 #3337,
+    #   BuffLimitSheet.Value long #3338). 510.0.x 인터널 세팅. 체인 리셋 없음. 이전: git-503c8f5c(#3338 전)
+    tag: "git-be3fa7b9bb9d15494b724837486c9ea2626b211e"
 
 seed:
   image:
