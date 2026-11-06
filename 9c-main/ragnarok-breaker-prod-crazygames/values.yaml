@@ -1,0 +1,28 @@
+# Ragnarok Breaker CrazyGames 호환 게임서버 — 메인넷(9c-main) prod.
+# 차트: charts/ragnarok-breaker-compat (단일 인스턴스, replicas 1 고정)
+
+# GUEST_TOKEN_SECRET 등 비밀 환경변수 → secret compat-server-env
+externalSecretKey: ragnarok-breaker/prod-crazygames
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+image:
+  # ragnarok-breaker(yang fork) spike/crazygames-build c6e8f89a — SQLite 저장·주기 재시드·안전 종료
+  tag: git-c6e8f89a7ac8f9f27940ceb0e9eaa96991203ae3
+
+env:
+  APP_ENV: prod-w2
+  SEED_CHANNEL: prod
+  STATE_DB: /data/state.db
+  STATE_BACKUP_DIR: /data/backups
+  NODE_ENV: production
+  # CORS 허용 출처(호스트 접미사). 포털 밖 임베드 도메인이 생기면 여기에 추가.
+  ALLOWED_ORIGINS: crazygames.com
+  # CrazyGames 개발자 포털의 이 게임 gameId — 숫자 ID 이며 미리보기 URL 의 UUID 가 아니다.
+  # 비어 있으면 로그인 토큰을 전부 거부한다(게스트만 플레이).
+  CG_GAME_ID: "163340"
+
+httpRoute:
+  hostnames:
+    - rb-crazygames.9c.gg

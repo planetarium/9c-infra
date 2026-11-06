@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ragnarok-breaker-compat
+description: Ragnarok Breaker CrazyGames 호환 게임서버(compat-server) — 단일 인스턴스 + PVC 상태 저장
+type: application
+version: 0.1.0
+appVersion: 0.1.0
