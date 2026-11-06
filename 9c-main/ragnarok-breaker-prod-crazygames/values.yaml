@@ -8,8 +8,8 @@ imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
 image:
-  # TODO: 이미지 푸시 후 태그 지정. 비어 있는 동안에는 렌더가 실패해 sync 되지 않는다(의도).
-  tag: ""
+  # ragnarok-breaker(yang fork) spike/crazygames-build c6e8f89a — SQLite 저장·주기 재시드·안전 종료
+  tag: git-c6e8f89a7ac8f9f27940ceb0e9eaa96991203ae3
 
 env:
   APP_ENV: prod-w2
