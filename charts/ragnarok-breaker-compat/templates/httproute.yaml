@@ -1,0 +1,29 @@
+{{- if and .Values.httpRoute.enabled .Values.httpRoute.hostnames }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: compat-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "compat.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ .Values.httpRoute.gatewayName }}
+      namespace: {{ .Values.httpRoute.gatewayNamespace }}
+      sectionName: web
+    - name: {{ .Values.httpRoute.gatewayName }}
+      namespace: {{ .Values.httpRoute.gatewayNamespace }}
+      sectionName: websecure
+  hostnames:
+    {{- range .Values.httpRoute.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: compat-server
+          port: {{ .Values.service.port }}
+{{- end }}

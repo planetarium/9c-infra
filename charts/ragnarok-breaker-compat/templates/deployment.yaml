@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compat-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "compat.labels" . | nindent 4 }}
+spec:
+  # 단일 인스턴스 고정 — 절대 2개 이상 띄우지 말 것. 게임 상태를 프로세스 메모리에 들고
+  # /data(RWO PVC) 에 저장하므로 2개가 뜨면 상태가 갈라지고 서로의 저장을 덮어쓴다.
+  # 그래서 values 로 바꿀 수 없게 1 로 박아 둔다(HPA·scale 도 금지).
+  replicas: 1
+  # RollingUpdate 는 교체 중 잠깐이라도 2개를 띄우므로 금지. 기존 파드를 먼저 내리고 새로 띄운다.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "compat.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "compat.labels" . | nindent 8 }}
+      annotations:
+        checksum/env: {{ toYaml .Values.env | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.imagePullSecret.name }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: compat-server
+          image: "{{ .Values.image.repository }}:{{ required "image.tag 를 환경별 values 에 지정해야 한다" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.containerPort }}
+          {{- with .Values.env }}
+          env:
+            {{- range $k, $v := . }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.externalSecretKey }}
+          envFrom:
+            - secretRef:
+                name: compat-server-env
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          # livenessProbe 는 일부러 두지 않는다. 재시작하면 메모리 상태를 /data 에서 다시
+          # 올려야 해 복구 비용이 크고, 일시적 응답 지연에 재시작이 겹치면 오히려 악화된다.
+          # 프로세스가 실제로 죽으면 컨테이너가 종료되어 kubelet 이 재시작한다.
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: state
+              mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: compat-state

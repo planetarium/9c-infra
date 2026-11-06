@@ -1,0 +1,50 @@
+# Ragnarok Breaker CrazyGames 호환 게임서버(compat-server).
+# 게임 상태를 프로세스 메모리에 들고 /data(PVC) 에 저장하는 단일 인스턴스 서버다.
+# replicas 는 템플릿에서 1 로 고정되어 있고 values 로 바꿀 수 없다.
+
+image:
+  repository: docker.io/planetariumhq/ragnarok-breaker-compat-server
+  # 반드시 환경별 values 에서 지정. 비어 있으면 렌더가 실패한다(required).
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# 비공개 이미지 pull 용 regcred. secretKey 가 비면 ExternalSecret 을 만들지 않는다.
+imagePullSecret:
+  name: ragnarok-breaker-regcred
+  secretKey: ""
+
+# AWS Secrets Manager(us-east-2) 키. 값 전체를 secret compat-server-env 로 풀어 envFrom 으로 넣는다.
+# 비밀값(GUEST_TOKEN_SECRET 등)은 여기로만 넣는다.
+externalSecretKey: ""
+
+# 비밀이 아닌 환경변수(이름: 값). 환경별 values 에서 지정한다.
+env: {}
+
+service:
+  port: 80
+  containerPort: 8080
+
+httpRoute:
+  enabled: true
+  gatewayName: traefik-gateway
+  gatewayNamespace: traefik
+  hostnames: []
+
+persistence:
+  # Retain 정책 SC — 앱/PVC 를 지워도 Longhorn 볼륨이 남는다.
+  storageClassName: longhorn-default
+  size: 5Gi
+  mountPath: /data
+
+terminationGracePeriodSeconds: 30
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1Gi
+  limits:
+    memory: 3Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

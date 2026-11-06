@@ -88,7 +88,7 @@ spec:
                         relativeTimeRange: { from: 300, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: 'kube_deployment_status_replicas_unavailable{namespace=~"ragnarok-breaker-prod-web[23]"}'
+                          expr: 'kube_deployment_status_replicas_unavailable{namespace=~"ragnarok-breaker-prod-web[23]|ragnarok-breaker-prod-crazygames"}'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
@@ -111,7 +111,7 @@ spec:
                         relativeTimeRange: { from: 300, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]",reason="CrashLoopBackOff"}'
+                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]|ragnarok-breaker-prod-crazygames",reason="CrashLoopBackOff"}'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
@@ -134,7 +134,7 @@ spec:
                         relativeTimeRange: { from: 300, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]",reason=~"ImagePullBackOff|ErrImagePull"}'
+                          expr: 'kube_pod_container_status_waiting_reason{namespace=~"ragnarok-breaker-prod-web[23]|ragnarok-breaker-prod-crazygames",reason=~"ImagePullBackOff|ErrImagePull"}'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
@@ -157,7 +157,7 @@ spec:
                         relativeTimeRange: { from: 900, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: 'increase(kube_pod_container_status_restarts_total{namespace=~"ragnarok-breaker-prod-web[23]"}[15m])'
+                          expr: 'increase(kube_pod_container_status_restarts_total{namespace=~"ragnarok-breaker-prod-web[23]|ragnarok-breaker-prod-crazygames"}[15m])'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
