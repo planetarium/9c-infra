@@ -286,7 +286,11 @@ backoffice:
     # (2026-11-02) Backoffice#110(dd47ab27 = 위 9c39d7ac + #109 cherry-pick) — 월별 아레나 NCG 정산 자동화(동글이 옵스).
     #   api/arena/settlement/status(잔고·다음 nonce·tx 결과)·settle(잔고 이하·expectedNonce 확인→서명→stage, 수취인 서버 고정) 신규.
     #   기존 화면·sign·stage 동작 불변. 신규 env 없음. #108·#109 main 머지 후 main 태그로 다시 bump. 이전: git-9c39d7ac
-    tag: "git-dd47ab276f12527dedcd1ecbb4dd4fa53b1516ec"
+    #
+    # (2026-11-06) Backoffice#110(d269addc = 위 dd47ab27 + #108 의 Lib9c 범프 7a76cfb) — Lib9c 1.40.0-dev.cd829b85
+    #   (release/1.40.0, BuffLimitSheet.Value long lib9c#3338). 21억 넘는 버프 상한 시트를 파싱·서명할 수 있게.
+    #   기능 동작 불변. 신규 env 없음. 이전: git-dd47ab27
+    tag: "git-d269addc704afa38c39d7bdf65abcbda260cc001"
 
 
 iap:
