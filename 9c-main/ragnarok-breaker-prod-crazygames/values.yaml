@@ -8,8 +8,8 @@ imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
 image:
-  # ragnarok-breaker(yang fork) spike/crazygames-build c6e8f89a — SQLite 저장·주기 재시드·안전 종료
-  tag: git-c6e8f89a7ac8f9f27940ceb0e9eaa96991203ae3
+  # ragnarok-breaker(yang fork) spike/crazygames-build b3b362ce — 처리량·메모리 최적화, cg_ 계정, 요청 한도
+  tag: git-b3b362cef747b66fb718c4b5f202deee21b62490
 
 env:
   APP_ENV: prod-w2
