@@ -103,3 +103,27 @@ migrationBridge:
   enabled: true
   image:
     tag: git-5ee38e5230f133ad15deeec0143403bf8a0e8d36
+
+# 마스터 기간 유지 워커 — prod-web2 한 곳에서 두 production verse를 순차 처리한다.
+# 공용 V8_AUTH를 사용하는 기존 v8-gateway를 경유하며 새 인증 키는 만들지 않는다.
+# 적용 전: 자동 기간 유지 권한 배포 → 공용 private R2 설정 준비 →
+# production 원본 승인·초기 시딩·지연 readback → dry-run Job 검증 순서를 지킨다.
+# prod-web3 및 분석 전용 prod 오버레이에서는 기본 비활성을 유지한다.
+masterDataWindowWorker:
+  enabled: true
+  dryRun: false
+  schedule: "0 3 * * *"
+  image:
+    # 공용 게이트웨이·제한된 자동 유지 권한을 포함한 main 빌드 이미지.
+    tag: git-b78a64c15d8eb6d21eb18cfc43f65d6b4db2a5ed
+  targets:
+    - appEnv: prod-w2
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000005
+      flavor: web2
+      gateway: https://gs-gateway.verse8.io
+      rpcUrl: http://v8-gateway.ragnarok-breaker-prod-web2.svc.cluster.local:3000
+    - appEnv: prod-w3
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000006
+      flavor: web3
+      gateway: https://gs-gateway.verse8.io
+      rpcUrl: http://v8-gateway.ragnarok-breaker-prod-web3.svc.cluster.local:3000
