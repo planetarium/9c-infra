@@ -208,8 +208,7 @@ subjects:
 {{- with .Values.donggeulOps.rbGateway }}
 {{- if .enabled }}
 ---
-# rb 안티치트 판정 검증 전용 SA. 동글이 컨테이너의 root 래퍼 ops-rb 만 이 토큰을 읽는다.
-# v8-gateway 서비스(포트 이름 http) 프록시로 POST 만. 부를 함수(조회 전용)는 래퍼가 허용 목록으로 고정한다.
+# 동글이 옵스 rb 조회용 SA. v8-gateway 서비스(포트 이름 http) 프록시 POST 만. 사용 범위는 9c-ops ops-rb 참고.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
