@@ -205,6 +205,54 @@ subjects:
     name: donggeul-ops
     namespace: donggeul-ops
 {{- end }}
+{{- with .Values.donggeulOps.rbGateway }}
+{{- if .enabled }}
+---
+# rb 안티치트 판정 검증 전용 SA. 동글이 컨테이너의 root 래퍼 ops-rb 만 이 토큰을 읽는다.
+# v8-gateway 서비스(포트 이름 http) 프록시로 POST 만. 부를 함수(조회 전용)는 래퍼가 허용 목록으로 고정한다.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: donggeul-rb
+  namespace: donggeul-ops
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: donggeul-rb-token
+  namespace: donggeul-ops
+  annotations:
+    kubernetes.io/service-account.name: donggeul-rb
+type: kubernetes.io/service-account-token
+{{- range .namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-rb-gateway
+  namespace: {{ . }}
+rules:
+  - apiGroups: [""]
+    resources: [services/proxy]
+    resourceNames: ["v8-gateway:http"]
+    verbs: [create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-rb-gateway
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-rb-gateway
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-rb
+    namespace: donggeul-ops
+{{- end }}
+{{- end }}
+{{- end }}
 {{- with .Values.donggeulOps.rotate }}
 {{- if .enabled }}
 ---
