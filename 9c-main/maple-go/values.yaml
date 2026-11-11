@@ -7,5 +7,5 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # maple-go 3de85018 — 데이터 모양 s4 · 명단 제외(밴) 거르기(게시판의 banned 로 후보 거르기 · 대장 정리)
-    tag: git-3de850184264887ccb4c017a6908b57dd90c1688
+    # maple-go 0cb00dc1 — 게시판 serverVersion 03fbc00952bfbd · 동글이 옵스 명단 이미지 자동 갱신(2026-11-11)
+    tag: git-0cb00dc1709112d00157892d66a3f4b3f3e2a3eb
