@@ -87,6 +87,10 @@ workers:
       command: ["bun", "run", "services/worker/src/entry/stage-validation-worker.entry.ts"]
       transport: gateway
       adminClient: true
+      env:
+        # 검증에 쓰는 마스터 시트 CDN — 없으면 기동 직후 죽는다. compat-server SEED_CHANNEL 과 같은 채널.
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
       resources:
         requests:
           cpu: 200m
@@ -100,6 +104,10 @@ workers:
       command: ["bun", "run", "services/worker/src/entry/league-validation-worker.entry.ts"]
       transport: gateway
       adminClient: true
+      env:
+        # 검증에 쓰는 마스터 시트 CDN — 없으면 기동 직후 죽는다. compat-server SEED_CHANNEL 과 같은 채널.
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
       resources:
         requests:
           cpu: 200m
