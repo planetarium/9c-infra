@@ -1,0 +1,118 @@
+{{- if .Values.watchdog.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: watchdog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: watchdog
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: watchdog
+---
+# 같은 namespace 의 pod/deployment/job 상태와 pod 로그를 읽기 전용으로 조회한다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: watchdog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: watchdog
+    app.kubernetes.io/instance: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: watchdog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: watchdog
+    app.kubernetes.io/instance: {{ .Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: watchdog
+subjects:
+  - kind: ServiceAccount
+    name: watchdog
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watchdog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: watchdog
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: watchdog
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: watchdog
+  template:
+    metadata:
+      labels:
+        app: watchdog
+    spec:
+      serviceAccountName: watchdog
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: watchdog
+          image: "{{ .Values.watchdog.image.repository }}:{{ .Values.watchdog.image.tag }}"
+          imagePullPolicy: {{ .Values.watchdog.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3400
+          env:
+            # 감시 대상 namespace 이자 Slack 환경 라벨 소스 (prod-web2).
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: V8_GATEWAY_URL
+              value: {{ .Values.v8Gateway.serviceUrl | quote }}
+            - name: PORT
+              value: "3400"
+            # 나머지 env(REDIS_URL, WATCHDOG_SLACK_WEBHOOK_URL, R2_PUBLIC_BASE, 선택 튜닝)는
+            # ragnarok-breaker-env(AWS SM)에서 주입한다.
+          envFrom:
+            - secretRef:
+                name: ragnarok-breaker-env
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3400
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3400
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.watchdog.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end }}

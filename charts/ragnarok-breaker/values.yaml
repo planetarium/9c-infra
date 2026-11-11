@@ -119,6 +119,26 @@ anticheatAlertWorker:
       cpu: 500m
       memory: 512Mi
 
+# === Ops watchdog (prod-web2 Slack 알림) ===
+# pod/deployment/job 상태·워커 에러 로그·보상 미지급·큐 적체·state 용량을 감시하고 Slack 으로 알린다.
+# 필요 env(ragnarok-breaker-env AWS SM): REDIS_URL, WATCHDOG_SLACK_WEBHOOK_URL(신규, 없으면 부팅 fatal),
+# R2_PUBLIC_BASE. POD_NAMESPACE·V8_GATEWAY_URL·PORT 는 템플릿이 주입. 선택 튜닝: WATCHDOG_RENOTIFY_MS,
+# WATCHDOG_FOLKVANGR_ENABLED(폴크방 워커 배포 전까지 off), WATCHDOG_SERVER_ERROR_IGNORE 등.
+# 기본 off — prod-web2 override 에서만 enable + 이미지 태그 pin.
+watchdog:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-watchdog
+    tag: develop
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
 # === Mail payout worker (BullMQ mail-send consumer + HTTP /enqueue) ===
 # recipient 1인 = job 1개 소비 → 전용 mail-sender V8 세션으로 sendMailIdempotent 호출.
 # HTTP /enqueue 는 운영자 mail.send 토큰 검증 후 job 투입. 기본 off — env 별 override 에서 enable.
