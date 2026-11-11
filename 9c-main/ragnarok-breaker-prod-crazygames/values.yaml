@@ -8,8 +8,8 @@ imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
 image:
-  # ragnarok-breaker(yang fork) spike/crazygames-build b20bd7e3 — 워커용 관리자 RPC 포트·안티치트 이벤트 전달
-  tag: git-b20bd7e3e43c5b0aba77d725405d6be129ef6f18
+  # ragnarok-breaker(yang fork) spike/crazygames-build 923f8133 — 메일·보상 수신에 CrazyGames 계정(cg_) 허용
+  tag: git-923f8133a905c2b486f5032ada0ed2b61a1c386a
 
 env:
   APP_ENV: prod-w2
@@ -48,4 +48,4 @@ redis:
 
 workers:
   enabled: true
-  tag: git-b20bd7e3e43c5b0aba77d725405d6be129ef6f18
+  tag: git-923f8133a905c2b486f5032ada0ed2b61a1c386a
