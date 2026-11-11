@@ -1,5 +1,7 @@
 # Ragnarok Breaker CrazyGames 호환 게임서버(ragnarok-breaker-prod-crazygames) 상태 볼륨 전용.
 # longhorn-default 는 복제본 1개라 노드 하나가 죽으면 상태를 잃는다 — 복제본 3개 + Retain.
+# 복제본은 rb-compat 태그 디스크(general-1/2/4)에만 — 검증자 노드 디스크 작업(포맷·교체·디스크 가득 참)과 분리.
+# ⚠ SC parameters 는 바꿀 수 없다: 이 파일을 고치면 kubectl delete sc rb-compat-longhorn 후 apply(기존 PV 는 영향 없음).
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -10,6 +12,7 @@ parameters:
   fsType: ext4
   fromBackup: ''
   numberOfReplicas: '3'
+  diskSelector: rb-compat
   staleReplicaTimeout: '2880'
 provisioner: driver.longhorn.io
 volumeBindingMode: WaitForFirstConsumer
