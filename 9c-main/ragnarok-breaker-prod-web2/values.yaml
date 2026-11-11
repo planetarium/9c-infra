@@ -13,7 +13,7 @@ v8Gateway:
 
 logStream:
   image:
-    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
+    tag: git-57dcaff3151d6c2603cd392339d01728db05aff8
 
 # Anti-cheat → Slack alert worker (prod only). SLACK_VIOLATION_WEBHOOK_URL is
 # read from the ragnarok-breaker-env SecretsManager entry for this namespace.
@@ -121,8 +121,8 @@ workers:
 
 # 운영 watchdog — Slack 알림. 롤아웃 순서: (1) AWS SM ragnarok-breaker/prod-web2 에 WATCHDOG_SLACK_WEBHOOK_URL 추가
 # (2) 이 설정으로 watchdog 배포 (3) SM 에 LOG_STREAM_ENABLE_SERVER_ERROR=true 추가 후 log-stream 재시작.
-# 이미지 태그는 ragnarok-breaker 본 레포 MR 머지 후 CI build:watchdog 가 만든 git-<sha> 로 핀한다.
+# 이미지 태그 = ragnarok-breaker CI build:watchdog 산출 git-<sha> (petpop develop 57dcaff3, MR !2144).
 watchdog:
   enabled: true
   image:
-    tag: git-REPLACE_AFTER_CI_BUILD
+    tag: git-57dcaff3151d6c2603cd392339d01728db05aff8
