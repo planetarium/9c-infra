@@ -130,6 +130,9 @@ workers:
       service: true
       env:
         MAIL_SEND_HTTP_PORT: "3100"
+        # 슬랙 미리보기의 제목·보상 이름 번역(l10n) — 없으면 내부 키로 표시된다(발송은 정상).
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
       secretEnv:
         - MAIL_SEND_SLACK_BOT_TOKEN
         - MAIL_SEND_SLACK_CHANNEL
