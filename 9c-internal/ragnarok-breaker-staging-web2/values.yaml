@@ -59,7 +59,7 @@ playfullWorker:
 
 # 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤). 방향은 마스터데이터
 # game_config.migration 이 정하고(web2→web3 / web3→web2), 브리지는 SOURCE(큐를 가진 쪽)→TARGET 으로 릴레이한다.
-# ⚠ 반드시 이 한 네임스페이스에서만 enable — staging-web3 에는 절대 켜지 말 것
+# ⚠ 반드시 이 한 네임스페이스에서만 enable (staging-web3 네임스페이스는 제거됨)
 #   (두 인스턴스가 같은 큐를 폴링. claim CAS + (P,A) 멱등이라 중복 크레딧은 안 나지만 낭비).
 # ⚠ image.tag 는 CI build:migration-bridge 산출 ragnarok-breaker-migration-bridge:git-<sha> 로 핀.
 #   (`develop` 태그는 CI 가 push 하지 않는다 — 과거 이 값으로 ImagePullBackOff 였음)
