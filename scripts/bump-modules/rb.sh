@@ -24,7 +24,6 @@ DEV_FILES=(
 STAGING_FILES=(
   9c-internal/ragnarok-breaker-staging/values.yaml
   9c-internal/ragnarok-breaker-staging-web2/values.yaml
-  9c-internal/ragnarok-breaker-staging-web3/values.yaml
 )
 PRODUCTION_FILES=(
   9c-main/ragnarok-breaker-production/values.yaml

@@ -75,7 +75,6 @@ donggeulOps:
       - portal
       - 9c-external-services
       - ragnarok-breaker-staging-web2
-      - ragnarok-breaker-staging-web3
       - common-dbs
       - odin
       - heimdall
