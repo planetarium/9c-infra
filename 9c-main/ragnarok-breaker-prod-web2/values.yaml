@@ -82,8 +82,11 @@ folkvangrRewardWorker:
 #
 # ⚠ 순서: 워커가 먼저 뜬 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
 #   반대로 하면 컨슈머 없는 큐에 잡이 적체된다.
+# ⚠ 2026-11-11 비활성화. AWS SM ragnarok-breaker/prod-web2 의 LOG_STREAM_ENABLE_PLAYFULL 도
+#   함께 내려야 한다 — 켜 둔 채 워커만 끄면 log-stream 이 컨슈머 없는 playfull-event 큐에 잡을 쌓는다.
+# 다시 켤 때는 워커를 먼저 띄운 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
 playfullWorker:
-  enabled: true
+  enabled: false
   image:
     tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
 
@@ -128,3 +131,13 @@ masterDataWindowWorker:
       verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000005
       flavor: web2
       gateway: https://gs-gateway.verse8.io
+
+# anti-cheat 검증 워커(STAGE+VALHALLA 이력 검증 / LEAGUE finalize+snapshot) — 2026-11-11 비활성화.
+# ⚠ league-reward-worker 는 시즌에 검증 미완료(pending)가 있으면 그 시즌을 건너뛴다
+#   ("검증 미완료 — skip"). 검증 워커가 꺼져 있으면 미검증 기록이 pending 으로 남아 리그 보상이
+#   자동 지급되지 않는다. 보상 지급을 유지하려면 두 워커를 다시 켠다.
+workers:
+  stageValidation:
+    enabled: false
+  leagueValidation:
+    enabled: false

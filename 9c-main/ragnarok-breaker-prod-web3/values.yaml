@@ -85,3 +85,11 @@ playfullWorker:
   enabled: false
   image:
     tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
+
+# anti-cheat 검증 워커 — 2026-11-11 비활성화(web3 종료). league-reward-worker 는 검증 미완료(pending)
+# 시즌을 건너뛰므로 web3 리그 보상 자동 지급도 함께 멈춘다.
+workers:
+  stageValidation:
+    enabled: false
+  leagueValidation:
+    enabled: false
