@@ -49,9 +49,24 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.containerPort }}
+            {{- if .Values.adminRpc.enabled }}
+            - name: admin
+              containerPort: {{ .Values.adminRpc.port }}
+            {{- end }}
           env:
             - name: PORT
               value: {{ .Values.service.containerPort | quote }}
+            {{- if .Values.adminRpc.enabled }}
+            - name: ADMIN_PORT
+              value: {{ .Values.adminRpc.port | quote }}
+            - name: ADMIN_HOST
+              value: "0.0.0.0"
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            # 안티치트 알림 이벤트를 워커 Redis 큐로 넘긴다(V8 의 log-stream 역할).
+            - name: REDIS_URL
+              value: {{ printf "redis://compat-redis:%v/0" .Values.redis.port | quote }}
+            {{- end }}
             {{- range $k, $v := .Values.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}

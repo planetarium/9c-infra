@@ -1,0 +1,148 @@
+{{- /*
+compat-server 에 붙는 백그라운드 워커들. V8 워커와 같은 이미지·같은 로직이고, 접속 대상만
+compat-server 의 관리자 포트(클러스터 내부 전용)다. 각 워커가 받는 비밀값은 compat-server-env 에서
+필요한 키만 골라 넣는다(envFrom 으로 통째 넣지 않는다 — GUEST_TOKEN_SECRET 등이 워커로 새지 않게).
+*/ -}}
+{{- if .Values.workers.enabled }}
+{{- $root := . }}
+{{- $adminUrl := printf "http://compat-server-admin:%v" .Values.adminRpc.port }}
+{{- $redisUrl := printf "redis://compat-redis:%v/0" .Values.redis.port }}
+{{- range $name, $w := .Values.workers.items }}
+{{- if $w.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ $root.Release.Namespace }}
+  labels:
+    app: {{ $name }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/component: worker
+spec:
+  # 워커는 모두 단일 인스턴스 — 스케줄러·확정 대기열이 Redis 에 있고, 여러 개면 같은 일을 겹쳐 한다.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+        app.kubernetes.io/instance: {{ $root.Release.Name }}
+        app.kubernetes.io/component: worker
+        {{- if $w.adminClient }}
+        # 관리자 포트(NetworkPolicy compat-server-admin)에 접근이 허용되는 파드 표식.
+        rb-compat/admin-client: "true"
+        {{- end }}
+    spec:
+      {{- if $root.Values.imagePullSecret.name }}
+      imagePullSecrets:
+        - name: {{ $root.Values.imagePullSecret.name }}
+      {{- end }}
+      {{- with $root.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $name }}
+          image: "{{ $w.repository }}:{{ required "workers.tag 를 환경별 values 에 지정해야 한다" $root.Values.workers.tag }}"
+          imagePullPolicy: IfNotPresent
+          {{- with $w.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $w.port }}
+          ports:
+            - name: http
+              containerPort: {{ $w.port }}
+          {{- end }}
+          env:
+            - name: REDIS_URL
+              value: {{ $redisUrl | quote }}
+            - name: POD_NAMESPACE
+              value: {{ $root.Release.Namespace | quote }}
+            {{- if eq $w.transport "gateway" }}
+            - name: V8_GATEWAY_URL
+              value: {{ $adminUrl | quote }}
+            - name: V8_GATEWAY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: compat-server-env
+                  key: ADMIN_RPC_TOKEN
+            {{- else if eq $w.transport "session" }}
+            - name: COMPAT_ADMIN_URL
+              value: {{ $adminUrl | quote }}
+            - name: COMPAT_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: compat-server-env
+                  key: ADMIN_RPC_TOKEN
+            # 운영자(어드민 화면) 토큰 — 관리자 RPC 토큰과 다른 값이어야 하고, 없으면 워커가 뜨지 않는다.
+            - name: COMPAT_OPERATOR_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: compat-server-env
+                  key: COMPAT_OPERATOR_TOKEN
+            {{- end }}
+            {{- range $k, $v := $w.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+            {{- range $w.secretEnv }}
+            # 선택 비밀값 — SM 에 키가 없으면 비워 둔 채 뜬다(알림 등은 꺼진 채로 동작).
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: compat-server-env
+                  key: {{ . }}
+                  optional: true
+            {{- end }}
+          {{- if $w.healthPath }}
+          readinessProbe:
+            httpGet:
+              path: {{ $w.healthPath }}
+              port: {{ $w.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: {{ $w.healthPath }}
+              port: {{ $w.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          {{- else if $w.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ $w.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          {{- end }}
+          resources:
+            {{- toYaml ($w.resources | default $root.Values.workers.resources) | nindent 12 }}
+{{- if $w.service }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  namespace: {{ $root.Release.Namespace }}
+  labels:
+    app: {{ $name }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+spec:
+  # 내부 전용 — 외부 노출 없음.
+  type: ClusterIP
+  selector:
+    app: {{ $name }}
+  ports:
+    - name: http
+      port: {{ $w.port }}
+      targetPort: http
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

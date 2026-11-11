@@ -8,8 +8,8 @@ imagePullSecret:
   secretKey: ragnarok-breaker/dockerhub
 
 image:
-  # ragnarok-breaker(yang fork) spike/crazygames-build bda634bd — 처리량·메모리 최적화, cg_ 계정, 요청 한도
-  tag: git-bda634bd5738566abaa3400ab301a5515289786b
+  # ragnarok-breaker(yang fork) spike/crazygames-build b20bd7e3 — 워커용 관리자 RPC 포트·안티치트 이벤트 전달
+  tag: git-b20bd7e3e43c5b0aba77d725405d6be129ef6f18
 
 env:
   APP_ENV: prod-w2
@@ -26,3 +26,20 @@ env:
 httpRoute:
   hostnames:
     - rb-crazygames.9c.gg
+
+# 백그라운드 워커(검증 2·안티치트 알림·메일·리그 지급·폴크방 지급) — compat-server 관리자 포트로 붙는다.
+# ⚠ sync 전 AWS SM ragnarok-breaker/prod-crazygames 에 필요:
+#   ADMIN_RPC_TOKEN(필수, 32자 이상 무작위 — 없으면 서버가 관리자 포트를 안 열어 워커가 못 붙는다),
+#   COMPAT_OPERATOR_TOKEN(필수, 32자 이상 무작위, ADMIN_RPC_TOKEN 과 다른 값 — 메일 워커 /preview·/confirm 용),
+#   슬랙(선택, V8 prod-web2 와 같은 값): SLACK_VIOLATION_WEBHOOK_URL,
+#   MAIL_SEND_SLACK_BOT_TOKEN, MAIL_SEND_SLACK_CHANNEL, MAIL_SEND_SLACK_WEBHOOK.
+# 서버 이미지와 워커 이미지는 같은 커밋에서 빌드한다(image.tag == workers.tag).
+adminRpc:
+  enabled: true
+
+redis:
+  enabled: true
+
+workers:
+  enabled: true
+  tag: git-b20bd7e3e43c5b0aba77d725405d6be129ef6f18

@@ -1,0 +1,90 @@
+{{- /*
+워커 전용 Redis — 작업 대기열(BullMQ)·지급 완료 표식(league-reward:paid 등)을 둔다.
+V8 쪽 Redis 와 절대 공유하지 않는다: 큐·상태 키에 verse 구분이 없어 섞이면 지급 누락·오배송이 난다.
+AOF 로 디스크에 남겨 재시작에도 대기 중인 지급 작업을 잃지 않게 한다.
+*/ -}}
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compat-redis-data
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.persistence.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.size }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compat-redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: compat-redis
+  template:
+    metadata:
+      labels:
+        app: compat-redis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image | quote }}
+          # BullMQ 는 maxmemory-policy noeviction 을 요구한다(키가 밀려나면 작업이 사라진다).
+          args:
+            - --appendonly
+            - "yes"
+            - --maxmemory-policy
+            - noeviction
+          ports:
+            - name: redis
+              containerPort: {{ .Values.redis.port }}
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: compat-redis-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compat-redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: compat-redis
+  ports:
+    - name: redis
+      port: {{ .Values.redis.port }}
+      targetPort: redis
+{{- end }}
