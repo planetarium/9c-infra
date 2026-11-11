@@ -68,28 +68,6 @@ folkvangrRewardWorker:
   config:
     verseLabel: prod-w2
 
-# Playfull CPE 아웃바운드 워커 — prod web2 활성화 (per-env consumer, own Redis).
-# 파이프라인: 게임서버가 검증된 stage_clear 시 playfull_event 로그 emit
-#   → log-stream 이 playfull-event 큐로 라우팅(LOG_STREAM_ENABLE_PLAYFULL=true 일 때만)
-#   → 이 워커가 소비해 HMAC 서명 후 Playfull Events API 로 POST.
-# 워커는 V8 의존이 없다 — 잡을 받아 서명 후 POST 할 뿐. tag = staging 검증 이미지 재사용.
-#
-# ⚠ sync 전 AWS SM ragnarok-breaker/prod-web2 에 아래 키 추가 필요:
-#     PLAYFULL_CLIENT_ID / PLAYFULL_CLIENT_SECRET / PLAYFULL_GAME_ID
-#     PLAYFULL_DRY_RUN=true            (실 전송 없이 서명·바디만 로그. 검증 후 false)
-#     LOG_STREAM_ENABLE_PLAYFULL=true  (log-stream 이 큐로 라우팅. 미설정 시 emit drop)
-#     PLAYFULL_V8_ADMIN_TOKEN          (선택 — 지갑→이메일 귀속. 없으면 지갑 식별자만으로 흐름)
-#
-# ⚠ 순서: 워커가 먼저 뜬 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
-#   반대로 하면 컨슈머 없는 큐에 잡이 적체된다.
-# ⚠ 2026-11-11 비활성화. AWS SM ragnarok-breaker/prod-web2 의 LOG_STREAM_ENABLE_PLAYFULL 도
-#   함께 내려야 한다 — 켜 둔 채 워커만 끄면 log-stream 이 컨슈머 없는 playfull-event 큐에 잡을 쌓는다.
-# 다시 켤 때는 워커를 먼저 띄운 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
-playfullWorker:
-  enabled: false
-  image:
-    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
-
 # web2→web3 계정 이전 브리지 — web2 verse 네임스페이스에 배치(크로스-verse 싱글톤).
 # staging(9c-internal/ragnarok-breaker-staging-web2)과 동일한 형태.
 # ⚠ 반드시 이 한 네임스페이스에서만 enable — ragnarok-breaker-prod-web3 / ragnarok-breaker-prod

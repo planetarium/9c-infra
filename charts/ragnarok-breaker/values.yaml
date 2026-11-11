@@ -97,31 +97,6 @@ logStream:
       cpu: 500m
       memory: 256Mi
 
-# === BullMQ consumer for playfull-event queue → Playfull Events API ===
-# log-stream 이 LOG_STREAM_ENABLE_PLAYFULL=true 일 때만 playfull-event 큐에 잡을 넣는다.
-# 워커는 V8 의존이 없다 — 잡을 받아 HMAC 서명 후 Playfull 로 POST 할 뿐.
-# 크리덴셜(PLAYFULL_CLIENT_ID/_CLIENT_SECRET/_GAME_ID)과 PLAYFULL_DRY_RUN 은
-# ragnarok-breaker-env ExternalSecret(AWS SM) 에서 주입한다.
-# PLAYFULL_DRY_RUN 미설정 시 기본 true(전송 안 함) — 안전한 기본값.
-playfullWorker:
-  enabled: false
-  image:
-    repository: planetariumhq/ragnarok-breaker-playfull-worker
-    tag: develop
-    pullPolicy: IfNotPresent
-  replicas: 1
-  # 워커가 /health 를 여는 포트. 워커 안의 하트비트 워치독이 소비 정지를 감지하면 503 을
-  # 돌려주고, 아래 probe 가 파드를 재시작한다. 앱의 PLAYFULL_HEALTH_PORT 와 같은 값이어야
-  # 하므로 컨테이너 env 로도 같이 주입한다.
-  healthPort: 8080
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 256Mi
-
 # === Anti-cheat alert worker → Slack ===
 # BullMQ consumer for the anticheat-alert queue (prefix `aca`). The server emits
 # anticheat_alert log events; log-stream routes them onto the queue; this worker
@@ -270,26 +245,9 @@ folkvangrRewardWorker:
 
 nodeSelector: {}
 
-# === Analytics snapshot CronJob (12h) — meme-api/V8/GA → R2 + viewer bake/deploy ===
-# w2/w3 를 한 런에서 모두 수집하는 전역 싱글톤. ragnarok-breaker-prod 오버라이드에서만 enable.
-analyticsWorker:
-  enabled: false
-  schedule: "0 */12 * * *"
-  image:
-    repository: planetariumhq/ragnarok-breaker-analytics-worker
-    tag: develop
-    pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-
 # === Migration bridge (web2→web3 계정 이전 폴러) ===
 # web2 migrationRequests 를 폴링해 web3 applyInbound 로 밀어넣고 web2 finalize 를 호출하는
-# 크로스-verse 싱글톤. 한 네임스페이스에서만 enable(analytics-worker 와 동일 원칙).
+# 크로스-verse 싱글톤. 한 네임스페이스에서만 enable.
 # verse 접속/토큰 등 모든 설정은 ragnarok-breaker-env(AWS SM)의 MIGRATION_BRIDGE_* 키.
 migrationBridge:
   enabled: false
