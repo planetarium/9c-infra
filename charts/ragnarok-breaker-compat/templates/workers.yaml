@@ -49,6 +49,34 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with $w.waitFor }}
+      # 의존 서비스 포트가 열릴 때까지 대기 — 함께 재배포될 때 첫 주기가 메일 워커보다 먼저 돌아
+      # 접속 실패로 시즌을 건너뛰면 다음 주기(1시간)까지 지급이 밀린다.
+      initContainers:
+        {{- range . }}
+        {{- with (index $root.Values.workers.items .host) }}
+        {{- if not .enabled }}
+        {{- fail (printf "workers.items.%s.waitFor 가 꺼진 워커를 기다린다 — 영원히 Init 에 멈춘다" $name) }}
+        {{- end }}
+        {{- end }}
+        - name: {{ printf "wait-for-%s" .host | replace "." "-" | trunc 63 | trimSuffix "-" }}
+          image: busybox:1.36.1
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z -w 2 {{ .host }} {{ .port }}; do
+                echo "waiting for {{ .host }}:{{ .port }}..."
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ $name }}
           image: "{{ $w.repository }}:{{ required "workers.tag 를 환경별 values 에 지정해야 한다" $root.Values.workers.tag }}"

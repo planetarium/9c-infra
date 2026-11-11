@@ -69,6 +69,7 @@ redis:
 # 백그라운드 워커(templates/workers.yaml) — V8 워커와 같은 코드, compat-server 관리자 포트로 붙는다.
 # transport: gateway = V8_GATEWAY_URL/TOKEN(검증 워커), session = COMPAT_ADMIN_URL/TOKEN(지급·메일 워커).
 # adminClient: 관리자 포트 접근 허용(NetworkPolicy). secretEnv: compat-server-env 에서 골라 넣는 선택 키.
+# waitFor: [{host, port}] — 이 TCP 포트가 열릴 때까지 기동을 미루는 init 컨테이너(지급 워커 → 메일 워커).
 workers:
   enabled: false
   # 모든 워커 이미지 공통 태그(같은 커밋에서 빌드). 환경별 values 에서 지정.
@@ -130,6 +131,9 @@ workers:
       service: true
       env:
         MAIL_SEND_HTTP_PORT: "3100"
+        # 슬랙 미리보기의 제목·보상 이름 번역(l10n) — 없으면 내부 키로 표시된다(발송은 정상).
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
       secretEnv:
         - MAIL_SEND_SLACK_BOT_TOKEN
         - MAIL_SEND_SLACK_CHANNEL
@@ -142,6 +146,9 @@ workers:
       port: 3200
       healthPath: /health
       livenessDelaySeconds: 900
+      waitFor:
+        - host: mail-send-worker
+          port: 3100
       env:
         LEAGUE_REWARD_HTTP_PORT: "3200"
         MAIL_SEND_WORKER_URL: http://mail-send-worker:3100
@@ -156,6 +163,9 @@ workers:
       adminClient: true
       port: 3201
       healthPath: /health
+      waitFor:
+        - host: mail-send-worker
+          port: 3100
       env:
         FOLKVANGR_REWARD_HTTP_PORT: "3201"
         MAIL_SEND_WORKER_URL: http://mail-send-worker:3100
