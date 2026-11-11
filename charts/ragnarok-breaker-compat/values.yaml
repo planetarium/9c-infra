@@ -46,6 +46,116 @@ resources:
   limits:
     memory: 3Gi
 
+# 워커용 관리자 RPC 포트(클러스터 내부 전용, templates/admin.yaml). 토큰은 compat-server-env 의 ADMIN_RPC_TOKEN.
+adminRpc:
+  enabled: false
+  port: 8081
+
+# 워커 전용 Redis(templates/redis.yaml). V8 Redis 와 공유 금지.
+redis:
+  enabled: false
+  image: redis:7.2.5-alpine
+  port: 6379
+  size: 2Gi
+  # 컨테이너 메모리 한도(256Mi)보다 낮게 — AOF 재작성 fork 여유.
+  maxmemory: 160mb
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+# 백그라운드 워커(templates/workers.yaml) — V8 워커와 같은 코드, compat-server 관리자 포트로 붙는다.
+# transport: gateway = V8_GATEWAY_URL/TOKEN(검증 워커), session = COMPAT_ADMIN_URL/TOKEN(지급·메일 워커).
+# adminClient: 관리자 포트 접근 허용(NetworkPolicy). secretEnv: compat-server-env 에서 골라 넣는 선택 키.
+workers:
+  enabled: false
+  # 모든 워커 이미지 공통 태그(같은 커밋에서 빌드). 환경별 values 에서 지정.
+  tag: ""
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  items:
+    stage-validation-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-worker
+      command: ["bun", "run", "services/worker/src/entry/stage-validation-worker.entry.ts"]
+      transport: gateway
+      adminClient: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
+    league-validation-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-worker
+      command: ["bun", "run", "services/worker/src/entry/league-validation-worker.entry.ts"]
+      transport: gateway
+      adminClient: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
+    anticheat-alert-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-anticheat-alert-worker
+      transport: none
+      # 알림의 Verse 표시는 POD_NAMESPACE(템플릿이 넣음)에서 뽑는다 — ragnarok-breaker-prod-crazygames → prod-crazygames.
+      secretEnv:
+        - SLACK_VIOLATION_WEBHOOK_URL
+    mail-send-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-mail-send-worker
+      transport: session
+      adminClient: true
+      port: 3100
+      service: true
+      env:
+        MAIL_SEND_HTTP_PORT: "3100"
+      secretEnv:
+        - MAIL_SEND_SLACK_BOT_TOKEN
+        - MAIL_SEND_SLACK_CHANNEL
+        - MAIL_SEND_SLACK_WEBHOOK
+    league-reward-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-league-reward-worker
+      transport: session
+      adminClient: true
+      port: 3200
+      healthPath: /health
+      livenessDelaySeconds: 900
+      env:
+        LEAGUE_REWARD_HTTP_PORT: "3200"
+        MAIL_SEND_WORKER_URL: http://mail-send-worker:3100
+        LEAGUE_REWARD_VERSE_LABEL: crazygames-w2
+        # 리그 시즌·보상표를 읽는 시트 CDN — compat-server 의 SEED_CHANNEL 과 같은 채널이어야 한다.
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
+    folkvangr-reward-worker:
+      enabled: true
+      repository: docker.io/planetariumhq/ragnarok-breaker-folkvangr-reward-worker
+      transport: session
+      adminClient: true
+      port: 3201
+      healthPath: /health
+      env:
+        FOLKVANGR_REWARD_HTTP_PORT: "3201"
+        MAIL_SEND_WORKER_URL: http://mail-send-worker:3100
+        FOLKVANGR_REWARD_VERSE_LABEL: crazygames-w2
+        R2_PUBLIC_BASE: https://sheets.ragnarokbreaker.fun
+        CDN_ENV: prod
+
 # 검증자(odin/heimdall) 노드를 피해 general 노드(9c-main-general-2/4)에만 띄운다.
 nodeSelector:
   node.kubernetes.io/type: general

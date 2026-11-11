@@ -1,0 +1,67 @@
+{{- /*
+compat-server 관리자 RPC — 워커만 쓰는 클러스터 내부 입구. 관리자 권한으로 모든 서버 함수를 실행하므로
+HTTPRoute 에 절대 붙이지 않고, NetworkPolicy 로 rb-compat/admin-client 표식이 있는 워커 파드만 허용한다.
+토큰(ADMIN_RPC_TOKEN, compat-server-env)이 없으면 서버가 이 포트를 열지 않는다.
+*/ -}}
+{{- if .Values.adminRpc.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: compat-server-admin
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "compat.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "compat.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: admin
+      port: {{ .Values.adminRpc.port }}
+      targetPort: admin
+---
+# compat-server 로 들어오는 트래픽: 공개 포트는 누구나(Traefik 경유), 관리자 포트는 워커 파드만.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: compat-server-admin
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "compat.selectorLabels" . | nindent 6 }}
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.service.containerPort }}
+    - from:
+        - podSelector:
+            matchLabels:
+              rb-compat/admin-client: "true"
+      ports:
+        - protocol: TCP
+          port: {{ .Values.adminRpc.port }}
+{{- end }}
+{{- if .Values.redis.enabled }}
+---
+# Redis 는 같은 네임스페이스 파드(서버·워커)만.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: compat-redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: compat-redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.redis.port }}
+{{- end }}

@@ -1,0 +1,103 @@
+{{- /*
+워커 전용 Redis — 작업 대기열(BullMQ)·지급 완료 표식(league-reward:paid 등)을 둔다.
+V8 쪽 Redis 와 절대 공유하지 않는다: 큐·상태 키에 verse 구분이 없어 섞이면 지급 누락·오배송이 난다.
+AOF 로 디스크에 남겨 재시작에도 대기 중인 지급 작업을 잃지 않게 한다.
+*/ -}}
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compat-redis-data
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    # 지급 완료 표식·확정 대기 작업이 들어 있다 — 비면 이미 지급한 시즌을 다시 지급할 수 있다.
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
+spec:
+  # compat-state 와 같은 이유로 파드 하나만 마운트(같은 노드 두 파드가 AOF 를 동시에 쓰지 않게).
+  accessModes:
+    - ReadWriteOncePod
+  storageClassName: {{ .Values.persistence.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.size }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compat-redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: compat-redis
+  template:
+    metadata:
+      labels:
+        app: compat-redis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.imagePullSecret.name }}
+      # Docker Hub 익명 받기 한도를 피하려고 regcred 로 받는다.
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image | quote }}
+          # BullMQ 는 maxmemory-policy noeviction 을 요구한다(키가 밀려나면 작업이 사라진다).
+          # maxmemory 를 컨테이너 한도보다 낮게 둬야 noeviction 이 실제로 걸린다 — 없으면 한도까지
+          # 커지다 OOMKill 된다. 차면 쓰기 오류로 드러난다.
+          args:
+            - --appendonly
+            - "yes"
+            - --maxmemory
+            - {{ .Values.redis.maxmemory | quote }}
+            - --maxmemory-policy
+            - noeviction
+          ports:
+            - name: redis
+              containerPort: {{ .Values.redis.port }}
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: compat-redis-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compat-redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: compat-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: compat-redis
+  ports:
+    - name: redis
+      port: {{ .Values.redis.port }}
+      targetPort: redis
+{{- end }}
