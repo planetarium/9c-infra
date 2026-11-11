@@ -103,3 +103,32 @@ migrationBridge:
   enabled: true
   image:
     tag: git-5ee38e5230f133ad15deeec0143403bf8a0e8d36
+
+# 마스터 기간 유지 워커 — prod 첫 활성화는 dry-run(WINDOW_APPLY=false)이다.
+# prod-w2/prod-w3 두 verse 를 한 CronJob 이 처리하는 크로스-verse 싱글톤이므로 이 네임스페이스에서만
+# enable 한다 — ragnarok-breaker-prod-web3 / ragnarok-breaker-prod 에는 절대 켜지 말 것
+# (staging 도 ragnarok-breaker-staging-web2 한 곳에서만 돈다).
+# image.tag = v0.0.78 커밋(0cb967f0). 공용 게이트웨이 인증 수정(973b740) 포함, 서버 prod 와 같은 시점.
+# ⚠ sync 전 AWS SM ragnarok-breaker/prod-web2 에 확인:
+#     WINDOW_V8_ACCOUNT / WINDOW_V8_AUTH — seed.read/seed.write 전용 권한 계정(일반 워커 계정 폴백 없음)
+#     R2_PUBLIC_BASE — HTTPS origin(경로 없음)
+# ⚠ 전제: prod 두 verse 에 최초 활성 버전이 기록돼 있어야 한다
+#   (masterData.activeManifest / masterData.seedWindow.sourceVersion — 어드민 전체 시딩 또는
+#   tools/agent-apply-and-seed.ts --phase seed). 없으면 워커는 폴백 없이 실패한다(안전한 실패).
+# 실제 적용 전환: dry-run 로그(계획 청크·용량 700KiB 경고/800KiB 차단)를 검증한 뒤 dryRun 을 false 로.
+# 롤백: enabled 를 false 로(CronJob 중지). 적용분은 보존된 원본으로 현재 유지 집합을 재적용해 복구한다.
+masterDataWindowWorker:
+  enabled: true
+  dryRun: true
+  schedule: "0 3 * * *"
+  image:
+    tag: git-0cb967f0f1c0040591e4f4e8d31d5814b6c94e0d
+  targets:
+    - appEnv: prod-w2
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000005
+      flavor: web2
+      gateway: https://gs-gateway.verse8.io
+    - appEnv: prod-w3
+      verseId: 0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000006
+      flavor: web3
+      gateway: https://gs-gateway.verse8.io
