@@ -132,12 +132,11 @@ masterDataWindowWorker:
       flavor: web2
       gateway: https://gs-gateway.verse8.io
 
-# anti-cheat 검증 워커(STAGE+VALHALLA 이력 검증 / LEAGUE finalize+snapshot) — 2026-11-11 비활성화.
-# ⚠ league-reward-worker 는 시즌에 검증 미완료(pending)가 있으면 그 시즌을 건너뛴다
-#   ("검증 미완료 — skip"). 검증 워커가 꺼져 있으면 미검증 기록이 pending 으로 남아 리그 보상이
-#   자동 지급되지 않는다. 보상 지급을 유지하려면 두 워커를 다시 켠다.
+# anti-cheat 검증 워커(STAGE+VALHALLA 이력 검증 / LEAGUE finalize+snapshot) — prod web2 는 유지한다.
+# league-reward-worker 는 검증 미완료(pending) 시즌을 건너뛰므로 이 워커들이 꺼지면 리그 보상 자동
+# 지급이 멈춘다. (web3 는 종료되어 ragnarok-breaker-prod-web3 에서만 끈다.)
 workers:
   stageValidation:
-    enabled: false
+    enabled: true
   leagueValidation:
-    enabled: false
+    enabled: true
