@@ -48,4 +48,5 @@ redis:
 
 workers:
   enabled: true
-  tag: git-923f8133a905c2b486f5032ada0ed2b61a1c386a
+  # 806e8d35 — 지급 워커 preview 접속 재시도. 서버 코드는 923f8133 과 같아 image.tag 는 그대로(서버 재시작 회피).
+  tag: git-806e8d35224cd04650f6880fc9ba5ee960524bf5
