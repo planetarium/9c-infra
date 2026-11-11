@@ -68,24 +68,6 @@ folkvangrRewardWorker:
   config:
     verseLabel: prod-w3
 
-# Playfull CPE 아웃바운드 워커 — **web3 에서는 쓰지 않는다**(운영 결정).
-# 파이프라인: 게임서버가 검증된 stage_clear 시 playfull_event 로그 emit
-#   → log-stream 이 playfull-event 큐로 라우팅(LOG_STREAM_ENABLE_PLAYFULL=true 일 때만)
-#   → 이 워커가 소비해 HMAC 서명 후 Playfull Events API 로 POST.
-# web2 는 그대로 활성이며, 이 파일에서만 끈다.
-#
-# ⚠ 끈 상태에서는 log-stream 의 라우팅도 켜지 않는다 — 컨슈머 없는 큐에 잡이 적체된다.
-#   AWS SM ragnarok-breaker/prod-web3 의 LOG_STREAM_ENABLE_PLAYFULL 이 true 라면 함께
-#   내려야 한다(PLAYFULL_* 키는 남아 있어도 워커가 없으면 읽는 쪽이 없다).
-#
-# 다시 켤 때 필요한 SM 키: PLAYFULL_CLIENT_ID / PLAYFULL_CLIENT_SECRET / PLAYFULL_GAME_ID,
-#   PLAYFULL_DRY_RUN, LOG_STREAM_ENABLE_PLAYFULL, (선택) PLAYFULL_V8_ADMIN_TOKEN.
-#   순서는 워커를 먼저 띄운 뒤 LOG_STREAM_ENABLE_PLAYFULL 을 켠다.
-playfullWorker:
-  enabled: false
-  image:
-    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
-
 # anti-cheat 검증 워커 — 2026-11-11 비활성화(web3 종료). league-reward-worker 는 검증 미완료(pending)
 # 시즌을 건너뛰므로 web3 리그 보상 자동 지급도 함께 멈춘다.
 workers:

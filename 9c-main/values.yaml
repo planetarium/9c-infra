@@ -162,7 +162,6 @@ donggeulOps:
     - 9c-external-services
     - dcc-bridge
     - petpop
-    - ragnarok-breaker-prod
     - ragnarok-breaker-prod-web2
     - ragnarok-breaker-prod-web3
     - ragnarok-breaker-prod-crazygames
@@ -211,7 +210,6 @@ donggeulOps:
       - portal
       - dcc-bridge
       - 9c-external-services
-      - ragnarok-breaker-prod
       - ragnarok-breaker-prod-web2
       - ragnarok-breaker-prod-web3
       - ragnarok-breaker-prod-crazygames
