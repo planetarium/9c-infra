@@ -54,8 +54,13 @@ spec:
       # 접속 실패로 시즌을 건너뛰면 다음 주기(1시간)까지 지급이 밀린다.
       initContainers:
         {{- range . }}
-        - name: wait-for-{{ .host }}
-          image: busybox:1.36
+        {{- with (index $root.Values.workers.items .host) }}
+        {{- if not .enabled }}
+        {{- fail (printf "workers.items.%s.waitFor 가 꺼진 워커를 기다린다 — 영원히 Init 에 멈춘다" $name) }}
+        {{- end }}
+        {{- end }}
+        - name: {{ printf "wait-for-%s" .host | replace "." "-" | trunc 63 | trimSuffix "-" }}
+          image: busybox:1.36.1
           command:
             - sh
             - -c
