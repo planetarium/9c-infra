@@ -34,6 +34,12 @@ httpRoute:
 #   슬랙(선택, V8 prod-web2 와 같은 값): SLACK_VIOLATION_WEBHOOK_URL,
 #   MAIL_SEND_SLACK_BOT_TOKEN, MAIL_SEND_SLACK_CHANNEL, MAIL_SEND_SLACK_WEBHOOK.
 # 서버 이미지와 워커 이미지는 같은 커밋에서 빌드한다(image.tag == workers.tag).
+# ⚠ 순서: SM 갱신 → k8s secret 반영 확인 → sync. 서버는 기동할 때만 ADMIN_RPC_TOKEN 을 읽고 비밀값
+#   변경엔 재시작하지 않는다. 키가 없는 채 뜨면 관리자 포트가 안 열려 워커가 못 붙고, 서버를 한 번 더
+#   재시작해야 한다. ExternalSecret 반영은 최대 1분 늦으니 sync 전에 확인:
+#     kubectl -n ragnarok-breaker-prod-crazygames get secret compat-server-env -o json \
+#       | jq '.data | keys'   # ADMIN_RPC_TOKEN·COMPAT_OPERATOR_TOKEN 이 있어야 함
+# ⚠ ADMIN_RPC_TOKEN 이 32자 미만이면 서버 전체가 기동에 실패한다(게임 중단).
 adminRpc:
   enabled: true
 

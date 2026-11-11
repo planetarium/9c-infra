@@ -4,6 +4,9 @@ compat-server 의 관리자 포트(클러스터 내부 전용)다. 각 워커가
 필요한 키만 골라 넣는다(envFrom 으로 통째 넣지 않는다 — GUEST_TOKEN_SECRET 등이 워커로 새지 않게).
 */ -}}
 {{- if .Values.workers.enabled }}
+{{- if not (and .Values.adminRpc.enabled .Values.redis.enabled) }}
+{{- fail "workers.enabled 는 adminRpc.enabled 와 redis.enabled 가 함께 켜져 있어야 한다" }}
+{{- end }}
 {{- $root := . }}
 {{- $adminUrl := printf "http://compat-server-admin:%v" .Values.adminRpc.port }}
 {{- $redisUrl := printf "redis://compat-redis:%v/0" .Values.redis.port }}
@@ -111,7 +114,9 @@ spec:
             httpGet:
               path: {{ $w.healthPath }}
               port: {{ $w.port }}
-            initialDelaySeconds: 30
+            # league-reward-worker 는 첫 정산 사이클이 끝난 뒤에야 /health 를 연다. 새 Redis 로 처음 뜨면
+            # 밀린 시즌을 한꺼번에 보느라 길어질 수 있어, 사이클 도중에 재시작되지 않게 넉넉히 둔다.
+            initialDelaySeconds: {{ $w.livenessDelaySeconds | default 30 }}
             periodSeconds: 15
             failureThreshold: 3
           {{- else if $w.port }}
@@ -145,4 +150,22 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end }}
+{{- if and .Values.workers.enabled (index .Values.workers.items "mail-send-worker").enabled }}
+---
+# 메일 워커 HTTP(/preview·/confirm)는 같은 네임스페이스(리그·폴크방 지급 워커)만. 운영자는 port-forward 로 쓴다.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mail-send-worker
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: mail-send-worker
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
 {{- end }}

@@ -12,9 +12,13 @@ metadata:
   labels:
     app: compat-redis
     app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    # 지급 완료 표식·확정 대기 작업이 들어 있다 — 비면 이미 지급한 시즌을 다시 지급할 수 있다.
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
 spec:
+  # compat-state 와 같은 이유로 파드 하나만 마운트(같은 노드 두 파드가 AOF 를 동시에 쓰지 않게).
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOncePod
   storageClassName: {{ .Values.persistence.storageClassName }}
   resources:
     requests:
@@ -41,6 +45,11 @@ spec:
         app: compat-redis
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- if .Values.imagePullSecret.name }}
+      # Docker Hub 익명 받기 한도를 피하려고 regcred 로 받는다.
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -49,9 +58,13 @@ spec:
         - name: redis
           image: {{ .Values.redis.image | quote }}
           # BullMQ 는 maxmemory-policy noeviction 을 요구한다(키가 밀려나면 작업이 사라진다).
+          # maxmemory 를 컨테이너 한도보다 낮게 둬야 noeviction 이 실제로 걸린다 — 없으면 한도까지
+          # 커지다 OOMKill 된다. 차면 쓰기 오류로 드러난다.
           args:
             - --appendonly
             - "yes"
+            - --maxmemory
+            - {{ .Values.redis.maxmemory | quote }}
             - --maxmemory-policy
             - noeviction
           ports:
