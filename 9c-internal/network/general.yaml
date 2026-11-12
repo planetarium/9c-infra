@@ -5,10 +5,11 @@ global:
   image:
     repository: planetariumhq/ninechronicles-headless
     # headless release/399 = development(release/398 읽기 전용 원격 상태 조회 포함) + 하드월드 조회(#2781)
-    #   + lib9c release/1.40.0(18f252bb: 하드월드 개방 #3326, 무한의탑 층 대역 #3334, IL2CPP 예외 역직렬화 #3337,
-    #   BuffLimitSheet.Value long #3338, 전투 수치 int32 clamp 제거 #3339·#3340 PLD-1743).
-    #   510.0.x 인터널 세팅. 체인 리셋 없음. 이전: git-be3fa7b9(#3339 전)
-    tag: "git-71fa07250f8a163a63f98144c50905c4263d35ea"
+    #   + lib9c release/1.40.0(587a1350: 하드월드 개방 #3326, 무한의탑 층 대역 #3334, IL2CPP 예외 역직렬화 #3337,
+    #   BuffLimitSheet.Value long #3338, 전투 수치 int32 clamp 제거 #3339·#3340 PLD-1743,
+    #   시트 값 int→long·크리스탈 재료비/스킬 위력 넘침 수정 #3341).
+    #   510.0.x 인터널 세팅. 체인 리셋 없음. 이전: git-71fa0725(#3341 전)
+    tag: "git-73aad925ff76f70b7b1ec44085b85d8509197fe0"
 
 seed:
   image:
