@@ -290,7 +290,11 @@ backoffice:
     # (2026-11-06) Backoffice#110(d269addc = 위 dd47ab27 + #108 의 Lib9c 범프 7a76cfb) — Lib9c 1.40.0-dev.cd829b85
     #   (release/1.40.0, BuffLimitSheet.Value long lib9c#3338). 21억 넘는 버프 상한 시트를 파싱·서명할 수 있게.
     #   기능 동작 불변. 신규 env 없음. 이전: git-dd47ab27
-    tag: "git-d269addc704afa38c39d7bdf65abcbda260cc001"
+    #
+    # (2026-11-12) Backoffice#110(1b0e4ea9 = 위 d269addc + Lib9c 범프) — Lib9c 1.40.0-dev.587a1350
+    #   (release/1.40.0, 시트 값 int→long lib9c#3341). 21억 넘는 크리스탈·옵션·CP·컬렉션·룬 시트 값을 파싱·서명할 수 있게.
+    #   기능 동작 불변. 신규 env 없음. 이전: git-d269addc
+    tag: "git-1b0e4ea94f7d705dacd5d64e1ca5d700f5483542"
 
 
 iap:
