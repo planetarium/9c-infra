@@ -302,10 +302,19 @@ backoffice:
     #   (추가만, 이전 이미지로 되돌려도 무해). 신규 env: NC_BUNDLE_EXECUTOR_API_KEY(SecretsManager, optional) ·
     #   tablePatchBundles.allowedPlanets(아래, 1차는 백오피스 internal 네트워크의 오딘·하임달만 — 백오피스엔 preview 네트워크가 없다). #111·#108·#109 main 머지 후 main 태그로 다시 bump.
     #   이전: git-1b0e4ea9
-    tag: "git-6b5b50fc9e37b62e4cb4473e272931535dbd176b"
+    #
+    # (2026-11-13) Backoffice#112(b6d0563c = 위 6b5b50fc + 묶음 월드 개방 확인 + long 값 설정) —
+    #   묶음이 GlobalCounter·WorldOpen·WorldOpenCondition 시트를 받고 preview·confirm·arm 때 노드 worldOpen 판정으로 확인
+    #   (되돌리기 불가). TablePatchBundles:LongValuePlanets(아래) 플래닛은 int32 초과 값을 경고로. 마이그레이션 없음. 이전: git-6b5b50fc
+    tag: "git-b6d0563c583e073efe59db16ea76242831e2a7fd"
 
   tablePatchBundles:
     allowedPlanets:
+      - "0x100000000000"
+      - "0x100000000001"
+    # 인터널 헤드리스 git-ffd2a314·클라 release/510.0.0(11/12) 모두 lib9c f5b5620(#3341 포함) 확인(11/13).
+    #   메인넷 플래닛은 1.40 노드·클라 릴리즈 뒤에 넣는다.
+    longValuePlanets:
       - "0x100000000000"
       - "0x100000000001"
 
