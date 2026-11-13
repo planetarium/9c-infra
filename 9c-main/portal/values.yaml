@@ -49,7 +49,9 @@ portalService:
     #   28a6ab7b..ccf1a01a 의 apps/portal 런타임 변경은 withdrawPortalBalance.ts 로그뿐. DB 커플링 없음.
     # (2026-11-02) → main-dad22f4d: earnReward body 파싱 수정 (9c-portal #1357). DB 커플링 없음.
     # (2026-11-06) → main-39e409fc: 선호 플래닛이 레지스트리에 없을 때 Change Primary Planet 모달 수정 (9c-portal #1361/#1362). DB 커플링 없음.
-    tag: main-39e409fcc840b2bdb628fa386c5c565963eab5e9
+    # (2026-11-13) → main-042590ec: 시즌패스 구매 미션 3종 재개(12/1 00:00 UTC 종료, 9c-portal #1363) + 백오피스 ops JWT 미션 설정
+    #   저장 허용(#1365, 포탈 런타임 영향은 rewardTunables 공유값뿐). DB 커플링 없음.
+    tag: main-042590ec364d775d37ed10511b7a8447e097df81
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -111,7 +113,9 @@ backofficeService:
     #   apps/backoffice 변경은 이것뿐, packages/database 변경 없음. 포탈 태그는 그대로.
     # (2026-10-23) → main-750cc160: 9c-portal #1347 — 서버측 권한 검사 보강(arenaRanking 무인증 GET/DELETE 차단 등)·
     #   출금 approve/reject 상태 가드·동글이 옵스 ops JWT. d620acc3 이후 packages/database 는 인덱스 정의만(마이그레이션 Job 없음, 앱 영향 없음).
-    tag: main-750cc160e4453f2822c9bb0b3e3213e64694b7b7
+    # (2026-11-13) → main-042590ec: 포탈과 같은 커밋. ops JWT 로 미션 설정 저장 허용(kind 거부, 9c-portal #1365) +
+    #   시즌패스 3종 종료 시각 표시 반영(#1363) + 출금 노드 블록 높이 조회 병렬화. 마이그레이션 없음.
+    tag: main-042590ec364d775d37ed10511b7a8447e097df81
     pullPolicy: Always
   externalSecret:
     enabled: true
