@@ -302,6 +302,10 @@ spec:
             - name: TablePatchBundles__AllowedPlanets__{{ $i }}
               value: {{ $planet | quote }}
             {{- end }}
+            {{- range $i, $planet := $.Values.backoffice.tablePatchBundles.longValuePlanets }}
+            - name: TablePatchBundles__LongValuePlanets__{{ $i }}
+              value: {{ $planet | quote }}
+            {{- end }}
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
