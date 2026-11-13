@@ -294,7 +294,20 @@ backoffice:
     # (2026-11-12) Backoffice#110(1b0e4ea9 = 위 d269addc + Lib9c 범프) — Lib9c 1.40.0-dev.587a1350
     #   (release/1.40.0, 시트 값 int→long lib9c#3341). 21억 넘는 크리스탈·옵션·CP·컬렉션·룬 시트 값을 파싱·서명할 수 있게.
     #   기능 동작 불변. 신규 env 없음. 이전: git-d269addc
-    tag: "git-1b0e4ea94f7d705dacd5d64e1ca5d700f5483542"
+    #
+    # (2026-11-13) Backoffice#112(6b5b50fc = 위 1b0e4ea9 + #111 테이블 패치 묶음 cherry-pick) — 예약 패치 묶음
+    #   api/table-patch/bundles(등록·preview·확정·arm/fire·되돌리기·취소) 신규. 기존 화면·sign·batch 동작 불변
+    #   (단건 Sign 은 묶음이 예약한 (플래닛, 시트)만 409 reserved).
+    #   ⚠️ 기동 시 마이그레이션 20261113000000_AddTablePatchBundles 가 운영 DB 에 table_patch_bundle* 7개 테이블을 만든다
+    #   (추가만, 이전 이미지로 되돌려도 무해). 신규 env: NC_BUNDLE_EXECUTOR_API_KEY(SecretsManager, optional) ·
+    #   tablePatchBundles.allowedPlanets(아래, 1차는 백오피스 internal 네트워크의 오딘·하임달만 — 백오피스엔 preview 네트워크가 없다). #111·#108·#109 main 머지 후 main 태그로 다시 bump.
+    #   이전: git-1b0e4ea9
+    tag: "git-6b5b50fc9e37b62e4cb4473e272931535dbd176b"
+
+  tablePatchBundles:
+    allowedPlanets:
+      - "0x100000000000"
+      - "0x100000000001"
 
 
 iap:

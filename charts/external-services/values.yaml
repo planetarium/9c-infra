@@ -189,6 +189,9 @@ backoffice:
   image:
     repository: planetariumhq/nine-chronicles-backoffice
     tag: latest
+  # 테이블 패치 묶음(예약 패치)을 허용할 플래닛 id. 비어 있으면 묶음 등록이 모두 거절된다.
+  tablePatchBundles:
+    allowedPlanets: []
   # 패치테이블 화면이 큰 시트를 처리할 때 순간적으로 메모리를 크게 쓴다.
   #   2026-09-09 인터널 패치 중 RuneOptionSheet(12,750행 / 869KB)에서 512Mi 를 넘겨
   #   OOMKilled(exit 137) → Blazor 서킷이 끊기고("Attempting to reconnect to the server")

@@ -291,6 +291,17 @@ spec:
                   key: NC_REMOTE_CSV_API_KEY
                   name: ninechronicles-backoffice-env
                   optional: true
+            # 테이블 패치 묶음(예약 패치) 실행기 키 — confirm·execute·rollback 을 이 키로만 받는다. 없으면 묶음 실행만 꺼진다.
+            - name: NC_BUNDLE_EXECUTOR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: NC_BUNDLE_EXECUTOR_API_KEY
+                  name: ninechronicles-backoffice-env
+                  optional: true
+            {{- range $i, $planet := $.Values.backoffice.tablePatchBundles.allowedPlanets }}
+            - name: TablePatchBundles__AllowedPlanets__{{ $i }}
+              value: {{ $planet | quote }}
+            {{- end }}
           resources:
             {{- toYaml $.Values.backoffice.resources | nindent 12 }}
       {{- with $.Values.backoffice.nodeSelector }}
