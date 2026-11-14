@@ -233,6 +233,8 @@ grafanaAlerts:
 #   색인 워커는 pt2 docker 라 클러스터 밖이다. 여기서는 mimir-gql 의 색인 블록과 rpc tip 만 잰다.
 mimirIndexLag:
   enabled: true
+  # tip 은 레지스트리의 headless.gql 노드를 먼저 쓰고, 다 실패하면 아래 headless(클러스터 안)로 되돌아간다.
+  registryUrl: https://planets.nine-chronicles.com/planets/
   networks:
     odin:
       mimir: http://mimir-gql.odin.svc.cluster.local/graphql
