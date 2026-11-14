@@ -256,9 +256,11 @@ subjects:
 {{- if .enabled }}
 ---
 # 볼륨 로테이션(validator↔rpc 볼륨 스왑, 옛 볼륨 → clone) 전용 SA. donggeul-ops 와 분리해 토큰을 따로 둔다.
-# 동글이 컨테이너의 root 래퍼 ops-rotate 만 이 토큰을 읽는다. 실행(execute)은 운영자의 Slack 승인 뒤에만.
+# 동글이 컨테이너의 root 래퍼 ops-rotate 만 이 토큰을 읽는다. swap·clone 실행은 운영자의 Slack 승인 뒤에만,
+# rpc 스냅샷 리셋(reset-rpc)은 실행기가 전제 확인 뒤 바로(오류일 때만 사람).
 # - StatefulSet scale 은 이름을 지정한 것만(resourceNames).
-# - PVC 생성·삭제, 임시 파드(tip 조회·txexec 삭제) 생성·삭제는 이 네임스페이스들에서만. 무엇을 지울지는 래퍼가
+# - PVC 생성·삭제, 임시 파드(tip 조회·txexec 삭제)·리셋 파드 생성·삭제는 이 네임스페이스들에서만. 파드 조회·로그·
+#   스크립트 ConfigMap 조회는 donggeul-ops-read(아래 ClusterRoleBinding)로 이미 된다. 무엇을 지울지는 래퍼가
 #   "어떤 워크로드도 참조하지 않고 detached" 인지 확인한 뒤 고른다(Kubernetes 는 create 를 이름으로 제한하지 못한다).
 # - ArgoCD 는 해당 앱의 operation(selective sync) 만, Longhorn 은 볼륨·snapshot 삭제만.
 # - RBAC 로 못 좁히는 부분은 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청만 골라 막는다
@@ -461,6 +463,10 @@ spec:
   validationActions: [Deny]
 ---
 # 임시 파드: 라벨 app=donggeul-rotate, PVC 볼륨만, SA 토큰·시크릿·호스트 접근 없음, 이미지 허용 목록. 지우는 것도 그 라벨만.
+# 리셋 파드(라벨 app.kubernetes.io/purpose=volume-rotation-reset 을 더 붙인 것, ops-rotate reset-rpc): rpc 볼륨에
+# 차트의 reset-snapshot 초기화 컨테이너와 같은 스크립트를 한 번만(restartPolicy Never) 돌린다. 임시 파드 규칙 대신
+# 아래 셋째 규칙 — 컨테이너 하나, command 는 스크립트 하나, 볼륨은 PVC 하나 + 그 네임스페이스의 스크립트 ConfigMap 하나,
+# env 없음, 인자 6개(3번째 "true" = 다운로드, 7번째 complete_snapshot_reset 없음 = 증분 리셋)만.
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
@@ -476,6 +482,11 @@ spec:
   matchConditions:
     - name: rotate-sa
       expression: request.userInfo.username == {{ $sa | quote }}
+  variables:
+    - name: reset
+      expression: >-
+        request.operation == 'CREATE' &&
+        object.metadata.?labels[?'app.kubernetes.io/purpose'].orValue('') == 'volume-rotation-reset'
   validations:
     - expression: >-
         request.operation == 'DELETE' ?
@@ -483,7 +494,27 @@ spec:
         (has(object.metadata.labels) && object.metadata.labels[?'app'].orValue('') == 'donggeul-rotate')
       message: donggeul-rotate 는 app=donggeul-rotate 파드만 만들고 지울 수 있습니다
     - expression: >-
-        request.operation == 'DELETE' || (
+        !variables.reset || (
+        object.spec.restartPolicy == 'Never' &&
+        object.spec.?automountServiceAccountToken.orValue(true) == false &&
+        !object.spec.?hostNetwork.orValue(false) && !object.spec.?hostPID.orValue(false) && !object.spec.?hostIPC.orValue(false) &&
+        !has(object.spec.initContainers) && !has(object.spec.ephemeralContainers) &&
+        size(object.spec.volumes) == 2 &&
+        object.spec.volumes.exists_one(v, has(v.persistentVolumeClaim)) &&
+        object.spec.volumes.exists_one(v, has(v.configMap) && v.configMap.name == request.namespace + '-download-snapshot-script') &&
+        size(object.spec.containers) == 1 &&
+        object.spec.containers.all(c,
+          c.image.startsWith('planetariumhq/ninechronicles-headless:') &&
+          c.?command.orValue([]) == ['/bin/download_snapshot.sh'] &&
+          size(c.?args.orValue([])) == 6 && c.args[2] == 'true' &&
+          !has(c.env) && !has(c.envFrom) &&
+          !c.?securityContext.?privileged.orValue(false) &&
+          size(c.?securityContext.?capabilities.?add.orValue([])) == 0))
+      message: >-
+        donggeul-rotate 리셋 파드 제약(restartPolicy Never·토큰 없음·컨테이너 하나·command /bin/download_snapshot.sh·
+        볼륨은 PVC 하나와 <ns>-download-snapshot-script ConfigMap 하나·env 없음·인자 6개 중 3번째 true·헤드리스 이미지) 위반
+    - expression: >-
+        request.operation == 'DELETE' || variables.reset || (
         object.spec.automountServiceAccountToken == false &&
         !object.spec.?hostNetwork.orValue(false) && !object.spec.?hostPID.orValue(false) && !object.spec.?hostIPC.orValue(false) &&
         !has(object.spec.initContainers) && !has(object.spec.ephemeralContainers) &&
