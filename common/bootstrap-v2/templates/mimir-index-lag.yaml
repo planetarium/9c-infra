@@ -15,20 +15,61 @@ data:
     PUSHGATEWAY = os.environ["PUSHGATEWAY_URL"]
     NETWORKS = json.loads(os.environ["NETWORKS"])
 
-    def gql(url, query):
+    def gql(url, query, timeout=20):
         req = urllib.request.Request(
             url,
             data=json.dumps({"query": query}).encode(),
             headers={"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=20) as res:
+        with urllib.request.urlopen(req, timeout=timeout) as res:
             return json.load(res)["data"]
+
+    # tip 은 플래닛 레지스트리의 headless.gql 노드(레지스트리 순서)를 먼저 쓰고, 없거나 다 실패하면
+    #   클러스터 안 headless 로 되돌아간다. rpc-1 하나에 묶이면 볼륨 로테이션 중 오탐이 난다.
+    # Job 데드라인(120초) 안에 두 네트워크가 끝나도록 레지스트리는 한 번만 받고,
+    #   노드 시도는 5초·네트워크당 레지스트리 노드 최대 2개 + 폴백이다.
+    REGISTRY = os.environ.get("PLANET_REGISTRY_URL")
+    PLANETS = []
+    if REGISTRY:
+        try:
+            with urllib.request.urlopen(REGISTRY, timeout=5) as res:
+                PLANETS = json.load(res)
+        except Exception as e:
+            print(f"registry: {e!r}", file=sys.stderr)
+
+    def headless_candidates(name, ep):
+        urls = []
+        for planet in PLANETS:
+            try:
+                if planet.get("name") == ep.get("planet", name):
+                    urls += [u for u in planet["rpcEndpoints"]["headless.gql"] if isinstance(u, str)]
+            except Exception:
+                continue
+        urls = urls[:2]
+        if ep.get("headless") and ep["headless"] not in urls:
+            urls.append(ep["headless"])
+        return urls
+
+    def chain_tip(name, ep, indexed):
+        # 색인 블록보다 낮은 tip 은 뒤처진 노드라 건너뛴다(지연이 가려지는 것을 막는다).
+        errors = []
+        for url in headless_candidates(name, ep):
+            try:
+                tip = gql(url, "{ nodeStatus { tip { index } } }", timeout=5)["nodeStatus"]["tip"]["index"]
+                if tip < indexed:
+                    errors.append(f"{url}: tip {tip} < indexed {indexed}")
+                    continue
+                print(f"{name}: tip from {url}")
+                return tip
+            except Exception as e:
+                errors.append(f"{url}: {e!r}")
+        raise RuntimeError("no headless node answered: " + "; ".join(errors))
 
     failed = False
     for name, ep in NETWORKS.items():
         try:
             indexed = gql(ep["mimir"], '{ metadata(collectionName: "block") { latestBlockIndex } }')["metadata"]["latestBlockIndex"]
-            tip = gql(ep["headless"], "{ nodeStatus { tip { index } } }")["nodeStatus"]["tip"]["index"]
+            tip = chain_tip(name, ep, indexed)
             print(f"{name}: indexed={indexed} tip={tip} lag={tip - indexed}")
             # 네트워크마다 그룹을 따로 PUT 한다. 실패한 네트워크는 건드리지 않아 이전 값이 남고,
             #   last_success 가 낡아서 stale 규칙에 걸린다(한 그룹으로 PUT 하면 시리즈가 사라져 안 울린다).
@@ -78,6 +119,8 @@ spec:
               env:
                 - name: PUSHGATEWAY_URL
                   value: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091
+                - name: PLANET_REGISTRY_URL
+                  value: {{ .registryUrl | default "" | quote }}
                 - name: NETWORKS
                   value: {{ .networks | toJson | quote }}
               resources:
