@@ -202,10 +202,12 @@ donggeulOps:
       odin: { app: odin, statefulsets: [validator-5, remote-headless-1] }
       heimdall: { app: heimdall, statefulsets: [validator-5, remote-headless-1] }
   # ArgoCD 리소스 지정 동기화 전용 SA(donggeul-sync). 이 앱들만 patch 할 수 있다.
-  # bootstrap·인프라 앱은 넣지 않는다(이 RBAC 자체가 bootstrap 에 있다).
+  # bootstrap 은 이 RBAC 자체가 들어 있어 monitoring 의 mimir-index-lag ConfigMap·CronJob 만(범위는 donggeul-ops-rbac.yaml
+  # VAP 에 고정). RBAC·VAP·Application·Secret 등은 사람이 동기화한다. 그 밖의 인프라 앱은 넣지 않는다.
   sync:
     enabled: true
     apps:
+      - bootstrap
       - petpop
       - portal
       - dcc-bridge

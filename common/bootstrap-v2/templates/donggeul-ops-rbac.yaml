@@ -602,7 +602,8 @@ spec:
 # - Application 은 apps 에 적은 이름만 get·patch.
 # - 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청을 막는다: spec·status·소유·finalizer·label 변경 불가, annotations 는
 #   새로고침 요청만, 기존 operation 변경 불가, sync 는 리소스를 지정한 것만(prune·매니페스트·소스 재지정·옵션·재시도 없음),
-#   리비전은 ArgoCD 가 이미 비교한 리비전(status.sync.revision)만 — status 를 못 바꾸니 머지 안 된 커밋으로 동기화하지 못한다.
+#   리비전은 ArgoCD 가 이미 비교한 리비전(status.sync.revision, 소스가 여럿이면 revisions)만 — status 를 못 바꾸니 머지 안 된 커밋으로 동기화하지 못한다.
+# - bootstrap(이 RBAC 자체가 들어 있다)은 monitoring 의 mimir-index-lag ConfigMap·CronJob 만(아래 규칙에 고정).
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -706,13 +707,27 @@ spec:
         size(object.operation.sync.resources) > 0 && size(object.operation.sync.resources) <= 50 &&
         (!has(object.operation.sync.prune) || object.operation.sync.prune == false) &&
         !has(object.operation.sync.manifests) && !has(object.operation.sync.source) &&
-        !has(object.operation.sync.sources) && !has(object.operation.sync.revisions) &&
+        !has(object.operation.sync.sources) &&
         !has(object.operation.sync.syncOptions) && !has(object.operation.sync.syncStrategy) &&
-        !has(object.operation.retry) &&
-        has(object.operation.sync.revision) &&
-        oldObject.?status.?sync.?revision.orValue('') != '' &&
-        object.operation.sync.revision == oldObject.status.sync.revision)
+        !has(object.operation.retry) && (
+        (!has(oldObject.spec.sources) &&
+         has(object.operation.sync.revision) && !has(object.operation.sync.revisions) &&
+         oldObject.?status.?sync.?revision.orValue('') != '' &&
+         object.operation.sync.revision == oldObject.status.sync.revision) ||
+        (has(oldObject.spec.sources) &&
+         has(object.operation.sync.revisions) && !has(object.operation.sync.revision) &&
+         size(oldObject.?status.?sync.?revisions.orValue([])) > 0 &&
+         object.operation.sync.revisions == oldObject.status.sync.revisions)))
       message: donggeul-sync 의 sync 는 ArgoCD 가 비교한 리비전으로 지정 리소스만(prune·매니페스트·소스 재지정·옵션·재시도 없음)
+    # bootstrap(이 RBAC·VAP·Application·Secret 이 들어 있는 앱)은 아래 이름의 monitoring ConfigMap·CronJob 만.
+    # values 가 아니라 여기(리뷰 강제 파일)에 고정한다 — 값 파일 한 줄로 이 보호가 풀리지 않게.
+    - expression: >-
+        object.metadata.name != "bootstrap" || !has(object.operation) || (
+        has(object.operation.sync) && has(object.operation.sync.resources) &&
+        object.operation.sync.resources.all(r,
+          ((r.?group.orValue('') == '' && r.kind == 'ConfigMap') || (r.?group.orValue('') == 'batch' && r.kind == 'CronJob')) &&
+          r.?namespace.orValue('') == 'monitoring' && r.name in ['mimir-index-lag']))
+      message: donggeul-sync 는 bootstrap 앱에서 monitoring 의 mimir-index-lag ConfigMap·CronJob 만 동기화할 수 있습니다
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
