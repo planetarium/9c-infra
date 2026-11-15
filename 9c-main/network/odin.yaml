@@ -195,7 +195,7 @@ validator:
   # 상세: memory/troubleshooting_odin_chain_fork_recovery.md
   storage:
     volumeNames:
-    - "remote-headless-data-1-remote-headless-1-0"
+    - "remote-headless-data-4-remote-headless-4-0"
 
   tolerations:
   - effect: NoSchedule
@@ -275,7 +275,7 @@ remoteHeadless:
   # data-1 은 214G 라 클론해도 여유가 있다.
   storage:
     volumeNames:
-    - "remote-headless-data-4-remote-headless-4-0"
+    - "remote-headless-data-1-remote-headless-1-0"
 
   tolerations:
   - effect: NoSchedule
