@@ -127,7 +127,9 @@ portalService:
     # (2026-10-26) → internal-718a3a2f: 9c-portal #1351 — 출금 트랜잭션 구간별 소요시간 진단 로그(동작 변경 없음).
     # (2026-11-02) → internal-3b356b99: 9c-portal develop — earnReward body 파싱 방어(문자열/객체 모두, 실패 시 400).
     # (2026-11-06) → internal-c52d3b76: 선호 플래닛이 레지스트리에 없을 때(Thor 등) Change Primary Planet 모달이 열리도록 (9c-portal #1361).
-    tag: "internal-c52d3b76289f828494370435615ec3a99dc0f94c"
+    # (2026-11-16) → internal-9f2ec010: 메이플 GO 오픈 기념 미션 2종(9c-portal #1368) + 시즌패스 미션 재개 · ops JWT(#1364/#1366).
+    #   메이플 GO 판정은 maple-go-internal 의 v8-gateway(스테이징 메이플 GO). DB 커플링 없음.
+    tag: "internal-9f2ec010d4f300f707ae9f1c12a0690dbebc45bb"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -178,7 +180,8 @@ backofficeService:
     #   (신규 모델 + reward source SHOP_DRAW)만 태우는 리빌드다. 그 enum 은 8/5 에 DB 적용됨.
     # (2026-10-23) → internal-7de20715: develop ← main(#1348). 백오피스 서버측 권한 보강·동글이 옵스 ops JWT(9c-portal #1347).
     #   포탈 태그(L127)는 그대로 — 백오피스만.
-    tag: "internal-9e635a3e0adea12c0667cdace4ccf3a73c954c8d"
+    # (2026-11-16) → internal-9f2ec010: 포탈과 같은 커밋 — 미션 설정 화면에 메이플 GO 미션 2종이 나온다(rewardTunables 공유).
+    tag: "internal-9f2ec010d4f300f707ae9f1c12a0690dbebc45bb"
     pullPolicy: Always
   externalSecret:
     enabled: true
