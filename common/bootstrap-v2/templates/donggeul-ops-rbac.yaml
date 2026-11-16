@@ -263,7 +263,7 @@ subjects:
 #   스크립트 ConfigMap 조회는 donggeul-ops-read(아래 ClusterRoleBinding)로 이미 된다. 무엇을 지울지는 래퍼가
 #   "어떤 워크로드도 참조하지 않고 detached" 인지 확인한 뒤 고른다(Kubernetes 는 create 를 이름으로 제한하지 못한다).
 # - ArgoCD 는 해당 앱의 operation(selective sync) 만, Longhorn 은 볼륨·snapshot 삭제와 노드 patch(디스크 스케줄링 on/off)만.
-# - clone 동안 원본 볼륨 보호: 원본 PVC 의 정기 트림 라벨(recurring-job.longhorn.io/*)을 잠시 떼고, 원본 복제본이 있는
+# - clone 동안 원본 볼륨 보호: 원본 PVC 의 정기 트림 라벨(recurring-job.longhorn.io/<trimJobs>)을 잠시 떼고, 원본 복제본이 있는
 #   디스크를 allowScheduling=false 로 막아 clone 대상이 다른 디스크에 놓이게 한다. 끝나면 래퍼가 둘 다 원래대로 되돌린다.
 #   복제본·정기 작업·노드 조회는 donggeul-ops-read(longhorn.io 전체 조회)로 이미 된다.
 # - RBAC 로 못 좁히는 부분은 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청만 골라 막는다
@@ -390,7 +390,7 @@ rules:
       - {{ . }}
       {{- end }}
     verbs: [get, patch, update]
-  # patch 는 정기 작업 라벨(recurring-job.longhorn.io/*) 떼기·붙이기만(아래 donggeul-rotate-pvc-labels VAP).
+  # patch 는 정기 트림 작업 라벨(values 의 trimJobs) 떼기·붙이기만(아래 donggeul-rotate-pvc-labels VAP).
   - apiGroups: [""]
     resources: [persistentvolumeclaims]
     verbs: [create, delete, patch]
@@ -416,6 +416,8 @@ subjects:
 {{- $apps := list }}{{- $stsList := list }}
 {{- range $ns, $c := .namespaces }}{{- $apps = append $apps $c.app }}{{- $stsList = concat $stsList $c.statefulsets }}{{- end }}
 {{- $sa := "system:serviceaccount:donggeul-ops:donggeul-rotate" }}
+{{- $trimKeys := list }}
+{{- range (required "donggeulOps.rotate.trimJobs 가 비어 있습니다" .trimJobs) }}{{- $trimKeys = append $trimKeys (printf "recurring-job.longhorn.io/%s" .) }}{{- end }}
 ---
 # 이 SA 의 Application 수정은 operation(selective sync) 만 — spec 은 그대로, 대상은 지정한 StatefulSet, prune 없음.
 apiVersion: admissionregistration.k8s.io/v1
@@ -603,7 +605,8 @@ spec:
   policyName: donggeul-rotate-longhorn-volumes
   validationActions: [Deny]
 ---
-# PVC 수정은 정기 작업 라벨(recurring-job.longhorn.io/<작업 이름>)을 더하고·빼고·바꾸는 것만. spec·annotations·
+# PVC 수정은 values 의 trimJobs 에 적은 트림 작업 라벨(recurring-job.longhorn.io/<이름>)을 붙이고(값 enabled)·떼는 것만.
+# 다른 정기 작업(스냅샷 삭제·백업 등)은 validator 볼륨에 붙일 수 없게 이름 목록으로 고정한다. spec·annotations·
 # finalizers·ownerReferences 와 다른 라벨, recurring-job.longhorn.io/source(볼륨 라벨의 원본 표시)는 그대로.
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -625,6 +628,8 @@ spec:
       expression: "object.metadata.?labels.orValue({})"
     - name: oldL
       expression: "oldObject.metadata.?labels.orValue({})"
+    - name: trimKeys
+      expression: {{ $trimKeys | toJson | quote }}
   validations:
     - expression: object.spec == oldObject.spec
       message: donggeul-rotate 는 PVC spec 을 바꿀 수 없습니다
@@ -635,12 +640,10 @@ spec:
       message: donggeul-rotate 는 PVC annotations·finalizers·ownerReferences 를 바꿀 수 없습니다
     - expression: >-
         variables.newL.all(k,
-          (k.startsWith('recurring-job.longhorn.io/') && k != 'recurring-job.longhorn.io/source') ||
-          (k in variables.oldL && variables.oldL[k] == variables.newL[k])) &&
-        variables.oldL.all(k,
-          (k.startsWith('recurring-job.longhorn.io/') && k != 'recurring-job.longhorn.io/source') ||
-          k in variables.newL)
-      message: donggeul-rotate 는 PVC 의 recurring-job.longhorn.io/<작업> 라벨(source 제외)만 바꿀 수 있습니다
+          (k in variables.oldL && variables.oldL[k] == variables.newL[k]) ||
+          (k in variables.trimKeys && variables.newL[k] == 'enabled')) &&
+        variables.oldL.all(k, k in variables.newL || k in variables.trimKeys)
+      message: donggeul-rotate 는 PVC 의 정기 트림 작업 라벨({{ join ", " $trimKeys }})만 붙이고(값 enabled) 뗄 수 있습니다
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
