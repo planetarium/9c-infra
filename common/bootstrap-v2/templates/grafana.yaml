@@ -536,7 +536,8 @@ spec:
               # (2026-11-16) Longhorn 노드 디스크·볼륨. 위 PVC 규칙은 볼륨 안 파일시스템만 봐서, 복제본·스냅샷이 쌓이는
               #   노드 디스크가 차는 것은 보이지 않는다. 11/15 odin-3 백테스트(정지 21:41Z): 볼륨 쓰레기 >300GiB 는 15:09Z 부터
               #   (2시간 지속 → 약 4.5시간 전), 데이터 디스크 70% 약 1.5시간 전, 2시간 뒤 가득 참 예측 약 1시간 45분 전.
-              #   데이터 디스크(볼륨 전용)와 OS 디스크(default-disk-*, 평상시 70~84%)는 문턱을 따로 둔다.
+              #   데이터 디스크(볼륨 전용)와 노드 기본 디스크(default-disk-*, OS 디스크 위 — 평상시 70~84% 인 노드가 있고, 볼륨 복제본이
+              #   놓인 노드도 있다)는 문턱을 따로 둔다.
               #   longhorn-manager 가 재시작하면 instance(파드 IP)가 바뀌어 새 시계열이 생긴다 — node·disk 로 묶는다.
               #   excludeDisks: 볼륨 하나를 꽉 채워 두는 전용 디스크처럼 높은 사용률이 평상시인 디스크(정규식).
               {{- if (.Values.longhornDiskAlerts).enabled }}
@@ -599,7 +600,7 @@ spec:
                     annotations:
                       summary: 'Longhorn 데이터 디스크 {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}% — 가득 차면 그 디스크의 볼륨 쓰기가 멈춘다(11/16 odin 정지)'
                   - uid: longhorn-os-disk-usage-high
-                    title: Longhorn OS Disk Usage High
+                    title: Longhorn Default Disk Usage High
                     noDataState: OK
                     condition: C
                     data:
@@ -622,7 +623,32 @@ spec:
                     notification_settings:
                       receiver: Slack (devops-alert)
                     annotations:
-                      summary: '노드 OS 디스크(Longhorn 기본 디스크) {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}% — 컨테이너 이미지·로그 정리'
+                      summary: 'Longhorn 기본 디스크(노드 OS 디스크 위) {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}% — 볼륨 복제본이 있으면 그 볼륨부터, 없으면 컨테이너 이미지·로그 정리'
+                  - uid: longhorn-os-disk-usage-critical
+                    title: Longhorn Default Disk Usage Critical
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * max without (instance, job, pod) (longhorn_disk_usage_bytes{ {{- $os -}} }) / max without (instance, job, pod) (longhorn_disk_capacity_bytes{ {{- $os -}} })'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [95] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'Longhorn 기본 디스크(노드 OS 디스크 위) {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}% — 거의 가득 참. 그 디스크의 볼륨 쓰기와 노드(kubelet·컨테이너)가 멈출 수 있다'
                   # clone·rebuild 처럼 계획된 대량 복사에서도 울릴 수 있어 warning 으로 둔다(30일 백테스트 4건, 2건이 11/15).
                   - uid: longhorn-disk-fill-predicted
                     title: Longhorn Disk Filling Fast
@@ -649,8 +675,10 @@ spec:
                       receiver: Slack (devops-alert)
                     annotations:
                       summary: 'Longhorn 디스크 {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 가 이 속도면 2시간 안에 가득 찬다(예측 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}%) — 스냅샷 정리(병합)·clone·rebuild 가 도는지 본다'
-                  # 볼륨 실사용량(스냅샷·회수 안 된 블록 포함) − 파일시스템 사용량. 리셋 직후 크게 늘었다가 trim 이 회수한다 —
-                  #   2시간 넘게 남으면 trim 이 회수하지 못하는 것(스냅샷이 잡고 있음)이고, 다음 clone·병합 때 디스크를 그만큼 더 쓴다.
+                  # 볼륨 실사용량(스냅샷·회수 안 된 블록 포함) − 파일시스템 사용량이 볼륨 크기의 40% 넘고 100GiB 넘게 2시간.
+                  #   리셋 직후 크게 늘었다가 trim 이 회수한다 — 남으면 trim 이 회수하지 못하는 것(스냅샷이 잡고 있음)이고, 다음 clone·병합 때
+                  #   디스크를 그만큼 더 쓴다. 파일시스템 사용량은 마운트된 볼륨에만 있어 attached 볼륨만 본다(Retain 으로 남은 같은 이름의
+                  #   옛 볼륨도 attached 가 아니라 빠진다). 100GiB 바닥은 trim 라벨 없는 작은 볼륨(prometheus·loki)의 상시 비율을 거른다.
                   - uid: longhorn-volume-unreclaimed
                     title: Longhorn Volume Unreclaimed Space
                     noDataState: OK
@@ -660,7 +688,7 @@ spec:
                         relativeTimeRange: { from: 600, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: '(max by (pvc_namespace, pvc) (longhorn_volume_actual_size_bytes) - on (pvc_namespace, pvc) max by (pvc_namespace, pvc) (label_replace(label_replace(kubelet_volume_stats_used_bytes, "pvc", "$1", "persistentvolumeclaim", "(.*)"), "pvc_namespace", "$1", "namespace", "(.*)"))) / 1073741824'
+                          expr: '100 * (max by (pvc_namespace, pvc) (longhorn_volume_actual_size_bytes and on (volume) (longhorn_volume_state == 2)) - on (pvc_namespace, pvc) max by (pvc_namespace, pvc) (label_replace(label_replace(kubelet_volume_stats_used_bytes, "pvc", "$1", "persistentvolumeclaim", "(.*)"), "pvc_namespace", "$1", "namespace", "(.*)"))) / on (pvc_namespace, pvc) max by (pvc_namespace, pvc) (longhorn_volume_capacity_bytes) and on (pvc_namespace, pvc) ((max by (pvc_namespace, pvc) (longhorn_volume_actual_size_bytes and on (volume) (longhorn_volume_state == 2)) - on (pvc_namespace, pvc) max by (pvc_namespace, pvc) (label_replace(label_replace(kubelet_volume_stats_used_bytes, "pvc", "$1", "persistentvolumeclaim", "(.*)"), "pvc_namespace", "$1", "namespace", "(.*)"))) > 107374182400)'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
@@ -668,14 +696,14 @@ spec:
                           type: threshold
                           expression: A
                           conditions:
-                            - evaluator: { type: gt, params: [300] }
+                            - evaluator: { type: gt, params: [40] }
                     for: 2h
                     labels:
                       severity: warning
                     notification_settings:
                       receiver: Slack (devops-alert)
                     annotations:
-                      summary: '볼륨 {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}}/{{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} 에 회수 안 된 공간 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}GiB(스냅샷 포함 실사용 − 파일시스템 사용) — trim 라벨·removed 스냅샷 확인. 이 상태로 clone·스냅샷 병합을 하면 그 디스크가 찬다'
+                      summary: '볼륨 {{`{{ "{{" }} $labels.pvc_namespace {{ "}}" }}`}}/{{`{{ "{{" }} $labels.pvc {{ "}}" }}`}} 의 회수 안 된 공간이 볼륨 크기의 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}%(스냅샷 포함 실사용 − 파일시스템 사용) — trim 라벨·removed 스냅샷 확인. 이 상태로 clone·스냅샷 병합을 하면 그 디스크가 찬다'
               {{- end }}
         persistence:
           enabled: true
