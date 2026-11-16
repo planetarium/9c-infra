@@ -231,7 +231,7 @@ pushgatewayIngress:
 grafanaAlerts:
   petpopSeasonAutomation: true
 
-# Longhorn 노드 디스크 알림(grafana.yaml 의 longhorn-disk-alerts). 인터널은 상시 80% 넘는 디스크가 있어 켜지 않는다.
+# Longhorn 노드 디스크·볼륨 알림(grafana.yaml 의 longhorn-disk-alerts). 인터널은 상시 80% 넘는 디스크가 있어 켜지 않는다.
 #   excludeDisks: 높은 사용률이 평상시인 디스크 정규식 — 스냅샷 볼륨 하나를 꽉 채워 두는 전용 디스크(7일 내내 93%).
 longhornDiskAlerts:
   enabled: true
