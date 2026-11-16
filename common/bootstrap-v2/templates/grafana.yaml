@@ -533,6 +533,90 @@ spec:
                       receiver: Slack (devops-alert)
                     annotations:
                       summary: 'PVC {{`{{ "{{" }} $labels.namespace {{ "}}" }}`}}/{{`{{ "{{" }} $labels.persistentvolumeclaim {{ "}}" }}`}} 거의 가득 참 — {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}%'
+              # (2026-11-16) Longhorn 노드 디스크. 위 PVC 규칙은 볼륨 안 파일시스템만 봐서, 복제본·스냅샷이 쌓이는
+              #   노드 디스크가 차는 것은 보이지 않는다(11/16 odin-3 은 스냅샷 병합으로 77% → 100% 가 1시간 반 만에 났고
+              #   PVC 사용률은 정상이었다). 사용률 문턱만으로는 그 속도를 못 잡아 2시간 뒤 예측도 같이 본다.
+              - orgId: 1
+                name: longhorn-disk-alerts
+                folder: PVC Alert
+                interval: 1m
+                rules:
+                  - uid: longhorn-disk-usage-warning
+                    title: Longhorn Disk Usage High
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [80] }
+                    for: 15m
+                    labels:
+                      severity: warning
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'Longhorn 디스크 {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 사용률 {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}% — 볼륨 실사용량(스냅샷 포함)과 removed 스냅샷부터 본다'
+                  - uid: longhorn-disk-usage-critical
+                    title: Longhorn Disk Usage Critical
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [90] }
+                    for: 5m
+                    labels:
+                      severity: critical
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'Longhorn 디스크 {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 거의 가득 참 — {{`{{ "{{" }} printf "%.1f" $values.A.Value {{ "}}" }}`}}%. 가득 차면 그 디스크의 볼륨 쓰기가 멈춘다'
+                  # clone·rebuild 처럼 계획된 대량 복사에서도 울릴 수 있어 warning 으로 둔다.
+                  - uid: longhorn-disk-fill-predicted
+                    title: Longhorn Disk Filling Fast
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 1800, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: '100 * predict_linear(longhorn_disk_usage_bytes[30m], 7200) / longhorn_disk_capacity_bytes'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [100] }
+                    for: 10m
+                    labels:
+                      severity: warning
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: 'Longhorn 디스크 {{`{{ "{{" }} $labels.node {{ "}}" }}`}}/{{`{{ "{{" }} $labels.disk {{ "}}" }}`}} 가 이 속도면 2시간 안에 가득 찬다(예측 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}%) — 스냅샷 정리(병합)·clone·rebuild 가 도는지 본다'
         persistence:
           enabled: true
         initChownData:
