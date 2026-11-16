@@ -262,9 +262,13 @@ subjects:
 # - PVC 생성·삭제, 임시 파드(tip 조회·txexec 삭제)·리셋 파드 생성·삭제는 이 네임스페이스들에서만. 파드 조회·로그·
 #   스크립트 ConfigMap 조회는 donggeul-ops-read(아래 ClusterRoleBinding)로 이미 된다. 무엇을 지울지는 래퍼가
 #   "어떤 워크로드도 참조하지 않고 detached" 인지 확인한 뒤 고른다(Kubernetes 는 create 를 이름으로 제한하지 못한다).
-# - ArgoCD 는 해당 앱의 operation(selective sync) 만, Longhorn 은 볼륨·snapshot 삭제만.
+# - ArgoCD 는 해당 앱의 operation(selective sync) 만, Longhorn 은 볼륨·snapshot 삭제와 노드 patch(디스크 스케줄링 on/off)만.
+# - clone 동안 원본 볼륨 보호: 원본 PVC 의 정기 트림 라벨(recurring-job.longhorn.io/*)을 잠시 떼고, 원본 복제본이 있는
+#   디스크를 allowScheduling=false 로 막아 clone 대상이 다른 디스크에 놓이게 한다. 끝나면 래퍼가 둘 다 원래대로 되돌린다.
+#   복제본·정기 작업·노드 조회는 donggeul-ops-read(longhorn.io 전체 조회)로 이미 된다.
 # - RBAC 로 못 좁히는 부분은 아래 ValidatingAdmissionPolicy 가 이 SA 의 요청만 골라 막는다
-#   (Application spec 변경, 임의 파드, 남의 PV·Longhorn 볼륨 삭제).
+#   (Application spec 변경, 임의 파드, 남의 PV·Longhorn 볼륨 삭제, PVC 의 트림 라벨 밖 변경, Longhorn 노드의 디스크
+#   allowScheduling 밖 변경).
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -325,6 +329,10 @@ rules:
   - apiGroups: [longhorn.io]
     resources: [volumes, snapshots]
     verbs: [get, list, delete]
+  # 디스크 allowScheduling 만 바꾼다(아래 donggeul-rotate-longhorn-nodes VAP). 조회는 donggeul-ops-read.
+  - apiGroups: [longhorn.io]
+    resources: [nodes]
+    verbs: [patch]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -382,9 +390,10 @@ rules:
       - {{ . }}
       {{- end }}
     verbs: [get, patch, update]
+  # patch 는 정기 작업 라벨(recurring-job.longhorn.io/*) 떼기·붙이기만(아래 donggeul-rotate-pvc-labels VAP).
   - apiGroups: [""]
     resources: [persistentvolumeclaims]
-    verbs: [create, delete]
+    verbs: [create, delete, patch]
   - apiGroups: [""]
     resources: [pods]
     verbs: [create, delete]
@@ -592,6 +601,115 @@ metadata:
   name: donggeul-rotate-longhorn-volumes
 spec:
   policyName: donggeul-rotate-longhorn-volumes
+  validationActions: [Deny]
+---
+# PVC 수정은 정기 작업 라벨(recurring-job.longhorn.io/<작업 이름>)을 더하고·빼고·바꾸는 것만. spec·annotations·
+# finalizers·ownerReferences 와 다른 라벨, recurring-job.longhorn.io/source(볼륨 라벨의 원본 표시)는 그대로.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-pvc-labels
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [UPDATE]
+        resources: [persistentvolumeclaims]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  variables:
+    - name: newL
+      expression: "object.metadata.?labels.orValue({})"
+    - name: oldL
+      expression: "oldObject.metadata.?labels.orValue({})"
+  validations:
+    - expression: object.spec == oldObject.spec
+      message: donggeul-rotate 는 PVC spec 을 바꿀 수 없습니다
+    - expression: >-
+        object.metadata.?annotations == oldObject.metadata.?annotations &&
+        object.metadata.?finalizers == oldObject.metadata.?finalizers &&
+        object.metadata.?ownerReferences == oldObject.metadata.?ownerReferences
+      message: donggeul-rotate 는 PVC annotations·finalizers·ownerReferences 를 바꿀 수 없습니다
+    - expression: >-
+        variables.newL.all(k,
+          (k.startsWith('recurring-job.longhorn.io/') && k != 'recurring-job.longhorn.io/source') ||
+          (k in variables.oldL && variables.oldL[k] == variables.newL[k])) &&
+        variables.oldL.all(k,
+          (k.startsWith('recurring-job.longhorn.io/') && k != 'recurring-job.longhorn.io/source') ||
+          k in variables.newL)
+      message: donggeul-rotate 는 PVC 의 recurring-job.longhorn.io/<작업> 라벨(source 제외)만 바꿀 수 있습니다
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-pvc-labels
+spec:
+  policyName: donggeul-rotate-pvc-labels
+  validationActions: [Deny]
+---
+# Longhorn 노드 수정은 이미 있는 디스크의 allowScheduling 만. 노드 수준 필드(allowScheduling·evictionRequested·tags 등),
+# 디스크의 나머지 필드, 디스크 추가·삭제, labels·annotations·finalizers·ownerReferences 는 그대로.
+# spec 필드는 Longhorn v1.9.1 CRD(v1beta2) 기준으로 하나씩 적는다(구조 스키마라 객체 필드를 순회할 수 없다) —
+# Longhorn 을 올려 node·disk spec 에 필드가 생기면 여기에 더한다.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-rotate-longhorn-nodes
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: longhorn-system
+    resourceRules:
+      # 제공 버전을 적어 형식 검사가 CRD 스키마로 돈다(다른 버전 요청도 matchPolicy Equivalent 로 이 정책에 걸린다).
+      - apiGroups: [longhorn.io]
+        apiVersions: [v1beta2]
+        operations: [UPDATE]
+        resources: [nodes]
+  matchConditions:
+    - name: rotate-sa
+      expression: request.userInfo.username == {{ $sa | quote }}
+  validations:
+    - expression: >-
+        object.spec.?allowScheduling == oldObject.spec.?allowScheduling &&
+        object.spec.?evictionRequested == oldObject.spec.?evictionRequested &&
+        object.spec.?tags == oldObject.spec.?tags &&
+        object.spec.?name == oldObject.spec.?name &&
+        object.spec.?instanceManagerCPURequest == oldObject.spec.?instanceManagerCPURequest
+      message: donggeul-rotate 는 Longhorn 노드 수준 spec 을 바꿀 수 없습니다
+    - expression: >-
+        has(object.spec.disks) == has(oldObject.spec.disks) &&
+        (!has(object.spec.disks) || (
+          size(object.spec.disks) == size(oldObject.spec.disks) &&
+          oldObject.spec.disks.all(k, k in object.spec.disks)))
+      message: donggeul-rotate 는 Longhorn 디스크를 더하거나 뺄 수 없습니다
+    - expression: >-
+        !has(object.spec.disks) ||
+        object.spec.disks.all(k, k in oldObject.spec.disks &&
+          object.spec.disks[k].?path == oldObject.spec.disks[k].?path &&
+          object.spec.disks[k].?tags == oldObject.spec.disks[k].?tags &&
+          object.spec.disks[k].?storageReserved == oldObject.spec.disks[k].?storageReserved &&
+          object.spec.disks[k].?evictionRequested == oldObject.spec.disks[k].?evictionRequested &&
+          object.spec.disks[k].?diskType == oldObject.spec.disks[k].?diskType &&
+          object.spec.disks[k].?diskDriver == oldObject.spec.disks[k].?diskDriver)
+      message: donggeul-rotate 는 Longhorn 디스크의 allowScheduling 말고는 바꿀 수 없습니다
+    - expression: >-
+        object.metadata.?labels == oldObject.metadata.?labels &&
+        object.metadata.?annotations == oldObject.metadata.?annotations &&
+        object.metadata.?finalizers == oldObject.metadata.?finalizers &&
+        object.metadata.?ownerReferences == oldObject.metadata.?ownerReferences
+      message: donggeul-rotate 는 Longhorn 노드 labels·annotations·finalizers·ownerReferences 를 바꿀 수 없습니다
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-rotate-longhorn-nodes
+spec:
+  policyName: donggeul-rotate-longhorn-nodes
   validationActions: [Deny]
 {{- end }}
 {{- end }}
