@@ -417,7 +417,8 @@ subjects:
 {{- range $ns, $c := .namespaces }}{{- $apps = append $apps $c.app }}{{- $stsList = concat $stsList $c.statefulsets }}{{- end }}
 {{- $sa := "system:serviceaccount:donggeul-ops:donggeul-rotate" }}
 {{- $trimKeys := list }}
-{{- range (required "donggeulOps.rotate.trimJobs 가 비어 있습니다" .trimJobs) }}{{- $trimKeys = append $trimKeys (printf "recurring-job.longhorn.io/%s" .) }}{{- end }}
+{{- if not .trimJobs }}{{ fail "donggeulOps.rotate.trimJobs 가 비어 있습니다" }}{{- end }}
+{{- range .trimJobs }}{{- $trimKeys = append $trimKeys (printf "recurring-job.longhorn.io/%s" .) }}{{- end }}
 ---
 # 이 SA 의 Application 수정은 operation(selective sync) 만 — spec 은 그대로, 대상은 지정한 StatefulSet, prune 없음.
 apiVersion: admissionregistration.k8s.io/v1
