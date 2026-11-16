@@ -1,0 +1,15 @@
+# 인터널 포탈 ↔ 스테이징 메이플 GO 연결 시험용. 명단 Job 은 돌리지 않고 v8-gateway 만 띄운다.
+#   비밀 maple-go/internal(AWS SM us-east-2)에는 V8_ACCESS_TOKEN 하나만 둔다 — prod 비밀(maple-go/prod)의
+#   R2 키를 인터널 클러스터로 끌어오지 않으려고 따로 뒀다. 토큰은 스테이징 verse 주인(petpop) 토큰.
+externalSecretKey: maple-go/internal
+
+imagePullSecret:
+  secretKey: ragnarok-breaker/dockerhub
+
+rosterSync:
+  enabled: false
+
+v8Gateway:
+  enabled: true
+  verse: "0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-2000000000001"
+  remoteUrl: "https://gs-gateway.staging.verse8.io"
