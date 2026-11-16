@@ -88,7 +88,7 @@ iap:
     enabled: false
     image:
       # (2026-09-21) → git-31207d2c api 와 같은 커밋(파드 없음, 태그 정렬용).
-      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
+      tag: "git-84da2f433722a32deaf32a5849858fedd88600a2"
 
 
   api:
@@ -186,7 +186,10 @@ iap:
       #
       #     **메인넷에는 onestore-sandbox-host 를 넣지 않는다.** 넣으면 공짜인 샌드박스
       #     구매가 지급으로 새는 구멍이 된다(그게 단일 호스트 설계의 fail-closed 였다).
-      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
+      # (2026-11-16) → git-84da2f43 main HEAD(IAP#504). api 는 #494~#503(메인넷 30cdbd07 까지
+      #   이미 라이브인 고정 SKU 시즌패스·바우처 등)이 함께 들어온다. 새 마이그레이션 2개는
+      #   성능용 색인이라 인터널엔 불필요(receipt 소량).
+      tag: "git-84da2f433722a32deaf32a5849858fedd88600a2"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
@@ -238,6 +241,10 @@ iap:
       #
       # (2026-09-21) → git-31207d2c api 와 같은 커밋. 워커 로직 변화는 없다
       #   (수정은 shared 스키마 한 줄 — 원스토어 검증은 api 경로에서만 돈다).
-      tag: "git-60ac034e7ca5cda3ec4c4f7df28a1e1a4b04562d"
+      # (2026-11-16) → git-84da2f43 IAP#504. retryer 가 gql-url-dict 에 없는 플래닛(thor)
+      #   영수증을 다시 보내지 않고, 재전송 작업은 60초 만료. thor 영수증 218건 × 매분 재전송이
+      #   concurrency=1 product_queue 를 289만 건까지 쌓아 heimdall 일반 상품 지급이 멈췄었다.
+      #   시크릿 gql-url-dict 에서 thor 는 같은 날 뺐다.
+      tag: "git-84da2f433722a32deaf32a5849858fedd88600a2"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-iap-worker"
