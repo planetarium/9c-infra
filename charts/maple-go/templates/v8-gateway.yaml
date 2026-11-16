@@ -1,0 +1,127 @@
+{{- /*
+  메이플 GO 게임서버로의 어드민 세션을 쥔 v8-gateway(RB services/v8-gateway 이미지 그대로).
+  9C 포탈이 POST /rpc {fn:'adminPortalMission', args:[address, from, to]} 로 미션 판정 값을 읽는다
+  (maple-go server/src/lib/portal-mission.ts · 9c-portal apps/portal/src/api/repository/mapleGo/missionState.ts).
+
+  ⚠️ /rpc 는 인증이 없고 세션이 메이플 GO 전체 어드민(maple-go-env 의 V8_ACCESS_TOKEN)이다 — 닿는 누구나
+     어드민 RPC 를 부를 수 있다. 통제는 아래 NetworkPolicy(포탈 namespace 만 들임) 하나뿐이니 빼지 말 것.
+     Service 는 ClusterIP 로만 두고 ingress · HTTPRoute 를 붙이지 않는다.
+*/ -}}
+{{- if .Values.v8Gateway.enabled }}
+{{- if not .Values.v8Gateway.verse }}
+{{- fail "v8Gateway.verse 가 비었다 — 메이플 GO prod verse id 를 넣는다" }}
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v8-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: v8-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: v8-gateway
+  ports:
+    - name: http
+      port: {{ .Values.v8Gateway.port }}
+      targetPort: {{ .Values.v8Gateway.port }}
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: v8-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: v8-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: v8-gateway
+  template:
+    metadata:
+      labels:
+        app: v8-gateway
+    spec:
+      {{- if .Values.imagePullSecret.secretKey }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret.name }}
+      {{- end }}
+      containers:
+        - name: v8-gateway
+          image: "{{ .Values.v8Gateway.image.repository }}:{{ .Values.v8Gateway.image.tag }}"
+          imagePullPolicy: {{ .Values.v8Gateway.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.v8Gateway.port }}
+          env:
+            - name: V8_GATEWAY_HOST
+              value: "0.0.0.0"
+            - name: V8_GATEWAY_PORT
+              value: {{ .Values.v8Gateway.port | quote }}
+            - name: V8_ENV
+              value: prod
+            - name: V8_VERSE
+              value: {{ .Values.v8Gateway.verse | quote }}
+            - name: V8_ACCOUNT
+              value: {{ .Values.v8Gateway.account | quote }}
+            - name: V8_REMOTE_URL
+              value: {{ .Values.v8Gateway.remoteUrl | quote }}
+            # 시딩 · 명단 Job 과 같은 어드민 토큰(AWS Secrets Manager maple-go/prod)
+            - name: V8_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: maple-go-env
+                  key: V8_ACCESS_TOKEN
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.v8Gateway.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.v8Gateway.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.v8Gateway.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: v8-gateway-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app: v8-gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        {{- range .Values.v8Gateway.allowedNamespaces }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.v8Gateway.port }}
+{{- end }}

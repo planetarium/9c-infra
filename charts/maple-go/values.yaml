@@ -24,3 +24,28 @@ rosterSync:
     limits:
       cpu: "1"
       memory: 1Gi
+
+# 9C 포탈 미션용 v8-gateway(templates/v8-gateway.yaml). 기본은 꺼 둔다 — 9c-main/maple-go/values.yaml 에서 켠다.
+#   이미지는 RB services/v8-gateway 그대로(RB 9c-main web2 와 같은 태그). 토큰은 maple-go-env 의 V8_ACCESS_TOKEN.
+v8Gateway:
+  enabled: false
+  image:
+    repository: planetariumhq/ragnarok-breaker-v8-gateway
+    tag: git-86b0027a3d69a14ee2945b057f6bc8261aa09071
+    pullPolicy: IfNotPresent
+  port: 3000
+  # 메이플 GO prod verse id({소유계정}-{13자리}). 새 verse 로 오픈하면 바꾼다
+  verse: ""
+  # 토큰 주인 계정(verse 주인 petpop)
+  account: "0x2c88f2f06aa707e8a7b0241267a2d63acae515dc"
+  remoteUrl: "https://gs-gateway.verse8.io"
+  # /rpc 에 닿을 수 있는 namespace — 포탈만
+  allowedNamespaces:
+    - portal
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
