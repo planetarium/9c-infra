@@ -209,6 +209,13 @@ remoteHeadless:
         name: private-keys
   - name: RPC_KEEPALIVE_PING_DELAY_SECONDS
     value: "30"
+  # 오딘과 같은 값(odin.yaml) — 프로세스 안 RocksDB 들이 공유하는 컴팩션 스레드 풀(기본 1개)을 늘린다.
+  # 이 이미지는 지원한다. validator 는 397 이라 효과가 없어 398 정식 배포 때 validator.env 에도 넣는다
+  # (general.yaml 에는 validator·remoteHeadless env 가 없고 목록은 합쳐지지 않으므로 각 플래닛 파일에 넣는다).
+  - name: ROCKSDB_PARALLELISM
+    value: "8"
+  - name: ROCKSDB_COMPACTION_READAHEAD_SIZE
+    value: "2097152"
 
   extraArgs:
   - --tx-quota-per-signer=1
