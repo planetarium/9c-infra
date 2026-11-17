@@ -11,7 +11,7 @@ rosterSync:
     tag: git-0cb00dc1709112d00157892d66a3f4b3f3e2a3eb
 
 # 9C 포탈 미션용 v8-gateway — 포탈이 메이플 GO 어드민 RPC adminPortalMission 을 부른다(maple-go !834, 9c-portal #1367).
-#   새 verse 로 오픈(2026-11-19)하므로 그 verse id 가 정해지면 verse 를 넣고 켠다. 토큰은 maple-go/prod 의 V8_ACCESS_TOKEN.
+#   오픈(2026-11-19)용 새 verse(…0002, maple-go .env.prod). 토큰은 maple-go/prod 의 V8_ACCESS_TOKEN.
 v8Gateway:
-  enabled: false
-  verse: ""
+  enabled: true
+  verse: "0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-3000000000002"
