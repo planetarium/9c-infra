@@ -24,7 +24,9 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    tag: "git-3c29100ff62f588ecf14dd50e48527c55bb02fe3"
+    # 2026-11-17 SeasonPass #325(클레임 tx 메모 압축 — 1.6MB tx 로 오딘 nonce 1814700 정지)
+    #   + #312(tx 타임스탬프=현재) #313(beat Redis 데드락) 포함 main. 마이그레이션 없음
+    tag: "git-12258c206053ddbd24c5c9357c90d29b6cd076a1"
 
   api:
     enabled: true
