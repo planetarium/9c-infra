@@ -130,7 +130,9 @@ portalService:
     # (2026-11-16) → internal-9f2ec010: 메이플 GO 오픈 기념 미션 2종(9c-portal #1368) + 시즌패스 미션 재개 · ops JWT(#1364/#1366).
     #   메이플 GO 판정은 maple-go-internal 의 v8-gateway(스테이징 메이플 GO). DB 커플링 없음.
     # (2026-11-16) → internal-18252fe9: 메이플 GO 판정 주소를 EIP-55 체크섬으로 보낸다(9c-portal #1372) — 소문자로 보내 「No MAPLE GO account」가 나던 것.
-    tag: "internal-18252fe9a6c177455d16c94850c3785a6e9b07a4"
+    # (2026-11-17) → internal-0b09ee1e: Planetarium 탭 + MAPLE GO 계정 따로 저장(9c-portal #1369). ⚠️ DB 커플링 — 마이그레이션
+    #   20261116120000_maple_go_integrations 를 먼저 적용했다(인터널 2026-11-17). getAccount 가 이 테이블을 읽는다.
+    tag: "internal-0b09ee1e10d59f35b84ceb78dca46e8ae6bba3e2"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -183,7 +185,9 @@ backofficeService:
     #   포탈 태그(L127)는 그대로 — 백오피스만.
     # (2026-11-16) → internal-9f2ec010: 포탈과 같은 커밋 — 미션 설정 화면에 메이플 GO 미션 2종이 나온다(rewardTunables 공유).
     # (2026-11-16) → internal-18252fe9: 메이플 GO 판정 주소를 EIP-55 체크섬으로 보낸다(9c-portal #1372) — 소문자로 보내 「No MAPLE GO account」가 나던 것.
-    tag: "internal-18252fe9a6c177455d16c94850c3785a6e9b07a4"
+    # (2026-11-17) → internal-0b09ee1e: Planetarium 탭 + MAPLE GO 계정 따로 저장(9c-portal #1369). ⚠️ DB 커플링 — 마이그레이션
+    #   20261116120000_maple_go_integrations 를 먼저 적용했다(인터널 2026-11-17). getAccount 가 이 테이블을 읽는다.
+    tag: "internal-0b09ee1e10d59f35b84ceb78dca46e8ae6bba3e2"
     pullPolicy: Always
   externalSecret:
     enabled: true
