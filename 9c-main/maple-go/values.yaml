@@ -7,8 +7,8 @@ imagePullSecret:
 rosterSync:
   enabled: true
   image:
-    # maple-go 0cb00dc1 — 게시판 serverVersion 03fbc00952bfbd · 동글이 옵스 명단 이미지 자동 갱신(2026-11-11)
-    tag: git-0cb00dc1709112d00157892d66a3f4b3f3e2a3eb
+    # maple-go 54fbef7d — 게시판 serverVersion 1f137c1507193e · 동글이 옵스 명단 이미지 자동 갱신(2026-11-17)
+    tag: git-54fbef7d963f678465116b9ab7ba7fd45760022e
 
 # 9C 포탈 미션용 v8-gateway — 포탈이 메이플 GO 어드민 RPC adminPortalMission 을 부른다(maple-go !834, 9c-portal #1367).
 #   오픈(2026-11-19)용 새 verse(…0002, maple-go .env.prod). 토큰은 maple-go/prod 의 V8_ACCESS_TOKEN.
