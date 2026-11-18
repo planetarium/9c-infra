@@ -97,5 +97,23 @@ def update_paev(
     """
     PluggableActionEvaluatorUpdater().prep_update(network_type, new_start_value, new_lib9c_commit)
 
+@k8s_app.command()
+def revert_paev(
+    network_type: str = typer.Argument(..., help="Which mainnet network to revert? e.g. odin, heimdall, thor."),
+):
+    """
+    Revert the last pair from both appsettings.json and appsettings-nodeinfra.json,
+    setting the new last pair's end to 9223372036854775807.
+    """
+    reverter = PAEVReverter()
+
+    urls = [
+        f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings.json",
+        f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{network_type}/appsettings-nodeinfra.json",
+    ]
+    
+    for url in urls:
+        reverter.revert_last_pair(url)
+
 if __name__ == "__main__":
     k8s_app()
