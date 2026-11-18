@@ -58,6 +58,7 @@ seasonpass:
 
     # (2026-11-18) /api/check-nonce 판정(SeasonPass 묶음 E). E 이전 이미지는 이 env 를 무시한다.
     #   - 13분 = 아래 워커 WORKER_RESIGN_AFTER_MINUTES 3 + beat 5 + 여유 5(앱 기본 25 는 메인넷 재서명 15분 기준).
+    #     재서명 보류 회차(워커 재시작·검증자 재시작 직후)는 넣지 않았다 — 회차마다 5분이 늘 수 있어, 이 값은 실측용이다.
     #   - nonce 조회 노드는 워커 WORKER_NONCE_GQL_URL_MAP 과 같은 값(워커가 nonce 를 정하는 노드를 본다).
     extraEnv:
       - name: API_CHECK_NONCE_STUCK_MINUTES
