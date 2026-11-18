@@ -24,9 +24,9 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    # 2026-11-18 SeasonPass #330(user_season_pass 행 잠금 — /claim-prev·/upgrade·트래커가 반복 보상 차감을
-    #   덮어쓰거나 같은 보상 claim 을 둘 만드는 경합 차단) 위 main. #329·#328·#327·#325·#326 포함, 마이그레이션 없음
-    tag: "git-ca03895820f233315b63693bd6e0dbb09d5c1821"
+    # 2026-11-18 SeasonPass #331(만료 claim tx 를 같은 nonce 로 재서명, 아래 extraEnv 로 on) 위 main.
+    #   #330·#329·#328·#327·#325·#326 포함. 마이그레이션 cac2bf4437cc(claim_tx_history) 필요 — 없으면 재서명만 꺼진다
+    tag: "git-71f103aa7ac35e59eaaced75b711d482a9df73bd"
 
   api:
     enabled: true
@@ -66,9 +66,31 @@ seasonpass:
       limits:
         cpu: 0.5
         memory: 1Gi
+    # (2026-11-18) 재서명(SeasonPass B2) — 만료된 claim tx 를 같은 nonce 로 다시 서명해 nonce 구멍을 메운다.
+    #   인터널에서만 켠다(메인넷은 dry_run 1주 뒤 별도 PR). B2 이미지 전에는 앱이 이 env 를 무시한다.
+    #   claim_tx_history 마이그레이션(인터널 DB, 앱 역할)이 먼저다 — 없으면 재서명만 꺼지고 경고 한 줄.
+    #   - 만료 기준 3분: 인터널 검증자 tx 수명은 사실상 무한이라, 옛 tx 가 대기열에 살아 있으면 사전
+    #     확인(transactionResult STAGING)이 막는다. 검증자 재시작으로 대기열이 비면 3분 뒤 재서명된다.
+    #   - 하임달만 독립 기준 노드가 있다: nonce·tip 은 rpc 게이트웨이(→ validator-5), 기준은
+    #     remote-headless-1(heimdall-internal-node-1, 49.247.14.86 — 검증자 .84 와 다른 노드, tip 따로 움직임).
+    #     오딘·토르는 remote-headless 가 없어(count 0) 기준이 없다 → 재서명하지 않고 지금처럼 restage.
+    #   켤 때 워커 → tx 추적기, 끌 때 tx 추적기 → 워커 순서로 지정 sync(9c-internal 전체 sync 금지).
+    extraEnv:
+      - name: WORKER_RESIGN_MODE
+        value: "on"
+      - name: WORKER_RESIGN_AFTER_MINUTES
+        value: "3"
+      - name: WORKER_NONCE_GQL_URL_MAP
+        value: '{"0x100000000001": "https://heimdall-internal-rpc.nine-chronicles.com/graphql"}'
+      - name: WORKER_REFERENCE_GQL_URL_MAP
+        value: '{"0x100000000001": "http://heimdall-internal-node-1.nine-chronicles.com/graphql"}'
 
   tracker:
     enabled: true
+    # 재서명(B2): 워커와 같은 모드. on 은 STAGING → STAGED, INCLUDED·errors 는 updated_at 만 갱신.
+    txTrackerExtraEnv:
+      - name: TRACKER_RESIGN_MODE
+        value: "on"
 
     odin:
       planetId: "0x100000000000"

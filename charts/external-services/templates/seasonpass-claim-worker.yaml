@@ -72,6 +72,10 @@ spec:
                 secretKeyRef:
                   key: headless-jwt-token
                   name: seasonpass-env
+            {{- /* 비밀값이 아닌 설정(재서명 WORKER_RESIGN_* 등). 환경 values 에서만 넣는다. */}}
+            {{- with $.Values.seasonpass.worker.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           image: {{ $.Values.seasonpass.worker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           {{- with $.Values.seasonpass.worker.resources }}
           resources:

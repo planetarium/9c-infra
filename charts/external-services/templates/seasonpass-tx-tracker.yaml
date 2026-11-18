@@ -57,6 +57,11 @@ spec:
                   name: seasonpass-env
             - name: TRACKER_ENABLED_TRACKERS
               value: '["TxTracker"]'
+            {{- /* 비밀값이 아닌 설정(재서명 TRACKER_RESIGN_MODE 등). tx 추적기에만 붙는다 — 플래닛별
+                   추적기(seasonpass-tracker-*)는 이 값이 바뀌어도 다시 뜨지 않는다. */}}
+            {{- with $.Values.seasonpass.tracker.txTrackerExtraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           image: {{ $.Values.seasonpass.tracker.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           {{- with $.Values.seasonpass.tracker.resources }}
           resources:
