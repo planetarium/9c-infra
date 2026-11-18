@@ -302,6 +302,10 @@ spec:
             - name: TablePatchBundles__AllowedPlanets__{{ $i }}
               value: {{ $planet | quote }}
             {{- end }}
+            {{- range $i, $planet := $.Values.backoffice.tablePatchBundles.previewPlanets }}
+            - name: TablePatchBundles__PreviewPlanets__{{ $i }}
+              value: {{ $planet | quote }}
+            {{- end }}
             {{- range $i, $planet := $.Values.backoffice.tablePatchBundles.longValuePlanets }}
             - name: TablePatchBundles__LongValuePlanets__{{ $i }}
               value: {{ $planet | quote }}

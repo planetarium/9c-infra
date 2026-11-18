@@ -200,6 +200,8 @@ backoffice:
   # 테이블 패치 묶음(예약 패치)을 허용할 플래닛 id. 비어 있으면 묶음 등록이 모두 거절된다.
   tablePatchBundles:
     allowedPlanets: []
+    # 등록·미리보기만 허용할 플래닛 id(승인·실행은 allowedPlanets 만). 메인넷 묶음을 미리 대조해 볼 때 쓴다.
+    previewPlanets: []
     # 노드·클라이언트가 모두 long 시트 값(lib9c#3341)을 읽는 플래닛 id — 이 플래닛은 int32 초과 값을 경고로만 남긴다.
     longValuePlanets: []
   # 패치테이블 화면이 큰 시트를 처리할 때 순간적으로 메모리를 크게 쓴다.
