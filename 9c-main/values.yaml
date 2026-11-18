@@ -198,6 +198,12 @@ donggeulOps:
   # 런북: 9c-ops products/9c/skills/headless/volume-rotation.md
   rotate:
     enabled: true
+    # PVC 에서 떼고·붙일 수 있는 정기 작업 라벨(recurring-job.longhorn.io/<이름>)의 작업 이름. 모두 task filesystem-trim
+    # 이어야 한다 — 스냅샷 삭제·백업 같은 작업은 넣지 않는다(validator 볼륨에 붙을 수 있다). c-9b5c25 는 손으로 만든 옛
+    # 매시 트림 작업이라, 볼륨 라벨을 filesystem-trim-hourly 로 옮기고 그 작업을 지울 때 여기서도 뺀다.
+    # 새 filesystem-trim 정기 작업을 만들어 PVC 에 붙이면 여기에도 더한다(9c-ops ops-rotate 의 TRIM_LABELS 와 함께) — 빠지면
+    # clone-rpc 가 원본의 그 트림 라벨을 떼지 못해 거부된다.
+    trimJobs: [filesystem-trim, filesystem-trim-hourly, c-9b5c25]
     namespaces:
       odin: { app: odin, statefulsets: [validator-5, remote-headless-1] }
       heimdall: { app: heimdall, statefulsets: [validator-5, remote-headless-1] }
