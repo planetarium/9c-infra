@@ -2,7 +2,7 @@
 set -ex
 
 apt-get -y update
-apt-get -y install curl zip
+apt-get -y install curl
 HOME="/app"
 
 APP_PROTOCOL_VERSION=$1
@@ -194,12 +194,16 @@ function kill_headless() {
   fi
 }
 
+# Compress finished headless logs. The old version ran `if ./*<yesterday>*.log`,
+# which tried to EXECUTE the log (Permission denied -> false), so nothing was ever
+# compressed: pt6 had 218 raw logs / 38G by 2026-11-18. It also only looked at
+# "yesterday", which misses runs longer than a day.
+# Logs untouched for 24h are done (a running headless writes every few seconds),
+# which also skips a log another snapshot job is still writing in the same dir.
+# Never fail here: this runs in an initContainer and the upload comes after it.
 function rotate_log() {
-  cd "$HEADLESS_LOG_DIR"
-  if ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log; then
-    zip "$(date -d 'yesterday' -u +'%Y%m%d')".zip ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-    rm ./*"$(date -d 'yesterday' -u +'%Y%m%d')"*.log
-  fi
+  find "$HEADLESS_LOG_DIR" -maxdepth 1 -type f -name 'headless_*.log' -mmin +1440 \
+    -exec gzip -f {} + || echo "[WARN] rotate_log: gzip failed (ignored)"
 }
 
 trap '' HUP
