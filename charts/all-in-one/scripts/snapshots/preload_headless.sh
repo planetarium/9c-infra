@@ -25,11 +25,25 @@ SEED{{ add $i 1 }}="{{ $s }}"
 ICE_SERVER="turn://0ed3e48007413e7c2e638f13ddd75ad272c6c507e081bd76a75e4b7adc86c9af:0apejou+ycZFfwtREeXFKdfLj2gCclKzz5ZJ49Cmy6I=@turn-us.planetarium.dev:3478"
 
 HEADLESS="$HOME/NineChronicles.Headless.Executable"
-HEADLESS_LOG_NAME="headless_$(date -u +"%Y%m%d%H%M").log"
 HEADLESS_LOG_DIR=${4:-"/data/snapshot_logs"}
-HEADLESS_LOG="$HEADLESS_LOG_DIR/$HEADLESS_LOG_NAME"
 mkdir -p "$HEADLESS_LOG_DIR"
 
+# Overall preload budget (40h) shared by every attempt below.
+PRELOAD_DEADLINE=$(( $(date +%s) + 144000 ))
+
+# "There are no appropriate peers for preloading" is also what a short network
+# outage looks like: on 2026-11-17 19:00 UTC the office switch dropped link on
+# pt2/pt4/pt6 for ~2.5 min, every GetChainStatus in the next preload round timed
+# out, and the job alerted although it was syncing fine before and after.
+# A persistent cause (APV mismatch, unreachable seed) fails every attempt, so we
+# restart headless a few times after a pause and only alert when all of them fail.
+NO_PEER_RETRIES=3
+NO_PEER_RETRY_WAIT=300
+
+# Each attempt writes its own log: the watcher in wait_preloading() reads the log
+# from the first line, so reusing the file would re-match the previous attempt's
+# "no appropriate peers" line immediately.
+#
 # Create the log file up front. run_headless() backgrounds headless with the
 # redirect applied in the forked child, so the file's open() races against the
 # `tail -f "$HEADLESS_LOG"` that wait_preloading() starts immediately after. If
@@ -37,7 +51,13 @@ mkdir -p "$HEADLESS_LOG_DIR"
 # sees EOF, MATCH comes back empty and the job falsely reports a preload
 # timeout seconds into the run. (Observed 2026-08-11 on pt6: alerted 6s in,
 # while the timeout is 144000s.)
-: > "$HEADLESS_LOG"
+function new_headless_log() {
+  HEADLESS_LOG="$HEADLESS_LOG_DIR/headless_$(date -u +"%Y%m%d%H%M").log"
+  if [ -s "$HEADLESS_LOG" ]; then  # same minute as the previous attempt
+    HEADLESS_LOG="${HEADLESS_LOG%.log}_$(date -u +"%S").log"
+  fi
+  : > "$HEADLESS_LOG"
+}
 
 PID_FILE="$HOME/headless_pid"
 function senderr() {
@@ -108,7 +128,8 @@ function wait_preloading() {
     CUTOFF_GREP="-e #$FORCE_CUTOFF_BLOCK"
   fi
 
-  tail -f "$HEADLESS_LOG" | grep "Block #" &
+  # --pid: stop following once this attempt's headless exits (a retry starts a new log).
+  tail --pid="$PID" -f "$HEADLESS_LOG" | grep "Block #" &
 
   # Capture WHICH terminal line appeared instead of treating them all as success.
   # "There are no appropriate peers for preloading" means the node could NOT find
@@ -121,8 +142,10 @@ function wait_preloading() {
   # still alive. Without that, a headless that dies right after start (2026-11-01 on
   # pt6: plugin download hit "Connection reset by peer" 58s in) left tail/grep
   # waiting for the full 40h timeout before the job failed and retried.
+  REMAINING=$(( PRELOAD_DEADLINE - $(date +%s) ))
+  if [ "$REMAINING" -le 0 ]; then REMAINING=1; fi
   MATCH_FILE="$(mktemp)"
-  (timeout 144000 tail -n +1 -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP") > "$MATCH_FILE" || true) &
+  (timeout "$REMAINING" tail -n +1 -f "$HEADLESS_LOG" | grep -m1 -e "preloading is no longer needed" -e "There are no appropriate peers for preloading" $(echo "$CUTOFF_GREP") > "$MATCH_FILE" || true) &
   WATCHER="$!"
   set +x  # the loop below would flood the log with trace lines
   while kill -0 "$WATCHER" 2>/dev/null; do
@@ -148,11 +171,12 @@ function wait_preloading() {
   fi
 
   if echo "$MATCH" | grep -q "There are no appropriate peers for preloading"; then
-    senderr "Preload found NO appropriate peers (likely APV mismatch or unreachable seed); store may be stale. Aborting."
-    kill "$PID" || true
-    exit 1
+    # The caller decides whether to retry or alert.
+    PRELOAD_RESULT="no_peers"
+    return 0
   fi
 
+  PRELOAD_RESULT="done"
   echo "[INFO] Preload completed: $MATCH"
   sleep 5
 }
@@ -180,8 +204,26 @@ function rotate_log() {
 
 trap '' HUP
 
-run_headless
-wait_preloading
+attempt=0
+while true; do
+  new_headless_log
+  run_headless
+  PRELOAD_RESULT=""
+  wait_preloading
+  if [ "$PRELOAD_RESULT" = "done" ]; then
+    break
+  fi
+
+  # no appropriate peers: stop headless cleanly (releases the RocksDB lock) first.
+  kill_headless
+  attempt=$((attempt + 1))
+  if [ "$attempt" -gt "$NO_PEER_RETRIES" ] || [ $(( $(date +%s) + NO_PEER_RETRY_WAIT )) -ge "$PRELOAD_DEADLINE" ]; then
+    senderr "Preload found NO appropriate peers in $attempt attempts (likely APV mismatch or unreachable seed); store may be stale. Aborting."
+    exit 1
+  fi
+  echo "[WARN] No appropriate peers (attempt $attempt/$((NO_PEER_RETRIES + 1))); retrying in ${NO_PEER_RETRY_WAIT}s (see $HEADLESS_LOG)"
+  sleep "$NO_PEER_RETRY_WAIT"
+done
 preload_complete "Preloading completed"
 kill_headless
 rotate_log
