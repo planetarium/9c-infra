@@ -306,7 +306,11 @@ backoffice:
     # (2026-11-13) Backoffice#112(b6d0563c = 위 6b5b50fc + 묶음 월드 개방 확인 + long 값 설정) —
     #   묶음이 GlobalCounter·WorldOpen·WorldOpenCondition 시트를 받고 preview·confirm·arm 때 노드 worldOpen 판정으로 확인
     #   (되돌리기 불가). TablePatchBundles:LongValuePlanets(아래) 플래닛은 int32 초과 값을 경고로. 마이그레이션 없음. 이전: git-6b5b50fc
-    tag: "git-b6d0563c583e073efe59db16ea76242831e2a7fd"
+    #
+    # (2026-11-18) Backoffice#114(18acc9a8 = 위 b6d0563c + #113 묶음 미리보기 열 단위 요약·규칙 검사·confirmable) —
+    #   preview 에 시트별 바뀐 열·대표 값·배수, 규칙 검사(error 면 승인 불가)를 싣고, previewPlanets(아래) 플래닛은
+    #   등록·미리보기만 허용한다(승인·실행은 allowedPlanets 만). 마이그레이션 없음. 이전: git-b6d0563c
+    tag: "git-18acc9a8528e785f71567b93a5ef2006755e37aa"
 
   tablePatchBundles:
     allowedPlanets:
@@ -317,6 +321,10 @@ backoffice:
     longValuePlanets:
       - "0x100000000000"
       - "0x100000000001"
+    # 메인넷 오딘·하임달 — 묶음 등록·미리보기만(라이브 대조). 승인·실행은 다음 실제 패치 때 인터널 리허설 뒤 allowedPlanets 에.
+    previewPlanets:
+      - "0x000000000000"
+      - "0x000000000001"
 
 
 iap:
