@@ -1,0 +1,78 @@
+# 동글이 옵스가 스냅샷 잡 파드 안의 headless 로그 파일을 읽는 권한(pt6 odin 만).
+# preload_headless.sh 는 headless 로그를 PVC 파일(/data/snapshot_logs)에만 쓰고 컨테이너 로그에는 `Block #` 줄만 낸다.
+# 그래서 피어 단절·예외 같은 원인은 파일을 읽어야 보인다(2026-11-17 no-peers 알림 때 동글이가 못 봄).
+#
+# RBAC 로는 exec 명령을 고를 수 없어 아래 VAP 가 명령 모양을 서버에서 한 번 더 막는다(9c-ops ops-kubectl logfile 과 같은 모양):
+#   ls -la -- <로그 폴더>
+#   tail -n <N> -- <로그 파일>
+#   zgrep -E -n -m <N> -e <패턴> -- <로그 파일>
+# 로그 폴더 = /data|/output 아래 snapshot_logs·preload_logs. 파일은 그 폴더 바로 아래 이름만(하위 경로·`..` 불가). stdin·tty 불가.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-logfile
+  namespace: odin
+rules:
+  # kubectl 1.30+ 는 websocket(GET)으로, 그 전은 POST 로 exec 한다 — 둘 다 연다.
+  - apiGroups: [""]
+    resources: [pods/exec]
+    verbs: [get, create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-logfile
+  namespace: odin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-logfile
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-ops-logfile-exec
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CONNECT"]
+        resources: ["pods/exec"]
+  matchConditions:
+    - name: donggeul-ops-sa
+      expression: "request.userInfo.username == 'system:serviceaccount:donggeul-ops:donggeul-ops'"
+  variables:
+    - name: c
+      expression: "has(object.command) ? object.command : []"
+    - name: dirRe
+      expression: "'^/(data|output)/(snapshot_logs|preload_logs)/?$'"
+    - name: fileRe
+      expression: "'^/(data|output)/(snapshot_logs|preload_logs)/[A-Za-z0-9._-]+$'"
+  validations:
+    - expression: "!(has(object.stdin) && object.stdin) && !(has(object.tty) && object.tty)"
+      message: "donggeul-ops logfile: stdin·tty 는 쓸 수 없습니다"
+    - expression: >-
+        (size(variables.c) == 4 && variables.c[0] == 'ls' && variables.c[1] == '-la' && variables.c[2] == '--'
+          && variables.c[3].matches(variables.dirRe))
+        || (size(variables.c) == 5 && variables.c[0] == 'tail' && variables.c[1] == '-n'
+          && variables.c[2].matches('^[0-9]{1,5}$') && variables.c[3] == '--'
+          && variables.c[4].matches(variables.fileRe) && !variables.c[4].contains('..'))
+        || (size(variables.c) == 9 && variables.c[0] == 'zgrep' && variables.c[1] == '-E' && variables.c[2] == '-n'
+          && variables.c[3] == '-m' && variables.c[4].matches('^[0-9]{1,5}$') && variables.c[5] == '-e'
+          && size(variables.c[6]) > 0 && size(variables.c[6]) <= 200 && variables.c[7] == '--'
+          && variables.c[8].matches(variables.fileRe) && !variables.c[8].contains('..'))
+      message: "donggeul-ops logfile: 허용된 명령 모양(ls·tail·zgrep, 로그 폴더 안)이 아닙니다"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-ops-logfile-exec
+spec:
+  policyName: donggeul-ops-logfile-exec
+  validationActions: [Deny]
