@@ -22,8 +22,9 @@ spec:
       labels:
         app: seasonpass-claim-worker
     spec:
-      # SIGTERM 뒤 celery 가 하던 작업(beat 의 retry_claim 은 최대 100건)을 마치고 내려가게 한다.
-      #   메인넷 claim_timing(2026-11-18, 2609건): 건당 p50 0.39초·p99 1.6초·최대 5초 → 100건 40~160초.
+      # SIGTERM 뒤 celery 가 하던 작업(beat 의 retry_claim 은 120초 뒤 새 건을 시작하지 않아 최악 약 150초)을
+      #   마치고 내려가게 한다.
+      #   메인넷 claim_timing(2026-11-18, 2609건): 건당 p50 0.39초·p99 1.6초·최대 5초.
       #   할 일이 없으면 바로 내려가므로 평소 배포가 이만큼 길어지지는 않는다.
       terminationGracePeriodSeconds: 180
       containers:
