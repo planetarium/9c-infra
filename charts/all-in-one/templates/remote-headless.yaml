@@ -357,17 +357,16 @@ spec:
     type: RollingUpdate
 ---
 {{- if $.Values.remoteHeadless.ingress.enabled }}
-{{- $hosts := split "," (index ($.Values.remoteHeadless.ingress.hosts | default $.Values.remoteHeadless.hosts) $idx) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: remote-headless-{{ $index }}-ingress
+  name: remote-headless-{{ $index }}-ingress-web
   namespace: {{ $.Release.Name }}
   annotations:
-    traefik.ingress.kubernetes.io/affinity: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   rules:
-    {{- range $host := $hosts }}
+    {{- range $host := split "," (index $.Values.remoteHeadless.ingress.hosts $idx) }}
     - host: {{ $host }}
       http:
         paths:
@@ -377,8 +376,30 @@ spec:
               service:
                 name: remote-headless-{{ $index }}
                 port:
-                  number: 80
+                  number: {{ $.Values.remoteHeadless.ports.graphql }}
     {{- end }}
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remote-headless-{{ $index }}-ingress-grpc
+  namespace: {{ $.Release.Name }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: grpc
+spec:
+  rules:
+    {{- range $host := split "," (index $.Values.remoteHeadless.ingress.hosts $idx) }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remote-headless-{{ $index }}
+                port:
+                  number: {{ $.Values.remoteHeadless.ports.rpc }}
+    {{- end }}
 {{- end }}
+---
 {{- end }}
