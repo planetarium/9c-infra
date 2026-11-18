@@ -24,10 +24,9 @@ volumeReclaimPolicy: "Retain"
 seasonpass:
   enabled: true
   image:
-    # 2026-11-17 SeasonPass #325(클레임 tx 메모 압축 — 1.6MB tx 로 오딘 nonce 1814700 정지)
-    #   + #326(재처리: 한 플래닛 실패가 묶음 전체를 막지 않게 — 인터널 thor 클레임)
-    #   + #312(tx 타임스탬프=현재) #313(beat Redis 데드락) 포함 main. 마이그레이션 없음
-    tag: "git-8b4c4dcb20b8e8b309c42094bd14f70e3561ea50"
+    # 2026-11-18 SeasonPass #327(진행 중 claim 50건 제한·재스테이징을 플래닛별로 — 11/16 오딘 정지가
+    #   하임달 claim 까지 막음) 위에 #325(메모 압축)·#326(재처리 플래닛 격리)·#312·#313 포함 main. 마이그레이션 없음
+    tag: "git-fa87012ee93b59f3ea4f86385e784325b1d6d3be"
 
   api:
     enabled: true
