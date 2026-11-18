@@ -26,7 +26,7 @@ seasonpass:
   image:
     # 2026-11-18 SeasonPass #331(만료 claim tx 를 같은 nonce 로 재서명, 아래 extraEnv 로 on) 위 main.
     #   #330·#329·#328·#327·#325·#326 포함. 마이그레이션 cac2bf4437cc(claim_tx_history) 필요 — 없으면 재서명만 꺼진다
-    tag: "git-71f103aa7ac35e59eaaced75b711d482a9df73bd"
+    tag: "git-0bbcf366d661a47791b1630d13771410b83cfbbe"
 
   api:
     enabled: true
