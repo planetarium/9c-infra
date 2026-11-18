@@ -30,6 +30,12 @@ seasonpass:
       arenaServiceJwtPublicKey: ""
     serviceAccount:
       roleArn: ""
+    # API(seasonpass-api)에 더할 env. 비밀값은 넣지 않는다(seasonpass-env 시크릿). 기본값은 앱 코드에 있다.
+    #   /api/check-nonce 판정(gap = DB 최대 nonce − nextTxNonce + 1, 정상 0):
+    #   API_CHECK_NONCE_STUCK_MINUTES(앱 기본 25, 구멍이 nextTxNonce 진행 없이 이만큼 이어지면 503),
+    #   API_CHECK_NONCE_MAX_GAP(60), API_CHECK_NONCE_MAX_NEGATIVE_GAP(10),
+    #   API_NONCE_GQL_URL_MAP(플래닛 id → GraphQL 주소 JSON, 없으면 gql-url-dict — 워커 WORKER_NONCE_GQL_URL_MAP 과 같게).
+    extraEnv: []
 
   worker:
     enabled: false
