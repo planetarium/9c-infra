@@ -2,10 +2,10 @@
 # preload_headless.sh 는 headless 로그를 PVC 파일(/data/snapshot_logs)에만 쓰고 컨테이너 로그에는 `Block #` 줄만 낸다.
 # 그래서 피어 단절·예외 같은 원인은 파일을 읽어야 보인다(2026-11-17 no-peers 알림 때 동글이가 못 봄).
 #
-# RBAC 로는 exec 명령을 고를 수 없어 아래 VAP 가 명령 모양을 서버에서 한 번 더 막는다(9c-ops ops-kubectl logfile 과 같은 모양):
-#   ls -la -- <로그 폴더>
-#   tail -n <N> -- <로그 파일>
-#   zgrep -E -n -m <N> -e <패턴> -- <로그 파일>
+# RBAC 로는 exec 명령을 고를 수 없어 아래 VAP 가 명령 모양을 서버에서 한 번 더 막는다(9c-ops ops-kubectl logfile 과 같은 모양, 메인 bootstrap 과 같게 유지):
+#   timeout 60 ls -la -- <로그 폴더>
+#   timeout 60 tail -n <1~2000> -- <로그 파일>
+#   timeout 60 zgrep -E -n -m <1~2000> -e <패턴> -- <로그 파일>
 # 로그 폴더 = /data|/output 아래 snapshot_logs·preload_logs. 파일은 그 폴더 바로 아래 이름만(하위 경로·`..` 불가). stdin·tty 불가.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -36,6 +36,8 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: donggeul-ops-logfile-exec
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -54,25 +56,30 @@ spec:
       expression: "'^/(data|output)/(snapshot_logs|preload_logs)/?$'"
     - name: fileRe
       expression: "'^/(data|output)/(snapshot_logs|preload_logs)/[A-Za-z0-9._-]+$'"
+    - name: numRe
+      expression: "'^([1-9][0-9]{0,2}|1[0-9]{3}|2000)$'"
   validations:
     - expression: "!(has(object.stdin) && object.stdin) && !(has(object.tty) && object.tty)"
       message: "donggeul-ops logfile: stdin·tty 는 쓸 수 없습니다"
     - expression: >-
-        (size(variables.c) == 4 && variables.c[0] == 'ls' && variables.c[1] == '-la' && variables.c[2] == '--'
-          && variables.c[3].matches(variables.dirRe))
-        || (size(variables.c) == 5 && variables.c[0] == 'tail' && variables.c[1] == '-n'
-          && variables.c[2].matches('^[0-9]{1,5}$') && variables.c[3] == '--'
-          && variables.c[4].matches(variables.fileRe) && !variables.c[4].contains('..'))
-        || (size(variables.c) == 9 && variables.c[0] == 'zgrep' && variables.c[1] == '-E' && variables.c[2] == '-n'
-          && variables.c[3] == '-m' && variables.c[4].matches('^[0-9]{1,5}$') && variables.c[5] == '-e'
-          && size(variables.c[6]) > 0 && size(variables.c[6]) <= 200 && variables.c[7] == '--'
-          && variables.c[8].matches(variables.fileRe) && !variables.c[8].contains('..'))
-      message: "donggeul-ops logfile: 허용된 명령 모양(ls·tail·zgrep, 로그 폴더 안)이 아닙니다"
+        size(variables.c) >= 2 && variables.c[0] == 'timeout' && variables.c[1] == '60'
+        && ((size(variables.c) == 6 && variables.c[2] == 'ls' && variables.c[3] == '-la' && variables.c[4] == '--'
+              && variables.c[5].matches(variables.dirRe))
+          || (size(variables.c) == 7 && variables.c[2] == 'tail' && variables.c[3] == '-n'
+              && variables.c[4].matches(variables.numRe) && variables.c[5] == '--'
+              && variables.c[6].matches(variables.fileRe) && !variables.c[6].contains('..'))
+          || (size(variables.c) == 11 && variables.c[2] == 'zgrep' && variables.c[3] == '-E' && variables.c[4] == '-n'
+              && variables.c[5] == '-m' && variables.c[6].matches(variables.numRe) && variables.c[7] == '-e'
+              && size(variables.c[8]) > 0 && size(variables.c[8]) <= 200 && variables.c[9] == '--'
+              && variables.c[10].matches(variables.fileRe) && !variables.c[10].contains('..')))
+      message: "donggeul-ops logfile: 허용된 명령 모양(timeout 60 + ls·tail·zgrep, 로그 폴더 안)이 아닙니다"
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: donggeul-ops-logfile-exec
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
 spec:
   policyName: donggeul-ops-logfile-exec
   validationActions: [Deny]
