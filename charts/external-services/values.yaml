@@ -49,6 +49,11 @@ seasonpass:
       roleArn: ""
     flower:
       enabled: false
+    # 지급 워커(seasonpass-claim-worker)에 더할 env. 비밀값은 넣지 않는다(seasonpass-env 시크릿).
+    #   재서명(SeasonPass B2): WORKER_RESIGN_MODE(off|dry_run|on, 앱 기본 off), WORKER_RESIGN_AFTER_MINUTES,
+    #   WORKER_NONCE_GQL_URL_MAP·WORKER_REFERENCE_GQL_URL_MAP(플래닛 id → GraphQL 주소 JSON).
+    #   켤 때는 워커 → tx 추적기, 끌 때는 tx 추적기 → 워커 순서로 sync 한다.
+    extraEnv: []
 
   tracker:
     enabled: false
@@ -60,6 +65,9 @@ seasonpass:
     thor:
       enabled: false
       planetId: ""
+
+    # tx 추적기(seasonpass-tx-tracker)에만 더할 env. 재서명: TRACKER_RESIGN_MODE(워커와 같은 값, 앱 기본 off).
+    txTrackerExtraEnv: []
 
     nodeSelector: {}
     env:
