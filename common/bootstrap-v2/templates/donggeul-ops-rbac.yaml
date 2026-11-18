@@ -205,6 +205,159 @@ subjects:
     name: donggeul-ops
     namespace: donggeul-ops
 {{- end }}
+{{- with .Values.donggeulOps.logfile }}
+{{- if .namespaces }}
+{{- range .namespaces }}
+---
+# 스냅샷 잡 파드 안 headless 로그 파일 읽기(ops-kubectl logfile). preload_headless.sh 는 원인 로그를 PVC·hostPath 파일에만 쓴다.
+# RBAC 로는 exec 명령을 고를 수 없어 아래 VAP donggeul-ops-logfile-exec 가 명령 모양을 고정한다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-logfile
+  namespace: {{ . }}
+rules:
+  - apiGroups: [""]
+    resources: [pods/exec]
+    verbs: [get, create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-logfile
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-logfile
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+{{- end }}
+---
+# 같은 정책이 pt6 에도 있다(charts/donggeul-ops-read/templates/logfile-exec.yaml). 두 곳을 같게 유지한다.
+#   timeout 60 + (ls -la -- <로그 폴더> / tail -n <1~2000> -- <로그 파일> / zgrep -E -n -m <1~2000> -e <패턴> -- <로그 파일>)
+#   로그 폴더 = /data|/output 아래 snapshot_logs·preload_logs, 파일은 그 바로 아래 이름만. stdin·tty 불가. 파드는 snapshot-* 만
+#   (heimdall 네임스페이스엔 validator·rpc 가 있다 — 그 안에서는 어떤 명령도 안 됨).
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-ops-logfile-exec
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CONNECT"]
+        resources: ["pods/exec"]
+  matchConditions:
+    - name: donggeul-ops-sa
+      expression: "request.userInfo.username == 'system:serviceaccount:donggeul-ops:donggeul-ops'"
+  variables:
+    - name: c
+      expression: "has(object.command) ? object.command : []"
+    - name: dirRe
+      expression: "'^/(data|output)/(snapshot_logs|preload_logs)/?$'"
+    - name: fileRe
+      expression: "'^/(data|output)/(snapshot_logs|preload_logs)/[A-Za-z0-9._-]+$'"
+    - name: numRe
+      expression: "'^([1-9][0-9]{0,2}|1[0-9]{3}|2000)$'"
+  validations:
+    - expression: "!(has(object.stdin) && object.stdin) && !(has(object.tty) && object.tty)"
+      message: "donggeul-ops logfile: stdin·tty 는 쓸 수 없습니다"
+    - expression: "request.name.startsWith('snapshot-')"
+      message: "donggeul-ops logfile: 스냅샷 잡 파드(snapshot-*)만 — 체인 노드 파드 안에서는 실행하지 않는다"
+    - expression: >-
+        size(variables.c) >= 2 && variables.c[0] == 'timeout' && variables.c[1] == '60'
+        && ((size(variables.c) == 6 && variables.c[2] == 'ls' && variables.c[3] == '-la' && variables.c[4] == '--'
+              && variables.c[5].matches(variables.dirRe))
+          || (size(variables.c) == 7 && variables.c[2] == 'tail' && variables.c[3] == '-n'
+              && variables.c[4].matches(variables.numRe) && variables.c[5] == '--'
+              && variables.c[6].matches(variables.fileRe) && !variables.c[6].contains('..'))
+          || (size(variables.c) == 11 && variables.c[2] == 'zgrep' && variables.c[3] == '-E' && variables.c[4] == '-n'
+              && variables.c[5] == '-m' && variables.c[6].matches(variables.numRe) && variables.c[7] == '-e'
+              && size(variables.c[8]) > 0 && size(variables.c[8]) <= 200 && variables.c[9] == '--'
+              && variables.c[10].matches(variables.fileRe) && !variables.c[10].contains('..')))
+      message: "donggeul-ops logfile: 허용된 명령 모양(timeout 60 + ls·tail·zgrep, 로그 폴더 안)이 아닙니다"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-ops-logfile-exec
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
+spec:
+  policyName: donggeul-ops-logfile-exec
+  validationActions: [Deny]
+{{- end }}
+{{- end }}
+{{- with .Values.donggeulOps.loki }}
+{{- if .enabled }}
+---
+# Loki 조회(ops-kubectl loki). API 서버의 서비스 프록시로 클러스터 안 Loki 에 GET 만 한다(get = HTTP GET, POST 는 create 라 막힘).
+# 서비스 이름은 `<이름>:<포트>` 를 정확히 적어야 맞는다. Loki 에는 GET 으로 상태를 바꾸는 경로(/ingester/shutdown 등)와
+# 설정을 보여 주는 경로(/config)가 있어, 아래 VAP 가 조회 API 경로만 허용한다(경로의 `..`·%2F 인코딩도 거부됨, 1.31 실측).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: donggeul-ops-loki
+  namespace: {{ .namespace }}
+rules:
+  - apiGroups: [""]
+    resources: [services/proxy]
+    resourceNames: [{{ .service | quote }}]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: donggeul-ops-loki
+  namespace: {{ .namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: donggeul-ops-loki
+subjects:
+  - kind: ServiceAccount
+    name: donggeul-ops
+    namespace: donggeul-ops
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: donggeul-ops-loki-proxy
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CONNECT"]
+        resources: ["services/proxy"]
+  matchConditions:
+    - name: donggeul-ops-sa
+      expression: "request.userInfo.username == 'system:serviceaccount:donggeul-ops:donggeul-ops'"
+  validations:
+    - expression: "has(object.path) && object.path.matches('^/loki/api/v1/(query_range|labels|label/[A-Za-z0-9_]+/values)$')"
+      message: "donggeul-ops loki: 조회 API 경로만 쓸 수 있습니다"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: donggeul-ops-loki-proxy
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Role 보다 먼저 적용(같은 단계면 ArgoCD 가 VAP 를 마지막에 적용)
+spec:
+  policyName: donggeul-ops-loki-proxy
+  validationActions: [Deny]
+{{- end }}
+{{- end }}
 {{- with .Values.donggeulOps.rbGateway }}
 {{- if .enabled }}
 ---

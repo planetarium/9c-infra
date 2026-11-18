@@ -175,6 +175,16 @@ donggeulOps:
     - maple-go-prod
     - batch-jobs
   # rb 조회용(9c-ops ops-rb): v8-gateway 서비스 프록시 POST 만, 별도 SA donggeul-rb.
+  # 스냅샷 잡 파드 안 로그 파일 읽기(ops-kubectl logfile). heimdall 스냅샷 잡 = /output/snapshot_logs(hostPath).
+  logfile:
+    namespaces:
+      - heimdall
+  # Loki 조회(ops-kubectl loki) — services/proxy GET + 경로 VAP.
+  loki:
+    enabled: true
+    namespace: monitoring
+    service: "loki:3100"
+
   rbGateway:
     enabled: true
     namespaces:
