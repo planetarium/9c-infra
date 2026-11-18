@@ -53,7 +53,7 @@ NO_PEER_RETRY_WAIT=300
 # while the timeout is 144000s.)
 function new_headless_log() {
   HEADLESS_LOG="$HEADLESS_LOG_DIR/headless_$(date -u +"%Y%m%d%H%M").log"
-  if [ -s "$HEADLESS_LOG" ]; then  # same minute as the previous attempt
+  if [ -s "$HEADLESS_LOG" ]; then  # same minute as the previous attempt or pod (Job retry)
     HEADLESS_LOG="${HEADLESS_LOG%.log}_$(date -u +"%S").log"
   fi
   : > "$HEADLESS_LOG"
@@ -188,7 +188,7 @@ function kill_headless() {
   if ! kill -0 "$PID"; then
     echo "$PID doesn't exist. Failed to kill headless"
   else
-    kill "$PID"; sleep 60; kill -9 "$PID" || true
+    kill "$PID" || true; sleep 60; kill -9 "$PID" || true
     waitpid "$PID" || true
     chmod 777 -R "$STORE_PATH"
   fi
