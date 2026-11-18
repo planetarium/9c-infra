@@ -66,6 +66,10 @@ spec:
               value: {{ $.Values.seasonpass.api.stage }}
             - name: API_ENABLED_PLANETS
               value: '["0x000000000000","0x000000000001"]'
+            {{- /* 비밀값이 아닌 설정(check-nonce 임계 API_CHECK_NONCE_* 등). 환경 values 에서만 넣는다. */}}
+            {{- with $.Values.seasonpass.api.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
           {{- with $.Values.seasonpass.api.resources }}
           resources:
