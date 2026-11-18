@@ -34,8 +34,16 @@ seasonpass:
     #   /api/check-nonce 판정(gap = DB 최대 nonce − nextTxNonce + 1, 정상 0):
     #   API_CHECK_NONCE_STUCK_MINUTES(앱 기본 25 — 잠정값, 구멍이 nextTxNonce 진행 없이 이만큼 이어지면 503),
     #   API_CHECK_NONCE_MAX_GAP(60), API_CHECK_NONCE_MAX_NEGATIVE_GAP(10),
+    #   API_CHECK_NONCE_UNAVAILABLE_MINUTES(10 — nonce 노드 무응답이 이만큼 이어져야 503, 그 전엔 200),
     #   API_NONCE_GQL_URL_MAP(플래닛 id → GraphQL 주소 JSON, 없으면 gql-url-dict — 워커 WORKER_NONCE_GQL_URL_MAP 과 같게).
     extraEnv: []
+    # /api/check-nonce 를 주기적으로 불러 판정 기록을 남기는 CronJob(시험 기간용). 지속 시간 판정은 호출될
+    #   때만 재므로 부르는 쪽이 없는 환경에서 켠다. 200 이 아니면 Job 실패로 남는다.
+    checkNonceProbe:
+      enabled: false
+      schedule: "*/5 * * * *"
+      planets: "odin,heimdall"
+      failedJobsHistoryLimit: 30
 
   worker:
     enabled: false

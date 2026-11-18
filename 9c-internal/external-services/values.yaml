@@ -65,6 +65,10 @@ seasonpass:
         value: "13"
       - name: API_NONCE_GQL_URL_MAP
         value: '{"0x100000000001": "https://heimdall-internal-rpc.nine-chronicles.com/graphql"}'
+    # 시험 기간 동안 check-nonce 를 5분마다 불러 pending → hole_stuck 전이를 기록한다(인터널은 부르는 쪽이 없다).
+    #   기록: api 로그의 check-nonce WARNING 줄, 실패한 probe Job 로그. 시험을 마치면 끈다.
+    checkNonceProbe:
+      enabled: true
 
   worker:
     enabled: true
@@ -94,6 +98,14 @@ seasonpass:
         value: '{"0x100000000001": "https://heimdall-internal-rpc.nine-chronicles.com/graphql"}'
       - name: WORKER_REFERENCE_GQL_URL_MAP
         value: '{"0x100000000001": "http://heimdall-internal-node-1.nine-chronicles.com/graphql"}'
+      # (2026-11-18) 소각 최종 실패 알림(SeasonPass 묶음 E). seasonpass-env 에 burn-alert-webhook-url 키가
+      #   생기면 켜진다(optional — 키가 없으면 env 가 빠지고 에러 로그만 남는다). E 이전 이미지는 무시한다.
+      - name: WORKER_BURN_ALERT_WEBHOOK_URL
+        valueFrom:
+          secretKeyRef:
+            name: seasonpass-env
+            key: burn-alert-webhook-url
+            optional: true
 
   tracker:
     enabled: true

@@ -1,0 +1,72 @@
+{{- if and $.Values.seasonpass.api.enabled $.Values.seasonpass.api.checkNonceProbe.enabled }}
+{{- $cfg := $.Values.seasonpass.api.checkNonceProbe }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: seasonpass-check-nonce-probe
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: seasonpass-check-nonce-probe
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  # .Files.Get 은 내용을 템플릿하지 않는다(차트 렌더가 스크립트의 중괄호에 안 깨진다).
+  probe.py: |
+{{ $.Files.Get "files/seasonpass-check-nonce-probe.py" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: seasonpass-check-nonce-probe
+  namespace: {{ $.Release.Name }}
+  labels:
+    app: seasonpass-check-nonce-probe
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  # /api/check-nonce 의 지속 시간 판정은 호출될 때만 잰다. 부르는 쪽이 없는 환경에서 판정을 시험하려고 부른다.
+  schedule: {{ $cfg.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  successfulJobsHistoryLimit: 3
+  # 200 이 아니면 exit 1 — 실패한 Job 의 로그(판정 기록)를 남긴다.
+  failedJobsHistoryLimit: {{ $cfg.failedJobsHistoryLimit | default 30 }}
+  jobTemplate:
+    spec:
+      # 재시도하면 같은 주기에 판정 호출이 늘어난다. 다음 주기를 기다린다.
+      backoffLimit: 0
+      activeDeadlineSeconds: 120
+      template:
+        metadata:
+          labels:
+            app: seasonpass-check-nonce-probe
+        spec:
+          restartPolicy: Never
+          # K8s API 도 AWS 도 쓰지 않는다. 클러스터 안 api 서비스가 전부다.
+          automountServiceAccountToken: false
+          {{- with $.Values.seasonpass.api.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: probe
+              # api 이미지를 그대로 쓴다(파이썬 표준 라이브러리만 쓴다).
+              image: {{ $.Values.seasonpass.api.image.repository }}:{{ $.Values.seasonpass.image.tag }}
+              command: ["python", "/script/probe.py"]
+              env:
+                - name: PROBE_BASE_URL
+                  value: "http://seasonpass-api-service.{{ $.Release.Name }}.svc.cluster.local"
+                - name: PROBE_PLANETS
+                  value: {{ $cfg.planets | default "odin,heimdall" | quote }}
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+          volumes:
+            - name: script
+              configMap:
+                name: seasonpass-check-nonce-probe
+{{- end }}
