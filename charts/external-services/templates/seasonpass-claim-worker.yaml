@@ -9,6 +9,11 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
+  # 지급 워커는 서명 키 하나로 플래닛별 nonce 를 매긴다. RollingUpdate 는 옛·새 파드가 잠시 같이
+  #   떠서 같은 claim·같은 nonce 를 동시에 처리할 수 있다 — 옛 파드를 먼저 내린다.
+  #   새 파드가 못 뜨면 지급이 멈추므로(메시지는 큐에 남음) 배포 때 rollout status 를 지켜본다.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: seasonpass-claim-worker
@@ -17,10 +22,16 @@ spec:
       labels:
         app: seasonpass-claim-worker
     spec:
+      # SIGTERM 뒤 celery 가 하던 작업(beat 의 retry_claim 은 최대 100건)을 마치고 내려가게 한다.
+      #   메인넷 claim_timing(2026-11-18, 2609건): 건당 p50 0.39초·p99 1.6초·최대 5초 → 100건 40~160초.
+      #   할 일이 없으면 바로 내려가므로 평소 배포가 이만큼 길어지지는 않는다.
+      terminationGracePeriodSeconds: 180
       containers:
         - name: seasonpass-claim-worker
+          # exec: 없으면 sh(dash 0.5.12)가 PID 1 로 남아 SIGTERM 을 무시하고, celery 는 신호를 못 받은
+          #   채 유예가 끝나면 SIGKILL 된다(유예를 늘려도 기다리기만 한다).
           args:
-            - celery -A app.celery_app worker --loglevel=info -Q claim_queue --concurrency=1 -n claim_worker@%h
+            - exec celery -A app.celery_app worker --loglevel=info -Q claim_queue --concurrency=1 -n claim_worker@%h
           command:
             - /bin/sh
             - -c

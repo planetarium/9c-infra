@@ -9,6 +9,9 @@ metadata:
   namespace: {{ $.Release.Name }}
 spec:
   replicas: 1
+  # beat 이 둘 뜨면 같은 주기 작업을 두 번 넣는다. 옛 파드를 먼저 내린다.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: seasonpass-beat
@@ -19,8 +22,9 @@ spec:
     spec:
       containers:
         - name: seasonpass-beat
+          # exec: sh 가 PID 1 이면 SIGTERM 을 무시해 매 배포마다 30초를 기다린 뒤 SIGKILL 된다.
           args:
-            - celery -A app.celery_app beat --loglevel=info
+            - exec celery -A app.celery_app beat --loglevel=info
           command:
             - /bin/sh
             - -c
