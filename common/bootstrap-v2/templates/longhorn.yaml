@@ -38,4 +38,20 @@ spec:
               cron: 0 */12 * * *
               retain: 0
               concurrency: 1
+          # 매시 trim — 쓰기가 많은 헤드리스 볼륨용. PVC 에 recurring-job.longhorn.io/filesystem-trim-hourly=enabled 를 단다
+          #   (PVC 라벨이 볼륨으로 옮겨지려면 recurring-job.longhorn.io/source=enabled 도 있어야 한다 — 차트 storage.yaml 은 이미 붙인다).
+          #   12시간 주기만으로는 스냅샷 리셋·clone 뒤 쌓인 쓰레기를 다음 작업 전에 회수하지 못한다(2026-11-16 odin 정지).
+          #   group 이 없어 라벨을 단 볼륨에만 돈다.
+          - apiVersion: longhorn.io/v1beta2
+            kind: RecurringJob
+            metadata:
+              name: filesystem-trim-hourly
+              namespace: longhorn-system
+              labels:
+                app.kubernetes.io/instance: longhorn
+            spec:
+              task: filesystem-trim
+              cron: 0 * * * *
+              retain: 0
+              concurrency: 1
 {{- end }}
