@@ -20,6 +20,11 @@ on:
         required: true
         description: 'The lib9c commit for the newly added evaluator (e.g. 678ac90398f376698ee75da63ed089fe678d11e6)'
 
+# 같은 네트워크 실행이 겹치면 S3 읽기-수정-쓰기가 겹친다 — 하나씩(두 번째는 첫 실행이 쓴 뒤 시작 블록 검사에서 막힌다)
+concurrency:
+  group: update-paev-${{ inputs.network_type }}
+  cancel-in-progress: false
+
 jobs:
   update-paev:
     runs-on: ubuntu-latest
@@ -32,8 +37,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.10.13
+
+      - name: install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          flit install
+        working-directory: ./scripts
+
       # 시작 블록 H 확인 — update-paev 는 H 를 검사하지 않고, 재실행하면 구간이 또 붙는다(9c-release phase3 B-4).
-      # S3 두 파일의 마지막 구간 start < 지금 tip < H ≤ tip+1000 이 아니면 S3 를 쓰기 전에 실패한다. thor 는 RPC 가 없어 tip 대조를 건너뛴다.
+      # S3 두 파일의 마지막 구간 start < 지금 tip, tip+10 ≤ H ≤ tip+1000 이 아니면 S3 를 쓰기 전에 실패한다(쓰기 직전 — 설치 뒤에 둔다).
+      # tip 은 rpc-1·gql 두 곳 중 읽히는 것의 최댓값, 둘 다 읽혔는데 30블록 넘게 다르면 뒤처진 노드일 수 있어 실패. thor 는 RPC 가 없어 tip 대조를 건너뛴다.
       - name: Check start block
         env:
           NETWORK: ${{ github.event.inputs.network_type }}
@@ -61,21 +77,21 @@ jobs:
                   sys.exit(f"H={h} 가 마지막 구간 start {max(starts)} 보다 크지 않다")
               print("thor — tip 대조 건너뜀")
               sys.exit(0)
-          tip = get(f"https://{net}-rpc-1.nine-chronicles.com/graphql", b'{"query":"{nodeStatus{tip{index}}}"}')["data"]["nodeStatus"]["tip"]["index"]
-          print(f"tip={tip} H={h} (H-tip={h - tip})")
-          if not (max(starts) < tip < h <= tip + 1000):
-              sys.exit(f"시작 블록 조건 불성립: 마지막 start {max(starts)} < tip {tip} < H {h} ≤ tip+1000 이어야 한다 — S3 를 쓰지 않고 멈춘다")
+          tips = {}
+          for host in (f"{net}-rpc-1", f"{net}-gql"):
+              try:
+                  tips[host] = int(get(f"https://{host}.nine-chronicles.com/graphql", b'{"query":"{nodeStatus{tip{index}}}"}')["data"]["nodeStatus"]["tip"]["index"])
+              except Exception as e:  # noqa: BLE001 — 한 곳은 죽어도 된다
+                  print(f"{host}: tip 읽기 실패 {type(e).__name__}")
+          if not tips:
+              sys.exit("tip 을 읽지 못했다 — S3 를 쓰지 않고 멈춘다")
+          if len(tips) == 2 and abs(tips[f"{net}-rpc-1"] - tips[f"{net}-gql"]) > 30:
+              sys.exit(f"두 노드 tip 이 30블록 넘게 다르다 {tips} — 뒤처진 노드일 수 있어 멈춘다")
+          tip = max(tips.values())
+          print(f"tip={tip} {tips} H={h} (H-tip={h - tip})")
+          if not (max(starts) < tip and tip + 10 <= h <= tip + 1000):
+              sys.exit(f"시작 블록 조건 불성립: 마지막 start {max(starts)} < tip {tip}, tip+10 ≤ H {h} ≤ tip+1000 이어야 한다 — S3 를 쓰지 않고 멈춘다")
           EOF
-
-      - uses: actions/setup-python@v2.2.2
-        with:
-          python-version: 3.10.13
-
-      - name: install dependencies
-        run: |
-          python -m pip install -r requirements.txt
-          flit install
-        working-directory: ./scripts
 
       - name: Update Pluggable Action Evaluator
         # 입력은 셸 문자열에 바로 넣지 않고 환경 변수로 넘긴다(위 단계에서 형식 검사)
