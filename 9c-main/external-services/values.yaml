@@ -310,7 +310,11 @@ backoffice:
     # (2026-11-18) Backoffice#114(18acc9a8 = 위 b6d0563c + #113 묶음 미리보기 열 단위 요약·규칙 검사·confirmable) —
     #   preview 에 시트별 바뀐 열·대표 값·배수, 규칙 검사(error 면 승인 불가)를 싣고, previewPlanets(아래) 플래닛은
     #   등록·미리보기만 허용한다(승인·실행은 allowedPlanets 만). 마이그레이션 없음. 이전: git-b6d0563c
-    tag: "git-18acc9a8528e785f71567b93a5ef2006755e37aa"
+    #
+    # (2026-11-19) Backoffice#114(0fc21f03 = 위 18acc9a8 + 미리보기 전용 플래닛 int32 초과 등록 허용) —
+    #   allowedPlanets 밖 플래닛의 int32 초과는 등록만 받고 preview 에서 오류로 막는다(승인 해시 없음).
+    #   메인넷이 long 값 지원(v200510) 전이라도 요약·검사를 미리 본다. 마이그레이션 없음. 이전: git-18acc9a8
+    tag: "git-0fc21f030f1bda41a24c86ccc77da15d328220a9"
 
   tablePatchBundles:
     allowedPlanets:
