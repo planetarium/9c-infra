@@ -119,7 +119,9 @@ backofficeService:
     #   출금 approve/reject 상태 가드·동글이 옵스 ops JWT. d620acc3 이후 packages/database 는 인덱스 정의만(마이그레이션 Job 없음, 앱 영향 없음).
     # (2026-11-13) → main-042590ec: 포탈과 같은 커밋. ops JWT 로 미션 설정 저장 허용(kind 거부, 9c-portal #1365) +
     #   시즌패스 3종 종료 시각 표시 반영(#1363) + 출금 노드 블록 높이 조회 병렬화. 마이그레이션 없음.
-    tag: main-042590ec364d775d37ed10511b7a8447e097df81
+    # (2026-11-19) → main-1a08e224: ops JWT 로 대량 출금 승인(POST approvals/[id]/approve) 허용(9c-portal #1374, 운영자 결정 2026-11-19 —
+    #   동글이 옵스 G-06 자동 승인). 042590ec..1a08e224 의 apps/backoffice 변경은 이것뿐, packages/database 변경 없음. 포탈 태그는 그대로.
+    tag: main-1a08e2246e58a17f00bb76728a64a336570fc665
     pullPolicy: Always
   externalSecret:
     enabled: true
