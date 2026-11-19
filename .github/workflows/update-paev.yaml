@@ -1,4 +1,5 @@
 name: Update Pluggable Action Evaluator
+run-name: PAEV ${{ inputs.network_type }} H=${{ inputs.new_start_value }}
 
 on:
   workflow_dispatch:
@@ -19,11 +20,18 @@ on:
         required: true
         description: 'The lib9c commit for the newly added evaluator (e.g. 678ac90398f376698ee75da63ed089fe678d11e6)'
 
+# 같은 네트워크 실행이 겹치면 S3 읽기-수정-쓰기가 겹친다 — 하나씩(두 번째는 첫 실행이 쓴 뒤 시작 블록 검사에서 막힌다)
+concurrency:
+  group: update-paev-${{ inputs.network_type }}
+  cancel-in-progress: false
+
 jobs:
   update-paev:
     runs-on: ubuntu-latest
-    # 메인넷 S3 appsettings 를 직접 수정하므로 실행 전 필수 승인자 승인을 받는다
-    environment: mainnet-paev
+    # 메인넷 S3 appsettings 를 직접 수정하므로 실행 전 필수 승인자 승인을 받는다(mainnet-paev).
+    # 동글이 옵스 앱이 띄운 실행만 승인 없는 mainnet-paev-bot(main 브랜치만) — 동글이는 운영자의 릴리즈 [시작]·[배포] 버튼 뒤에만 띄운다.
+    # actor 는 재실행해도 처음 띄운 주체로 남으므로 triggering_actor(재실행한 주체)도 함께 본다 — 사람이 재실행하면 사람 승인을 받는다.
+    environment: ${{ (github.actor == 'planetarium-donggeul[bot]' && github.triggering_actor == 'planetarium-donggeul[bot]') && 'mainnet-paev-bot' || 'mainnet-paev' }}
 
     steps:
       - name: Checkout Repository
@@ -39,14 +47,61 @@ jobs:
           flit install
         working-directory: ./scripts
 
-      - name: Update Pluggable Action Evaluator
+      # 시작 블록 H 확인 — update-paev 는 H 를 검사하지 않고, 재실행하면 구간이 또 붙는다(9c-release phase3 B-4).
+      # S3 두 파일의 마지막 구간 start < 지금 tip, tip+10 ≤ H ≤ tip+1000 이 아니면 S3 를 쓰기 전에 실패한다(쓰기 직전 — 설치 뒤에 둔다).
+      # tip 은 rpc-1·gql 두 곳 중 읽히는 것의 최댓값, 둘 다 읽혔는데 30블록 넘게 다르면 뒤처진 노드일 수 있어 실패. thor 는 RPC 가 없어 tip 대조를 건너뛴다.
+      - name: Check start block
+        env:
+          NETWORK: ${{ github.event.inputs.network_type }}
+          NEW_START: ${{ github.event.inputs.new_start_value }}
+          NEW_COMMIT: ${{ github.event.inputs.new_lib9c_commit }}
         run: |
-          python cli.py update-paev \
-            ${{ github.event.inputs.network_type }} \
-            ${{ github.event.inputs.new_start_value }} \
-            ${{ github.event.inputs.new_lib9c_commit }}
+          python3 - <<'EOF'
+          import json, os, re, sys, time, urllib.request
+          net, h, sha = os.environ["NETWORK"], os.environ["NEW_START"], os.environ["NEW_COMMIT"]
+          if net not in ("odin", "heimdall", "thor") or not re.fullmatch(r"[1-9][0-9]{0,11}", h) or not re.fullmatch(r"[0-9a-f]{40}", sha):
+              sys.exit(f"입력 형식 오류: network={net!r} start={h!r} commit={sha!r}")
+          h = int(h)
+          def get(url, data=None):
+              req = urllib.request.Request(url, data=data, headers={"content-type": "application/json", "user-agent": "9c-infra-paev-check"})
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  return json.load(r)
+          starts = []
+          for f in ("appsettings.json", "appsettings-nodeinfra.json"):
+              cfg = get(f"https://9c-cluster-config.s3.us-east-2.amazonaws.com/9c-main/{net}/{f}?t={int(time.time())}")
+              last = cfg["Headless"]["ActionEvaluator"]["pairs"][-1]
+              starts.append(int(last["range"]["start"]))
+              print(f"{f}: 마지막 구간 start={last['range']['start']}")
+          if net == "thor":
+              if not max(starts) < h:
+                  sys.exit(f"H={h} 가 마지막 구간 start {max(starts)} 보다 크지 않다")
+              print("thor — tip 대조 건너뜀")
+              sys.exit(0)
+          tips = {}
+          for host in (f"{net}-rpc-1", f"{net}-gql"):
+              try:
+                  tips[host] = int(get(f"https://{host}.nine-chronicles.com/graphql", b'{"query":"{nodeStatus{tip{index}}}"}')["data"]["nodeStatus"]["tip"]["index"])
+              except Exception as e:  # noqa: BLE001 — 한 곳은 죽어도 된다
+                  print(f"{host}: tip 읽기 실패 {type(e).__name__}")
+          if not tips:
+              sys.exit("tip 을 읽지 못했다 — S3 를 쓰지 않고 멈춘다")
+          if len(tips) == 2 and abs(tips[f"{net}-rpc-1"] - tips[f"{net}-gql"]) > 30:
+              sys.exit(f"두 노드 tip 이 30블록 넘게 다르다 {tips} — 뒤처진 노드일 수 있어 멈춘다")
+          tip = max(tips.values())
+          print(f"tip={tip} {tips} H={h} (H-tip={h - tip})")
+          if not (max(starts) < tip and tip + 10 <= h <= tip + 1000):
+              sys.exit(f"시작 블록 조건 불성립: 마지막 start {max(starts)} < tip {tip}, tip+10 ≤ H {h} ≤ tip+1000 이어야 한다 — S3 를 쓰지 않고 멈춘다")
+          EOF
+
+      - name: Update Pluggable Action Evaluator
+        # 입력은 셸 문자열에 바로 넣지 않고 환경 변수로 넘긴다(위 단계에서 형식 검사)
+        run: |
+          python cli.py update-paev "$NETWORK" "$NEW_START" "$NEW_COMMIT"
         working-directory: ./scripts
         env:
+          NETWORK: ${{ github.event.inputs.network_type }}
+          NEW_START: ${{ github.event.inputs.new_start_value }}
+          NEW_COMMIT: ${{ github.event.inputs.new_lib9c_commit }}
           GITHUB_TOKEN: ${{ secrets.P_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
