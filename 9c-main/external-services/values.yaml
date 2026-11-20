@@ -317,18 +317,21 @@ backoffice:
     tag: "git-0fc21f030f1bda41a24c86ccc77da15d328220a9"
 
   tablePatchBundles:
+    # (2026-11-24 v200510) 메인넷 오딘·하임달 승인·실행 개방 — 02 titles_advboss 묶음(인터널 리허설 a7367f67100f 11/20 done)을
+    #   배포 T+45(11:45 KST, attime)에. 확정은 릴리즈 진행기가 노드 배포 2차 게이트 뒤에만 한다.
     allowedPlanets:
       - "0x100000000000"
       - "0x100000000001"
+      - "0x000000000000"
+      - "0x000000000001"
     # 인터널 헤드리스 git-ffd2a314·클라 release/510.0.0(11/12) 모두 lib9c f5b5620(#3341 포함) 확인(11/13).
-    #   메인넷 플래닛은 1.40 노드·클라 릴리즈 뒤에 넣는다.
+    #   메인넷은 v200510(lib9c 1.40.0·Headless 399·NC 510.0.1) 배포와 함께. 코스튬 스탯은 노드가 int32 로 잘라 쓴다(SafeDecimalToInt32).
     longValuePlanets:
       - "0x100000000000"
       - "0x100000000001"
-    # 메인넷 오딘·하임달 — 묶음 등록·미리보기만(라이브 대조). 승인·실행은 다음 실제 패치 때 인터널 리허설 뒤 allowedPlanets 에.
-    previewPlanets:
       - "0x000000000000"
       - "0x000000000001"
+    previewPlanets: []
 
 
 iap:
