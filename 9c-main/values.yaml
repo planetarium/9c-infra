@@ -122,6 +122,16 @@ prometheus:
               - __meta_kubernetes_endpoint_port_name
             action: keep
             regex: longhorn-backend;manager
+        # (2026-11-21) Drop longhorn-manager's built-in client-go diagnostics.
+        # longhorn_rest_client_* carries a `url` label with a randomized watch
+        # timeout (timeout=5m12s, 5m15s, ...), so it was ~100k series (~40% of
+        # all head series) across 14 managers and filled the 60Gi PVC to 85%.
+        # Nothing in this repo (alerts/dashboards) reads these metrics; the
+        # longhorn_volume_* / longhorn_disk_* ones used by alerts are kept.
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: longhorn_(rest_client|workqueue)_.*
+            action: drop
       # (2026-10-23) 동글이 옵스 heartbeat 등 클러스터 밖에서 올린 지표. honor_labels 로 job/instance 를 보존한다.
       - job_name: pushgateway
         honor_labels: true
