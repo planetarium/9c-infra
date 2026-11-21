@@ -51,7 +51,9 @@ portalService:
     # (2026-11-06) → main-39e409fc: 선호 플래닛이 레지스트리에 없을 때 Change Primary Planet 모달 수정 (9c-portal #1361/#1362). DB 커플링 없음.
     # (2026-11-13) → main-042590ec: 시즌패스 구매 미션 3종 재개(12/1 00:00 UTC 종료, 9c-portal #1363) + 백오피스 ops JWT 미션 설정
     #   저장 허용(#1365, 포탈 런타임 영향은 rewardTunables 공유값뿐). DB 커플링 없음.
-    tag: main-042590ec364d775d37ed10511b7a8447e097df81
+    # (2026-11-21) → main-3e751d43: SMS 인증 Geo-Permissions 차단 국가는 사유 안내 — 500·알림 방지(9c-portal #1376 = develop #1375 포팅).
+    #   042590ec..3e751d43 의 apps/portal 변경은 이것뿐(#1374 는 백오피스 전용). DB 커플링 없음.
+    tag: main-3e751d4324ab43c01c866ac2c19516f03db5573c
     pullPolicy: Always
   externalSecret:
     enabled: true
