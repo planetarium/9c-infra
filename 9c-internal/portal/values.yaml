@@ -132,7 +132,8 @@ portalService:
     # (2026-11-16) → internal-18252fe9: 메이플 GO 판정 주소를 EIP-55 체크섬으로 보낸다(9c-portal #1372) — 소문자로 보내 「No MAPLE GO account」가 나던 것.
     # (2026-11-17) → internal-0b09ee1e: Planetarium 탭 + MAPLE GO 계정 따로 저장(9c-portal #1369). ⚠️ DB 커플링 — 마이그레이션
     #   20261116120000_maple_go_integrations 를 먼저 적용했다(인터널 2026-11-17). getAccount 가 이 테이블을 읽는다.
-    tag: "internal-0b09ee1e10d59f35b84ceb78dca46e8ae6bba3e2"
+    # (2026-11-21) → internal-0b3cc5d6: SMS 인증 Geo-Permissions 차단 국가는 사유 안내 — 500·알림 방지(9c-portal #1375).
+    tag: "internal-0b3cc5d6352e5e6b8f5e5a9f555e969576cb6382"
     pullPolicy: Always
   externalSecret:
     enabled: true
