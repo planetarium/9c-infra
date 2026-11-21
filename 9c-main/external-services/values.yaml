@@ -403,7 +403,9 @@ iap:
       #     인덱스 마이그레이션 e5a9c3d71f42(ix_receipt_avatar_valid)는 아직 미적용 — 실제로 켤 때
       #     저트래픽에 먼저 만들 것(그 조회는 위 조건이 갖춰져야만 돈다).
       #   - #500 은 worker 전용(일일 토큰 리포트 제거). api 경로 변경 없음.
-      tag: "git-b533b733da2832594122ea6ffe08d6c9a86b16a8"
+      # (2026-11-21) → git-b1a6cab9: #505 요청당 Session — DB 커넥션 누수(11/21 01:36 풀 고갈) 수정.
+      #   b533b733 이후 api 코드 차이는 #505 와 shared/validator/web.py 타입 표기뿐(#501~#504 는 worker·테스트).
+      tag: "git-b1a6cab9e2e0cbb55e51a3a085694a2d19de8e52"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-main-v2-iap-worker"
 
