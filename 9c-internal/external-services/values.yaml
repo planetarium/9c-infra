@@ -235,7 +235,8 @@ iap:
       # (2026-11-16) → git-84da2f43 main HEAD(IAP#504). api 는 #494~#503(메인넷 30cdbd07 까지
       #   이미 라이브인 고정 SKU 시즌패스·바우처 등)이 함께 들어온다. 새 마이그레이션 2개는
       #   성능용 색인이라 인터널엔 불필요(receipt 소량).
-      tag: "git-84da2f433722a32deaf32a5849858fedd88600a2"
+      # (2026-11-21) → git-b1a6cab9 (IAP#505) 요청당 Session — DB 커넥션 누수(풀 고갈) 수정.
+      tag: "git-b1a6cab9e2e0cbb55e51a3a085694a2d19de8e52"
     serviceAccount:
       roleArn: "arn:aws:iam::319679068466:role/9c-internal-v2-seasonpass-worker"
 
