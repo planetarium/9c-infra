@@ -44,7 +44,7 @@ spec:
             # 9c-main's PVC was expanded to 60Gi live, so it overrides here to keep
             # the app in Sync (a PVC cannot be shrunk back to 50Gi).
             size: {{ dig "server" "persistentVolume" "size" "50Gi" .Values.prometheus }}
-          retention: "90d"
+          retention: "60d"
           strategy:
             type: Recreate
           extraArgs:
