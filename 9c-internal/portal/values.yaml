@@ -133,7 +133,8 @@ portalService:
     # (2026-11-17) → internal-0b09ee1e: Planetarium 탭 + MAPLE GO 계정 따로 저장(9c-portal #1369). ⚠️ DB 커플링 — 마이그레이션
     #   20261116120000_maple_go_integrations 를 먼저 적용했다(인터널 2026-11-17). getAccount 가 이 테이블을 읽는다.
     # (2026-11-21) → internal-0b3cc5d6: SMS 인증 Geo-Permissions 차단 국가는 사유 안내 — 500·알림 방지(9c-portal #1375).
-    tag: "internal-0b3cc5d6352e5e6b8f5e5a9f555e969576cb6382"
+    # (2026-11-22) → internal-2114da00: 포인트샵 구매 전 대표 아바타가 대표 행성에 있는지 노드 확인(9c-portal #1379). 조회 실패는 통과.
+    tag: "internal-2114da003e01643a57360d80465ef36e9cd1b635"
     pullPolicy: Always
   externalSecret:
     enabled: true
