@@ -53,7 +53,9 @@ portalService:
     #   저장 허용(#1365, 포탈 런타임 영향은 rewardTunables 공유값뿐). DB 커플링 없음.
     # (2026-11-21) → main-3e751d43: SMS 인증 Geo-Permissions 차단 국가는 사유 안내 — 500·알림 방지(9c-portal #1376 = develop #1375 포팅).
     #   042590ec..3e751d43 의 apps/portal 변경은 이것뿐(#1374 는 백오피스 전용). DB 커플링 없음.
-    tag: main-3e751d4324ab43c01c866ac2c19516f03db5573c
+    # (2026-11-22) → main-543e74d5: 포인트샵 구매 전 대표 아바타가 대표 행성에 있는지 노드 확인(9c-portal #1381 = develop #1379 포팅).
+    #   없으면 차감 전 400, 조회 실패·3초 초과는 통과. 3e751d43..543e74d5 는 이것뿐. DB 커플링 없음.
+    tag: main-543e74d5d32763b5d915c5be50f4e778e1bffcb4
     pullPolicy: Always
   externalSecret:
     enabled: true
