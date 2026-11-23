@@ -37,7 +37,8 @@ on:
 
 jobs:
   update-values-file:
-    runs-on: ubuntu-latest
+    # ubuntu-latest 가 26.04 로 바뀐 뒤(2026-11) setup-python 의 3.10.13 빌드가 없어 실패한다 — 24.04 고정.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
 
