@@ -521,7 +521,7 @@ spec:
                         relativeTimeRange: { from: 600, to: 0 }
                         datasourceUid: prometheus
                         model:
-                          expr: 'up{job="client-telemetry"} == 0'
+                          expr: 'up{job="client-telemetry"}'
                           instant: true
                       - refId: C
                         datasourceUid: __expr__
