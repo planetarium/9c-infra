@@ -77,6 +77,24 @@ data:
         auto_kubernetes_labels       on
         line_format                  json
         workers                      2
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        application.*
+        Rule                         $kubernetes['namespace_name'] ^9c-external-services$ loki_telemetry_ns.$kubernetes['container_name'].$TAG true
+        Emitter_Name                 for_loki_telemetry_ns
+    [FILTER]
+        Name                         rewrite_tag
+        Match                        loki_telemetry_ns.*
+        Rule                         $kubernetes['container_name'] ^telemetry$ loki_telemetry.$kubernetes['namespace_name'].$kubernetes['container_name'].$TAG false
+        Emitter_Name                 for_loki_telemetry
+    [OUTPUT]
+        Name                         loki
+        Match                        loki_telemetry.*
+        host                         loki-gateway.monitoring.svc.cluster.local
+        port                         80
+        labels                       job=client-telemetry, container=$kubernetes['container_name'], namespace=$kubernetes['namespace_name']
+        line_format                  json
+        workers                      1
 
     [INPUT]
         Name                         tail

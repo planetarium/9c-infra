@@ -475,6 +475,99 @@ spec:
                     annotations:
                       summary: '{{`{{ "{{" }} $labels.network {{ "}}" }}`}} mimir 색인 지연 측정이 30분 넘게 성공하지 못했다 — mimir-gql 또는 rpc 응답 불가, 혹은 monitoring/mimir-index-lag CronJob 정지'
               {{- end }}
+              {{- if ((.Values.grafanaAlerts).clientTelemetry) }}
+              # (2026-11-23) 클라이언트 운영 지표(telemetry 서비스). 믹스패널을 대신해 클라이언트가 보내는 실패 건수를 본다.
+              - orgId: 1
+                name: client-telemetry-alerts
+                folder: Client Telemetry
+                interval: 1m
+                rules:
+                  # Unity/Error 코드 26·27(액션 타임아웃) 급증. 절대 건수가 100 넘고, 직전 7일 시간당 평균의 3배를 넘을 때만.
+                  #   avg_over_time 은 있는 표본만 평균하므로 첫 7일에도 그때까지 쌓인 이력과 비교해 울릴 수 있다
+                  #   (비교할 직전 이력이 아예 없는 첫 1시간만 비어서 울리지 않는다).
+                  - uid: client-telemetry-action-timeout-spike
+                    title: Client Action Timeout Spike
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'sum by (planet) (increase(client_events_total{event="Unity/Error",code=~"26|27",planet=~"odin|heimdall"}[1h])) and on (planet) (sum by (planet) (increase(client_events_total{event="Unity/Error",code=~"26|27",planet=~"odin|heimdall"}[1h])) > 3 * avg_over_time(sum by (planet) (increase(client_events_total{event="Unity/Error",code=~"26|27",planet=~"odin|heimdall"}[1h]))[7d:1h] offset 1h))'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [100] }
+                    for: 15m
+                    labels:
+                      severity: warning
+                      service: client-telemetry
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '{{`{{ "{{" }} $labels.planet {{ "}}" }}`}} 클라이언트 액션 타임아웃(Unity/Error 26·27)이 최근 1시간 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}건 — 평소 7일 평균의 3배 넘게 급증했다. 노드·RPC 상태부터 본다'
+                  # 플래닛·버전 레지스트리 갱신이 1시간 넘게 성공하지 못함. 허용 목록이 낡으면 새 버전·플래닛 라벨이 other 로 접힌다.
+                  #   기동 뒤 한 번도 성공하지 못하면 값이 0 이라 같은 식으로 울린다. 서비스가 죽어 지표가 없을 때는 Telemetry Down 이 맡는다.
+                  - uid: client-telemetry-registry-stale
+                    title: Telemetry Allowlist Stale
+                    noDataState: OK
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'time() - max(telemetry_registry_last_success_timestamp{job="client-telemetry"})'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: gt, params: [3600] }
+                    for: 30m
+                    labels:
+                      severity: warning
+                      service: client-telemetry
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '클라이언트 지표 수집 서비스의 허용 목록(플래닛·버전 레지스트리)이 {{`{{ "{{" }} printf "%.0f" $values.A.Value {{ "}}" }}`}}초째 갱신되지 않았다 — 새 버전·플래닛 라벨이 other 로 접힌다. 레지스트리 주소 접근부터 본다'
+                  # 수집 서비스 자체가 죽으면 지표가 사라지므로 noData 도 울린다.
+                  - uid: client-telemetry-down
+                    title: Telemetry Down
+                    noDataState: Alerting
+                    execErrState: Alerting
+                    condition: C
+                    data:
+                      - refId: A
+                        relativeTimeRange: { from: 600, to: 0 }
+                        datasourceUid: prometheus
+                        model:
+                          expr: 'up{job="client-telemetry"}'
+                          instant: true
+                      - refId: C
+                        datasourceUid: __expr__
+                        model:
+                          type: threshold
+                          expression: A
+                          conditions:
+                            - evaluator: { type: lt, params: [1] }
+                    for: 10m
+                    labels:
+                      severity: warning
+                      service: client-telemetry
+                    notification_settings:
+                      receiver: Slack (devops-alert)
+                    annotations:
+                      summary: '클라이언트 지표 수집 서비스(9c-external-services/telemetry)를 10분 넘게 스크레이프하지 못했다 — 클라이언트 실패 지표가 쌓이지 않는다'
+              {{- end }}
               # (2026-10-21) PVC 사용률. Loki 를 R2 대신 PVC(50Gi, 시간 기준 retention 만)에 두면서
               #   용량이 차도 알려줄 경로가 없었다. 수집되는 PVC 전체(kubelet_volume_stats)를 본다.
               #   기존 Grafana UI 규칙(Heimdall/Odin Headless PVC usage, 90%/6h)과 같은 #devops 로 보낸다.

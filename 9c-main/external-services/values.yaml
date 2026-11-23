@@ -550,3 +550,12 @@ ncboard:
   enabled: true
   image:
     tag: git-d876a80f84f1a6bdf01ef470282e710467954479
+
+# 클라이언트 운영 지표 수집(planetarium/9c-telemetry). 요청 수 제한이 메모리 기반이라 replicas 1.
+telemetry:
+  enabled: true
+  # 전용 HTTPRoute(templates/telemetry.yaml)로 수집 경로만 연다. /metrics 는 클러스터 안에서만.
+  hostnames:
+  - telemetry.9c.gg
+  image:
+    tag: git-e3382878d96b0b2f1c86afa4c1e3ba9f5961f466

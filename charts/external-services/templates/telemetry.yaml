@@ -1,0 +1,140 @@
+{{- if $.Values.telemetry.enabled }}
+# 클라이언트 운영 지표 수집 서비스. 요청 수 제한이 프로세스 메모리 기반이라 replicas 는 1 로 둔다.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: telemetry
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+  name: telemetry
+  namespace: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemetry
+  template:
+    metadata:
+      labels:
+        app: telemetry
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      initContainers:
+        # 나라 판별용 GeoIP 파일 내려받기. 실패해도 성공으로 끝낸다 — 서비스는 나라를 unknown 으로 둔다.
+        - name: geoip
+          image: {{ $.Values.telemetry.geoip.initImage }}
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /geoip
+              # 이번 달 파일이 아직 없으면 지난달 파일로 되돌아간다(달 계산은 연·월 숫자로).
+              y=$(date +%Y); m=$(date +%m)
+              if [ "$m" = "01" ]; then py=$((y - 1)); pm=12; else py=$y; pm=$(printf '%02d' $((${m#0} - 1))); fi
+              ok=0
+              for ym in "$y-$m" "$py-$pm"; do
+                if curl -fsSL --max-time 120 -o /tmp/country.mmdb.gz "https://download.db-ip.com/free/dbip-country-lite-$ym.mmdb.gz" \
+                  && gunzip -c /tmp/country.mmdb.gz > /geoip/country.mmdb; then
+                  ok=1
+                  echo "geoip ready ($ym)"
+                  break
+                fi
+              done
+              if [ "$ok" = 1 ]; then
+                chmod 644 /geoip/country.mmdb
+              else
+                rm -f /geoip/country.mmdb
+                echo "geoip download failed; continuing without it"
+              fi
+              chmod 755 /geoip
+              exit 0
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+          volumeMounts:
+            - name: geoip
+              mountPath: /geoip
+      containers:
+        - name: telemetry
+          image: {{ $.Values.telemetry.image.repository }}:{{ $.Values.telemetry.image.tag }}
+          imagePullPolicy: {{ $.Values.telemetry.image.pullPolicy }}
+          env:
+            - name: TELEMETRY_GEOIP_PATH
+              value: /geoip/country.mmdb
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+          {{- with $.Values.telemetry.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: geoip
+              mountPath: /geoip
+              readOnly: true
+      volumes:
+        - name: geoip
+          emptyDir: {}
+      {{- with $.Values.telemetry.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemetry
+  namespace: {{ $.Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  ports:
+    - name: http
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: telemetry
+  type: ClusterIP
+{{- with $.Values.telemetry.hostnames }}
+---
+# 공용 gateway 템플릿은 호스트의 모든 경로를 넘기므로 쓰지 않는다. 수집 경로만 열고 /metrics 는 내보내지 않는다.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: telemetry
+  namespace: {{ $.Release.Name }}
+spec:
+  parentRefs:
+  - name: traefik-gateway
+    namespace: traefik
+    sectionName: web
+  - name: traefik-gateway
+    namespace: traefik
+    sectionName: websecure
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /v1/events
+      - path:
+          type: Exact
+          value: /healthz
+      backendRefs:
+      - name: telemetry
+        port: 8000
+{{- end }}
+{{- end }}
