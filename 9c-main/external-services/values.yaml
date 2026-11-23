@@ -558,4 +558,4 @@ telemetry:
   hostnames:
   - telemetry.9c.gg
   image:
-    tag: git-bb07e4e2802a7147fa683fa91a7f4b8551bf3b10
+    tag: git-e3382878d96b0b2f1c86afa4c1e3ba9f5961f466
