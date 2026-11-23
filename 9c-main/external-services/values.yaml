@@ -21,6 +21,12 @@ gateway:
     hostnames:
     - ncboard.9c.gg
     - 9c-board.nine-chronicles.dev
+  - name: telemetry
+    hostnames:
+    - telemetry.9c.gg
+    backendRefs:
+    - name: telemetry
+      port: 8000
 
 volumeReclaimPolicy: "Retain"
 
@@ -550,3 +556,9 @@ ncboard:
   enabled: true
   image:
     tag: git-d876a80f84f1a6bdf01ef470282e710467954479
+
+# 클라이언트 운영 지표 수집(planetarium/9c-telemetry). 요청 수 제한이 메모리 기반이라 replicas 1.
+telemetry:
+  enabled: true
+  image:
+    tag: git-c045b6a217cfe36ca4f8e3fab0e5bc28eeb630a3

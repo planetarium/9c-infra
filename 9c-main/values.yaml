@@ -146,6 +146,14 @@ prometheus:
         static_configs:
           - targets:
             - prometheus-kube-state-metrics.monitoring.svc.cluster.local:8080
+      # (2026-11-23) 클라이언트 운영 지표 수집 서비스(9c-external-services/telemetry).
+      - job_name: client-telemetry
+        metrics_path: /metrics
+        scrape_interval: 30s
+        scrape_timeout: 10s
+        static_configs:
+          - targets:
+            - telemetry.9c-external-services.svc.cluster.local:8000
 datadog:
   enabled: false
   clusterAgent:
@@ -256,6 +264,7 @@ pushgatewayIngress:
 # 조건부 Grafana 규칙. petpopSeasonAutomation 은 메인넷 season-automation CronJob 을 켤 때 같이 true.
 grafanaAlerts:
   petpopSeasonAutomation: true
+  clientTelemetry: true
 
 # Longhorn 노드 디스크·볼륨 알림(grafana.yaml 의 longhorn-disk-alerts). 인터널은 상시 80% 넘는 디스크가 있어 켜지 않는다.
 #   excludeDisks: 높은 사용률이 평상시인 디스크 정규식 — 스냅샷 볼륨 하나를 꽉 채워 두는 전용 디스크(7일 내내 93%).
