@@ -32,7 +32,7 @@ spec:
               mkdir -p /geoip
               # 이번 달 파일이 아직 없으면 지난달 파일로 되돌아간다(달 계산은 연·월 숫자로).
               y=$(date +%Y); m=$(date +%m)
-              if [ "$m" = "01" ]; then py=$((y - 1)); pm=12; else py=$y; pm=$(printf '%02d' $((10#$m - 1))); fi
+              if [ "$m" = "01" ]; then py=$((y - 1)); pm=12; else py=$y; pm=$(printf '%02d' $((${m#0} - 1))); fi
               ok=0
               for ym in "$y-$m" "$py-$pm"; do
                 if curl -fsSL --max-time 120 -o /tmp/country.mmdb.gz "https://download.db-ip.com/free/dbip-country-lite-$ym.mmdb.gz" \
