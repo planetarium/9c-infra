@@ -274,6 +274,8 @@ ncboard:
 # 클라이언트 운영 지표 수집(telemetry). 요청 수 제한이 메모리 기반이라 replicas 는 1 고정.
 telemetry:
   enabled: false
+  # 비우면 외부 경로(HTTPRoute)를 만들지 않는다. 채우면 /v1/events 와 /healthz 만 연다.
+  hostnames: []
   image:
     repository: planetariumhq/9c-telemetry
     tag: latest

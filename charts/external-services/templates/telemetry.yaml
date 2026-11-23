@@ -107,4 +107,34 @@ spec:
   selector:
     app: telemetry
   type: ClusterIP
+{{- with $.Values.telemetry.hostnames }}
+---
+# 공용 gateway 템플릿은 호스트의 모든 경로를 넘기므로 쓰지 않는다. 수집 경로만 열고 /metrics 는 내보내지 않는다.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: telemetry
+  namespace: {{ $.Release.Name }}
+spec:
+  parentRefs:
+  - name: traefik-gateway
+    namespace: traefik
+    sectionName: web
+  - name: traefik-gateway
+    namespace: traefik
+    sectionName: websecure
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /v1/events
+      - path:
+          type: Exact
+          value: /healthz
+      backendRefs:
+      - name: telemetry
+        port: 8000
+{{- end }}
 {{- end }}
