@@ -4,7 +4,7 @@ provider: RKE2
 global:
   image:
     repository: planetariumhq/ninechronicles-headless
-    tag: "397"
+    tag: "399"
 
 seed:
   image:
