@@ -158,6 +158,17 @@ portalService:
     MAPLE_GO_GATEWAY_URL: "http://v8-gateway.maple-go-internal.svc.cluster.local:3000"
     # 인터널 시험용 — 결제 미션 집계를 오늘(2026-11-16)부터 센다. prod 에는 두지 않는다(코드값 11/19 00:00 UTC).
     MAPLE_GO_MISSION_STARTS_AT: "2026-11-16T00:00:00.000Z"
+    # V8 지갑 MEAD 후원 경로 POST /api/account/v8/contract (9c-portal #1384) — 인터널 시험용.
+    #   서명자·verse 는 공개값(공개 주소·verse id). 서버 런타임 env 라 sync 뒤 rollout restart 필요.
+    V8_PLEDGE_ENABLED: "true"
+    V8_GAME_TOKEN_SIGNER_ADDRESSES: "0x5D8Fd7bbA0733d5fa35E701198F5E62Ba490B4e5"
+    V8_PLEDGE_VERSE_IDS: "0x2c88f2f06aa707e8a7b0241267a2d63acae515dc-1795703096354"
+    V8_GAME_ORIGIN_BASE_DOMAINS: "verse8.games,staging.verse8.games"
+    # 로컬 시험 페이지 출처 — 프로드에는 두지 않는다
+    V8_PLEDGE_EXTRA_ORIGINS: "http://localhost:8080"
+    V8_PLEDGE_DAILY_CAP: "50"
+    # 프로드는 g2-sync 전용 토큰(aud=9c-portal-pledge) 발급 뒤 "true" 로
+    V8_PLEDGE_REQUIRE_AUD: "false"
   # (PLD-1563) 포탈 ↔ IAP 지급 대조. 이게 없으면 포인트샵 주문이 GRANT_REQUESTED 에서
   #   영원히 멈춘다 — 온체인 지급이 끝나도 포탈이 모르고, IAP 가 FAILED 를 내도 환급이 안 되고,
   #   타임아웃 건은 아무도 판정하지 않는다.
