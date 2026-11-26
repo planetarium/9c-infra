@@ -136,7 +136,7 @@ portalService:
     # (2026-11-22) → internal-2114da00: 포인트샵 구매 전 대표 아바타가 대표 행성에 있는지 노드 확인(9c-portal #1379). 조회 실패는 통과.
     # (2026-11-22) → internal-1bcab412: 대표 행성·대표 아바타를 서버에서 함께 맞춤 + 웹샵·리딤·포인트샵 지급 전 확인(9c-portal #1382). DB 커플링 없음.
     # (2026-11-23) → internal-cc4eff08: 이미지 빌드 방식 변경(9c-portal #1383 — deps 캐시·앱별 설치·런타임 apt 분리). 앱 코드 변경 없음.
-    tag: "internal-cc4eff0806134ffcb27052c729c15cbe23014175"
+    tag: "internal-7add5af3e967e2ea2b987868668e5bf9040725e4"
     pullPolicy: Always
   externalSecret:
     enabled: true
@@ -192,7 +192,7 @@ backofficeService:
     # (2026-11-17) → internal-0b09ee1e: Planetarium 탭 + MAPLE GO 계정 따로 저장(9c-portal #1369). ⚠️ DB 커플링 — 마이그레이션
     #   20261116120000_maple_go_integrations 를 먼저 적용했다(인터널 2026-11-17). getAccount 가 이 테이블을 읽는다.
     # (2026-11-23) → internal-cc4eff08: 이미지 빌드 방식 변경(9c-portal #1383). 0b09ee1e 이후 apps/backoffice·packages 코드 변경 없음.
-    tag: "internal-cc4eff0806134ffcb27052c729c15cbe23014175"
+    tag: "internal-7add5af3e967e2ea2b987868668e5bf9040725e4"
     pullPolicy: Always
   externalSecret:
     enabled: true
